@@ -1,8 +1,0 @@
-version: 3.0.0
-files:
-  - url: Rollout-World-3.0.0-arm64.dmg
-    sha512: fvV/w3LTmXuqDmmT5AqKtlqmzlRQxQwee9Bb3XYZNvKuFKGzaEi5f5R2osqRsIlTXaTx1+/nhxqgxeLNsJNCVw==
-    size: 99726124
-path: Rollout-World-3.0.0-arm64.dmg
-sha512: fvV/w3LTmXuqDmmT5AqKtlqmzlRQxQwee9Bb3XYZNvKuFKGzaEi5f5R2osqRsIlTXaTx1+/nhxqgxeLNsJNCVw==
-releaseDate: '2026-06-11T19:11:10.542Z'
