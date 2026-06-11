@@ -6,7 +6,7 @@ function createWindow() {
     width: 760,
     height: 920,
     minWidth: 420,
-    title: "Rollout World",
+    title: "Edokai",
     backgroundColor: "#EBEFF6",
     webPreferences: { contextIsolation: true },
   });

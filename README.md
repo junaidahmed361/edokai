@@ -1,4 +1,4 @@
-# Edokai / Rollout World v3
+# Edokai v3
 
 Edokai is a gamified learning interface for people who want technical study to feel less like forcing themselves through a giant blog tab and more like moving across a game board looking for the next fight.
 
@@ -6,23 +6,23 @@ The original inspiration was Dragon Ball Z: Budokai 2: board layout, main-path e
 
 I started this because my self-prescribed ADHD makes the normal study flow hard. Long papers matter, but I bounce off them. Dense blogs are useful, but I rarely want to sit there passively reading. Plain LeetCode can be valuable, but it often feels mind-numbing: submit, pass, forget why I cared. This is an attempt to make the effort more directed and more playful without pretending the material is easy.
 
-The app is still branded "Rollout World" internally, but this repo is the broader Edokai project: Budokai, but for education.
+The app is now branded Edokai end-to-end: repo, browser title, desktop app name, DMG name, and in-app title screen.
 
 ## v3 status
 
-Rollout World v3 is now in this repo as both:
+Edokai v3 is now in this repo as both:
 
-- a source artifact: `rollout-world-v3.jsx`
+- a source artifact: `edokai-v3.jsx`
 - a complete Electron + Vite desktop project: `package.json`, `src/`, `electron/`, `index.html`, `vite.config.js`
 
-The old `rollout-ultimate.jsx` file has also been updated to the same v3 app content so older links still point at the newest prototype.
+The old `rollout-ultimate.jsx` file has also been updated with Edokai v3 branding so older links still point at the newest prototype.
 
 Verified locally:
 
 - main app file: 2,860 lines
 - Vite production build: 375.83 kB JS bundle, 127.26 kB gzip
 - macOS desktop package built with electron-builder
-- mac artifact: `release/Rollout World-3.0.0-arm64.dmg`
+- mac artifact: `release/Edokai-3.0.0-arm64.dmg`
 
 Note: the mac build is unsigned because there is no Developer ID signing identity on this machine. macOS may show the normal Gatekeeper warning for unsigned apps.
 
@@ -154,7 +154,7 @@ npm run dist:mac
 Output:
 
 ```text
-release/Rollout World-3.0.0-arm64.dmg
+release/Edokai-3.0.0-arm64.dmg
 ```
 
 On Windows:
@@ -167,7 +167,7 @@ npm run dist:win
 Expected output:
 
 ```text
-release/Rollout World Setup 3.0.0.exe
+release/Edokai Setup 3.0.0.exe
 ```
 
 ## First-run setup for generation features
@@ -195,20 +195,19 @@ The desktop app avoids the browser sandbox issues that made local endpoints anno
 ```text
 .
 ├── electron/main.cjs              # Electron shell
-├── src/App.jsx                    # Rollout World v3 app
+├── src/App.jsx                    # Edokai v3 app
 ├── src/main.jsx                   # React entry + storage shim
-├── rollout-world-v3.jsx           # standalone v3 artifact
+├── edokai-v3.jsx           # standalone v3 artifact
 ├── rollout-ultimate.jsx           # compatibility copy, updated to v3
 ├── package.json                   # Vite/Electron scripts
 ├── vite.config.js
-└── release/Rollout World-3.0.0-arm64.dmg
+└── release/Edokai-3.0.0-arm64.dmg
 ```
 
 ## Prototype notes
 
 This is still very much an exploratory prototype. The gameplay loop exists, but future cleanup should probably include:
 
-- renaming in-app branding from Rollout World to Edokai
 - splitting the large app file into components and content modules
 - adding automated tests for board progression, question shuffling, telemetry, and gauntlets
 - improving keyboard navigation and accessibility
@@ -218,3 +217,8 @@ This is still very much an exploratory prototype. The gameplay loop exists, but 
 ## License
 
 Apache-2.0. See `LICENSE`.
+
+## Release candidate
+
+The macOS DMG is packaged as a GitHub release candidate. Download the attached `Edokai-3.0.0-arm64.dmg` from the latest `v3.0.0-rc.1` prerelease on GitHub.
+

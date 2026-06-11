@@ -1,6 +1,6 @@
 {
-  "name": "rollout-world",
-  "productName": "Rollout World",
+  "name": "edokai",
+  "productName": "Edokai",
   "version": "3.0.0",
   "description": "Gamified ML learning: board worlds, dojo katas, live Python lab, self-improving coach",
   "private": true,
@@ -23,7 +23,7 @@
     "electron-builder": "^25.1.8"
   },
   "build": {
-    "appId": "ai.rollout.world",
+    "appId": "ai.edokai.app",
     "files": ["dist/**/*", "electron/**/*"],
     "directories": { "output": "release" },
     "mac": { "target": "dmg", "category": "public.app-category.education" },
