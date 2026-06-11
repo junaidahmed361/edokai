@@ -220,5 +220,17 @@ Apache-2.0. See `LICENSE`.
 
 ## Release candidate
 
-The macOS DMG is packaged as a GitHub release candidate. Download the attached `Edokai-3.0.0-arm64.dmg` from the latest `v3.0.0-rc.1` prerelease on GitHub.
+The macOS DMG is packaged as a GitHub release candidate. Download the attached `Edokai-3.0.0-arm64.dmg` from the latest prerelease on GitHub.
+
+Important macOS Gatekeeper note: Edokai is ad-hoc signed but not Apple Developer ID signed/notarized yet. On some macOS versions, a browser-downloaded DMG can still produce the misleading "app is damaged/broken and should be moved to Trash" dialog before Privacy & Security offers an unblock button. That is Gatekeeper quarantine behavior for an unnotarized app, not a failed DMG checksum.
+
+For the current RC, the recommended install path is the helper script attached to the release, which downloads the DMG, verifies its SHA-256, copies Edokai to `/Applications`, strips the quarantine xattr, verifies the local code signature, and opens the app:
+
+```bash
+curl -L https://github.com/junaidahmed361/edokai/releases/download/v3.0.0-rc.3/install-edokai-macos.sh | bash
+```
+
+If you installed a previous RC manually, delete `/Applications/Edokai.app` first or let the script replace it.
+
+A fully normal double-click install requires Apple Developer ID signing and notarization.
 
