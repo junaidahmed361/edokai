@@ -1,0 +1,5 @@
+node_modules/
+dist/
+release/mac*/
+.DS_Store
+*.log

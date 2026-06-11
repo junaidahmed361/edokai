@@ -77,7 +77,9 @@ const music = new MusicEngine();
    (Ollama: http://localhost:11434/v1 · LM Studio: :1234/v1 ·
     llama.cpp server: :8080/v1 · or a cloud base URL + key)
    ============================================================ */
+let GLOBAL_KEY = "";   // optional Anthropic key for desktop builds
 async function askModel(prompt, cfg, opts = {}) {
+  if (!cfg || cfg.provider === "builtin") cfg = { provider: "builtin", anthropicKey: (cfg && cfg.anthropicKey) || GLOBAL_KEY };
   const { needsWeb = false, pdfBase64 = null } = opts;
   if (!cfg || cfg.provider === "builtin") {
     const content = pdfBase64
@@ -88,8 +90,14 @@ async function askModel(prompt, cfg, opts = {}) {
       messages: [{ role: "user", content }],
     };
     if (needsWeb) body.tools = [{ type: "web_search_20250305", name: "web_search" }];
+    const hdrs = { "Content-Type": "application/json" };
+    if (cfg && cfg.anthropicKey) {            // desktop / outside claude.ai
+      hdrs["x-api-key"] = cfg.anthropicKey;
+      hdrs["anthropic-version"] = "2023-06-01";
+      hdrs["anthropic-dangerous-direct-browser-access"] = "true";
+    }
     const res = await fetch("https://api.anthropic.com/v1/messages", {
-      method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(body),
+      method: "POST", headers: hdrs, body: JSON.stringify(body),
     });
     const data = await res.json();
     return (data.content || []).filter((b) => b.type === "text").map((b) => b.text).join("\n");
@@ -209,7 +217,7 @@ const RL_REGIONS = [
       { id: "advantage", name: "Value & Advantage", sprite: "📈",
         lore: "The value function V(s) estimates expected future return from a state; the advantage A(s,a) = how much better a specific action was than expected: actual return minus baseline V(s). Advantages are the currency of policy-gradient training: positive → make that action more likely; negative → less. GAE blends multi-step returns to trade bias against variance. In PPO a learned value network supplies the baseline; GRPO replaces it with the group's mean reward.",
         questions: [
-          { q: "Advantage A(s,a) measures…", options: ["the action's return relative to expectation", "the raw reward emitted by the environment", "the policy's entropy at that state", "the distance to the goal state"], a: 0, why: "Surprise relative to the baseline V(s) — centered signal, not absolute reward." },
+          { q: "Advantage A(s,a) measures…", options: ["the action's return relative to expectation", "the raw reward emitted by the environment", "the entropy of the policy's action distribution", "the remaining distance to the episode's goal"], a: 0, why: "Surprise relative to the baseline V(s) — centered signal, not absolute reward." },
           { q: "An action with negative advantage should become…", options: ["the new deterministic default", "less probable under the policy", "the baseline for future actions", "exempt from gradient updates"], a: 1, why: "Worse than expected → push its probability down. That's the policy gradient." },
         ] },
     ],
@@ -217,9 +225,9 @@ const RL_REGIONS = [
       { id: "s-gamma", name: "Bandit Gamma", sprite: "🦝", anchor: 1, recLevel: 1, prereqs: ["mdp", "policy"],
         desc: "Tests whether you can actually TUNE the math you just learned.",
         questions: [
-          { q: "SCENARIO: A trading agent's position today pays off in 60 steps. Training stalls. First suspect?", options: ["γ set too low — the payoff discounts to near zero", "Too many states in the environment", "The reward is accidentally positive", "Batch size is one step too small"], a: 0, why: "0.9⁶⁰ ≈ 0.002 — the future payoff barely registers. Raise γ for long horizons." },
+          { q: "SCENARIO: A trading agent's position today pays off in 60 steps. Training stalls. First suspect?", options: ["γ set too low", "Too many states in the environment", "The reward is accidentally positive", "Batch size is one step too small"], a: 0, why: "0.9⁶⁰ ≈ 0.002 — the future payoff barely registers. Raise γ for long horizons." },
           { q: "SCENARIO: A clinical agent can interrupt a doctor now (small cost) to prevent a likely error in 20 minutes (big payoff). Which agent intervenes?", options: ["The γ ≈ 0 agent, acting on reflex", "Neither — RL can't trade off costs", "The γ ≈ 0.99 agent, valuing the future", "Both behave identically here"], a: 2, why: "High γ keeps the distant prevented-error reward valuable enough to outweigh the cost." },
-          { q: "SCENARIO: Your agent found one decent strategy and repeats it forever. Standard countermeasure?", options: ["lowering the learning rate to zero", "maintaining exploration (e.g., entropy bonus)", "removing the reward baseline", "shortening every episode to one step"], a: 1, why: "Exploitation lock-in is broken by keeping exploration pressure alive." },
+          { q: "SCENARIO: Your agent found one decent strategy and repeats it forever. Standard countermeasure?", options: ["lowering the learning rate to zero", "maintaining exploration", "removing the reward baseline", "shortening every episode to one step"], a: 1, why: "Exploitation lock-in is broken by keeping exploration pressure alive." },
         ] },
       { id: "s-baseline", name: "Baseline Wisp", sprite: "👻", anchor: 3, recLevel: 2, prereqs: ["advantage"],
         desc: "Haunts trainers who confuse rewards with advantages.",
@@ -232,7 +240,7 @@ loss    = -(logprobs * adv.detach()).mean() # policy gradient`,
         codeNote: "The policy-gradient core: every scenario below happens inside these five lines.",
         questions: [
           { q: "SCENARIO: Two actions both earned +50, but V(s) predicted +80 and +20 respectively. The gradient pushes…", options: ["both actions up equally hard", "both actions down equally hard", "the first up, the second down", "the first down, the second up"], a: 3, why: "Advantages: 50−80 = −30 (push down); 50−20 = +30 (push up)." },
-          { q: "SCENARIO: In the code above, why .detach() on adv?", options: ["it frees GPU memory between steps", "gradients must not flow into the critic here", "it converts the tensor to numpy", "it normalizes the advantage scale"], a: 1, why: "The policy loss should move the policy only; the critic trains on its own MSE loss." },
+          { q: "SCENARIO: In the code above, why .detach() on adv?", options: ["it frees GPU memory between optimizer steps", "gradients must not flow into the critic here", "it converts the tensor into a numpy array first", "it normalizes the advantage scale"], a: 1, why: "The policy loss should move the policy only; the critic trains on its own MSE loss." },
         ] },
     ],
     gym: {
@@ -259,7 +267,7 @@ loss    = -(logprobs * adv.detach()).mean() # policy gradient`,
         lore: "SFT cannot: decide WHEN (it never sees the cost of calling or of not calling); choose WHICH among tools (it replicates demo choices without learning trade-offs); use execution feedback (tool success/failure never reaches the loss); handle multi-step workflows and stopping (demos have fixed lengths); penalize over-use or under-use; generalize past the demonstration distribution; or optimize multi-component objectives — one monolithic loss can't separately punish timing vs selection vs argument errors.",
         questions: [
           { q: "An SFT-only model calls the weather API on 'define photosynthesis'. Root cause?", options: ["Cost signals can't enter SFT's loss", "The training set was far too small", "Weather data corrupts embeddings", "The discount factor was set too low"], a: 0, why: "Over-calling is a consequence problem; the likelihood loss has nowhere to encode cost." },
-          { q: "SFT struggles with multi-step workflows because…", options: ["attention cannot span multiple calls", "JSON grows too long to tokenize", "demos have fixed lengths, so stopping isn't learned", "tools reject repeated invocations"], a: 2, why: "'Enough info — ANSWER now' is a policy decision RL learns via episodic returns." },
+          { q: "SFT struggles with multi-step workflows because…", options: ["attention cannot span multiple calls", "JSON grows too long to tokenize", "demos have fixed lengths", "tools reject repeated invocations"], a: 2, why: "'Enough info — ANSWER now' is a policy decision RL learns via episodic returns." },
         ] },
       { id: "warmstart", name: "Warm-Start", sprite: "🔥",
         lore: "Why SFT before RL, always? RL from random init over raw text collapses: malformed JSON everywhere, runaway tool-call loops, zero successful episodes, noisy gradients, degenerate policies. SFT anchors the policy with baseline competencies — tool syntax literacy, a heuristic when/which/how prior, drastically reduced exploration burden — so early RL is stable. Imitation provides competence, then RL provides policy mastery. Skipping the warm-start doesn't make training purer; it makes it impossible.",
@@ -272,14 +280,14 @@ loss    = -(logprobs * adv.detach()).mean() # policy gradient`,
       { id: "s-debug", name: "Copycat Golem", sprite: "🗿", anchor: 1, recLevel: 2, prereqs: ["bc", "sftfails"],
         desc: "Built entirely from demonstrations. Diagnose its malfunctions.",
         questions: [
-          { q: "SCENARIO: An SFT clinical agent formats lab-lookup calls perfectly but fires them on 'good morning'. 10× more demos helps a little; novel phrasings still trigger calls. Why?", options: ["The model is too small for the task", "Greetings are out-of-vocabulary tokens", "Lab tools have ambiguous schemas", "WHEN is a consequence decision SFT can't optimize"], a: 3, why: "Demos patch the seen distribution; only cost-bearing reward teaches restraint that generalizes." },
-          { q: "SCENARIO: A new FHIR API has a schema unseen in training. SFT model's calls fail and never improve. Missing ingredient?", options: ["execution feedback flowing into learning", "a larger demonstration dataset", "a longer context window", "lower sampling temperature"], a: 0, why: "SFT can't use tool success/failure; RL turns outcomes into adaptation." },
-          { q: "SCENARIO: Budget for ONE training stage on a new tool-use task, zero existing competence. Choose:", options: ["RL alone — exploration finds syntax", "SFT alone — RL would collapse without it", "either works equally well", "neither; prompting suffices"], a: 1, why: "RL at random init produces no valid episodes. Competence first." },
+          { q: "SCENARIO: An SFT clinical agent formats lab-lookup calls perfectly but fires them on 'good morning'. 10× more demos helps a little; novel phrasings still trigger calls. Why?", options: ["The base model is too small for clinical work", "Greetings are out-of-vocabulary tokens", "The lab tools expose ambiguous, overlapping schemas", "WHEN is a consequence decision SFT can't optimize"], a: 3, why: "Demos patch the seen distribution; only cost-bearing reward teaches restraint that generalizes." },
+          { q: "SCENARIO: A new FHIR API has a schema unseen in training. SFT model's calls fail and never improve. Missing ingredient?", options: ["execution feedback flowing into learning", "a much larger demonstration training dataset", "a substantially longer model context window", "lower sampling temperature"], a: 0, why: "SFT can't use tool success/failure; RL turns outcomes into adaptation." },
+          { q: "SCENARIO: Budget for ONE training stage on a new tool-use task, zero existing competence. Choose:", options: ["RL alone — exploration finds syntax", "SFT alone", "either works equally well", "neither; prompting suffices"], a: 1, why: "RL at random init produces no valid episodes. Competence first." },
         ] },
       { id: "s-retain1", name: "Echo of the Fields", sprite: "🌀", anchor: 2, recLevel: 2, prereqs: ["mdp", "bc"],
         desc: "Tests whether Foundation Fields stuck.",
         questions: [
-          { q: "RETENTION: In MDP terms, what does behavior cloning ignore?", options: ["The state space S", "The action space A", "P, R, and γ — dynamics, rewards, the future", "The existence of a policy π"], a: 2, why: "Cloning keeps (s,a) pairs and discards the entire consequence machinery." },
+          { q: "RETENTION: In MDP terms, what does behavior cloning ignore?", options: ["The state space S", "The action space A", "P, R, and γ", "The existence of a policy π"], a: 2, why: "Cloning keeps (s,a) pairs and discards the entire consequence machinery." },
           { q: "RETENTION: Why does exploration become tractable after SFT?", options: ["The reward function becomes denser", "Sampling concentrates near valid behaviors", "Advantages are guaranteed positive", "The MDP's horizon becomes shorter"], a: 1, why: "The prior collapses the search space — same exploration concept from the Fields." },
         ] },
     ],
@@ -319,13 +327,13 @@ loss    = -(logprobs * adv.detach()).mean() # policy gradient`,
         lore: "The policy emits two action types as strict JSON in <action> tags. ANSWER(final_text): when=false, ends the episode. CALL(tool, args): when=true, carries which (tool name) and how (args); the tool executes and its output is appended to context, producing the next state. The explicit 'when' flag aids debugging and credit assignment. Episodes run until ANSWER or a max-step limit. Gradients flow over the whole structured action while reward decomposes along the axes.",
         questions: [
           { q: "What terminates an episode?", options: ["Any failed tool execution", "The first CALL action emitted", "Any negative reward component", "ANSWER, or the max-step limit"], a: 3, why: "CALL continues the loop; ANSWER ends it." },
-          { q: "Why an explicit 'when' flag in the action JSON?", options: ["It makes the decision inspectable and rewardable", "The JSON spec requires boolean fields", "It compresses the action encoding", "Tools refuse calls without the flag"], a: 0, why: "Explicit structure aids debugging and credit assignment on the timing axis." },
+          { q: "Why an explicit 'when' flag in the action JSON?", options: ["It makes the decision inspectable and rewardable", "The JSON specification mandates boolean flag fields", "It compresses the structured action encoding size", "Tools refuse calls without the flag"], a: 0, why: "Explicit structure aids debugging and credit assignment on the timing axis." },
         ] },
       { id: "malformed", name: "Malformed Actions", sprite: "💢",
         lore: "When the model emits invalid when/which/how output, the episode must NOT terminate. Instead: assign a negative syntax/validity reward, return an error message into context, and continue. This reward-shaping (lineage of Christiano et al.'s preference RL) converts failures into learning signal and teaches self-correction — the agent experiences the error AND the recovery within one trajectory, far better credit assignment than a death penalty.",
         questions: [
           { q: "Correct handling of a malformed CALL:", options: ["terminate the episode with a large penalty", "penalize, inject the error, continue the episode", "silently auto-repair the JSON and proceed", "restart training from the last checkpoint"], a: 1, why: "Keep it alive: the agent learns the penalty AND the recovery." },
-          { q: "'Survive and retry' beats 'episode over' because…", options: ["shorter episodes waste GPU cycles", "termination inflates the value estimates", "recovery gets demonstrated and rewarded in-trajectory", "errors increase the policy's entropy"], a: 2, why: "Termination hides the path back to success; continuation makes self-correction learnable." },
+          { q: "'Survive and retry' beats 'episode over' because…", options: ["terminated episodes waste allocated GPU cycles", "termination inflates the value estimates", "recovery gets demonstrated and rewarded in-trajectory", "injected errors raise the policy's output entropy"], a: 2, why: "Termination hides the path back to success; continuation makes self-correction learnable." },
         ] },
     ],
     sides: [
@@ -410,7 +418,7 @@ def reward(traj):
         desc: "Wears the mask of good metrics over rotten behavior.",
         questions: [
           { q: "SCENARIO: Agent emits 8 plausible steps and a confident wrong answer — and scores well. Diagnosis + fix?", options: ["sparse rewards; densify with step bonuses", "process-reward gaming; re-anchor on outcomes", "skill collapse; restart from SFT checkpoint", "under-exploration; raise the entropy bonus"], a: 1, why: "Dense proxies outweighed the outcome anchor — rebalance toward verified outcomes." },
-          { q: "SCENARIO: Milestone 'submitted ✓' fires on empty forms; the agent exploits it. The TARM-flavored fix:", options: ["remove every milestone, go outcome-only", "raise the milestone bonus to encourage honesty", "verify the milestone's state condition before paying", "add three more unverified milestones"], a: 2, why: "Reward hacking → harden the proxy's verification." },
+          { q: "SCENARIO: Milestone 'submitted ✓' fires on empty forms; the agent exploits it. The TARM-flavored fix:", options: ["remove every milestone and rely on outcomes only", "raise the milestone bonus to encourage honesty", "verify the milestone's state condition before paying", "add three additional unverified milestone bonuses"], a: 2, why: "Reward hacking → harden the proxy's verification." },
         ] },
     ],
     gym: {
@@ -419,7 +427,7 @@ def reward(traj):
       questions: [
         { q: "Why are decomposed rewards more DEBUGGABLE than one scalar?", options: ["fewer floating-point operations per step", "each component can be ablated independently", "scalars cannot be logged efficiently", "decomposition removes all reward noise"], a: 1, why: "You see which axis misbehaves." },
         { q: "Rank by hackability, least-hackable first:", options: ["judges < discriminators < rules", "rules < discriminators < judges", "discriminators < rules < judges", "all three are equally gameable"], a: 1, why: "Deterministic checks can't be charmed; learned models can be probed; judges persuaded." },
-        { q: "Blending process + outcome works best when…", options: ["process shapes early, outcome anchors correctness", "outcome shapes early, process anchors late", "both weighted equally at every step", "they alternate every other episode"], a: 0, why: "Dense guidance to get moving; verified outcomes to keep it honest." },
+        { q: "Blending process + outcome works best when…", options: ["process shapes early, outcome anchors correctness", "outcome shapes early, process anchors late", "both are weighted identically at every timestep", "the two signals alternate every other episode"], a: 0, why: "Dense guidance to get moving; verified outcomes to keep it honest." },
       ] },
   },
   {
@@ -436,8 +444,8 @@ def reward(traj):
       { id: "dpo", name: "DPO", sprite: "🤝",
         lore: "Direct Preference Optimization removes the reward model AND rollouts. Data: preference pairs (y_w chosen, y_l rejected). Loss: −log σ(β[log π(y_w)/π_ref(y_w) − log π(y_l)/π_ref(y_l)]) — push the winner up relative to the loser, measured against the reference. Remarkably, this is the closed-form optimum of the same KL-regularized objective PPO chases. No value net, no environment. Strength: simple preference alignment. Weakness: no exploration, no execution feedback — ill-suited for multi-step tool interaction.",
         questions: [
-          { q: "DPO requires ___ and skips ___:", options: ["rollouts / preference data", "preference pairs / reward model and rollouts", "a critic / the reference model", "milestones / the KL anchor"], a: 1, why: "Comparisons in, direct policy update out." },
-          { q: "DPO is weak for multi-step tool agents because…", options: ["its loss diverges on long sequences", "preference pairs cannot include tool calls", "execution feedback never shapes the policy", "it lacks any reference anchor"], a: 2, why: "Offline preferences can't capture what only acting reveals." },
+          { q: "DPO requires ___ and skips ___:", options: ["environment rollouts / static preference data", "preference pairs / reward model and rollouts", "a learned critic / the frozen reference model", "milestones / the KL anchor"], a: 1, why: "Comparisons in, direct policy update out." },
+          { q: "DPO is weak for multi-step tool agents because…", options: ["its loss numerically diverges on long sequences", "preference pairs cannot include tool calls", "execution feedback never shapes the policy", "it lacks any reference-model anchoring term"], a: 2, why: "Offline preferences can't capture what only acting reveals." },
         ] },
       { id: "grpo", name: "GRPO", sprite: "👥",
         lore: "For each prompt, sample a group of G responses, score them all, set each sample's advantage to its normalized deviation from the group mean — Âᵢ = (rᵢ − mean(r))/std(r). The group IS the baseline, so the value network is deleted: huge memory savings. Updates use a PPO-style clipped surrogate plus KL regularization. The engine behind DeepSeek-R1-style reasoning training. It shines when rewards are cheaply checkable (math, code, tool execution) so large groups can be scored automatically.",
@@ -481,7 +489,7 @@ loss = policy_loss \\
         questions: [
           { q: "RETENTION: Argument-validity crashes mid-training; when-accuracy holds. Response?", options: ["full restart from random initialization", "revisit Stage 3 and inspect the HOW rewards", "remove all tools from the environment", "double the discount factor immediately"], a: 1, why: "Per-axis diagnosis enables per-axis repair." },
           { q: "RETENTION: PPO's entropy bonus exists to…", options: ["shrink the value network's loss", "keep exploration from collapsing early", "enforce the trust-region clipping", "anchor the policy to the reference"], a: 1, why: "Foundation Fields callback: exploration pressure prevents premature determinism." },
-          { q: "RETENTION: All three algorithms keep a KL/reference anchor because…", options: ["it is required for advantage estimation", "regulators mandate reference models", "reward optimization alone drifts into degeneracy", "it halves the memory footprint"], a: 2, why: "PPO penalizes KL, DPO embeds the reference, GRPO adds explicit KL." },
+          { q: "RETENTION: All three algorithms keep a KL/reference anchor because…", options: ["it is required for advantage estimation", "industry regulators mandate frozen reference models", "reward optimization alone drifts into degeneracy", "the anchor halves the training memory footprint"], a: 2, why: "PPO penalizes KL, DPO embeds the reference, GRPO adds explicit KL." },
         ] },
     ],
     gym: {
@@ -489,7 +497,7 @@ loss = policy_loss \\
       taunt: "Three algorithms, one objective!",
       questions: [
         { q: "Which component appears in ALL THREE methods?", options: ["a learned value network", "group-relative advantages", "preference pair construction", "KL regularization to a reference"], a: 3, why: "The anchor is universal; critics, groups, pairs are method-specific." },
-        { q: "DPO secretly optimizes…", options: ["a completely unrelated objective", "the same KL-regularized objective, closed-form", "pure likelihood, identical to SFT", "the group-relative GRPO advantage"], a: 1, why: "Its loss is the closed-form optimum of the KL-regularized RL objective." },
+        { q: "DPO secretly optimizes…", options: ["a completely unrelated objective", "the same KL-regularized objective, closed-form", "a pure likelihood objective, identical to SFT", "the group-relative advantage objective from GRPO"], a: 1, why: "Its loss is the closed-form optimum of the KL-regularized RL objective." },
         { q: "GRPO advantage for a sample exactly at the group mean:", options: ["zero advantage — no gradient push", "maximum positive advantage", "a penalty proportional to std", "excluded from the update batch"], a: 0, why: "Average performance = no surprise = no push." },
       ] },
   },
@@ -502,7 +510,7 @@ loss = policy_loss \\
         lore: "Three regimes, rising difficulty. SINGLE-TURN: one prompt → one response → one reward; trivial credit assignment. TOOL-USE: episodes interleave reasoning, tool calls, observations; moderate horizon; rewards can attach to steps. MULTI-TURN SEQUENTIAL: long horizons, persistent state, delayed consequences — web/computer-use agents across 30 clicks. Each step up makes rewards sparser, exploration harder, credit crueler; environment design shapes everything downstream.",
         questions: [
           { q: "Rank by credit-assignment difficulty, easiest first:", options: ["multi-turn, tool-use, single-turn", "tool-use, single-turn, multi-turn", "single-turn, tool-use, multi-turn", "all three are equally difficult"], a: 2, why: "Horizon length and action-consequence delay drive difficulty." },
-          { q: "Multi-turn sequential environments are distinguished by…", options: ["persistent state and delayed consequences", "guaranteed dense per-step rewards", "the absence of any tool calls", "single-token action spaces"], a: 0, why: "An early wrong click silently dooms the booking 25 steps later." },
+          { q: "Multi-turn sequential environments are distinguished by…", options: ["persistent state and delayed consequences", "guaranteed dense per-step rewards", "the complete absence of any tool invocations", "action spaces restricted to single tokens"], a: 0, why: "An early wrong click silently dooms the booking 25 steps later." },
         ] },
       { id: "milestones", name: "Milestone Rewards", sprite: "🚩",
         lore: "For long-horizon agents, milestones densify the sparse end-signal: decompose the task into verifiable checkpoints — logged in ✓, results loaded ✓, item in cart ✓, form submitted ✓ — each emitting partial reward. Example: r = Σ milestone bonuses + final success bonus − step costs − error penalties. Process-reward thinking applied to web/computer-use: a gradient of progress instead of a verdict at the end.",
@@ -552,19 +560,19 @@ loss = policy_loss \\
       { id: "s-ship", name: "Gatekeeper Golem", sprite: "🤖", anchor: 2, recLevel: 6, prereqs: ["passk", "milestones", "procout"],
         desc: "Stands before the deployment gate. Only respects reliability math.",
         questions: [
-          { q: "SCENARIO: Stakeholders see pass@10 = 90% and want to ship. Your read:", options: ["ship — capability is demonstrated", "not yet — pass^k reveals the reliability floor", "ship with a larger model behind it", "the two metrics are interchangeable"], a: 1, why: "1-in-k success is a demo; production needs all-k consistency." },
-          { q: "SCENARIO: To CLOSE the pass^k gap, which lever set matches the unreliability sources?", options: ["bigger model, longer context, more tools", "reduce stochasticity, disambiguate, stabilize planning", "more agents, more milestones, more search", "higher γ, lower ε, larger groups"], a: 1, why: "The triad of causes maps to the triad of fixes." },
-          { q: "RETENTION: Deployed agent games 'submitted ✓' with empty forms. Name it, fix it:", options: ["skill collapse / restart the curriculum", "distribution shift / collect fresh data", "reward hacking / verify the milestone condition", "under-exploration / raise entropy"], a: 2, why: "Foundry callback: harden the proxy — checked conditions, not vibes." },
+          { q: "SCENARIO: Stakeholders see pass@10 = 90% and want to ship. Your read:", options: ["ship now — the capability ceiling is demonstrated", "not yet — pass^k reveals the reliability floor", "ship with a larger model behind it", "the two metrics are effectively interchangeable"], a: 1, why: "1-in-k success is a demo; production needs all-k consistency." },
+          { q: "SCENARIO: To CLOSE the pass^k gap, which lever set matches the unreliability sources?", options: ["bigger model, longer context, more tools", "reduce stochasticity, disambiguate, stabilize planning", "add more agents, more milestones, deeper search", "raise γ, lower clip ε, and enlarge GRPO groups"], a: 1, why: "The triad of causes maps to the triad of fixes." },
+          { q: "RETENTION: Deployed agent games 'submitted ✓' with empty forms. Name it, fix it:", options: ["skill collapse / restart the training curriculum", "distribution shift / collect fresh data", "reward hacking / verify the milestone condition", "under-exploration / raise the entropy bonus"], a: 2, why: "Foundry callback: harden the proxy — checked conditions, not vibes." },
         ] },
     ],
     gym: {
       leader: "Champion Horizon", badge: "Champion Badge", sprite: "👑",
       taunt: "The final battle. Everything you've captured — all at once!",
       questions: [
-        { q: "Design a reward for a 40-step insurance-form agent:", options: ["one terminal success reward, kept clean", "milestones + final bonus − step costs − error penalties", "uniform +1 per step to encourage progress", "judge-only scoring of the final screenshot"], a: 1, why: "Long horizon → densify with verifiable checkpoints; asymmetric costs price reality." },
-        { q: "The full primer-style training stack:", options: ["DPO on static pairs, then deploy directly", "MCTS at inference with no training at all", "SFT → curriculum → PPO/GRPO with decomposed rewards + KL → per-axis diagnostics", "pure RL from random init with dense rewards"], a: 2, why: "The complete recipe this world taught." },
+        { q: "Design a reward for a 40-step insurance-form agent:", options: ["one terminal success-only reward, kept maximally clean", "milestones + final bonus − step costs − error penalties", "a uniform +1 every step to encourage steady progress", "judge-only scoring of the final screenshot"], a: 1, why: "Long horizon → densify with verifiable checkpoints; asymmetric costs price reality." },
+        { q: "The full primer-style training stack:", options: ["DPO on static pairs, then deploy directly", "MCTS at inference with no training at all", "SFT → curriculum → PPO/GRPO + decomposed rewards", "pure RL from random initialization with dense shaped rewards"], a: 2, why: "The complete recipe this world taught." },
         { q: "One principle unifies warm-starts, reward decomposition, curricula, AND dashboards:", options: ["minimize total GPU expenditure", "make credit assignment legible everywhere", "maximize the policy's entropy floor", "prefer rules over learned judges"], a: 1, why: "Every design choice localizes which skill produced which outcome." },
-        { q: "MCTS + world models + HRL all attack the same enemy:", options: ["long-horizon credit assignment and foresight", "tokenizer fragmentation at scale", "reward model parameter count", "inter-agent message bandwidth"], a: 0, why: "Search simulates ahead, world models imagine, hierarchy shortens credit chains." },
+        { q: "MCTS + world models + HRL all attack the same enemy:", options: ["long-horizon credit assignment and foresight", "tokenizer vocabulary fragmentation at scale", "the reward model's total parameter count", "inter-agent message-passing bandwidth limits"], a: 0, why: "Search simulates ahead, world models imagine, hierarchy shortens credit chains." },
       ] },
   },
 ];
@@ -640,14 +648,14 @@ x_prev = ddim_step(x_t, eps, t)       # 50 steps, not 1000`,
       { id: "clip", name: "Contrastive Pretraining", sprite: "🧲",
         lore: "CLIP trains an image encoder and text encoder jointly on (image, caption) pairs with a contrastive loss: in a batch of N pairs, maximize cosine similarity of the N matched pairs while minimizing the N²−N mismatched ones (symmetric InfoNCE). Result: a shared embedding space where 'photo of a dog' lands near dog images — enabling zero-shot classification by comparing an image against text prompts for each class.",
         questions: [
-          { q: "CLIP's training signal comes from…", options: ["pixel-level reconstruction loss", "matching vs mismatching image-text pairs", "human preference rankings", "next-token prediction on captions"], a: 1, why: "Symmetric contrastive loss over the batch's similarity matrix." },
-          { q: "Zero-shot classification with CLIP works by…", options: ["fine-tuning a linear head per task", "comparing image embeddings to class-prompt text embeddings", "generating a caption and parsing it", "clustering the image embeddings"], a: 1, why: "The shared space makes 'nearest text prompt' a classifier." },
+          { q: "CLIP's training signal comes from…", options: ["a pixel-level image reconstruction loss", "matching vs mismatching image-text pairs", "ranked human preference comparisons", "next-token prediction on captions"], a: 1, why: "Symmetric contrastive loss over the batch's similarity matrix." },
+          { q: "Zero-shot classification with CLIP works by…", options: ["fine-tuning a linear head per task", "comparing the image embedding to class prompts", "generating a caption and parsing the class out", "unsupervised clustering of image embeddings"], a: 1, why: "The shared space makes 'nearest text prompt' a classifier." },
         ] },
       { id: "llava", name: "The Projector Pattern", sprite: "🌉",
         lore: "The LLaVA recipe: freeze a strong vision encoder, freeze (initially) a strong LLM, and train only a small projector — an MLP mapping ViT patch features to LLM embedding dimensions. Image patches become a sequence of soft tokens prepended to the text. Stage 1 trains the projector on captions (alignment); stage 2 fine-tunes projector + LLM on visual instruction data. Cheap, modular, and the dominant open-VLM pattern.",
         questions: [
           { q: "In stage 1, LLaVA trains…", options: ["the vision encoder from scratch", "only the projector MLP", "the full LLM end-to-end", "a contrastive text encoder"], a: 1, why: "Alignment first: teach the bridge, keep both towers frozen." },
-          { q: "Images enter the LLM as…", options: ["a sequence of soft tokens in embedding space", "base64 strings in the prompt text", "a single pooled CLS vector", "discrete codebook indices only"], a: 0, why: "Patch features, projected to embedding dim, attended like words." },
+          { q: "Images enter the LLM as…", options: ["a sequence of soft tokens in embedding space", "base64-encoded strings inside the prompt text", "one single pooled CLS summary vector", "discrete codebook indices only"], a: 0, why: "Patch features, projected to embedding dim, attended like words." },
         ] },
       { id: "patches", name: "Resolution & Tokens", sprite: "🧩",
         lore: "A ViT splits images into patches (e.g., 14×14 px), each becoming one token: a 336² image → 576 tokens. Higher resolution = quadratically more tokens = quadratic attention cost, so VLMs use tricks: tiling (split high-res images into crops processed separately, e.g., LLaVA-NeXT 'AnyRes'), token pooling/merging, or resamplers (Perceiver-style cross-attention to a fixed token budget). Document and medical imagery especially need high resolution — fine text and subtle findings vanish at 224².",
@@ -662,13 +670,13 @@ x_prev = ddim_step(x_t, eps, t)       # 50 steps, not 1000`,
         questions: [
           { q: "SCENARIO: Building a chest-X-ray VLM for a clinical sim. CLIP-336 misses small nodules entirely. First architectural lever?", options: ["a bigger LLM behind the projector", "higher input resolution via tiling/AnyRes", "more instruction-tuning epochs", "a second contrastive text encoder"], a: 1, why: "Subtle findings die at low res — resolution strategy before model scale." },
           { q: "SCENARIO: Budget allows training ~20M parameters total on 100k caption pairs. The LLaVA-style move:", options: ["LoRA the vision encoder only", "train the projector, freeze both towers", "train the LLM's embedding layer", "distill CLIP into a smaller ViT"], a: 1, why: "The projector IS the cheap alignment stage — exactly this budget." },
-          { q: "SCENARIO: Your VLM hallucinates objects not in the image. A grounded mitigation at the data level:", options: ["raise the sampling temperature", "negative/contrastive instruction data ('is there a X? no')", "remove all text-only data", "shrink the patch size further"], a: 1, why: "Teaching 'no' explicitly counters the LM prior's tendency to confabulate objects." },
+          { q: "SCENARIO: Your VLM hallucinates objects not in the image. A grounded mitigation at the data level:", options: ["raise the sampling temperature", "negative/contrastive instruction data", "remove all text-only data", "shrink the patch size further"], a: 1, why: "Teaching 'no' explicitly counters the LM prior's tendency to confabulate objects." },
         ] },
     ],
     gym: { leader: "Oracle CLIP", badge: "Vision Badge", sprite: "🏛️", taunt: "See clearly, answer precisely!",
       questions: [
         { q: "The three-part modern VLM:", options: ["encoder, projector, LLM", "tokenizer, decoder, sampler", "GAN, VAE, diffusion head", "retriever, ranker, reader"], a: 0, why: "Vision tower → bridge → language tower." },
-        { q: "Why is contrastive pretraining a good vision-tower base for VLMs?", options: ["its features already align with language semantics", "it produces the smallest models", "it requires no image data", "it outputs discrete tokens natively"], a: 0, why: "CLIP's space was forged against text — the projector's job is short." },
+        { q: "Why is contrastive pretraining a good vision-tower base for VLMs?", options: ["its features already align with language semantics", "it consistently produces the smallest models", "it requires no labeled image data at all", "it outputs discrete tokens natively"], a: 0, why: "CLIP's space was forged against text — the projector's job is short." },
         { q: "576 tokens for one 336² image implies what cost concern?", options: ["attention cost grows with image tokens", "the vocabulary must expand", "gradients vanish past 500 tokens", "the KV cache becomes unnecessary"], a: 0, why: "Image tokens crowd the context — hence pooling, tiling, resamplers." },
       ] },
   }],
@@ -686,20 +694,20 @@ x_prev = ddim_step(x_t, eps, t)       # 50 steps, not 1000`,
       { id: "routing", name: "Sparse Routing", sprite: "🚦",
         lore: "The router is a small linear layer producing logits over experts; top-k are selected, their outputs combined weighted by softmax gate values. Sparsity means each token's FLOPs touch only k experts — a 671B-total model can run ~37B active (DeepSeek-V3 pattern). Routing is per-token, per-layer: the same token can visit different experts at different depths. Discrete top-k breaks differentiability; gradients flow through the gate weights of selected experts.",
         questions: [
-          { q: "'Active parameters' means…", options: ["parameters updated during training", "parameters touched per token at inference", "the router's parameter count", "parameters stored in fp32"], a: 1, why: "Total capacity is huge; per-token compute touches only k experts." },
+          { q: "'Active parameters' means…", options: ["parameters updated during training", "parameters touched per token at inference", "the routing network's own parameter count", "the subset of parameters stored in fp32"], a: 1, why: "Total capacity is huge; per-token compute touches only k experts." },
           { q: "Routing decisions are made…", options: ["once per sequence, globally", "per token, per MoE layer", "once at model load time", "per attention head"], a: 1, why: "Each token at each MoE layer gets its own top-k expert set." },
         ] },
       { id: "balance", name: "Load Balancing", sprite: "⚖️",
         lore: "Routers naturally collapse: a few experts win early, get more gradient, win more — leaving dead experts and hot ones that bottleneck parallel hardware. Fixes: auxiliary load-balancing losses pushing uniform expert utilization, expert capacity limits with token dropping, and auxiliary-loss-free bias tweaks (DeepSeek-V3 adjusts per-expert bias terms online). A shared expert (always active) absorbs common patterns so routed experts can specialize.",
         questions: [
           { q: "Router collapse means…", options: ["the router's weights become NaN", "a few experts dominate while others die", "all experts produce identical outputs", "tokens skip the MoE layer entirely"], a: 1, why: "Rich-get-richer dynamics in routing — the classic MoE pathology." },
-          { q: "The shared expert's purpose:", options: ["absorbing common patterns so others specialize", "serving as a fallback when routing fails", "reducing the total parameter count", "balancing gradients across GPUs"], a: 0, why: "Commonality goes to the always-on expert; routed ones get the long tail." },
+          { q: "The shared expert's purpose:", options: ["absorbing common patterns so others specialize", "serving as a fallback when routing fails", "reducing the model's total parameter count", "balancing gradients across GPUs"], a: 0, why: "Commonality goes to the always-on expert; routed ones get the long tail." },
         ] },
       { id: "moeinfra", name: "MoE at Inference", sprite: "🏗️",
         lore: "MoE's catch: ALL experts must live in memory even though few fire per token — memory scales with total parameters, FLOPs with active. Multi-GPU serving uses expert parallelism: experts sharded across devices, tokens routed over the interconnect (all-to-all communication, a real cost). Batch effects matter: a large batch touches most experts anyway, so MoE shines at large-batch serving and hurts at batch-1 local inference where you pay memory for unused capacity.",
         questions: [
           { q: "MoE memory footprint scales with ___ while FLOPs scale with ___:", options: ["active / total parameters", "total / active parameters", "expert count / router size", "batch size / sequence length"], a: 1, why: "Everything must be resident; only the routed slice computes." },
-          { q: "Expert parallelism's characteristic cost:", options: ["all-to-all token routing over the interconnect", "duplicated experts on every device", "router recomputation per device", "synchronous gradient averaging"], a: 0, why: "Tokens travel to wherever their experts live — communication is the tax." },
+          { q: "Expert parallelism's characteristic cost:", options: ["all-to-all token routing over the interconnect", "fully duplicated experts on every device", "redundant router recomputation per device", "synchronous gradient averaging each step"], a: 0, why: "Tokens travel to wherever their experts live — communication is the tax." },
         ] },
     ],
     sides: [
@@ -707,15 +715,15 @@ x_prev = ddim_step(x_t, eps, t)       # 50 steps, not 1000`,
         desc: "Haggles over deployment trade-offs.",
         questions: [
           { q: "SCENARIO: Choosing between a 30B dense and a 100B-total/12B-active MoE for a single 24GB consumer GPU. The MoE problem:", options: ["routing latency dominates decoding", "100B must fit in memory despite 12B active", "MoEs cannot be quantized at all", "the dense model has more capacity"], a: 1, why: "Memory pays for total parameters — batch-1 local inference is MoE's worst case." },
-          { q: "SCENARIO: Mid-training, 80% of tokens route to 3 of 64 experts. Standard remedies?", options: ["balance losses / bias tweaks, capacity limits", "delete the 61 unpopular experts", "freeze the router permanently", "raise the learning rate 10×"], a: 0, why: "Push utilization uniform before the dead experts waste all that capacity." },
-          { q: "SCENARIO: Your serving fleet runs huge batches. Why does MoE economics improve?", options: ["the router amortizes to zero cost", "large batches touch most experts anyway, so memory earns its keep", "all-to-all traffic disappears", "experts merge automatically at scale"], a: 1, why: "Utilization rises with batch size — capacity stops being dead weight." },
+          { q: "SCENARIO: Mid-training, 80% of tokens route to 3 of 64 experts. Standard remedies?", options: ["balance losses / bias tweaks, capacity limits", "delete the 61 unpopular experts outright", "freeze the routing layer permanently", "raise the global learning rate by 10×"], a: 0, why: "Push utilization uniform before the dead experts waste all that capacity." },
+          { q: "SCENARIO: Your serving fleet runs huge batches. Why does MoE economics improve?", options: ["the router amortizes to zero cost", "large batches touch most experts anyway", "all-to-all traffic disappears", "experts merge automatically at scale"], a: 1, why: "Utilization rises with batch size — capacity stops being dead weight." },
         ] },
     ],
     gym: { leader: "Broker Router", badge: "Expert Badge", sprite: "🏛️", taunt: "Route wisely!",
       questions: [
-        { q: "MoE's fundamental trade:", options: ["capacity up, per-token compute roughly flat", "compute up, capacity flat", "memory down, FLOPs up", "latency down, quality down"], a: 0, why: "More parameters to specialize, same active FLOPs per token." },
-        { q: "Fine-grained experts (many small, higher k) vs few large ones — the argued benefit:", options: ["more flexible combinations of specializations", "lower total memory usage", "no need for load balancing", "simpler all-to-all communication"], a: 0, why: "The DeepSeek lineage: many small experts compose more expressively." },
-        { q: "Why does top-k routing complicate gradients?", options: ["selection is discrete and non-differentiable", "softmax cannot handle k > 1", "experts share no parameters", "the router has no loss term"], a: 0, why: "Hard selection blocks gradient flow; gating weights carry what signal there is." },
+        { q: "MoE's fundamental trade:", options: ["capacity up, per-token compute roughly flat", "compute rises while capacity stays flat", "memory drops while per-token FLOPs rise", "latency falls while output quality falls"], a: 0, why: "More parameters to specialize, same active FLOPs per token." },
+        { q: "Fine-grained experts (many small, higher k) vs few large ones — the argued benefit:", options: ["more flexible combinations of specializations", "substantially lower total memory usage", "eliminating the need for load balancing", "much simpler all-to-all communication"], a: 0, why: "The DeepSeek lineage: many small experts compose more expressively." },
+        { q: "Why does top-k routing complicate gradients?", options: ["selection is discrete and non-differentiable", "the softmax cannot represent k > 1 choices", "the experts share no trainable parameters", "the router contributes no loss term itself"], a: 0, why: "Hard selection blocks gradient flow; gating weights carry what signal there is." },
       ] },
   }],
 },
@@ -733,7 +741,7 @@ x_prev = ddim_step(x_t, eps, t)       # 50 steps, not 1000`,
         lore: "CHAINING: fixed sequence, each step's output feeding the next — for decomposable tasks with stable structure. ROUTING: a classifier sends inputs down specialized paths — when input types differ. PARALLELIZATION: sectioning (independent subtasks at once) or voting (same task, multiple samples, aggregate). ORCHESTRATOR-WORKERS: a lead agent dynamically decomposes, delegates to workers, synthesizes — for unpredictable subtask structure. EVALUATOR-OPTIMIZER: generator loops against a critic until quality passes.",
         questions: [
           { q: "Subtasks unknown until runtime → which pattern?", options: ["fixed chaining", "orchestrator-workers", "simple routing", "voting parallelization"], a: 1, why: "Dynamic decomposition is exactly what the orchestrator provides." },
-          { q: "Evaluator-optimizer fits best when…", options: ["clear evaluation criteria exist and iteration helps", "the task is one deterministic transformation", "latency must be absolutely minimal", "no model can judge the output"], a: 0, why: "A loop needs a meaningful stop condition: the critic's pass." },
+          { q: "Evaluator-optimizer fits best when…", options: ["clear evaluation criteria exist and iteration helps", "the task is one deterministic transformation", "latency must be absolutely minimal", "no available model can judge the output"], a: 0, why: "A loop needs a meaningful stop condition: the critic's pass." },
         ] },
       { id: "comms", name: "Handoffs & State", sprite: "📨",
         lore: "Inter-agent communication is the failure surface. Every handoff is a serialization: full-context transfer (expensive, faithful) vs summaries (cheap, lossy) vs structured artifacts (schemas, files — inspectable middle ground). Shared state (a blackboard/workspace all agents read-write) trades coupling for fidelity. Design questions: what does each agent SEE, what can it WRITE, and who arbitrates conflicts? Untracked state mutation by parallel agents is the classic heisenbug source.",
@@ -744,24 +752,24 @@ x_prev = ddim_step(x_t, eps, t)       # 50 steps, not 1000`,
       { id: "governance", name: "Governance & Cost", sprite: "🏛️",
         lore: "Agent systems multiply cost (~4× tokens for single agents, ~15× for multi-agent vs chat, per Anthropic's measurements) and multiply failure modes: error cascades (one bad subtask poisons synthesis), infinite delegation loops, and unobservable decisions. Governance: budgets per task (token/step/time caps), tracing every decision with structured logs, gates on irreversible actions, and evals on the SYSTEM level, not just per-agent — the orchestra can fail while every instrument plays correctly.",
         questions: [
-          { q: "System-level evals matter beyond per-agent evals because…", options: ["coordination failures emerge between correct agents", "individual agents cannot be tested", "system evals are cheaper to run", "per-agent metrics are always wrong"], a: 0, why: "Every instrument in tune; the symphony still wrong — emergent failure." },
-          { q: "The first defense against runaway delegation loops:", options: ["hard budgets: step, token, and time caps", "more capable worker agents", "removing the orchestrator entirely", "lowering sampling temperature"], a: 0, why: "Caps convert infinite loops into bounded, diagnosable failures." },
+          { q: "System-level evals matter beyond per-agent evals because…", options: ["coordination failures emerge between correct agents", "individual agents cannot be tested in isolation", "system-level evals are cheaper to run at scale", "per-agent metrics are always wrong"], a: 0, why: "Every instrument in tune; the symphony still wrong — emergent failure." },
+          { q: "The first defense against runaway delegation loops:", options: ["hard budgets", "more capable worker agents", "removing the orchestrator entirely", "lowering sampling temperature"], a: 0, why: "Caps convert infinite loops into bounded, diagnosable failures." },
         ] },
     ],
     sides: [
       { id: "orch-s1", name: "Cascade Wraith", sprite: "🌊", anchor: 1, recLevel: 4, prereqs: ["patterns", "comms", "governance"],
         desc: "Feeds on error cascades in agent pipelines. It has seen your architecture diagrams.",
         questions: [
-          { q: "SCENARIO: A clinical-sim platform runs patient-twin, nurse-twin, and scenario-director agents. The director's summaries to twins keep dropping vital constraints. Best structural fix?", options: ["a louder system prompt for the director", "structured artifacts: constraints as schema'd state all agents read", "have twins re-derive constraints themselves", "merge everything into one mega-prompt"], a: 1, why: "Lossy summaries → move invariants into shared, schema'd state instead of prose handoffs." },
+          { q: "SCENARIO: A clinical-sim platform runs patient-twin, nurse-twin, and scenario-director agents. The director's summaries to twins keep dropping vital constraints. Best structural fix?", options: ["a louder system prompt for the director", "structured artifacts", "have twins re-derive constraints themselves", "merge everything into one mega-prompt"], a: 1, why: "Lossy summaries → move invariants into shared, schema'd state instead of prose handoffs." },
           { q: "SCENARIO: Tickets are one of: billing, technical, refund. Each has a stable resolution flow. Simplest correct shape?", options: ["orchestrator-workers with dynamic planning", "routing into three specialized chains", "evaluator-optimizer on every reply", "a single agent with all instructions"], a: 1, why: "Known categories + stable flows = routing. Don't pay orchestrator complexity." },
-          { q: "SCENARIO: Your 5-agent system's cost is 15× chat and one task looped for 2 hours overnight. Triage order:", options: ["budgets/caps first, then tracing, then architecture review", "rewrite all prompts immediately", "add a sixth supervisor agent", "switch every agent to a larger model"], a: 0, why: "Stop the bleeding (caps), see the system (traces), then redesign with evidence." },
+          { q: "SCENARIO: Your 5-agent system's cost is 15× chat and one task looped for 2 hours overnight. Triage order:", options: ["budgets/caps first, then tracing, then architecture review", "rewrite every agent's prompts immediately", "add a sixth dedicated supervisor agent", "switch every agent to a larger model"], a: 0, why: "Stop the bleeding (caps), see the system (traces), then redesign with evidence." },
         ] },
     ],
     gym: { leader: "Maestro Topology", badge: "Orchestration Badge", sprite: "🏛️", taunt: "Conduct, don't just multiply agents!",
       questions: [
-        { q: "Workflow vs agent — the dividing line:", options: ["who decides the next step: code or the model", "the number of LLM calls made", "whether tools are involved", "the size of the model used"], a: 0, why: "Fixed control flow = workflow; model-directed control flow = agent." },
-        { q: "Voting-style parallelization buys…", options: ["reliability through sample diversity", "lower total token cost", "guaranteed determinism", "elimination of handoff loss"], a: 0, why: "Multiple attempts + aggregation hedge against per-sample flakiness." },
-        { q: "The RL-world principle that transfers directly to orchestration:", options: ["start simple; escalate architecture only with a named, evidenced reason", "always maximize the number of components", "rewards must be symmetric", "exploration is unnecessary in production"], a: 0, why: "Single-agent-first is the same law as simplest-pattern-first." },
+        { q: "Workflow vs agent — the dividing line:", options: ["who decides the next step", "the number of LLM calls made", "whether tools are involved", "the size of the model used"], a: 0, why: "Fixed control flow = workflow; model-directed control flow = agent." },
+        { q: "Voting-style parallelization buys…", options: ["reliability through sample diversity", "a lower total token cost per task", "fully guaranteed deterministic outputs", "complete elimination of handoff loss"], a: 0, why: "Multiple attempts + aggregation hedge against per-sample flakiness." },
+        { q: "The RL-world principle that transfers directly to orchestration:", options: ["start simple; escalate only with evidence", "always maximize the number of components", "reward magnitudes must always stay symmetric", "exploration is unnecessary in production"], a: 0, why: "Single-agent-first is the same law as simplest-pattern-first." },
       ] },
   }],
 },
@@ -779,20 +787,20 @@ x_prev = ddim_step(x_t, eps, t)       # 50 steps, not 1000`,
       { id: "sinusoidal", name: "Sinusoidal PE", sprite: "〰️",
         lore: "The original transformer adds fixed sinusoidal vectors: PE(pos, 2i) = sin(pos/10000^(2i/d)), PE(pos, 2i+1) = cos(…). Each dimension oscillates at a different frequency — low dims wiggle fast (fine position), high dims slowly (coarse position) — like binary counting in continuous form. Properties: no learned parameters, unique encoding per position, and relative offsets are expressible as linear transforms of the encodings. Limit: it's ABSOLUTE position added to content, entangling the two.",
         questions: [
-          { q: "Why multiple frequencies across dimensions?", options: ["fine and coarse position at different scales", "to randomize the initialization", "to keep the norm exactly one", "frequencies are an implementation accident"], a: 0, why: "A multi-scale ruler: fast dims resolve neighbors, slow dims resolve regions." },
-          { q: "Sinusoidal PE's structural limitation:", options: ["it encodes absolute position, entangled with content", "it requires training extra parameters", "it cannot represent position 0", "it only works for even dimensions"], a: 0, why: "Added to embeddings, position and meaning mix; attention often cares about RELATIVE offsets." },
+          { q: "Why multiple frequencies across dimensions?", options: ["fine and coarse position at different scales", "to randomize the embedding initialization", "to keep every vector's norm exactly one", "frequencies are an implementation accident"], a: 0, why: "A multi-scale ruler: fast dims resolve neighbors, slow dims resolve regions." },
+          { q: "Sinusoidal PE's structural limitation:", options: ["it encodes absolute position, entangled with content", "it requires training extra position parameters", "it cannot represent the zeroth position", "it only functions for even model dimensions"], a: 0, why: "Added to embeddings, position and meaning mix; attention often cares about RELATIVE offsets." },
         ] },
       { id: "rope", name: "RoPE", sprite: "🌀",
         lore: "Rotary Position Embedding rotates each query/key 2D-pair by an angle proportional to its position: q at position m becomes R(mθᵢ)q per frequency θᵢ. The magic: the dot product q_m·k_n then depends only on (m−n) — relative position emerges from absolute rotations, with zero added parameters and no vectors added to the residual stream. Long-context extension: positions beyond training length extrapolate poorly, so methods rescale θ — NTK-aware scaling, YaRN — stretching the rotation frequencies to cover longer sequences.",
         questions: [
           { q: "RoPE's central property: q_m·k_n depends on…", options: ["only the relative offset m−n", "the absolute positions separately", "the token embeddings' norms", "the layer index"], a: 0, why: "Rotation angles subtract inside the dot product — relativity for free." },
-          { q: "NTK/YaRN-style scaling addresses…", options: ["extrapolation past the trained context length", "the memory cost of rotations", "gradient explosion in deep layers", "tokenizer vocabulary growth"], a: 0, why: "Stretch the frequency spectrum so longer positions stay in-distribution." },
+          { q: "NTK/YaRN-style scaling addresses…", options: ["extrapolation past the trained context length", "the runtime memory cost of the rotations", "gradient explosion in the deepest layers", "growth of the size of the tokenizer's vocabulary size"], a: 0, why: "Stretch the frequency spectrum so longer positions stay in-distribution." },
         ] },
       { id: "semantic", name: "Semantic Embeddings", sprite: "💠",
         lore: "Separate concern: representation embeddings for retrieval/similarity. Trained contrastively (like CLIP's text tower, or sentence-transformers): pull paired texts together, push negatives apart — hard negatives matter enormously. Pooling turns token vectors into one (CLS, mean, or last-token for decoder models). Practical knobs: cosine similarity as metric, dimension truncation via Matryoshka training (a 1024-d model whose first 256 dims still work), and the asymmetry of query vs document prompts.",
         questions: [
-          { q: "Hard negatives in contrastive training are…", options: ["similar-but-wrong pairs that sharpen boundaries", "examples with corrupted labels", "the largest gradient batches", "tokens outside the vocabulary"], a: 0, why: "Easy negatives teach nothing; near-misses define the decision surface." },
-          { q: "Matryoshka embeddings allow…", options: ["truncating dimensions with graceful degradation", "infinitely long input sequences", "training without any negatives", "lossless compression of the corpus"], a: 0, why: "Information ordered by prefix importance — cut to 256-d and keep most quality." },
+          { q: "Hard negatives in contrastive training are…", options: ["similar-but-wrong pairs that sharpen boundaries", "training examples with corrupted labels", "the batches with the largest gradients", "tokens falling outside the vocabulary"], a: 0, why: "Easy negatives teach nothing; near-misses define the decision surface." },
+          { q: "Matryoshka embeddings allow…", options: ["truncating dimensions with graceful degradation", "encoding infinitely long input sequences", "contrastive training without any negatives", "fully lossless compression of the corpus"], a: 0, why: "Information ordered by prefix importance — cut to 256-d and keep most quality." },
         ] },
     ],
     sides: [
@@ -810,16 +818,16 @@ def rope(x, pos):                  # x: [seq, dim]
     ).flatten(-2)   # rotate each 2D pair`,
         codeNote: "Apply to q and k (never v). The dot product then sees only m−n.",
         questions: [
-          { q: "SCENARIO: Model trained at 8k context degrades sharply at 32k. Looking at the code, the fix targets…", options: ["theta — rescale frequencies (NTK/YaRN style)", "the .flatten(-2) reshape order", "applying rope to v as well", "removing cos and keeping only sin"], a: 0, why: "Out-of-range angles are the problem; stretch the spectrum." },
-          { q: "SCENARIO: A bug applies RoPE to values too. The observable symptom:", options: ["degraded outputs — v carries content that's now position-warped", "no change — v rotation cancels out", "a shape mismatch crash", "doubled attention scores"], a: 0, why: "Values are the payload; rotating them corrupts content with position." },
-          { q: "RETENTION: Why does relative beat absolute position for language?", options: ["'the adjective before this noun' matters; 'token #847' doesn't", "absolute encodings overflow integers", "relative encodings are smaller tensors", "absolute position breaks the causal mask"], a: 0, why: "Linguistic structure is built from offsets, not coordinates." },
+          { q: "SCENARIO: Model trained at 8k context degrades sharply at 32k. Looking at the code, the fix targets…", options: ["theta — rescale frequencies", "the .flatten(-2) reshape order", "applying rope to v as well", "removing cos and keeping only sin"], a: 0, why: "Out-of-range angles are the problem; stretch the spectrum." },
+          { q: "SCENARIO: A bug applies RoPE to values too. The observable symptom:", options: ["degraded outputs", "no change — v rotation cancels out", "a shape mismatch crash", "doubled attention scores"], a: 0, why: "Values are the payload; rotating them corrupts content with position." },
+          { q: "RETENTION: Why does relative beat absolute position for language?", options: ["'the adjective before this noun' is what matters", "absolute encodings overflow integer ranges", "relative encodings are smaller tensors", "absolute position breaks the causal mask"], a: 0, why: "Linguistic structure is built from offsets, not coordinates." },
         ] },
     ],
     gym: { leader: "Librarian Theta", badge: "Position Badge", sprite: "🏛️", taunt: "Locate yourself!",
       questions: [
         { q: "Without positional information, self-attention treats input as…", options: ["a bag of tokens — order-invariant", "a strictly ordered sequence", "a tree of dependencies", "a single pooled vector"], a: 0, why: "Permutation invariance is attention's default; position must be injected." },
         { q: "RoPE adds how many learned parameters?", options: ["zero", "one per attention head", "d per layer", "a full position embedding table"], a: 0, why: "Pure deterministic rotation — that's part of its elegance." },
-        { q: "Retrieval embeddings vs LLM token embeddings differ chiefly in…", options: ["training objective: contrastive vs next-token", "numerical precision used", "whether positions are encoded", "vocabulary size"], a: 0, why: "Same idea (vectors for meaning), different forces shaping the space." },
+        { q: "Retrieval embeddings vs LLM token embeddings differ chiefly in…", options: ["training objective", "numerical precision used", "whether positions are encoded", "vocabulary size"], a: 0, why: "Same idea (vectors for meaning), different forces shaping the space." },
       ] },
   }],
 },
@@ -844,13 +852,13 @@ def rope(x, pos):                  # x: [seq, dim]
         lore: "Sliding-window attention restricts each token to attend only the last W tokens — cache and compute become O(W) instead of O(seq). Information still propagates beyond W through depth: layer L sees an effective receptive field of ~L×W. Modern designs interleave: Gemma-style patterns run several sliding-window layers per full-attention layer (e.g., 4:1 ratio), keeping a few global layers for long-range retrieval while most layers stay cheap. Cousin ideas: attention sinks (always-attended first tokens) stabilize long streaming contexts.",
         questions: [
           { q: "With window W and depth L, information can propagate roughly…", options: ["L×W tokens through stacked layers", "exactly W tokens, hard limit", "only within one layer", "the full sequence at every layer"], a: 0, why: "Each layer extends reach by W — depth buys range." },
-          { q: "Why interleave full-attention layers among sliding ones?", options: ["a few global layers preserve long-range retrieval", "full layers are cheaper than windowed", "windowed layers cannot be trained", "the cache requires at least one"], a: 0, why: "Most layers local and cheap; occasional global layers keep needle-in-haystack ability." },
+          { q: "Why interleave full-attention layers among sliding ones?", options: ["a few global layers preserve long-range retrieval", "full layers are cheaper to run than windowed", "windowed layers cannot be trained stably", "the KV cache requires at least one of them"], a: 0, why: "Most layers local and cheap; occasional global layers keep needle-in-haystack ability." },
         ] },
       { id: "mla", name: "MLA & Compression", sprite: "🗜️",
         lore: "Multi-head Latent Attention (DeepSeek) compresses K and V into a small shared latent vector cached instead of full heads; at attention time the latent is up-projected. Cache shrinks dramatically while, per DeepSeek's ablations, quality can exceed GQA. The 2025-26 frontier pushes further: cross-layer KV sharing (Gemma 4 — later layers reuse earlier layers' KV tensors, halving the cache), per-layer attention budgets, and compressed/convolutional attention variants — all chasing long-context memory for reasoning and agent workloads.",
         questions: [
-          { q: "MLA caches…", options: ["a compressed latent, up-projected at use", "every head's full K and V", "only the values, never keys", "attention scores directly"], a: 0, why: "Store small, decompress on demand — the latent IS the cache." },
-          { q: "Cross-layer KV sharing (Gemma-4 style) means…", options: ["later layers reuse earlier layers' K/V tensors", "all layers share one query projection", "KV tensors are shared across batch items", "the cache moves to CPU memory"], a: 0, why: "Layers keep their own queries but borrow KV — roughly halving cache." },
+          { q: "MLA caches…", options: ["a compressed latent, up-projected at use", "every attention head's full K and V", "only the value tensors, never the keys", "the raw attention score matrix directly"], a: 0, why: "Store small, decompress on demand — the latent IS the cache." },
+          { q: "Cross-layer KV sharing (Gemma-4 style) means…", options: ["later layers reuse earlier layers' K/V tensors", "all layers sharing one query projection", "KV tensors are shared across batch items", "the whole cache moving to CPU memory"], a: 0, why: "Layers keep their own queries but borrow KV — roughly halving cache." },
         ] },
     ],
     sides: [
@@ -865,15 +873,15 @@ cache = (n_layers * n_kv_heads * head_dim
         codeNote: "This formula is the whole reason MQA/GQA/MLA/SWA exist. Memorize its terms.",
         questions: [
           { q: "SCENARIO: Using the formula, switching that model from 8 kv-heads to MQA (1 kv-head) gives a cache of roughly…", options: ["≈ 2.1 GB", "≈ 8.6 GB", "≈ 34 GB", "≈ 17.2 GB (unchanged)"], a: 0, why: "17.2 GB × (1/8) ≈ 2.15 GB — kv_heads is a linear factor." },
-          { q: "SCENARIO: An agent workload keeps 200k-token traces and your retrieval quality on far-back tool outputs matters. Pure sliding-window everywhere risks…", options: ["losing direct access to distant context in most layers", "quadratic memory growth", "router collapse", "broken causal masking"], a: 0, why: "Local windows trade away global lookback — hence interleaved full layers." },
-          { q: "RETENTION: Why is KV-cache pressure WORSE in the reasoning/agent era specifically?", options: ["long chains-of-thought and tool traces keep far more tokens resident", "models stopped using attention", "GPUs lost memory capacity", "tokenizers became less efficient"], a: 0, why: "Reasoning + agents = long-lived contexts; cache cost dominates serving." },
+          { q: "SCENARIO: An agent workload keeps 200k-token traces and your retrieval quality on far-back tool outputs matters. Pure sliding-window everywhere risks…", options: ["losing direct access to distant context in most layers", "quadratic memory growth with sequence length", "router collapse in the expert layers", "breaking the causal attention masking"], a: 0, why: "Local windows trade away global lookback — hence interleaved full layers." },
+          { q: "RETENTION: Why is KV-cache pressure WORSE in the reasoning/agent era specifically?", options: ["reasoning chains and tool traces keep more tokens live", "newer models largely stopped using attention", "recent GPUs shipped with less memory capacity", "modern tokenizers became far less efficient"], a: 0, why: "Reasoning + agents = long-lived contexts; cache cost dominates serving." },
         ] },
     ],
     gym: { leader: "Judge QKV", badge: "Attention Badge", sprite: "🏛️", taunt: "Order in the court of heads!",
       questions: [
         { q: "Rank by KV-cache size, smallest first (same dims):", options: ["MQA < GQA < MHA", "MHA < GQA < MQA", "GQA < MQA < MHA", "all identical"], a: 0, why: "1 head < grouped heads < all heads." },
-        { q: "MLA differs from GQA fundamentally by…", options: ["compressing the cache rather than reducing head count", "removing queries entirely", "using convolution instead of attention", "caching attention probabilities"], a: 0, why: "GQA shares heads; MLA stores a learned low-rank latent." },
-        { q: "The unifying motive across MQA, GQA, SWA, MLA, and cross-layer sharing:", options: ["shrink KV-cache memory for long contexts", "increase parameter counts", "improve tokenizer throughput", "eliminate positional encodings"], a: 0, why: "Judge QKV's opening statement: memory is the battlefield." },
+        { q: "MLA differs from GQA fundamentally by…", options: ["compressing the cache rather than reducing head count", "removing the query projections entirely", "using convolution instead of attention", "caching the attention probability matrices"], a: 0, why: "GQA shares heads; MLA stores a learned low-rank latent." },
+        { q: "The unifying motive across MQA, GQA, SWA, MLA, and cross-layer sharing:", options: ["shrink KV-cache memory for long contexts", "increase total trainable parameter counts", "improve raw tokenizer encoding throughput", "eliminate positional encodings altogether"], a: 0, why: "Judge QKV's opening statement: memory is the battlefield." },
       ] },
   }],
 },
@@ -890,36 +898,36 @@ cache = (n_layers * n_kv_heads * head_dim
       { id: "kvcache", name: "KV Cache", sprite: "📦",
         lore: "Without caching, generating token N recomputes attention over all N−1 prior tokens' K/V from scratch — O(N²) per token, O(N³) per sequence. The KV cache stores each token's keys/values once; each new token computes only its own q/k/v and attends over the cache: O(N) per token. The price: memory that grows linearly with sequence and batch, which is why cache size (not FLOPs) usually caps concurrent users, and why attention variants attack it.",
         questions: [
-          { q: "The KV cache converts per-token generation cost from…", options: ["O(N²) recomputation to O(N) lookup+attend", "O(N) to O(1)", "memory-bound to compute-bound", "linear to logarithmic"], a: 0, why: "Compute each K/V once, reuse forever." },
+          { q: "The KV cache converts per-token generation cost from…", options: ["O(N²) recomputation to O(N) lookup+attend", "from O(N) lookups down to O(1) per token", "memory-bandwidth-bound to compute-bound", "from linear cost down to logarithmic cost"], a: 0, why: "Compute each K/V once, reuse forever." },
           { q: "In long-context serving, concurrency is usually capped by…", options: ["KV-cache memory, not FLOPs", "the tokenizer's speed", "disk I/O bandwidth", "the optimizer state size"], a: 0, why: "Decode is memory-bound; cache bytes are the scarce resource." },
         ] },
       { id: "paged", name: "PagedAttention & Batching", sprite: "📑",
         lore: "Naive serving pre-allocates max-length cache per request — most of it wasted (fragmentation). PagedAttention (vLLM) borrows OS virtual memory: cache lives in fixed-size blocks, a block table maps each sequence's logical positions to scattered physical blocks; allocation is on demand, and identical prefixes can SHARE blocks (copy-on-write) — huge for system prompts. Continuous batching evicts finished sequences and admits new ones at token granularity instead of waiting for the whole batch, keeping the GPU saturated.",
         questions: [
-          { q: "PagedAttention's core idea borrowed from operating systems:", options: ["block tables mapping logical to physical cache pages", "swapping the model weights to disk", "scheduling requests round-robin", "compressing pages with zlib"], a: 0, why: "Virtual-memory-style paging kills fragmentation and enables sharing." },
-          { q: "Continuous batching improves throughput by…", options: ["admitting/evicting requests at token granularity", "making all requests the same length", "batching only identical prompts", "skipping the prefill phase"], a: 0, why: "No GPU idle time waiting for the batch's slowest member." },
+          { q: "PagedAttention's core idea borrowed from operating systems:", options: ["block tables mapping logical to physical cache pages", "swapping cold model weights out to disk", "scheduling incoming requests round-robin", "compressing the cache pages with zlib"], a: 0, why: "Virtual-memory-style paging kills fragmentation and enables sharing." },
+          { q: "Continuous batching improves throughput by…", options: ["admitting/evicting requests at token granularity", "padding all requests to identical lengths", "batching only exactly identical prompts", "skipping the prefill phase entirely"], a: 0, why: "No GPU idle time waiting for the batch's slowest member." },
         ] },
       { id: "parallel", name: "Parallelism", sprite: "🔱",
         lore: "When a model exceeds one GPU: TENSOR PARALLELISM splits individual matrices across devices (each holds a slice of every layer; all-reduce syncs activations every layer — needs fast interconnect like NVLink). PIPELINE PARALLELISM assigns whole layer ranges to devices, micro-batching to keep stages busy (bubble overhead). EXPERT PARALLELISM shards MoE experts with all-to-all token routing. Real deployments compose them: TP within a node, PP across nodes, EP for the MoE layers — plus speculative decoding to cut decode latency.",
         questions: [
-          { q: "Tensor parallelism's defining communication cost:", options: ["all-reduce on activations every layer", "one transfer at the pipeline boundary", "no communication at all", "gradient averaging per epoch"], a: 0, why: "Sliced matrices must reassemble activations constantly — interconnect-hungry." },
-          { q: "Pipeline parallelism's characteristic inefficiency:", options: ["bubbles — stages idle awaiting upstream", "duplicated weights on all devices", "all-to-all token shuffling", "cache fragmentation"], a: 0, why: "Stage dependencies leave idle gaps; micro-batches shrink but don't erase them." },
+          { q: "Tensor parallelism's defining communication cost:", options: ["all-reduce on activations every layer", "a single transfer at each pipeline boundary", "zero inter-device communication at all", "synchronized gradient averaging per epoch"], a: 0, why: "Sliced matrices must reassemble activations constantly — interconnect-hungry." },
+          { q: "Pipeline parallelism's characteristic inefficiency:", options: ["bubbles — stages idle awaiting upstream", "fully duplicated weights on all devices", "all-to-all token shuffling every layer", "fragmentation of the KV-cache pool"], a: 0, why: "Stage dependencies leave idle gaps; micro-batches shrink but don't erase them." },
         ] },
     ],
     sides: [
       { id: "inf-s1", name: "Latency Leech", sprite: "🦠", anchor: 1, recLevel: 4, prereqs: ["kvcache", "paged", "parallel"],
         desc: "Sucks milliseconds from your p99. Diagnose its bite marks.",
         questions: [
-          { q: "SCENARIO: Your chat service has a 3k-token system prompt shared by all users. PagedAttention's gift here:", options: ["prefix blocks shared copy-on-write across requests", "the system prompt skips attention", "prompts compress to one block", "decode becomes compute-bound"], a: 0, why: "One physical copy of the shared prefix serves every request." },
-          { q: "SCENARIO: GPU utilization graphs show sawtooth idle gaps between batches; some users wait for unrelated long generations. The fix:", options: ["continuous batching at token granularity", "tensor parallelism across more GPUs", "a larger maximum batch size", "longer max sequence lengths"], a: 0, why: "Static batching's lockstep is the sawtooth; continuous batching erases it." },
+          { q: "SCENARIO: Your chat service has a 3k-token system prompt shared by all users. PagedAttention's gift here:", options: ["prefix blocks shared copy-on-write across requests", "the shared system prompt skips attention", "all prompts compress down to one block", "the decode phase becomes compute-bound"], a: 0, why: "One physical copy of the shared prefix serves every request." },
+          { q: "SCENARIO: GPU utilization graphs show sawtooth idle gaps between batches; some users wait for unrelated long generations. The fix:", options: ["continuous batching at token granularity", "tensor parallelism across more GPUs", "configuring a larger maximum batch size", "allowing longer maximum sequence lengths"], a: 0, why: "Static batching's lockstep is the sawtooth; continuous batching erases it." },
           { q: "SCENARIO: Serving a 70B dense model across 2 nodes (8 GPUs each, NVLink within, slow Ethernet between). Sensible layout:", options: ["TP within each node, PP across the nodes", "TP across all 16 GPUs uniformly", "PP within nodes, TP across them", "EP everywhere — it's dense anyway"], a: 0, why: "Match communication patterns to interconnects: chatty TP on NVLink, boundary-only PP on Ethernet." },
         ] },
     ],
     gym: { leader: "Foreman Throughput", badge: "Serving Badge", sprite: "🏛️", taunt: "Tokens per second or perish!",
       questions: [
-        { q: "Prefill vs decode bottlenecks:", options: ["compute-bound vs memory-bandwidth-bound", "both compute-bound", "memory-bound vs compute-bound", "both network-bound"], a: 0, why: "Parallel prompt math saturates FLOPs; one-token decode drowns in cache reads." },
-        { q: "Speculative decoding accelerates…", options: ["decode, by verifying cheap draft tokens in parallel", "prefill, by skipping the prompt", "training, by reusing gradients", "tokenization, by caching merges"], a: 0, why: "Draft model proposes; target model verifies several tokens per pass." },
-        { q: "This world and the Attention world meet at:", options: ["KV-cache size as the central serving constraint", "the choice of optimizer", "the tokenizer's vocabulary", "weight initialization schemes"], a: 0, why: "Architecture (GQA/MLA/SWA) and systems (paging) attack the same bytes." },
+        { q: "Prefill vs decode bottlenecks:", options: ["compute-bound vs memory-bandwidth-bound", "both phases are strictly compute-bound", "memory-bound vs compute-bound", "both phases are strictly network-bound"], a: 0, why: "Parallel prompt math saturates FLOPs; one-token decode drowns in cache reads." },
+        { q: "Speculative decoding accelerates…", options: ["decode, by verifying cheap draft tokens in parallel", "prefill, by skipping prompt processing", "training, by reusing the cached gradients", "tokenization, by caching the BPE merges"], a: 0, why: "Draft model proposes; target model verifies several tokens per pass." },
+        { q: "This world and the Attention world meet at:", options: ["KV-cache size as the central serving constraint", "the choice of training-time optimizer", "the size of the tokenizer's vocabulary", "the weight initialization scheme used"], a: 0, why: "Architecture (GQA/MLA/SWA) and systems (paging) attack the same bytes." },
       ] },
   }],
 },
@@ -943,30 +951,30 @@ cache = (n_layers * n_kv_heads * head_dim
       { id: "vae", name: "VAE", sprite: "🎲",
         lore: "The Variational Autoencoder makes the latent a distribution: the encoder outputs μ and σ; z is sampled as z = μ + σ⊙ε (the reparameterization trick — moving randomness to ε ~ N(0,I) so gradients flow through μ, σ). The loss is the ELBO: reconstruction + KL(q(z|x) ‖ N(0,I)). The KL term packs latents into a smooth standard-normal ball, so decoding a random z yields coherent samples — a true generative model. Tension: heavy KL → blurry reconstructions; light KL → broken sampling.",
         questions: [
-          { q: "The reparameterization trick exists so that…", options: ["gradients can flow through the sampling step", "the decoder sees discrete codes", "KL becomes computable in closed form", "the encoder needs fewer parameters"], a: 0, why: "z = μ + σ⊙ε makes sampling differentiable w.r.t. μ and σ." },
-          { q: "The KL term in the ELBO does what to latent space?", options: ["regularizes it toward a smooth standard normal", "expands it to higher dimensions", "discretizes it into clusters", "removes it entirely"], a: 0, why: "Smooth, centered latents make random sampling decode coherently." },
+          { q: "The reparameterization trick exists so that…", options: ["gradients can flow through the sampling step", "the decoder receives discrete latent codes", "KL becomes computable in closed form", "the encoder network needs fewer parameters"], a: 0, why: "z = μ + σ⊙ε makes sampling differentiable w.r.t. μ and σ." },
+          { q: "The KL term in the ELBO does what to latent space?", options: ["regularizes it toward a smooth standard normal", "expands it into far higher dimensions", "discretizes it into separated clusters", "removes the latent space entirely"], a: 0, why: "Smooth, centered latents make random sampling decode coherently." },
         ] },
       { id: "vqvae", name: "VQ-VAE", sprite: "🧊",
         lore: "Vector-Quantized VAE makes latents DISCRETE: encoder outputs are snapped to the nearest entry in a learned codebook; the decoder reconstructs from codebook vectors. The straight-through estimator copies gradients past the non-differentiable snap. Why discrete? Tokens! Images become grids of codebook indices that autoregressive transformers (or diffusion) can model — the foundation of modern image/audio tokenization (and the VAE inside latent diffusion is its continuous cousin). Codebook collapse (few codes used) is the classic failure, fought with commitment losses and EMA updates.",
         questions: [
-          { q: "VQ-VAE's discrete codes matter because…", options: ["they let sequence models treat images as token grids", "discrete values train faster than continuous", "they eliminate the decoder", "they require no codebook"], a: 0, why: "Quantization turns perception into a language transformers speak." },
-          { q: "The straight-through estimator handles…", options: ["gradients across the non-differentiable quantization", "codebook initialization", "decoder upsampling", "KL annealing schedules"], a: 0, why: "Forward snaps to nearest code; backward pretends it was identity." },
+          { q: "VQ-VAE's discrete codes matter because…", options: ["they let sequence models treat images as token grids", "discrete values train faster than continuous", "they eliminate the decoder network entirely", "they require no learned codebook at all"], a: 0, why: "Quantization turns perception into a language transformers speak." },
+          { q: "The straight-through estimator handles…", options: ["gradients across the non-differentiable quantization", "the codebook's initial vector assignment", "the decoder's upsampling convolutions", "the KL-term annealing schedule weights"], a: 0, why: "Forward snaps to nearest code; backward pretends it was identity." },
         ] },
     ],
     sides: [
       { id: "ae-s1", name: "Reconstruction Wraith", sprite: "🫥", anchor: 0, recLevel: 2, prereqs: ["vanilla", "vae"],
         desc: "Returns your inputs slightly wrong and grades your diagnosis.",
         questions: [
-          { q: "SCENARIO: Detecting anomalous ECG beats with no anomaly labels. The AE recipe:", options: ["train on normal beats; flag high reconstruction error", "train on anomalies; flag low error", "train a classifier with random labels", "cluster latents and discard small clusters"], a: 0, why: "Learn normal; let error expose the abnormal — label-free." },
-          { q: "SCENARIO: Your VAE samples are coherent but reconstructions look blurry and generic. The dial to examine:", options: ["KL weight — it's crushing latent information", "the learning rate warmup", "batch normalization momentum", "the codebook size"], a: 0, why: "Over-regularized latents lose instance detail — the classic VAE trade-off (β tuning)." },
+          { q: "SCENARIO: Detecting anomalous ECG beats with no anomaly labels. The AE recipe:", options: ["train on normal beats; flag high reconstruction error", "train on anomalies; flag low reconstruction error", "train a classifier with random labels", "cluster latents and discard small clusters"], a: 0, why: "Learn normal; let error expose the abnormal — label-free." },
+          { q: "SCENARIO: Your VAE samples are coherent but reconstructions look blurry and generic. The dial to examine:", options: ["KL weight", "the learning rate warmup", "batch normalization momentum", "the codebook size"], a: 0, why: "Over-regularized latents lose instance detail — the classic VAE trade-off (β tuning)." },
           { q: "RETENTION: Latent diffusion (from the Diffusion world) runs inside which component from THIS world?", options: ["a VAE's compressed latent space", "a VQ codebook's index grid", "the encoder's gradient buffer", "the anomaly score map"], a: 0, why: "Stable Diffusion = diffusion model living in a VAE latent — the worlds connect." },
         ] },
     ],
     gym: { leader: "Miner Latent", badge: "Latent Badge", sprite: "🏛️", taunt: "Compress me if you can!",
       questions: [
-        { q: "AE vs VAE vs VQ-VAE latents:", options: ["deterministic / Gaussian-distributed / discrete codes", "discrete / deterministic / Gaussian", "all three are Gaussian", "all three are discrete"], a: 0, why: "Point, distribution, codebook index — the family's axis of variation." },
+        { q: "AE vs VAE vs VQ-VAE latents:", options: ["deterministic / Gaussian-distributed / discrete codes", "discrete codes / deterministic / Gaussian", "all three are Gaussian-distributed latents", "all three are discrete codebook latents"], a: 0, why: "Point, distribution, codebook index — the family's axis of variation." },
         { q: "Which can natively GENERATE new samples from noise?", options: ["the VAE (decode z ~ N(0,I))", "the vanilla AE", "neither — only GANs generate", "only with a classifier attached"], a: 0, why: "The KL term made N(0,I) meaningful territory for the decoder." },
-        { q: "Denoising autoencoders foreshadow which later family?", options: ["diffusion models — learned iterative denoising", "mixture of experts", "contrastive embeddings", "tree search"], a: 0, why: "Corrupt-then-reconstruct, scaled to a full noise schedule, is diffusion." },
+        { q: "Denoising autoencoders foreshadow which later family?", options: ["diffusion models", "mixture of experts", "contrastive embeddings", "tree search"], a: 0, why: "Corrupt-then-reconstruct, scaled to a full noise schedule, is diffusion." },
       ] },
   }],
 },
@@ -983,20 +991,20 @@ cache = (n_layers * n_kv_heads * head_dim
       { id: "kldef", name: "The Definition", sprite: "📏",
         lore: "KL(P‖Q) = E_{x~P}[log P(x) − log Q(x)]: the expected extra code length when encoding samples from P using a code optimized for Q. Always ≥ 0, zero iff P = Q. The expectation is taken under the FIRST argument — that's the source of all asymmetry. Where P assigns mass but Q assigns ~zero, the ratio explodes: KL punishes Q's failure to cover P's support catastrophically, but ignores regions where P itself is zero.",
         questions: [
-          { q: "KL(P‖Q) explodes when…", options: ["P has mass where Q has nearly none", "Q has mass where P has none", "both distributions are uniform", "P equals Q exactly"], a: 0, why: "log(P/Q) → ∞ under P's expectation when Q fails to cover P." },
+          { q: "KL(P‖Q) explodes when…", options: ["P has mass where Q has nearly none", "Q has mass where P has nearly none", "both distributions are uniform", "P and Q are exactly equal everywhere"], a: 0, why: "log(P/Q) → ∞ under P's expectation when Q fails to cover P." },
           { q: "The expectation in KL(P‖Q) is taken under…", options: ["P, the first argument", "Q, the second argument", "the uniform distribution", "whichever has higher entropy"], a: 0, why: "Samples come from P; Q is the model being graded — hence the asymmetry." },
         ] },
       { id: "fwdkl", name: "Forward KL", sprite: "🫳",
         lore: "Forward KL = KL(data ‖ model): expectation under the DATA. The model must place mass everywhere the data does, or pay infinitely — so it becomes MEAN-SEEKING / mass-covering: faced with a multimodal target it can't fit, it spreads itself across all modes (even covering empty valleys between them). Maximum likelihood training IS forward KL minimization — which is why MLE-trained models (including LLMs under cross-entropy) over-cover: they'd rather hedge over everything plausible than miss a mode.",
         questions: [
-          { q: "Minimizing forward KL against a two-peak target with a single Gaussian yields…", options: ["a wide Gaussian straddling both peaks", "a sharp fit to one peak only", "a uniform distribution", "a degenerate point mass"], a: 0, why: "Mass-covering: missing either peak costs infinitely; covering the valley is cheap." },
+          { q: "Minimizing forward KL against a two-peak target with a single Gaussian yields…", options: ["a wide Gaussian straddling both peaks", "a sharp fit to one peak only", "a flat uniform distribution over the range", "a degenerate point mass at the origin"], a: 0, why: "Mass-covering: missing either peak costs infinitely; covering the valley is cheap." },
           { q: "Cross-entropy / MLE training corresponds to…", options: ["minimizing forward KL(data ‖ model)", "minimizing reverse KL(model ‖ data)", "maximizing both KLs jointly", "minimizing Jensen-Shannon only"], a: 0, why: "E_data[−log model] = forward KL + constant entropy term." },
         ] },
       { id: "revkl", name: "Reverse KL", sprite: "🫴",
         lore: "Reverse KL = KL(model ‖ target): expectation under the MODEL. The model only pays for mass IT places — so it's MODE-SEEKING: it locks onto one high-probability mode and confidently ignores the rest (zero-forcing). This is variational inference's choice (VAE's KL term), and crucially it's RLHF's anchor: the penalty KL(π ‖ π_ref) is reverse KL under the policy's own samples — the policy may sharpen within the reference's support but is punished for venturing where the reference assigns little mass. Mode-seeking is exactly the personality you want from an aligned policy.",
         questions: [
-          { q: "Reverse KL against a two-peak target with a single Gaussian yields…", options: ["a sharp fit to one peak, ignoring the other", "a wide straddle across both", "an exact bimodal copy", "a uniform spread"], a: 0, why: "Mode-seeking: it only pays where IT puts mass — pick a peak, commit." },
-          { q: "The RLHF penalty KL(π‖π_ref) is reverse KL, which means the policy…", options: ["may sharpen within reference support but not stray outside it", "must cover every reference behavior", "is pushed toward uniform outputs", "ignores the reference entirely"], a: 0, why: "Expectation under π: straying off π_ref's support is what gets punished." },
+          { q: "Reverse KL against a two-peak target with a single Gaussian yields…", options: ["a sharp fit to one peak, ignoring the other", "a wide straddle spanning both peaks", "an exact bimodal copy of the target", "a flat uniform spread across the support"], a: 0, why: "Mode-seeking: it only pays where IT puts mass — pick a peak, commit." },
+          { q: "The RLHF penalty KL(π‖π_ref) is reverse KL, which means the policy…", options: ["may sharpen within reference support but not stray outside it", "is forced to cover every reference behavior", "gets pushed toward fully uniform outputs", "simply ignores the reference model entirely"], a: 0, why: "Expectation under π: straying off π_ref's support is what gets punished." },
         ] },
     ],
     sides: [
@@ -1014,15 +1022,15 @@ kl_rev = np.sum(Q2*np.log((Q2+1e-12)/(P+1e-12)))*dx # also small!`,
         codeNote: "Both fits are 'good' — under DIFFERENT divergences. The choice of divergence chooses the failure mode.",
         questions: [
           { q: "SCENARIO: Distilling a big model into a small one and you want the student to commit to the teacher's best behaviors rather than blurrily average all of them. Direction?", options: ["reverse KL(student ‖ teacher)", "forward KL(teacher ‖ student)", "symmetrized JS divergence only", "either — they're equivalent here"], a: 0, why: "Mode-seeking distillation sharpens; forward KL would force covering everything including mediocrity." },
-          { q: "SCENARIO: In RLHF, swap the anchor to FORWARD KL(π_ref ‖ π). The new failure you'd expect:", options: ["the policy forced to cover ALL reference behaviors, even unwanted ones", "the policy collapsing to a single token", "no change — KL is symmetric", "gradients ceasing to flow"], a: 0, why: "Forward KL is mass-covering: π must spread over everything π_ref does." },
-          { q: "RETENTION: The VAE's KL(q(z|x) ‖ N(0,I)) is which direction, with which personality?", options: ["reverse-style: q is mode-seeking within the prior", "forward-style: the prior must cover q", "symmetric by construction", "not actually a KL divergence"], a: 0, why: "Expectation under q — the encoder posterior nestles inside the prior's support." },
+          { q: "SCENARIO: In RLHF, swap the anchor to FORWARD KL(π_ref ‖ π). The new failure you'd expect:", options: ["the policy forced to cover ALL reference behaviors", "the policy collapsing to a single token", "no behavioral change — KL is symmetric", "policy gradients ceasing to flow entirely"], a: 0, why: "Forward KL is mass-covering: π must spread over everything π_ref does." },
+          { q: "RETENTION: The VAE's KL(q(z|x) ‖ N(0,I)) is which direction, with which personality?", options: ["reverse-style", "forward-style: the prior must cover q", "symmetric by construction", "not actually a KL divergence"], a: 0, why: "Expectation under q — the encoder posterior nestles inside the prior's support." },
         ] },
     ],
     gym: { leader: "Twin Sigma", badge: "Divergence Badge", sprite: "🏛️", taunt: "Stand on the correct side of the chasm!",
       questions: [
-        { q: "KL(P‖Q) vs KL(Q‖P):", options: ["generally unequal — KL is asymmetric", "always equal by definition", "equal only for Gaussians", "negatives of each other"], a: 0, why: "Different expectations, different penalties, different personalities." },
+        { q: "KL(P‖Q) vs KL(Q‖P):", options: ["generally unequal", "always equal by definition", "equal only for Gaussians", "negatives of each other"], a: 0, why: "Different expectations, different penalties, different personalities." },
         { q: "Mean-seeking : mode-seeking ::", options: ["forward KL : reverse KL", "reverse KL : forward KL", "MLE : cross-entropy", "prior : posterior"], a: 0, why: "Cover the mass vs commit to a peak." },
-        { q: "One sentence that ties this world to the RL world:", options: ["the PPO/GRPO reference penalty is reverse KL under the policy's samples", "advantages are KL divergences", "rewards must be symmetric like KL", "GAE computes forward KL"], a: 0, why: "The anchor that keeps RLHF sane is exactly reverse KL's mode-seeking leash." },
+        { q: "One sentence that ties this world to the RL world:", options: ["the PPO/GRPO reference penalty is reverse KL", "advantage estimates are KL divergences", "reward magnitudes must always stay symmetric like KL", "GAE secretly computes a forward KL"], a: 0, why: "The anchor that keeps RLHF sane is exactly reverse KL's mode-seeking leash." },
       ] },
   }],
 },
@@ -1042,55 +1050,219 @@ kl_rev = np.sum(Q2*np.log((Q2+1e-12)/(P+1e-12)))*dx # also small!`,
         lore: "The post-Llama consensus block: decoder-only transformer; PRE-norm placement with RMSNorm (cheaper than LayerNorm, no mean-centering); RoPE for position; GQA attention; SwiGLU feed-forward (gated: (W₁x ⊙ swish(W_g x))W₂, outperforming plain ReLU/GELU MLPs); no biases; often QK-norm (normalizing queries/keys before attention) for training stability. Departures from GPT-2 — learned absolute positions, post-norm, GELU MLP, dropout — have each been replaced. Newer wrinkles: NoPE in some layers (Llama-4 lineage) and hybrid linear-attention layers (Qwen3-Next-style) for long context.",
         questions: [
           { q: "The modern consensus stack:", options: ["pre-norm RMSNorm + RoPE + GQA + SwiGLU", "post-norm LayerNorm + learned positions + MHA + GELU", "encoder-decoder + sinusoidal + MQA + ReLU", "pre-norm BatchNorm + ALiBi + MLA + GLU"], a: 0, why: "The Llama-era recipe nearly every 2024-26 open model shares." },
-          { q: "SwiGLU differs from a plain MLP by…", options: ["a multiplicative learned gate on the hidden activation", "having no nonlinearity at all", "running in the attention module", "using convolution instead of matmul"], a: 0, why: "The gating (swish branch ⊙ value branch) is the expressivity win." },
+          { q: "SwiGLU differs from a plain MLP by…", options: ["a multiplicative learned gate on the hidden activation", "having no nonlinear activation at all", "running inside the attention module instead", "using convolution instead of matmul"], a: 0, why: "The gating (swish branch ⊙ value branch) is the expressivity win." },
         ] },
       { id: "deepseek", name: "The DeepSeek Lineage", sprite: "🐋",
         lore: "DeepSeek's contributions define the efficiency frontier: MLA (latent-compressed KV cache, often beating GQA in quality per ablations), fine-grained MoE with many small routed experts plus a shared expert and auxiliary-loss-free load balancing, and multi-token prediction (MTP) as auxiliary training signal. V3 set the 671B-total/37B-active template; R1 added GRPO-based reasoning RL on top. The 2026 V4 generation pushes further with mHC (manifold-constrained hyper-connections — multiple weighted residual streams replacing the single residual, constrained for stability) and compressed attention for long-context cost.",
         questions: [
-          { q: "DeepSeek-V3's headline numbers, 671B total / 37B active, are possible because of…", options: ["fine-grained MoE — most parameters sleep per token", "extreme quantization to 2 bits", "weight sharing across all layers", "running on CPU memory"], a: 0, why: "Sparse routing: capacity scales while active compute stays small." },
-          { q: "Hyper-connections (mHC) modify which classic component?", options: ["the single residual stream becomes multiple weighted streams", "the tokenizer's merge rules", "the attention softmax", "the optimizer's momentum"], a: 0, why: "Widening the residual highway, with manifold constraints keeping training stable." },
+          { q: "DeepSeek-V3's headline numbers, 671B total / 37B active, are possible because of…", options: ["fine-grained MoE", "extreme quantization to 2 bits", "weight sharing across all layers", "running on CPU memory"], a: 0, why: "Sparse routing: capacity scales while active compute stays small." },
+          { q: "Hyper-connections (mHC) modify which classic component?", options: ["the single residual stream becomes multiple weighted streams", "the tokenizer's learned merge rules", "the attention module's softmax function", "the optimizer's momentum accumulators"], a: 0, why: "Widening the residual highway, with manifold constraints keeping training stable." },
         ] },
       { id: "efficiency", name: "The 2026 Efficiency Wave", sprite: "🌊",
         lore: "As reasoning and agents keep more tokens alive longer, KV-cache cost became THE design driver. Gemma 4: cross-layer KV sharing (later layers reuse earlier layers' KV — E2B shares across ~20 of 35 layers, halving cache, saving ~2.7GB at 128k) plus per-layer embeddings (PLE: cheap per-layer token vectors gated into the residual, boosting capacity without widening the stack — 'effective' 2.3B vs 5.1B total). Laguna XS.2: layer-wise attention budgeting. ZAYA1: compressed convolutional attention. The pattern: spend architecture complexity to buy long-context memory.",
         questions: [
-          { q: "Gemma 4's cross-layer KV sharing has later layers…", options: ["reuse KV tensors from earlier layers of the same attention type", "skip attention entirely", "share query projections only", "recompute KV from scratch each step"], a: 0, why: "Own queries, borrowed KV — sliding layers borrow from sliding, full from full." },
-          { q: "Per-layer embeddings (PLE) add capacity via…", options: ["cheap layer-specific token vectors gated into the residual", "doubling every FFN's width", "extra attention heads per layer", "a second full transformer stack"], a: 0, why: "Lookup-style parameters instead of expensive stack widening — hence 'effective' size." },
+          { q: "Gemma 4's cross-layer KV sharing has later layers…", options: ["reuse earlier layers' KV tensors of matching type", "skip the attention computation entirely", "share only their query projections instead", "recompute KV from scratch each step"], a: 0, why: "Own queries, borrowed KV — sliding layers borrow from sliding, full from full." },
+          { q: "Per-layer embeddings (PLE) add capacity via…", options: ["cheap layer-specific token vectors gated into the residual", "doubling every FFN's hidden-layer width", "adding extra attention heads per layer", "attaching a second full transformer stack"], a: 0, why: "Lookup-style parameters instead of expensive stack widening — hence 'effective' size." },
         ] },
     ],
     sides: [
       { id: "arch-s1", name: "Gallery Phantom", sprite: "🖼️", anchor: 1, recLevel: 5, prereqs: ["recipe", "deepseek", "efficiency"],
         desc: "Quizzes you across the whole gallery — this world AND the Attention world.",
         questions: [
-          { q: "SCENARIO: Designing a 4B on-device model for 128k-context agent traces. Which gallery tricks compose naturally?", options: ["GQA/MQA + sliding-window 4:1 + cross-layer KV sharing", "MHA + learned positions + post-norm", "dense FFN scaled 8× wider", "encoder-decoder with cross-attention"], a: 0, why: "Exactly the Gemma-4-E recipe: every choice attacks cache or parameter cost." },
-          { q: "SCENARIO: An architecture review claims 'MoE saves memory at batch-1 on-device'. Your correction:", options: ["MoE saves FLOPs; ALL experts still occupy memory", "MoE saves both equally", "MoE increases FLOPs but saves memory", "the claim is fully correct"], a: 0, why: "MoE-world retention: memory scales with total params — batch-1 local is MoE's weak spot." },
-          { q: "RETENTION: MLA, GQA, sliding window, cross-layer sharing, compressed attention — the single sentence uniting them:", options: ["different attacks on the same enemy: KV-cache bytes at long context", "ways to grow the vocabulary", "alternatives to backpropagation", "methods to remove the FFN"], a: 0, why: "The curator's thesis — the 2025-26 architecture story is long-context economics." },
+          { q: "SCENARIO: Designing a 4B on-device model for 128k-context agent traces. Which gallery tricks compose naturally?", options: ["GQA/MQA + sliding-window 4:1 + cross-layer KV sharing", "MHA + learned positions + post-norm", "a dense FFN simply scaled 8× wider", "encoder-decoder with cross-attention"], a: 0, why: "Exactly the Gemma-4-E recipe: every choice attacks cache or parameter cost." },
+          { q: "SCENARIO: An architecture review claims 'MoE saves memory at batch-1 on-device'. Your correction:", options: ["MoE saves FLOPs; ALL experts still occupy memory", "MoE saves memory and FLOPs equally", "MoE increases FLOPs but saves memory", "the claim is fully correct as stated"], a: 0, why: "MoE-world retention: memory scales with total params — batch-1 local is MoE's weak spot." },
+          { q: "RETENTION: MLA, GQA, sliding window, cross-layer sharing, compressed attention — the single sentence uniting them:", options: ["different attacks on the same enemy", "ways to grow the vocabulary", "alternatives to backpropagation", "methods to remove the FFN"], a: 0, why: "The curator's thesis — the 2025-26 architecture story is long-context economics." },
         ] },
     ],
     gym: { leader: "The Curator", badge: "Architecture Badge", sprite: "🏛️", taunt: "Name every block in my gallery!",
       questions: [
-        { q: "Why did RMSNorm displace LayerNorm?", options: ["cheaper (no mean-centering) with equal quality", "it adds trainable biases", "it normalizes across the batch", "it removes the need for residuals"], a: 0, why: "Scale-only normalization: fewer ops, same stability in practice." },
-        { q: "QK-norm addresses…", options: ["attention-logit explosions for training stability", "the KV-cache size", "tokenizer fragmentation", "expert load balancing"], a: 0, why: "Normalizing q,k before the dot product tames logit growth in deep/long training." },
-        { q: "The honest summary of 2024→2026 architecture change:", options: ["evolution of one skeleton, driven by long-context efficiency", "a revolution replacing attention entirely", "a return to recurrent networks", "convergence on encoder-decoder designs"], a: 0, why: "Same bones, relentless KV-cache and capacity-per-FLOP refinement." },
+        { q: "Why did RMSNorm displace LayerNorm?", options: ["cheaper (no mean-centering) with equal quality", "it adds extra trainable bias vectors", "it normalizes across the batch dimension", "it removes the need for residuals"], a: 0, why: "Scale-only normalization: fewer ops, same stability in practice." },
+        { q: "QK-norm addresses…", options: ["attention-logit explosions for training stability", "the size of the KV cache at inference", "tokenizer vocabulary fragmentation", "MoE expert load-balancing pressure"], a: 0, why: "Normalizing q,k before the dot product tames logit growth in deep/long training." },
+        { q: "The honest summary of 2024→2026 architecture change:", options: ["evolution of one skeleton, driven by long-context efficiency", "a revolution replacing attention entirely", "a wholesale return to recurrent networks", "convergence on encoder-decoder designs"], a: 0, why: "Same bones, relentless KV-cache and capacity-per-FLOP refinement." },
       ] },
   }],
 },
 ];
 
-/* All built-in learn worlds */
+
+/* ============================================================
+   WORLD MODELS REGION — Dreamer, JEPA family, LeJEPA
+   ============================================================ */
+const WM_REGION = {
+  id: "wm-r", name: "The Imagination Engine", emoji: "🛰️",
+  intro: "Models that predict the world — in latent space, not pixels.",
+  npc: { name: "Dreamer Prime", text: "A world model learns the environment's dynamics so the agent can plan in imagination. The modern argument, from Dreamer to JEPA: predict in REPRESENTATION space. Pixels are full of unpredictable detail that wastes capacity; abstractions are what planning actually needs." },
+  concepts: [
+    { id: "latentwm", name: "Latent World Models", sprite: "💭",
+      lore: "The Dreamer lineage: learn a compact latent state from observations, a transition model predicting the next latent given action, and reward/value heads — then train the policy almost entirely inside imagined latent rollouts, touching the real environment only to collect fresh data. Wins: enormous sample-efficiency (real steps are expensive; imagined ones are a matmul), planning via model-predictive control, and transfer. Risk: the policy exploits model errors — imagination diverges from reality, so rollouts are kept short and the model is continually corrected.",
+      questions: [
+        { q: "Training the policy 'in imagination' means…", options: ["backprop through pixels of real frames", "gradient steps on imagined latent rollouts", "replaying stored real episodes only", "querying a human simulator each step"], a: 1, why: "Latent rollouts from the learned dynamics are the training ground; reality just supplies corrections." },
+        { q: "Why keep imagined rollouts SHORT?", options: ["GPU memory limits rollout length", "model error compounds with each step", "rewards are undefined past 15 steps", "long rollouts break the encoder"], a: 1, why: "Each imagined step adds model error; the policy would learn to exploit the divergence." },
+        { q: "The sample-efficiency claim rests on…", options: ["imagined steps costing far less than real ones", "world models removing exploration", "latents requiring no training data", "rewards becoming denser in latents"], a: 0, why: "Real interaction is the scarce resource; imagination converts compute into experience." },
+      ] },
+    { id: "jepa", name: "The JEPA Family", sprite: "🧿",
+      lore: "Joint-Embedding Predictive Architecture (LeCun): mask part of the input, then predict the MISSING part's representation from the visible part's representation — never reconstructing pixels. An encoder embeds context, a predictor guesses target embeddings produced by a target encoder. Why not pixels? Generative reconstruction wastes capacity modeling unpredictable detail (leaf positions, sensor noise). The danger is COLLAPSE: encoders can cheat by outputting constants, making prediction trivial — historically held off by heuristics (EMA target encoders, stop-gradient). I-JEPA does this for image regions; V-JEPA for video; V-JEPA 2 (2025) scales video pretraining and adds an action-conditioned variant enabling zero-shot robot planning.",
+      questions: [
+        { q: "JEPA predicts…", options: ["the raw pixels of masked regions", "representations of the missing content", "class labels for each image patch", "the next token in a caption"], a: 1, why: "Prediction happens in embedding space — the defining departure from generative reconstruction." },
+        { q: "Representation collapse means…", options: ["the predictor overfits the targets", "training loss oscillates without bound", "embeddings degenerate to constants, making prediction trivial", "the encoder forgets early layers"], a: 2, why: "If everything maps to the same vector, the prediction task is 'solved' and nothing useful is learned." },
+        { q: "V-JEPA 2's action-conditioned variant matters because…", options: ["it renders photorealistic video", "predicting consequences of actions enables planning", "it removes the need for any encoder", "it labels video frames automatically"], a: 1, why: "A world model that answers 'what if I do X' is exactly what zero-shot robot planning needs." },
+      ] },
+    { id: "lejepa", name: "LeJEPA & SIGReg", sprite: "🧮",
+      lore: "LeJEPA (Balestriero & LeCun, late 2025) replaces JEPA's anti-collapse heuristics with theory. Result one: the optimal distribution for JEPA embeddings is an isotropic Gaussian — it provably minimizes worst-case downstream risk. Result two: SIGReg (Sketched Isotropic Gaussian Regularization) enforces it cheaply, by testing many random 1-D projections of the embeddings against a Gaussian. Consequences: no stop-gradient, no EMA teacher network, no whitening tricks; a single trade-off hyperparameter; a core implementable in ~50 lines; and a training loss that actually correlates with downstream performance — so you can monitor pretraining without constant probing.",
+      questions: [
+        { q: "LeJEPA's claimed optimal embedding distribution:", options: ["an isotropic Gaussian", "a uniform hypersphere shell", "a sparse Laplacian mixture", "a learned codebook prior"], a: 0, why: "The paper's theoretical anchor: isotropic Gaussian minimizes worst-case downstream risk." },
+        { q: "SIGReg checks Gaussianity via…", options: ["full covariance matrix inversion", "random 1-D projections tested statistically", "training a discriminator network", "counting embedding clusters"], a: 1, why: "Sketching: many cheap 1-D tests stand in for an intractable high-dim test." },
+        { q: "Which heuristic does LeJEPA make UNNECESSARY?", options: ["minibatch gradient descent", "data augmentation pipelines", "the EMA teacher / stop-gradient pair", "any positional encoding"], a: 2, why: "SIGReg prevents collapse by construction, retiring the heuristic scaffolding." },
+      ] },
+  ],
+  sides: [
+    { id: "wm-s1", name: "Mirage of Acronyms", sprite: "🃏", anchor: 1, recLevel: 4, prereqs: ["latentwm", "jepa", "lejepa"],
+      desc: "A trickster that shuffles lookalike acronyms and watches you grab the wrong one.",
+      questions: [
+        { q: "SCENARIO: A teammate cites 'GEPA' as the newest JEPA variant for your vision stack. Your correction:", options: ["GEPA is JEPA's GAN-based cousin", "GEPA is a reflective prompt-evolution optimizer (DSPy), not a world model", "GEPA is V-JEPA 2's robot module", "they're right — GEPA extends I-JEPA"], a: 1, why: "Genetic-Pareto prompt optimization lives in the DSPy world — same letters, different universe. (See the DSPy kata.)" },
+        { q: "SCENARIO: Carol's sim needs to predict patient-monitor futures for planning. Pixel-level video prediction keeps burning capacity on waveform noise. The JEPA-aligned move:", options: ["higher-resolution pixel reconstruction", "predict future states in representation space", "add a GAN loss for sharper frames", "predict raw audio instead of video"], a: 1, why: "Abstract away the unpredictable detail; plan over latents — the family's core thesis." },
+        { q: "SCENARIO: Mid-pretraining, every embedding's cosine similarity approaches 1.0 and loss plummets. Diagnosis and the LeJEPA-era fix:", options: ["overfitting / add dropout layers", "collapse / SIGReg-style distributional regularization", "underfitting / enlarge the predictor", "data leakage / reshuffle the dataset"], a: 1, why: "Trivially happy loss + identical embeddings = collapse; regularize the embedding distribution." },
+      ] },
+  ],
+  gym: { leader: "Dreamer Prime", badge: "World Model Badge", sprite: "🏛️", taunt: "Imagine the future — correctly!",
+    questions: [
+      { q: "The shared thesis from Dreamer through JEPA:", options: ["plan and predict in abstract latent space", "always reconstruct at pixel fidelity", "replace learning with retrieval", "world models need no encoders"], a: 0, why: "Representation-space prediction is the through-line of the whole region." },
+      { q: "Generative reconstruction vs JEPA — the capacity argument:", options: ["reconstruction wastes capacity on unpredictable detail", "JEPA models need 10× more parameters", "reconstruction cannot use transformers", "JEPA requires labeled data"], a: 0, why: "Leaf positions and sensor noise aren't worth modeling; abstractions are." },
+      { q: "RETENTION (RL world): a world model gives an agent…", options: ["denser external rewards", "planning via internal rollouts before acting", "a larger context window", "guaranteed pass^k reliability"], a: 1, why: "The Citadel's memory node, now with its own region: imagination as cheap exploration." },
+    ] },
+};
+
+/* ============================================================
+   INFERENCE SPLIT — two regions + new concepts
+   ============================================================ */
+const _INF = ATLAS.find((w) => w.id === "w-infer").regions[0];
+const QUANT_CONCEPT = {
+  id: "quant", name: "Quantization", sprite: "🪙",
+  lore: "Squeeze precision, keep quality. Weight-only quantization (INT8/INT4 via GPTQ, AWQ) shrinks the model and — because decode is memory-bandwidth-bound — directly speeds token generation: fewer bytes moved per step. KV-cache quantization (e.g., FP8) attacks the other big memory consumer, multiplying how many concurrent contexts fit. Activation quantization is hardest (outlier channels). The cliffs: quality degrades non-uniformly — small models and long reasoning chains suffer first, so evaluate on YOUR workload, not just perplexity.",
+  questions: [
+    { q: "Why does weight quantization speed up DECODE specifically?", options: ["it reduces the FLOPs of attention", "decode is bandwidth-bound; fewer bytes per step", "it shortens the generated sequences", "it removes the softmax entirely"], a: 1, why: "Decode drowns in memory traffic; halving bytes ≈ faster steps." },
+    { q: "KV-cache quantization (FP8) primarily buys…", options: ["more concurrent contexts in the same memory", "better tokenizer compression rates", "higher training throughput", "smaller model checkpoints on disk"], a: 0, why: "The cache is the concurrency cap; cheaper bytes per token = more users." },
+    { q: "The honest evaluation rule for quantization:", options: ["perplexity alone certifies quality", "test on your workload; degradation is non-uniform", "INT4 is always safe above 7B", "quantize activations before weights"], a: 1, why: "Long reasoning and small models hit quality cliffs that average perplexity hides." },
+  ] };
+const SPECDEC_CONCEPT = {
+  id: "specdec", name: "Speculative Decoding", sprite: "🐇",
+  lore: "Decode's tragedy: one token per expensive forward pass. Speculative decoding drafts K tokens with a cheap model (or self-drafting heads like Medusa/EAGLE), then the big model verifies all K in ONE parallel pass — accepting the longest correct prefix via rejection sampling that provably preserves the target distribution. Speedup ≈ acceptance rate × draft length: predictable text (code, boilerplate) accepts long runs; creative text accepts less. Costs: draft compute, and complexity in batching verify steps.",
+  questions: [
+    { q: "The verification pass accepts…", options: ["the longest prefix matching the target distribution", "all K draft tokens unconditionally", "exactly one token per round", "tokens with draft probability > 0.5"], a: 0, why: "Rejection sampling keeps outputs exactly distributed as the big model alone." },
+    { q: "Speculative decoding shines most on…", options: ["highly predictable text like code", "maximum-temperature creative sampling", "single-token classification tasks", "the prefill phase of long prompts"], a: 0, why: "High acceptance rates → long accepted runs → big effective speedups." },
+    { q: "Output quality under speculative decoding is…", options: ["identical in distribution to the target model", "slightly worse, traded for speed", "better — two models ensemble", "nondeterministic and unbounded"], a: 0, why: "That's the point of the acceptance rule: lossless acceleration." },
+  ] };
+const DISAGG_CONCEPT = {
+  id: "disagg", name: "Prefill/Decode Disaggregation", sprite: "🔀",
+  lore: "Prefill and decode want different hardware behavior: prefill is a compute-hungry burst; decode is a steady bandwidth drip. Co-locating them makes long prompts stall everyone's token streams (head-of-line blocking). Disaggregated serving runs prefill on one worker pool, ships the resulting KV cache to a decode pool, and scales each independently — smoothing latency at the cost of cache-transfer bandwidth and orchestration complexity. The same logic motivates chunked prefill: slice big prompts so decode steps interleave.",
+  questions: [
+    { q: "Disaggregation separates prefill and decode because…", options: ["they bottleneck on different resources", "decode cannot run on modern GPUs", "prefill needs no KV cache", "attention differs mathematically between them"], a: 0, why: "Compute-burst vs bandwidth-drip: separate pools let each scale to its own bottleneck." },
+    { q: "Its characteristic new cost:", options: ["transferring KV caches between pools", "recomputing the prompt on decode nodes", "doubled model weights per request", "losing the ability to batch"], a: 0, why: "The cache must travel from prefill workers to decode workers — bandwidth and plumbing." },
+    { q: "Chunked prefill exists to…", options: ["interleave decode steps during long prompt processing", "compress prompts before encoding", "skip attention for early chunks", "quantize the prompt tokens"], a: 0, why: "Slicing the burst prevents head-of-line blocking of everyone's token streams." },
+  ] };
+const INF_REGION_A = {
+  id: "inf-cache", name: "The Cache Vaults", emoji: "📦",
+  intro: "Memory is the currency of serving. Spend it well.",
+  npc: _INF.npc,
+  concepts: [_INF.concepts[0], _INF.concepts[1], QUANT_CONCEPT],
+  sides: [_INF.sides[0]],
+  gym: { leader: "Vault Keeper", badge: "Cache Badge", sprite: "🏛️", taunt: "Account for every byte!",
+    questions: [
+      { q: "Concurrency in long-context serving is capped by…", options: ["the KV-cache memory pool", "the tokenizer's throughput", "disk read bandwidth", "the optimizer state size"], a: 0, why: "Decode is memory-bound; cache bytes are the scarce resource." },
+      { q: "PagedAttention + prefix sharing together attack…", options: ["fragmentation and duplicated prompt storage", "the FLOPs of the attention kernel", "tokenization latency", "gradient memory during training"], a: 0, why: "Blocks kill internal fragmentation; copy-on-write kills prompt duplication." },
+      { q: "Cheapest first lever to double concurrent users on fixed hardware:", options: ["KV-cache quantization to FP8", "switching to a bigger model", "doubling max sequence length", "disabling continuous batching"], a: 0, why: "Halve cache bytes per token, roughly double resident contexts — no retraining." },
+    ] },
+};
+const INF_REGION_B = {
+  id: "inf-flow", name: "The Throughput Works", emoji: "🏭",
+  intro: "Where parallelism, drafts, and scheduling mint tokens per second.",
+  npc: { name: "Foreman Throughput", text: "Three throughput machines: parallelism spreads the model, speculative decoding compresses decode steps, and disaggregation lets prefill and decode each scale to their own bottleneck. Compose them; don't worship any one." },
+  concepts: [_INF.concepts[2], SPECDEC_CONCEPT, DISAGG_CONCEPT],
+  sides: [
+    { id: "inf-s2", name: "Pipeline Poltergeist", sprite: "👾", anchor: 1, recLevel: 5, prereqs: ["parallel", "specdec", "disagg"],
+      desc: "Haunts your p99 latency graphs. Exorcise it with systems judgment.",
+      questions: [
+        { q: "SCENARIO: Speculative decoding's measured speedup collapsed after you switched traffic from code completion to creative fiction. Why?", options: ["acceptance rate fell — drafts miss unpredictable text", "the draft model's cache overflowed", "fiction tokens are longer in bytes", "verification cannot batch fiction"], a: 0, why: "Speedup ≈ acceptance × draft length; high-entropy text rejects drafts." },
+        { q: "SCENARIO: p99 time-to-first-token spikes whenever 100k-token documents arrive, stalling everyone's streams. Two structural fixes:", options: ["chunked prefill or prefill/decode disaggregation", "longer max_tokens and bigger batches", "INT4 weights and a louder autoscaler", "more KV blocks and fewer users"], a: 0, why: "Both break the head-of-line burst: slice it, or move it to its own pool." },
+        { q: "RETENTION: TP across slow Ethernet between nodes failed (Cache Vaults lesson). The matching principle here:", options: ["match each parallelism's traffic to its interconnect", "TP always beats PP regardless of fabric", "disaggregation removes networking entirely", "speculative decoding replaces parallelism"], a: 0, why: "Chatty all-reduce stays on NVLink; boundary-only PP crosses nodes; cache transfers need provisioned bandwidth." },
+      ] },
+  ],
+  gym: { leader: "Foreman Throughput", badge: "Throughput Badge", sprite: "🏛️", taunt: "Tokens per second or perish!",
+    questions: [
+      { q: "Prefill vs decode bottlenecks:", options: ["compute-bound vs memory-bandwidth-bound", "both strictly compute-bound", "bandwidth-bound vs compute-bound", "both strictly network-bound"], a: 0, why: "Parallel prompt math saturates FLOPs; one-token decode drowns in cache reads." },
+      { q: "Speculative decoding leaves output distribution…", options: ["exactly equal to the target model's", "biased toward the draft model", "sharper than either model", "dependent on batch size"], a: 0, why: "The acceptance rule guarantees losslessness." },
+      { q: "A 70B dense model, 2 nodes, NVLink inside, Ethernet between:", options: ["TP within nodes, PP across them", "TP across all 16 GPUs", "PP within nodes, TP across", "expert parallelism everywhere"], a: 0, why: "Match communication to interconnect — the region's law." },
+    ] },
+};
+
+/* ============================================================
+   UMBRELLA WORLDS — pooled regions per category
+   ============================================================ */
+const _g = (id) => ATLAS.find((w) => w.id === id).regions[0];
 const BUILTIN_WORLDS = [
-  { id: "w-rl", title: "Agentic RL", emoji: "🤖", regions: RL_REGIONS,
+  { id: "w-rl", title: "Agentic RL & Agent Systems", emoji: "🤖",
+    blurb: "MDPs → SFT → tool rewards → PPO/GRPO → agents → orchestration.",
     links: [
       { label: "Source primer · aman.ai Agentic RL", url: "https://aman.ai/primers/ai/agentic-RL/" },
+      { label: "Anthropic · Building Effective Agents", url: "https://www.anthropic.com/research/building-effective-agents" },
       { label: "3b1b · But what is a GPT?", url: "https://www.youtube.com/watch?v=wjZofJX0v4M" },
-    ] },
-  ...ATLAS,
+    ],
+    regions: [...RL_REGIONS, _g("w-orch")] },
+  { id: "w-tf", title: "Transformer Architecture", emoji: "🏛️",
+    blurb: "Position → attention variants → MoE → the modern block gallery.",
+    links: [
+      { label: "Transformer Explainer (interactive)", url: "https://poloclub.github.io/transformer-explainer/" },
+      { label: "3b1b · Attention, visually", url: "https://www.youtube.com/watch?v=eMlx5fFNoYc" },
+      { label: "Raschka · LLM Architecture Gallery", url: "https://sebastianraschka.com/llm-architecture-gallery/" },
+      { label: "Raschka · Recent Developments (KV sharing, mHC)", url: "https://magazine.sebastianraschka.com/p/recent-developments-in-llm-architectures" },
+    ],
+    regions: [_g("w-embed"), _g("w-attn"), _g("w-moe"), _g("w-arch")] },
+  { id: "w-gen", title: "Generative Models", emoji: "🌫️",
+    blurb: "KL's two personalities → autoencoder family → diffusion.",
+    links: [
+      { label: "Lilian Weng · From AE to VAE", url: "https://lilianweng.github.io/posts/2018-08-12-vae/" },
+      { label: "Lilian Weng · Diffusion Models", url: "https://lilianweng.github.io/posts/2021-07-11-diffusion-models/" },
+    ],
+    regions: [_g("w-kl"), _g("w-ae"), _g("w-diffusion")] },
+  { id: "w-percept", title: "Perception & World Models", emoji: "👁️",
+    blurb: "Pixels → language (VLMs), and pixels → planning (JEPA, LeJEPA).",
+    links: [
+      { label: "CNN Explainer (interactive)", url: "https://poloclub.github.io/cnn-explainer/" },
+      { label: "Meta AI · V-JEPA 2", url: "https://ai.meta.com/vjepa/" },
+    ],
+    regions: [_g("w-vlm"), WM_REGION] },
+  { id: "w-sys", title: "LLM Systems & Serving", emoji: "⚙️",
+    blurb: "KV cache & quantization → parallelism, drafts, disaggregation.",
+    links: [
+      { label: "Raschka · Coding the KV Cache", url: "https://magazine.sebastianraschka.com/p/coding-the-kv-cache-in-llms" },
+      { label: "vLLM · PagedAttention paper", url: "https://arxiv.org/abs/2309.06180" },
+    ],
+    regions: [INF_REGION_A, INF_REGION_B] },
 ];
 
 /* ============================================================
-   THE DOJO — implementation katas
-   Each: guided MCQ steps over real code, reference solutions
-   per framework, study links, and AI code review.
+   CODE LAB — runnable starters & tests (Pyodide: python+numpy)
    ============================================================ */
+const LABS = {
+  "k-selfattn": { needs: "numpy",
+    starter: `import numpy as np\n\ndef softmax(x, axis=-1):\n    e = np.exp(x - x.max(axis=axis, keepdims=True))\n    return e / e.sum(axis=axis, keepdims=True)\n\ndef self_attention(X, W_q, W_k, W_v):\n    # YOUR CODE: Q,K,V projections, scaled scores, softmax, weighted sum\n    pass\n`,
+    test: `\nnp.random.seed(0)\nX = np.random.randn(5, 8); W = [np.random.randn(8, 8) for _ in range(3)]\nout = self_attention(X, *W)\nassert out is not None, "returned None"\nassert out.shape == (5, 8), f"bad shape {out.shape}"\nQ,K,V = X@W[0], X@W[1], X@W[2]\nref = softmax(Q@K.T/np.sqrt(8)) @ V\nassert np.allclose(out, ref, atol=1e-6), "values differ from reference"\nprint("ALL TESTS PASSED ✓")\n` },
+  "k-mlp": { needs: "numpy",
+    starter: `import numpy as np\n\ndef forward(X, p):\n    # return logits, cache(X, Z1, H)\n    pass\n\ndef backward(dlogits, cache, p):\n    # return dict W1,b1,W2,b2\n    pass\n`,
+    test: `\nnp.random.seed(1)\np = {'W1': np.random.randn(4,8)*.1, 'b1': np.zeros(8), 'W2': np.random.randn(8,3)*.1, 'b2': np.zeros(3)}\nX = np.random.randn(10,4)\nlogits, cache = forward(X, p)\nassert logits.shape == (10,3)\ng = backward(np.ones((10,3)), cache, p)\n# numeric gradient check on W1[0,0]\neps=1e-5; p2={k:v.copy() for k,v in p.items()}\np2['W1'][0,0]+=eps; l1,_=forward(X,p2); p2['W1'][0,0]-=2*eps; l2,_=forward(X,p2)\nnum=(l1.sum()-l2.sum())/(2*eps)\nassert abs(num - g['W1'][0,0]*10) < 1e-3, f"grad check failed {num} vs {g['W1'][0,0]*10}"\nprint("ALL TESTS PASSED ✓ (including numeric gradient check)")\n` },
+  "k-attnback": { needs: "numpy",
+    starter: `import numpy as np\n\ndef softmax(x):\n    e = np.exp(x - x.max(-1, keepdims=True)); return e/e.sum(-1, keepdims=True)\n\ndef attn_forward(Q, K, V):\n    # return out, cache\n    pass\n\ndef attn_backward(dO, cache):\n    # return dQ, dK, dV\n    pass\n`,
+    test: `\nnp.random.seed(2)\nQ,K,V = (np.random.randn(4,6) for _ in range(3))\nO, cache = attn_forward(Q,K,V)\ndQ,dK,dV = attn_backward(np.ones_like(O), cache)\neps=1e-5; Qp=Q.copy(); Qp[0,0]+=eps; O1,_=attn_forward(Qp,K,V)\nQp[0,0]-=2*eps; O2,_=attn_forward(Qp,K,V)\nnum=(O1.sum()-O2.sum())/(2*eps)\nassert abs(num-dQ[0,0])<1e-4, f"dQ check failed: {num} vs {dQ[0,0]}"\nprint("ALL TESTS PASSED ✓ (numeric dQ check)")\n` },
+  "k-twosum": { needs: null,
+    starter: `def two_sum(nums, target):\n    # one pass, hash map\n    pass\n`,
+    test: `\nassert two_sum([2,7,11,15], 9) == [0,1]\nassert two_sum([3,2,4], 6) == [1,2]\nassert two_sum([3,3], 6) == [0,1]\nassert two_sum([1,2], 99) == []\nprint("ALL TESTS PASSED ✓")\n` },
+  "k-slidewin": { needs: null,
+    starter: `def longest_substring(s):\n    # sliding window over a set\n    pass\n`,
+    test: `\nassert longest_substring("abcabcbb") == 3\nassert longest_substring("bbbbb") == 1\nassert longest_substring("pwwkew") == 3\nassert longest_substring("") == 0\nprint("ALL TESTS PASSED ✓")\n` },
+  "k-paged": { needs: "numpy",
+    starter: `import numpy as np\n\nclass PagedKVCache:\n    def __init__(self, n_blocks=64, block=4, d=8):\n        # K,V pools, free list, tables{}, lens{}\n        pass\n    def append(self, seq, k, v):\n        pass\n    def gather(self, seq):\n        # return (ks, vs) for seq, length-trimmed\n        pass\n`,
+    test: `\nc = PagedKVCache()\nfor i in range(10):\n    c.append("a", np.full(8, i, float), np.full(8, -i, float))\nks, vs = c.gather("a")\nassert ks.shape == (10, 8) and vs.shape == (10, 8)\nassert ks[7,0] == 7 and vs[3,0] == -3\nprint("ALL TESTS PASSED ✓")\n` },
+};
 const KATAS = [
 {
   id: "k-selfattn", family: "ml", title: "Self-Attention from Scratch", emoji: "🔍",
@@ -1638,6 +1810,32 @@ compiled.save("triage_v1.json")   # the optimized program`,
 ];
 
 /* ============================================================
+   PYODIDE — in-browser Python (+numpy) for the Code Lab
+   ============================================================ */
+let _pyodide = null;
+async function getPyodide() {
+  if (_pyodide) return _pyodide;
+  await new Promise((res, rej) => {
+    if (window.loadPyodide) return res();
+    const s = document.createElement("script");
+    s.src = "https://cdnjs.cloudflare.com/ajax/libs/pyodide/0.26.2/pyodide.min.js";
+    s.onload = res; s.onerror = () => rej(new Error("load"));
+    document.head.appendChild(s);
+  });
+  _pyodide = await window.loadPyodide({ indexURL: "https://cdnjs.cloudflare.com/ajax/libs/pyodide/0.26.2/" });
+  return _pyodide;
+}
+async function runPython(code, needs) {
+  const py = await getPyodide();
+  if (needs === "numpy") { try { await py.loadPackage("numpy"); } catch (e) { throw new Error("numpy unavailable in this sandbox — pure-Python katas still run; the desktop build has the full environment."); } }
+  let out = "";
+  py.setStdout({ batched: (s) => { out += s + "\n"; } });
+  py.setStderr({ batched: (s) => { out += s + "\n"; } });
+  try { await py.runPythonAsync(code); } catch (e) { out += String(e.message || e).split("\n").slice(-6).join("\n"); }
+  return out || "(no output)";
+}
+
+/* ============================================================
    BOARD LAYOUT
    ============================================================ */
 function buildBoard(region) {
@@ -1657,50 +1855,55 @@ function buildBoard(region) {
   });
   return { nodes, edges };
 }
+const shuf4 = () => { const a = [0, 1, 2, 3]; for (let i = 3; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } return a; };
 
 /* ============================================================ */
 export default function App() {
   const [save, setSave] = useState(null);
-  const [worlds, setWorlds] = useState([]);      // user-generated learn worlds
-  const [uKatas, setUKatas] = useState([]);      // user-generated katas
-  const [cfg, setCfg] = useState({ provider: "builtin", baseUrl: "", apiKey: "", model: "" });
+  const [worlds, setWorlds] = useState([]);
+  const [uKatas, setUKatas] = useState([]);
+  const [aug, setAug] = useState({});                  // worldId -> coach-forged drills
+  const [cfg, setCfg] = useState({ provider: "builtin", baseUrl: "", apiKey: "", model: "", anthropicKey: "" });
   const [screen, setScreen] = useState("title");
   const [activeWorld, setActiveWorld] = useState("w-rl");
+  const [dexWorld, setDexWorld] = useState("w-rl");
   const [regionIdx, setRegionIdx] = useState(0);
   const [atNode, setAtNode] = useState("start");
   const [dialog, setDialog] = useState(null);
   const [toast, setToast] = useState(null);
   const [battle, setBattle] = useState(null);
   const [musicOn, setMusicOn] = useState(false);
-  // spawn state
   const [resTab, setResTab] = useState("url");
   const [url, setUrl] = useState(""); const [pasteText, setPasteText] = useState("");
   const [conceptQ, setConceptQ] = useState(""); const [pdfB64, setPdfB64] = useState(null);
   const [pdfName, setPdfName] = useState("");
   const [scan, setScan] = useState(null); const [goal, setGoal] = useState("learn");
   const [busy, setBusy] = useState("");
-  // dojo state
   const [kataId, setKataId] = useState(null); const [stepIdx, setStepIdx] = useState(0);
   const [fw, setFw] = useState("pytorch"); const [kPhase, setKPhase] = useState("step");
-  const [kFeedback, setKFeedback] = useState(null);
+  const [kFeedback, setKFeedback] = useState(null); const [kOrd, setKOrd] = useState(shuf4());
   const [myCode, setMyCode] = useState(""); const [review, setReview] = useState("");
-  // papers
+  const [labCode, setLabCode] = useState(""); const [labOut, setLabOut] = useState("");
   const [paperQ, setPaperQ] = useState(""); const [papers, setPapers] = useState(null);
+  const [gaunt, setGaunt] = useState(null);            // {pool, idx, lives, score, ord}
 
   useEffect(() => {
     (async () => {
-      const s = await loadStore("ru-save", { xp: 0, hp: 100, badges: [], captured: [], sides: [], katas: {} });
-      s.sides = s.sides || []; s.katas = s.katas || {};
+      const s = await loadStore("ru-save", { xp: 0, hp: 100, badges: [], captured: [], sides: [], katas: {}, qstats: {} });
+      s.sides = s.sides || []; s.katas = s.katas || {}; s.qstats = s.qstats || {};
       setSave(s);
       setWorlds(await loadStore("ru-worlds", []));
       setUKatas(await loadStore("ru-ukatas", []));
-      setCfg(await loadStore("ru-cfg", { provider: "builtin", baseUrl: "", apiKey: "", model: "" }));
+      setAug(await loadStore("ru-aug", {}));
+      const c = await loadStore("ru-cfg", { provider: "builtin", baseUrl: "", apiKey: "", model: "", anthropicKey: "" });
+      setCfg(c); GLOBAL_KEY = c.anthropicKey || "";
     })();
   }, []);
   const persist = (s) => { setSave(s); saveStore("ru-save", s); };
   const persistWorlds = (w) => { setWorlds(w); saveStore("ru-worlds", w); };
   const persistUKatas = (k) => { setUKatas(k); saveStore("ru-ukatas", k); };
-  const persistCfg = (c) => { setCfg(c); saveStore("ru-cfg", c); };
+  const persistAug = (a) => { setAug(a); saveStore("ru-aug", a); };
+  const persistCfg = (c) => { setCfg(c); GLOBAL_KEY = c.anthropicKey || ""; saveStore("ru-cfg", c); };
   const showToast = (m) => { setToast(m); setTimeout(() => setToast(null), 2600); };
   const toggleMusic = () => { if (musicOn) { music.stop(); setMusicOn(false); } else { music.start(); setMusicOn(true); } };
 
@@ -1713,37 +1916,54 @@ export default function App() {
   const capturedSet = new Set(save ? save.captured : []);
   const sidesSet = new Set(save ? save.sides : []);
   const allKatas = [...KATAS, ...uKatas];
-  const conceptName = (id) => { for (const r of regions) { const c = r.concepts.find((x) => x.id === id); if (c) return c.name; } return id; };
+  const conceptName = (id) => {
+    for (const w of allWorlds) for (const r of w.regions) {
+      const c = r.concepts.find((x) => x.id === id); if (c) return c.name;
+      const sd = (r.sides || []).find((x) => x.id === id); if (sd) return sd.name;
+      if (id === "gym:" + r.id) return r.name + " Gym";
+    }
+    return id;
+  };
+  const stat = (id) => (save.qstats[id] || [0, 0]);
+  const recStat = (s, id, correct) => { const [a, m] = s.qstats[id] || [0, 0]; s.qstats = { ...s.qstats, [id]: [a + 1, m + (correct ? 0 : 1)] }; };
 
   /* ---------- battle ---------- */
+  const DMG = 40, CRIT = 20;
   const startBattle = (kind, payload) => {
-    if (kind === "critical") setBattle({ kind, concept: payload, phase: "lore", enemyHp: 100, enemyMax: 100, qIdx: 0, streak: 0, showCode: false, log: `${payload.name} blocks the path!` });
-    else if (kind === "side") setBattle({ kind, side: payload, phase: "briefing", enemyHp: 70, enemyMax: 70, qIdx: 0, streak: 0, showCode: true, log: payload.desc });
-    else setBattle({ kind, gym: region.gym, phase: "lore", enemyHp: 100 + region.gym.questions.length * 12, enemyMax: 100 + region.gym.questions.length * 12, qIdx: 0, streak: 0, showCode: false, log: `${region.gym.leader}: "${region.gym.taunt}"` });
+    const nQ = kind === "gym" ? region.gym.questions.length : payload.questions.length;
+    const max = nQ * DMG;
+    if (kind === "critical") setBattle({ kind, concept: payload, phase: "lore", enemyHp: max, enemyMax: max, qIdx: 0, streak: 0, ord: shuf4(), showCode: false, log: `${payload.name} blocks the path!` });
+    else if (kind === "side") setBattle({ kind, side: payload, phase: "briefing", enemyHp: max, enemyMax: max, qIdx: 0, streak: 0, ord: shuf4(), showCode: true, log: payload.desc });
+    else setBattle({ kind, gym: region.gym, phase: "lore", enemyHp: max, enemyMax: max, qIdx: 0, streak: 0, ord: shuf4(), showCode: false, log: `${region.gym.leader}: "${region.gym.taunt}"` });
     setScreen("battle");
   };
   const bQuestions = battle ? (battle.kind === "critical" ? battle.concept.questions : battle.kind === "side" ? battle.side.questions : battle.gym.questions) : [];
-  const answerBattle = (idx) => {
+  const battleSrc = battle ? (battle.kind === "critical" ? battle.concept.id : battle.kind === "side" ? battle.side.id : "gym:" + region.id) : "";
+  const answerBattle = (dispIdx) => {
     if (!battle || battle.phase !== "question") return;
     const q = bQuestions[battle.qIdx % bQuestions.length];
-    if (idx === q.a) {
+    const idx = battle.ord[dispIdx];
+    const correct = idx === q.a;
+    const s = { ...save };
+    recStat(s, battleSrc, correct);
+    if (correct) {
       const crit = battle.streak >= 1;
-      const dmg = Math.round((36 + level * 3) * (crit ? 1.5 : 1));
+      const dmg = DMG + (crit ? CRIT : 0);
       const newHp = Math.max(0, battle.enemyHp - dmg);
       const won = newHp <= 0;
-      setBattle({ ...battle, enemyHp: newHp, streak: battle.streak + 1, phase: won ? "victory" : "feedback", wrong: false, log: `${crit ? "CRITICAL HIT! " : ""}Strike for ${dmg}! ${q.why}` });
       if (won) {
-        const s = { ...save };
         if (battle.kind === "critical") { s.xp += 50; if (!capturedSet.has(battle.concept.id)) s.captured = [...s.captured, battle.concept.id]; }
         else if (battle.kind === "side") { s.xp += 30; s.hp = Math.min(maxHp, s.hp + 25); if (!sidesSet.has(battle.side.id)) s.sides = [...s.sides, battle.side.id]; }
         else { s.xp += 150; if (!s.badges.includes(region.gym.badge)) s.badges = [...s.badges, region.gym.badge]; }
-        persist(s);
       }
+      persist(s);
+      setBattle({ ...battle, enemyHp: newHp, streak: battle.streak + 1, phase: won ? "victory" : "feedback", wrong: false, log: `${crit ? "CRITICAL HIT! " : ""}Strike for ${dmg}! ${q.why}` });
     } else {
       const dmg = battle.kind === "gym" ? 22 : 16;
-      const newHp = Math.max(0, save.hp - dmg);
+      const newHp = Math.max(0, s.hp - dmg);
       const fainted = newHp <= 0;
-      persist({ ...save, hp: fainted ? maxHp : newHp });
+      s.hp = fainted ? maxHp : newHp;
+      persist(s);
       setBattle({ ...battle, streak: 0, phase: fainted ? "defeat" : "feedback", wrong: true, log: fainted ? `You blacked out! ${q.why} — You wake at the region entrance, healed and wiser.` : `Counterattack for ${dmg}! ${q.why}` });
     }
   };
@@ -1755,8 +1975,8 @@ export default function App() {
       else showToast(`${region.gym.badge} earned! +150 XP`);
       setBattle(null); setScreen("region");
     } else if (battle.phase === "defeat") { setBattle(null); setAtNode("start"); setScreen("region"); }
-    else if (battle.phase === "feedback") setBattle({ ...battle, phase: "question", qIdx: battle.wrong ? battle.qIdx : battle.qIdx + 1, wrong: false });
-    else setBattle({ ...battle, phase: "question" });   // lore or briefing
+    else if (battle.phase === "feedback") setBattle({ ...battle, phase: "question", qIdx: battle.wrong ? battle.qIdx : battle.qIdx + 1, ord: shuf4(), wrong: false });
+    else setBattle({ ...battle, phase: "question", ord: shuf4() });
   };
 
   /* ---------- board ---------- */
@@ -1775,7 +1995,7 @@ export default function App() {
     setAtNode(id);
     if (id === "start") { setDialog({ name: region.npc.name, text: region.npc.text }); return; }
     if (id === "gym") {
-      if (save.badges.includes(region.gym.badge)) { setDialog({ name: region.gym.leader, text: `You already hold the ${region.gym.badge}. Drill the side encounters to stay sharp, or move on.` }); return; }
+      if (save.badges.includes(region.gym.badge)) { setDialog({ name: region.gym.leader, text: `You already hold the ${region.gym.badge}. Drill sides or run the Trial Gauntlet to stay sharp.` }); return; }
       startBattle("gym"); return;
     }
     if (id.startsWith("c:")) {
@@ -1784,6 +2004,64 @@ export default function App() {
       startBattle("critical", c);
     }
     if (id.startsWith("s:")) startBattle("side", region.sides.find((x) => x.id === id.slice(2)));
+  };
+
+  /* ---------- gauntlet ---------- */
+  const buildGauntletPool = () => {
+    const pool = [];
+    for (const r of regions) {
+      r.concepts.forEach((c) => c.questions.forEach((q) => pool.push({ ...q, src: c.id, name: c.name })));
+      (r.sides || []).forEach((sd) => sd.questions.forEach((q) => pool.push({ ...q, src: sd.id, name: sd.name })));
+      r.gym.questions.forEach((q) => pool.push({ ...q, src: "gym:" + r.id, name: r.name + " Gym" }));
+    }
+    (aug[world.id] || []).forEach((q) => pool.push({ ...q, name: "🧪 Coach drill" }));
+    for (let i = pool.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [pool[i], pool[j]] = [pool[j], pool[i]]; }
+    return pool;
+  };
+  const startGauntlet = () => { setGaunt({ pool: buildGauntletPool(), idx: 0, lives: 3, score: 0, ord: shuf4(), fb: null }); setScreen("gauntlet"); };
+  const answerGauntlet = (dispIdx) => {
+    if (!gaunt || gaunt.fb) return;
+    const q = gaunt.pool[gaunt.idx];
+    const correct = gaunt.ord[dispIdx] === q.a;
+    const s = { ...save };
+    if (q.src) recStat(s, q.src, correct);
+    if (correct) s.xp += 8;
+    persist(s);
+    setGaunt({ ...gaunt, score: gaunt.score + (correct ? 1 : 0), lives: gaunt.lives - (correct ? 0 : 1), fb: { ok: correct, msg: q.why } });
+  };
+  const nextGauntlet = () => {
+    if (!gaunt) return;
+    const idx = gaunt.idx + 1;
+    if (gaunt.lives <= 0 || idx >= gaunt.pool.length) setGaunt({ ...gaunt, done: true, fb: null });
+    else setGaunt({ ...gaunt, idx, ord: shuf4(), fb: null });
+  };
+
+  /* ---------- coach (self-improvement) ---------- */
+  const coachRows = () => {
+    const ids = [];
+    for (const r of regions) { r.concepts.forEach((c) => ids.push(c.id)); (r.sides || []).forEach((sd) => ids.push(sd.id)); ids.push("gym:" + r.id); }
+    return ids.map((id) => { const [a, m] = stat(id); return { id, name: conceptName(id), a, m, rate: a ? m / a : 0 }; })
+      .filter((r) => r.a > 0).sort((x, y) => y.rate - x.rate || y.m - x.m);
+  };
+  const forgeDrills = async () => {
+    const weak = coachRows().filter((r) => r.a >= 2 && r.m > 0).slice(0, 5);
+    const targets = weak.length ? weak : coachRows().slice(0, 5);
+    if (!targets.length) { showToast("Battle first — the coach needs data on your misses."); return; }
+    const hints = targets.map((t) => {
+      let lore = "";
+      for (const r of regions) { const c = r.concepts.find((x) => x.id === t.id); if (c) lore = c.lore; }
+      return { id: t.id, name: t.name, missRate: Math.round(t.rate * 100) + "%", hint: lore.slice(0, 180) };
+    });
+    setBusy("coach");
+    try {
+      const parsed = parseJSON(await askModel(
+        `You are an adaptive tutor. The learner's weakest topics in "${world.title}" (with miss rates):\n${JSON.stringify(hints)}\nWrite 4 NEW applied-scenario multiple-choice questions targeting these weaknesses (different angles than typical textbook phrasing; realistic engineering scenarios). Respond ONLY raw JSON:\n{"questions":[{"q":"SCENARIO: ...","options":["...","...","...","..."],"a":0,"why":"one line","src":"the id of the topic targeted"}]}\n${QUALITY_RULES}`, cfg.provider === "builtin" ? cfg : cfg));
+      const qs = (parsed.questions || []).filter((q) => q.options && q.options.length === 4);
+      if (!qs.length) throw new Error("empty");
+      persistAug({ ...aug, [world.id]: [...(aug[world.id] || []), ...qs] });
+      showToast(`Coach forged ${qs.length} new drills → they now appear in the Trial Gauntlet.`);
+    } catch (e) { showToast("Drill forging failed — check model settings and try again."); }
+    setBusy("");
   };
 
   /* ---------- spawn ---------- */
@@ -1828,10 +2106,10 @@ export default function App() {
     }
     setBusy("");
     if (!out.length) { setScan({ ...scan, error: "Generation failed — try fewer sections." }); return; }
-    const w = { id: "w" + Date.now(), title: scan.title, emoji: "🌀", links: scan.src.foundUrl ? [{ label: "Source", url: scan.src.foundUrl }] : [], regions: out };
+    const w = { id: "w" + Date.now(), title: scan.title, emoji: "🌀", blurb: "Custom world", links: scan.src.foundUrl ? [{ label: "Source", url: scan.src.foundUrl }] : [], regions: out };
     persistWorlds([...worlds, w]);
     setScan(null); setUrl(""); setPasteText(""); setConceptQ(""); setPdfB64(null); setPdfName("");
-    setActiveWorld(w.id); setRegionIdx(0); setAtNode("start"); setScreen("region");
+    setActiveWorld(w.id); setRegionIdx(0); setAtNode("start"); setScreen("regionlist");
     showToast(`New world spawned: ${w.title}`);
   };
 
@@ -1843,13 +2121,19 @@ export default function App() {
     const p = kProgress(k.id);
     setStepIdx(p >= k.steps.length ? 0 : p);
     setKPhase(p >= k.steps.length ? "done" : "step");
-    setKFeedback(null); setMyCode(""); setReview(""); setScreen("kata");
+    setKFeedback(null); setKOrd(shuf4()); setMyCode(""); setReview("");
+    setLabCode(LABS[k.id] ? LABS[k.id].starter : ""); setLabOut("");
+    setScreen("kata");
   };
-  const answerKata = (idx) => {
-    if (!kata) return;
+  const answerKata = (dispIdx) => {
+    if (!kata || kFeedback) return;
     const st = kata.steps[stepIdx];
-    if (idx === st.a) {
-      const s = { ...save, xp: save.xp + 15 };
+    const idx = kOrd[dispIdx];
+    const correct = idx === st.a;
+    const s = { ...save };
+    recStat(s, kata.id, correct);
+    if (correct) {
+      s.xp += 15;
       const next = stepIdx + 1;
       if (next >= kata.steps.length) {
         s.xp += 60; s.katas = { ...s.katas, [kata.id]: kata.steps.length };
@@ -1858,14 +2142,21 @@ export default function App() {
       } else {
         s.katas = { ...s.katas, [kata.id]: Math.max(kProgress(kata.id), next) };
         persist(s); setKFeedback({ ok: true, msg: st.why });
-        setTimeout(() => { setStepIdx(next); setKFeedback(null); }, 1500);
+        setTimeout(() => { setStepIdx(next); setKOrd(shuf4()); setKFeedback(null); }, 1500);
       }
-    } else setKFeedback({ ok: false, msg: st.why });
+    } else { persist(s); setKFeedback({ ok: false, msg: st.why }); setTimeout(() => { setKOrd(shuf4()); setKFeedback(null); }, 1800); }
   };
   const doReview = async () => {
     if (!myCode.trim() || !kata) return;
     setBusy("review"); setReview("");
-    try { setReview(await reviewCode(kata.title, fw, myCode, cfg)); } catch (e) { setReview("Review failed — check your model settings (custom endpoints need CORS enabled)."); }
+    try { setReview(await reviewCode(kata.title, fw, myCode, cfg)); } catch (e) { setReview("Review failed — check model settings (custom endpoints need CORS enabled)."); }
+    setBusy("");
+  };
+  const runLab = async (withTests) => {
+    if (!kata || !LABS[kata.id]) return;
+    setBusy("lab"); setLabOut("⏳ starting Python… (first run downloads the runtime)");
+    try { setLabOut(await runPython(withTests ? labCode + "\n" + LABS[kata.id].test : labCode, LABS[kata.id].needs)); }
+    catch (e) { setLabOut("⚠️ " + (e.message || "Python runtime unavailable in this sandbox — pure-Python katas may still work; the desktop build ships the full environment.")); }
     setBusy("");
   };
   const doPapers = async () => {
@@ -1885,6 +2176,7 @@ export default function App() {
     mono: (size = 10.5, color = T.inkSoft) => ({ fontFamily: "'JetBrains Mono', monospace", fontSize: size, letterSpacing: "0.06em", color, fontWeight: 700 }),
     pre: { background: T.code, color: T.codeText, borderRadius: 10, padding: "12px 14px", fontFamily: "'JetBrains Mono', monospace", fontSize: 11.5, lineHeight: 1.6, overflowX: "auto", whiteSpace: "pre", margin: 0 },
     input: { width: "100%", boxSizing: "border-box", border: `1px solid ${T.line}`, borderRadius: 10, padding: "11px 12px", fontSize: 13.5, fontFamily: "'JetBrains Mono', monospace", background: T.card, color: T.ink, outline: "none" },
+    qbtn: { display: "block", width: "100%", textAlign: "left", marginBottom: 8, background: T.card, border: `1.5px solid ${T.line}`, color: T.ink, borderRadius: 10, padding: "11px 13px", fontSize: 13.5, fontWeight: 600, cursor: "pointer", fontFamily: "inherit", lineHeight: 1.45 },
   };
 
   if (!save) return <div style={{ ...S.app, display: "flex", alignItems: "center", justifyContent: "center" }}><span style={S.mono()}>loading save file…</span></div>;
@@ -1903,19 +2195,31 @@ export default function App() {
           </div>
         </div>
         <button onClick={toggleMusic} title="Lore music" style={{ background: "none", border: `1px solid ${T.line}`, borderRadius: 8, width: 30, height: 30, cursor: "pointer", fontSize: 14 }}>{musicOn ? "🎵" : "🔇"}</button>
-        <button onClick={() => setScreen("dex")} style={{ ...S.btn(T.explore), padding: "7px 10px", fontSize: 12 }}>📖</button>
+        <button onClick={() => { setDexWorld(activeWorld); setScreen("dex"); }} style={{ ...S.btn(T.explore), padding: "7px 10px", fontSize: 12 }}>📖</button>
         <button onClick={() => setScreen("settings")} style={{ background: "none", border: `1px solid ${T.line}`, borderRadius: 8, width: 30, height: 30, cursor: "pointer", fontSize: 14 }}>⚙️</button>
       </div>
     </div>
   );
   const Tabs = () => (
-    <div style={{ display: "flex", gap: 6, marginTop: 14 }}>
-      {[["home", "🌍 Learn"], ["dojo", "⌨️ Dojo"], ["papers", "📡 Papers"]].map(([id, label]) => (
-        <button key={id} onClick={() => setScreen(id)} style={{ ...S.btn(["home", "region"].includes(screen) && id === "home" ? T.ink : screen === id ? T.ink : T.card, (screen === id || (["home", "region"].includes(screen) && id === "home")) ? "#fff" : T.inkSoft), border: `1px solid ${T.line}`, padding: "8px 14px", fontSize: 13 }}>{label}</button>
-      ))}
+    <div style={{ display: "flex", gap: 6, marginTop: 14, flexWrap: "wrap" }}>
+      {[["home", "🌍 Learn"], ["dojo", "⌨️ Dojo"], ["coach", "🧪 Coach"], ["papers", "📡 Papers"]].map(([id, label]) => {
+        const on = screen === id || (id === "home" && ["home", "regionlist", "region"].includes(screen));
+        return <button key={id} onClick={() => setScreen(id)} style={{ ...S.btn(on ? T.ink : T.card, on ? "#fff" : T.inkSoft), border: `1px solid ${T.line}`, padding: "8px 14px", fontSize: 13 }}>{label}</button>;
+      })}
     </div>
   );
   const Toast = () => toast ? <div style={{ position: "fixed", bottom: 24, left: "50%", transform: "translateX(-50%)", zIndex: 60, background: T.ink, color: "#fff", padding: "10px 16px", borderRadius: 12, fontSize: 13.5, fontWeight: 700, animation: "slideUp .3s ease", maxWidth: "85%", textAlign: "center" }}>{toast}</div> : null;
+  const QCard = ({ q, ord, onAnswer, label, color }) => (
+    <div style={{ ...S.card, animation: "slideUp .25s ease" }}>
+      <span style={S.mono(10, color || T.explore)}>{label}</span>
+      <div style={{ fontWeight: 700, fontSize: 15, lineHeight: 1.55, margin: "8px 0 12px" }}>{q.q}</div>
+      {ord.map((optIdx, i) => (
+        <button key={i} onClick={() => onAnswer(i)} style={S.qbtn}>
+          <span style={S.mono(10, T.explore)}>{String.fromCharCode(65 + i)}</span>&nbsp;&nbsp;{q.options[optIdx]}
+        </button>
+      ))}
+    </div>
+  );
 
   /* ============ TITLE ============ */
   if (screen === "title") return (
@@ -1923,15 +2227,15 @@ export default function App() {
       <style>{CSS}</style>
       <div style={{ fontSize: 60, animation: "bob 2.5s ease-in-out infinite" }}>🧢</div>
       <h1 style={{ fontSize: 32, fontWeight: 800, letterSpacing: "-0.02em", margin: "8px 0 2px" }}>ROLLOUT WORLD</h1>
-      <span style={S.mono(11, T.explore)}>ULTIMATE · 11 WORLDS · DOJO · BYO MODELS</span>
-      <p style={{ color: T.inkSoft, maxWidth: 420, lineHeight: 1.6, fontSize: 14.5, marginTop: 14 }}>
-        Board worlds for <b style={{ color: T.action }}>concepts</b> (Agentic RL, diffusion, MoE, attention, KL, architectures…) and a <b style={{ color: T.explore }}>Dojo</b> for implementation katas (attention from scratch, LoRA, flash attention, Blind-75 ties). Bring your own model, resource, or just a concept name.
+      <span style={S.mono(11, T.explore)}>5 UMBRELLA WORLDS · DOJO + PYTHON LAB · SELF-IMPROVING COACH</span>
+      <p style={{ color: T.inkSoft, maxWidth: 430, lineHeight: 1.6, fontSize: 14.5, marginTop: 14 }}>
+        Board worlds for <b style={{ color: T.action }}>concepts</b>, a <b style={{ color: T.explore }}>Dojo</b> with runnable Python katas, per-world <b>Trial Gauntlets</b>, and a <b style={{ color: T.reward }}>Coach</b> that watches your misses and forges new drills targeting your weaknesses. Bring your own model, resource, or concept.
       </p>
       <button onClick={() => setScreen("home")} style={{ ...S.btn(T.explore), fontSize: 16, padding: "13px 30px", marginTop: 18 }}>{save.xp > 0 ? "Continue journey →" : "Begin journey →"}</button>
     </div>
   );
 
-  /* ============ HOME: WORLD LIBRARY ============ */
+  /* ============ HOME ============ */
   if (screen === "home") return (
     <div style={S.app}><style>{CSS}</style><Toast /><HUD back={() => setScreen("title")} />
       <div style={{ ...S.wrap }}>
@@ -1944,15 +2248,17 @@ export default function App() {
           const total = w.regions.reduce((n, r) => n + r.concepts.length, 0);
           const got = w.regions.reduce((n, r) => n + r.concepts.filter((c) => capturedSet.has(c.id)).length, 0);
           const badges = w.regions.filter((r) => save.badges.includes(r.gym.badge)).length;
+          const custom = !BUILTIN_WORLDS.find((b) => b.id === w.id);
           return (
-            <div key={w.id} onClick={() => { setActiveWorld(w.id); setRegionIdx(0); setAtNode("start"); setScreen(w.regions.length > 1 ? "regionlist" : "region"); }}
+            <div key={w.id} onClick={() => { setActiveWorld(w.id); setRegionIdx(0); setAtNode("start"); setScreen("regionlist"); }}
               style={{ ...S.card, marginTop: 10, display: "flex", alignItems: "center", gap: 14, cursor: "pointer" }}>
               <div style={{ fontSize: 30 }}>{w.emoji}</div>
               <div style={{ flex: 1 }}>
                 <div style={{ fontWeight: 800, fontSize: 15.5 }}>{w.title} {badges === w.regions.length && badges > 0 ? "🎖" : ""}</div>
-                <span style={S.mono(9.5, got === total && total > 0 ? T.reward : T.inkSoft)}>{got}/{total} CONCEPTS · {w.regions.length} REGION{w.regions.length === 1 ? "" : "S"}{w.id.startsWith("w") && !BUILTIN_WORLDS.find(b => b.id === w.id) ? " · CUSTOM" : ""}</span>
+                {w.blurb && <div style={{ fontSize: 12, color: T.inkSoft, lineHeight: 1.4 }}>{w.blurb}</div>}
+                <span style={S.mono(9.5, got === total && total > 0 ? T.reward : T.inkSoft)}>{got}/{total} CONCEPTS · {w.regions.length} REGION{w.regions.length === 1 ? "" : "S"}{custom ? " · CUSTOM" : ""}</span>
               </div>
-              {!BUILTIN_WORLDS.find((b) => b.id === w.id) && <button onClick={(e) => { e.stopPropagation(); persistWorlds(worlds.filter((x) => x.id !== w.id)); }} style={{ background: "none", border: "none", color: T.inkSoft, cursor: "pointer", fontSize: 15 }}>✕</button>}
+              {custom && <button onClick={(e) => { e.stopPropagation(); persistWorlds(worlds.filter((x) => x.id !== w.id)); }} style={{ background: "none", border: "none", color: T.inkSoft, cursor: "pointer", fontSize: 15 }}>✕</button>}
               <span style={{ color: T.explore, fontWeight: 800, fontSize: 20 }}>›</span>
             </div>
           );
@@ -1961,14 +2267,18 @@ export default function App() {
     </div>
   );
 
-  /* ============ REGION LIST (multi-region worlds) ============ */
+  /* ============ REGION LIST ============ */
   if (screen === "regionlist") return (
     <div style={S.app}><style>{CSS}</style><Toast /><HUD back={() => setScreen("home")} />
       <div style={{ ...S.wrap, paddingTop: 16 }}>
-        <h2 style={{ fontSize: 20, fontWeight: 800, margin: "0 0 2px" }}>{world.emoji} {world.title}</h2>
+        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+          <h2 style={{ fontSize: 20, fontWeight: 800, margin: 0 }}>{world.emoji} {world.title}</h2>
+          <button onClick={startGauntlet} style={{ ...S.btn(T.gold), padding: "8px 12px", fontSize: 12 }}>⚔️ Trial Gauntlet</button>
+        </div>
         {(world.links || []).length > 0 && (
-          <div style={{ display: "flex", flexWrap: "wrap", gap: 6, margin: "8px 0" }}>
-            {world.links.map((l) => <a key={l.url} href={l.url} target="_blank" rel="noreferrer" style={{ ...S.chip(false), textDecoration: "none" }}>🔗 {l.label}</a>)}
+          <div style={{ display: "flex", flexWrap: "wrap", gap: 6, margin: "10px 0" }}>
+            <span style={{ ...S.mono(9.5), alignSelf: "center" }}>STUDY HALL:</span>
+            {world.links.map((l) => <a key={l.url} href={l.url} target="_blank" rel="noreferrer" style={{ ...S.chip(false), textDecoration: "none", fontSize: 11.5, padding: "5px 10px" }}>🔗 {l.label}</a>)}
           </div>
         )}
         {regions.map((r, i) => {
@@ -1991,6 +2301,84 @@ export default function App() {
       </div>
     </div>
   );
+
+  /* ============ GAUNTLET ============ */
+  if (screen === "gauntlet" && gaunt) {
+    if (gaunt.done) {
+      const weak = coachRows().slice(0, 3);
+      return (
+        <div style={S.app}><style>{CSS}</style><Toast /><HUD back={() => { setGaunt(null); setScreen("regionlist"); }} />
+          <div style={{ ...S.wrap, paddingTop: 20 }}>
+            <div style={{ ...S.card, textAlign: "center" }}>
+              <div style={{ fontSize: 42 }}>{gaunt.lives > 0 ? "🏆" : "💀"}</div>
+              <h2 style={{ fontSize: 20, fontWeight: 800, margin: "6px 0 2px" }}>{gaunt.lives > 0 ? "Gauntlet cleared!" : "Gauntlet over"}</h2>
+              <span style={S.mono(11, T.reward)}>{gaunt.score}/{gaunt.pool.length} CORRECT · +{gaunt.score * 8} XP EARNED</span>
+              {weak.length > 0 && (
+                <p style={{ fontSize: 13, color: T.inkSoft, marginTop: 10, lineHeight: 1.55 }}>Weakest right now: <b>{weak.map((w) => w.name).join(", ")}</b>. Visit the 🧪 Coach to forge targeted drills.</p>
+              )}
+              <div style={{ display: "flex", gap: 8, justifyContent: "center", marginTop: 12 }}>
+                <button onClick={startGauntlet} style={S.btn(T.gold)}>Run it again</button>
+                <button onClick={() => setScreen("coach")} style={S.btn(T.explore)}>🧪 Coach</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      );
+    }
+    const q = gaunt.pool[gaunt.idx];
+    return (
+      <div style={{ ...S.app, background: T.night }}><style>{CSS}</style><Toast />
+        <div style={{ maxWidth: 620, margin: "0 auto", padding: "16px 14px 60px" }}>
+          <div style={{ display: "flex", justifyContent: "space-between", color: "#9FA8CC" }}>
+            <span style={S.mono(10, "#9FA8CC")}>TRIAL GAUNTLET · {world.title.toUpperCase()}</span>
+            <span style={S.mono(10, "#9FA8CC")}>Q{gaunt.idx + 1}/{gaunt.pool.length} · {"❤️".repeat(gaunt.lives)}{"🖤".repeat(3 - gaunt.lives)} · {gaunt.score} ✓</span>
+          </div>
+          <div style={{ marginTop: 10 }}>
+            <QCard q={q} ord={gaunt.ord} onAnswer={answerGauntlet} label={`FROM: ${q.name} · +8 XP`} color={T.gold} />
+          </div>
+          {gaunt.fb && (
+            <div style={{ background: gaunt.fb.ok ? T.rewardSoft : T.penaltySoft, borderRadius: 14, padding: 14, marginTop: 12, animation: "slideUp .25s ease" }}>
+              <b style={{ color: gaunt.fb.ok ? T.reward : T.penalty, fontSize: 13 }}>{gaunt.fb.ok ? "✓ Correct" : "✗ Miss"}</b>
+              <p style={{ fontSize: 13, lineHeight: 1.55, margin: "6px 0 10px" }}>{gaunt.fb.msg}</p>
+              <button onClick={nextGauntlet} style={{ ...S.btn(T.ink), width: "100%" }}>Next →</button>
+            </div>
+          )}
+        </div>
+      </div>
+    );
+  }
+
+  /* ============ COACH ============ */
+  if (screen === "coach") {
+    const rows = coachRows();
+    const augCount = (aug[world.id] || []).length;
+    return (
+      <div style={S.app}><style>{CSS}</style><Toast /><HUD back={() => setScreen("home")} />
+        <div style={{ ...S.wrap }}>
+          <Tabs />
+          <h2 style={{ fontSize: 20, fontWeight: 800, margin: "14px 0 2px" }}>🧪 The Coach — {world.title}</h2>
+          <p style={{ color: T.inkSoft, fontSize: 13, lineHeight: 1.55 }}>The teaching system improves itself: every answer you give is tracked per concept. The Coach reads your miss patterns and forges NEW scenario drills aimed at exactly what you get wrong — they join the Trial Gauntlet pool, so coverage grows where you're weakest.</p>
+          <div style={{ display: "flex", gap: 8, margin: "10px 0" }}>
+            <button onClick={forgeDrills} disabled={busy === "coach"} style={{ ...S.btn(T.explore), flex: 1 }}>{busy === "coach" ? "Reflecting on your misses…" : "🔨 Reflect & forge new drills"}</button>
+            <button onClick={startGauntlet} style={S.btn(T.gold)}>⚔️ Gauntlet</button>
+          </div>
+          <span style={S.mono(10)}>{augCount} COACH-FORGED DRILLS IN THIS WORLD'S POOL</span>
+          {rows.length === 0 && <div style={{ ...S.card, marginTop: 10, color: T.inkSoft, fontSize: 13.5 }}>No telemetry yet for this world — fight some encounters first, then come back.</div>}
+          {rows.map((r) => (
+            <div key={r.id} style={{ ...S.card, marginTop: 8, padding: "10px 14px", display: "flex", alignItems: "center", gap: 10 }}>
+              <div style={{ flex: 1 }}>
+                <span style={{ fontWeight: 700, fontSize: 13.5 }}>{r.name}</span>
+                <div style={{ height: 6, background: T.line, borderRadius: 3, marginTop: 5 }}>
+                  <div style={{ height: "100%", width: `${Math.round((1 - r.rate) * 100)}%`, background: r.rate > 0.4 ? T.penalty : r.rate > 0.15 ? T.gold : T.reward, borderRadius: 3 }} />
+                </div>
+              </div>
+              <span style={S.mono(10, r.rate > 0.4 ? T.penalty : T.inkSoft)}>{Math.round((1 - r.rate) * 100)}% · {r.a} ans</span>
+            </div>
+          ))}
+        </div>
+      </div>
+    );
+  }
 
   /* ============ SPAWN ============ */
   if (screen === "spawn") return (
@@ -2016,7 +2404,7 @@ export default function App() {
           {resTab === "text" && <textarea value={pasteText} onChange={(e) => setPasteText(e.target.value)} placeholder="Paste an article, paper section, or notes… (works with local models too)" rows={6} style={{ ...S.input, resize: "vertical", fontFamily: "'Space Grotesk', sans-serif" }} />}
           {resTab === "concept" && <input value={conceptQ} onChange={(e) => setConceptQ(e.target.value)} placeholder="e.g. speculative decoding, Mamba, FHIR resources" style={S.input} />}
         </div>
-        <div style={{ display: "flex", gap: 8, marginTop: 10, alignItems: "center" }}>
+        <div style={{ display: "flex", gap: 8, marginTop: 10, alignItems: "center", flexWrap: "wrap" }}>
           <span style={S.mono(10)}>GOAL:</span>
           <button onClick={() => setGoal("learn")} style={S.chip(goal === "learn")}>🌍 Learn concepts</button>
           <button onClick={() => setGoal("implement")} style={S.chip(goal === "implement")}>⌨️ Implement solution</button>
@@ -2047,44 +2435,56 @@ export default function App() {
     </div>
   );
 
-  /* ============ DEX ============ */
-  if (screen === "dex") return (
-    <div style={S.app}><style>{CSS}</style><Toast /><HUD back={() => setScreen("home")} />
-      <div style={{ ...S.wrap, paddingTop: 16 }}>
-        <h2 style={{ fontSize: 20, fontWeight: 800, margin: "0 0 2px" }}>Conceptdex — {world.title}</h2>
-        <span style={S.mono(10.5)}>{save.captured.length} CAPTURED TOTAL · lore unlocks on capture</span>
-        {regions.map((r) => (
-          <div key={r.id} style={{ marginTop: 16 }}>
-            <div style={{ fontWeight: 800, fontSize: 15 }}>{r.emoji} {r.name}</div>
-            {r.concepts.map((c) => {
-              const got = capturedSet.has(c.id);
-              return (
-                <div key={c.id} style={{ ...S.card, marginTop: 8, padding: 13, opacity: got ? 1 : 0.6 }}>
-                  <div style={{ display: "flex", gap: 10, alignItems: "center" }}>
-                    <span style={{ fontSize: 24, filter: got ? "none" : "grayscale(1) brightness(0.4)" }}>{c.sprite}</span>
-                    <span style={{ fontWeight: 800, fontSize: 15 }}>{got ? c.name : "???"}</span>
-                    {got && <span style={{ ...S.mono(9, T.reward), marginLeft: "auto" }}>CAPTURED</span>}
-                  </div>
-                  {got ? <p style={{ fontSize: 13, lineHeight: 1.6, margin: "8px 0 0" }}>{c.lore}</p>
-                    : <p style={{ fontSize: 12.5, color: T.inkSoft, margin: "6px 0 0" }}>A critical encounter in {r.name}. Defeat it to unlock its lore.</p>}
-                </div>
-              );
-            })}
+  /* ============ CONCEPTDEX (per world) ============ */
+  if (screen === "dex") {
+    const dexW = allWorlds.find((w) => w.id === dexWorld) || world;
+    const dTotal = dexW.regions.reduce((n, r) => n + r.concepts.length, 0);
+    const dGot = dexW.regions.reduce((n, r) => n + r.concepts.filter((c) => capturedSet.has(c.id)).length, 0);
+    return (
+      <div style={S.app}><style>{CSS}</style><Toast /><HUD back={() => setScreen("home")} />
+        <div style={{ ...S.wrap, paddingTop: 16 }}>
+          <h2 style={{ fontSize: 20, fontWeight: 800, margin: "0 0 6px" }}>Conceptdex</h2>
+          <div style={{ display: "flex", gap: 6, flexWrap: "wrap" }}>
+            {allWorlds.map((w) => <button key={w.id} onClick={() => setDexWorld(w.id)} style={S.chip(dexWorld === w.id)}>{w.emoji} {w.title}</button>)}
           </div>
-        ))}
+          <div style={{ marginTop: 10 }}><span style={S.mono(10.5, dGot === dTotal && dTotal > 0 ? T.reward : T.inkSoft)}>{dexW.title}: {dGot}/{dTotal} CAPTURED · lore unlocks on capture</span></div>
+          {dexW.regions.map((r) => (
+            <div key={r.id} style={{ marginTop: 14 }}>
+              <div style={{ fontWeight: 800, fontSize: 15 }}>{r.emoji} {r.name}</div>
+              {r.concepts.map((c) => {
+                const got = capturedSet.has(c.id);
+                return (
+                  <div key={c.id} style={{ ...S.card, marginTop: 8, padding: 13, opacity: got ? 1 : 0.6 }}>
+                    <div style={{ display: "flex", gap: 10, alignItems: "center" }}>
+                      <span style={{ fontSize: 24, filter: got ? "none" : "grayscale(1) brightness(0.4)" }}>{c.sprite}</span>
+                      <span style={{ fontWeight: 800, fontSize: 15 }}>{got ? c.name : "???"}</span>
+                      {got && <span style={{ ...S.mono(9, T.reward), marginLeft: "auto" }}>CAPTURED</span>}
+                    </div>
+                    {got ? <p style={{ fontSize: 13, lineHeight: 1.6, margin: "8px 0 0" }}>{c.lore}</p>
+                      : <p style={{ fontSize: 12.5, color: T.inkSoft, margin: "6px 0 0" }}>A critical encounter in {r.name}. Defeat it to unlock its lore.</p>}
+                  </div>
+                );
+              })}
+            </div>
+          ))}
+        </div>
       </div>
-    </div>
-  );
+    );
+  }
 
   /* ============ SETTINGS ============ */
   if (screen === "settings") return (
     <div style={S.app}><style>{CSS}</style><Toast /><HUD back={() => setScreen("home")} />
       <div style={{ ...S.wrap, paddingTop: 18 }}>
         <h2 style={{ fontSize: 20, fontWeight: 800, margin: "0 0 4px" }}>Model settings</h2>
-        <p style={{ color: T.inkSoft, fontSize: 13, lineHeight: 1.55 }}>World/kata generation can run on the built-in Claude or any OpenAI-compatible endpoint. Web browsing (URL scans, Concept finder, Paper Scout) and PDF reading always use the built-in model; Paste-text generation and code review honor your choice.</p>
+        <p style={{ color: T.inkSoft, fontSize: 13, lineHeight: 1.55 }}>Generation can run on the built-in Claude or any OpenAI-compatible endpoint. Web browsing (URL scans, Concept finder, Paper Scout, Coach) and PDFs use the Claude path; Paste-text generation and code review honor your choice.</p>
         <div style={{ display: "flex", gap: 6, marginTop: 8 }}>
-          <button onClick={() => persistCfg({ ...cfg, provider: "builtin" })} style={S.chip(cfg.provider === "builtin")}>Built-in Claude</button>
+          <button onClick={() => persistCfg({ ...cfg, provider: "builtin" })} style={S.chip(cfg.provider === "builtin")}>Claude</button>
           <button onClick={() => persistCfg({ ...cfg, provider: "custom" })} style={S.chip(cfg.provider === "custom")}>Custom endpoint</button>
+        </div>
+        <div style={{ ...S.card, marginTop: 12 }}>
+          <span style={S.mono(10)}>ANTHROPIC API KEY (only needed OUTSIDE claude.ai — e.g. the desktop build)</span>
+          <input value={cfg.anthropicKey || ""} onChange={(e) => persistCfg({ ...cfg, anthropicKey: e.target.value })} type="password" placeholder="sk-ant-… (leave blank inside claude.ai)" style={{ ...S.input, margin: "6px 0 0" }} />
         </div>
         {cfg.provider === "custom" && (
           <div style={{ ...S.card, marginTop: 12 }}>
@@ -2100,13 +2500,13 @@ export default function App() {
             <input value={cfg.model} onChange={(e) => persistCfg({ ...cfg, model: e.target.value })} placeholder="llama3.1, qwen2.5-coder, gpt-4o-mini…" style={{ ...S.input, margin: "4px 0 10px" }} />
             <span style={S.mono(10)}>API KEY (blank for local)</span>
             <input value={cfg.apiKey} onChange={(e) => persistCfg({ ...cfg, apiKey: e.target.value })} type="password" placeholder="sk-…" style={{ ...S.input, margin: "4px 0 6px" }} />
-            <p style={{ fontSize: 11.5, color: T.inkSoft, lineHeight: 1.5, margin: "8px 0 0" }}>⚠️ Local endpoints need CORS enabled (e.g. <code>OLLAMA_ORIGINS=*</code>; LM Studio → enable CORS in server settings). Some hosted sandboxes block non-Anthropic requests — if calls fail here, run this file in a local Vite app and everything works.</p>
+            <p style={{ fontSize: 11.5, color: T.inkSoft, lineHeight: 1.5, margin: "8px 0 0" }}>⚠️ Local endpoints need CORS enabled (e.g. <code>OLLAMA_ORIGINS=*</code>; LM Studio → enable CORS). The claude.ai sandbox may block non-Anthropic requests — the desktop build has no such limits.</p>
           </div>
         )}
         <div style={{ ...S.card, marginTop: 12 }}>
           <span style={S.mono(10)}>SAVE DATA</span>
-          <p style={{ fontSize: 12.5, color: T.inkSoft, margin: "6px 0 10px" }}>XP {save.xp} · {save.captured.length} concepts · {save.badges.length} badges · {Object.keys(save.katas).length} katas touched</p>
-          <button onClick={() => { persist({ xp: 0, hp: 100, badges: [], captured: [], sides: [], katas: {} }); showToast("Save reset."); }} style={{ ...S.btn(T.penalty), padding: "8px 14px", fontSize: 12.5 }}>Reset progress</button>
+          <p style={{ fontSize: 12.5, color: T.inkSoft, margin: "6px 0 10px" }}>XP {save.xp} · {save.captured.length} concepts · {save.badges.length} badges · {Object.keys(save.katas).length} katas · telemetry on {Object.keys(save.qstats).length} topics</p>
+          <button onClick={() => { persist({ xp: 0, hp: 100, badges: [], captured: [], sides: [], katas: {}, qstats: {} }); persistAug({}); showToast("Save reset."); }} style={{ ...S.btn(T.penalty), padding: "8px 14px", fontSize: 12.5 }}>Reset progress</button>
         </div>
       </div>
     </div>
@@ -2118,9 +2518,9 @@ export default function App() {
       <div style={{ ...S.wrap }}>
         <Tabs />
         <h2 style={{ fontSize: 20, fontWeight: 800, margin: "14px 0 4px" }}>📡 Paper Scout</h2>
-        <p style={{ color: T.inkSoft, fontSize: 13, lineHeight: 1.55 }}>Live search over arXiv / Hugging Face Papers via the built-in model. (Papers with Code was sunset in 2025 — this is its spiritual successor here.) Found something good? Bring it into a world via <b>+ Bring your own</b>.</p>
+        <p style={{ color: T.inkSoft, fontSize: 13, lineHeight: 1.55 }}>Live search over arXiv / Hugging Face Papers via the built-in model (Papers with Code was sunset in 2025). Found something good? Make it a world.</p>
         <div style={{ display: "flex", gap: 8, marginTop: 8 }}>
-          <input value={paperQ} onChange={(e) => setPaperQ(e.target.value)} placeholder="e.g. agentic RL, KV cache compression, medical VLM" style={{ ...S.input, flex: 1, minWidth: 0 }} />
+          <input value={paperQ} onChange={(e) => setPaperQ(e.target.value)} placeholder="e.g. JEPA world models, KV cache compression" style={{ ...S.input, flex: 1, minWidth: 0 }} />
           <button onClick={doPapers} disabled={busy === "papers"} style={S.btn(T.ink)}>{busy === "papers" ? "…" : "Scout"}</button>
         </div>
         {papers && papers.error && <div style={{ marginTop: 12, color: T.penalty, fontSize: 13.5 }}>Scout failed — try a broader topic.</div>}
@@ -2147,7 +2547,7 @@ export default function App() {
         <div style={{ ...S.wrap }}>
           <Tabs />
           <h2 style={{ fontSize: 20, fontWeight: 800, margin: "14px 0 0" }}>⌨️ The Dojo</h2>
-          <span style={S.mono(10)}>guided implementation katas · +15 XP/step · +60 XP/completion</span>
+          <span style={S.mono(10)}>guided steps · runnable Python lab · +15 XP/step · +60 XP/completion</span>
           {fams.map(([fam, label]) => {
             const ks = allKatas.filter((k) => k.family === fam);
             if (!ks.length) return null;
@@ -2160,9 +2560,9 @@ export default function App() {
                     <div key={k.id} onClick={() => openKata(k)} style={{ ...S.card, marginTop: 8, padding: 13, display: "flex", gap: 12, alignItems: "center", cursor: "pointer", background: done ? T.rewardSoft : T.card }}>
                       <span style={{ fontSize: 22 }}>{k.emoji || "⌨️"}</span>
                       <div style={{ flex: 1 }}>
-                        <div style={{ fontWeight: 700, fontSize: 14 }}>{k.title}</div>
+                        <div style={{ fontWeight: 700, fontSize: 14 }}>{k.title} {LABS[k.id] ? "🧪" : ""}</div>
                         <div style={{ fontSize: 12, color: T.inkSoft, lineHeight: 1.45 }}>{k.blurb}</div>
-                        <span style={S.mono(9, done ? T.reward : T.inkSoft)}>{done ? "COMPLETE ✓" : `${p}/${k.steps.length} steps`} · {k.frameworks.join(" / ")}</span>
+                        <span style={S.mono(9, done ? T.reward : T.inkSoft)}>{done ? "COMPLETE ✓" : `${p}/${k.steps.length} steps`} · {k.frameworks.join(" / ")}{LABS[k.id] ? " · LIVE LAB" : ""}</span>
                       </div>
                       <span style={{ color: T.explore, fontWeight: 800 }}>›</span>
                     </div>
@@ -2179,6 +2579,7 @@ export default function App() {
   /* ============ KATA PLAYER ============ */
   if (screen === "kata" && kata) {
     const st = kata.steps[stepIdx];
+    const lab = LABS[kata.id];
     return (
       <div style={S.app}><style>{CSS}</style><Toast /><HUD back={() => setScreen("dojo")} />
         <div style={{ ...S.wrap, paddingTop: 16 }}>
@@ -2193,9 +2594,9 @@ export default function App() {
               <div style={{ fontWeight: 700, fontSize: 14.5, lineHeight: 1.5, margin: "8px 0 10px" }}>{st.prompt}</div>
               {st.code && <pre style={S.pre}>{st.code}</pre>}
               <div style={{ marginTop: 12 }}>
-                {st.options.map((opt, i) => (
-                  <button key={i} onClick={() => answerKata(i)} style={{ display: "block", width: "100%", textAlign: "left", marginBottom: 8, background: T.card, border: `1.5px solid ${T.line}`, color: T.ink, borderRadius: 10, padding: "11px 13px", fontSize: 13, fontWeight: 600, cursor: "pointer", fontFamily: "'JetBrains Mono', monospace", lineHeight: 1.5 }}>
-                    <span style={S.mono(10, T.explore)}>{String.fromCharCode(65 + i)}</span>&nbsp;&nbsp;{opt}
+                {kOrd.map((optIdx, i) => (
+                  <button key={i} onClick={() => answerKata(i)} style={{ ...S.qbtn, fontFamily: "'JetBrains Mono', monospace", fontSize: 13, lineHeight: 1.5 }}>
+                    <span style={S.mono(10, T.explore)}>{String.fromCharCode(65 + i)}</span>&nbsp;&nbsp;{st.options[optIdx]}
                   </button>
                 ))}
               </div>
@@ -2212,13 +2613,24 @@ export default function App() {
                 <span style={S.mono(10, T.reward)}>KATA COMPLETE — REFERENCE SOLUTION ({fw.toUpperCase()})</span>
               </div>
               <pre style={{ ...S.pre, marginTop: 10 }}>{kata.solutions[fw] || kata.solutions[Object.keys(kata.solutions)[0]] || "// no reference for this framework"}</pre>
+              {lab && (
+                <div style={{ ...S.card, marginTop: 12 }}>
+                  <span style={S.mono(10, T.action)}>🧪 CODE LAB — runs real Python in your browser (Pyodide)</span>
+                  <textarea value={labCode} onChange={(e) => setLabCode(e.target.value)} rows={14} spellCheck={false} style={{ ...S.input, marginTop: 8, resize: "vertical", fontSize: 12, lineHeight: 1.55 }} />
+                  <div style={{ display: "flex", gap: 8, marginTop: 8 }}>
+                    <button onClick={() => runLab(false)} disabled={busy === "lab"} style={{ ...S.btn(T.ink), flex: 1 }}>{busy === "lab" ? "Running…" : "▶ Run"}</button>
+                    <button onClick={() => runLab(true)} disabled={busy === "lab"} style={{ ...S.btn(T.reward), flex: 1 }}>{busy === "lab" ? "Running…" : "✓ Run tests"}</button>
+                  </div>
+                  {labOut && <pre style={{ ...S.pre, marginTop: 8, maxHeight: 220, overflowY: "auto", background: "#0B0F1E" }}>{labOut}</pre>}
+                </div>
+              )}
               <div style={{ ...S.card, marginTop: 12 }}>
-                <span style={S.mono(10, T.explore)}>NOW WRITE YOUR OWN — AI REVIEW</span>
-                <textarea value={myCode} onChange={(e) => setMyCode(e.target.value)} rows={8} placeholder={`Paste your ${fw} implementation here for a strict review (uses your model settings)…`} style={{ ...S.input, marginTop: 8, resize: "vertical" }} />
+                <span style={S.mono(10, T.explore)}>AI REVIEW OF YOUR IMPLEMENTATION</span>
+                <textarea value={myCode} onChange={(e) => setMyCode(e.target.value)} rows={7} placeholder={`Paste your ${fw} implementation (or your lab code) for a strict review…`} style={{ ...S.input, marginTop: 8, resize: "vertical" }} />
                 <button onClick={doReview} disabled={busy === "review"} style={{ ...S.btn(T.explore), width: "100%", marginTop: 8 }}>{busy === "review" ? "Reviewing…" : "Review my code"}</button>
                 {review && <div style={{ marginTop: 10, fontSize: 13, lineHeight: 1.6, whiteSpace: "pre-wrap" }}>{review}</div>}
               </div>
-              <button onClick={() => { setStepIdx(0); setKPhase("step"); setKFeedback(null); }} style={{ ...S.btn(T.ink), width: "100%", marginTop: 12 }}>Replay steps</button>
+              <button onClick={() => { setStepIdx(0); setKPhase("step"); setKOrd(shuf4()); setKFeedback(null); }} style={{ ...S.btn(T.ink), width: "100%", marginTop: 12 }}>Replay steps</button>
             </>
           )}
         </div>
@@ -2238,7 +2650,7 @@ export default function App() {
     return (
       <div style={{ ...S.app, background: T.night }}><style>{CSS}</style><Toast />
         <div style={{ maxWidth: 620, margin: "0 auto", padding: "16px 14px 60px" }}>
-          <span style={{ ...S.mono(10, "#9FA8CC") }}>{kindLabel}</span>
+          <span style={{ ...S.mono(10, "#9FA8CC") }}>{kindLabel} · {Math.min(battle.qIdx + 1, bQuestions.length)}/{bQuestions.length} QUESTIONS</span>
           <div style={{ background: "linear-gradient(180deg,#2E3A66 0%,#3D4E85 100%)", borderRadius: 16, padding: "18px 16px 14px", border: "1px solid #46548F", marginTop: 6 }}>
             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start" }}>
               <div style={{ background: "rgba(255,255,255,0.95)", borderRadius: 10, padding: "8px 12px", minWidth: 165 }}>
@@ -2266,11 +2678,9 @@ export default function App() {
             <div style={{ background: T.card, borderRadius: 14, padding: 16, marginTop: 12, animation: "slideUp .3s ease" }}>
               <span style={S.mono(10, kindColor)}>MISSION BRIEFING — RETENTION DUEL</span>
               <p style={{ fontSize: 14, lineHeight: 1.6, margin: "8px 0 10px" }}>{side.desc}</p>
-              <div style={{ display: "flex", gap: 8, flexWrap: "wrap", alignItems: "center" }}>
-                <span style={{ ...S.mono(10, level >= (side.recLevel || 1) ? T.reward : T.penalty), background: level >= (side.recLevel || 1) ? T.rewardSoft : T.penaltySoft, padding: "5px 10px", borderRadius: 999 }}>
-                  RECOMMENDED LV.{side.recLevel || 1} {level >= (side.recLevel || 1) ? "✓ you qualify" : `· you are LV.${level}`}
-                </span>
-              </div>
+              <span style={{ ...S.mono(10, level >= (side.recLevel || 1) ? T.reward : T.penalty), background: level >= (side.recLevel || 1) ? T.rewardSoft : T.penaltySoft, padding: "5px 10px", borderRadius: 999 }}>
+                RECOMMENDED LV.{side.recLevel || 1} {level >= (side.recLevel || 1) ? "✓ you qualify" : `· you are LV.${level}`}
+              </span>
               {(side.prereqs || []).length > 0 && (
                 <div style={{ marginTop: 10 }}>
                   <span style={S.mono(9.5)}>PREREQ LORE — capture these criticals first for optimal retention:</span>
@@ -2309,9 +2719,9 @@ export default function App() {
               </div>
               {side && side.code && battle.showCode && <pre style={{ ...S.pre, marginTop: 8, maxHeight: 180, overflowY: "auto" }}>{side.code}</pre>}
               <div style={{ fontWeight: 700, fontSize: 15, lineHeight: 1.55, margin: "8px 0 12px" }}>{q.q}</div>
-              {q.options.map((opt, i) => (
-                <button key={i} onClick={() => answerBattle(i)} style={{ display: "block", width: "100%", textAlign: "left", marginBottom: 8, background: T.card, border: `1.5px solid ${T.line}`, color: T.ink, borderRadius: 10, padding: "11px 13px", fontSize: 13.5, fontWeight: 600, cursor: "pointer", fontFamily: "inherit", lineHeight: 1.45 }}>
-                  <span style={S.mono(10, T.explore)}>{String.fromCharCode(65 + i)}</span>&nbsp;&nbsp;{opt}
+              {battle.ord.map((optIdx, i) => (
+                <button key={i} onClick={() => answerBattle(i)} style={S.qbtn}>
+                  <span style={S.mono(10, T.explore)}>{String.fromCharCode(65 + i)}</span>&nbsp;&nbsp;{q.options[optIdx]}
                 </button>
               ))}
             </div>
@@ -2324,7 +2734,7 @@ export default function App() {
               </span>
               <p style={{ fontSize: 13.5, lineHeight: 1.6, margin: "8px 0 0" }}>{battle.log}</p>
               <button onClick={continueBattle} style={{ ...S.btn(battle.phase === "victory" ? T.reward : T.ink), width: "100%", marginTop: 12 }}>
-                {battle.phase === "victory" ? "Return to the board →" : battle.phase === "defeat" ? "Wake up at entrance" : battle.wrong ? "Face the question again" : "Next question →"}
+                {battle.phase === "victory" ? "Return to the board →" : battle.phase === "defeat" ? "Wake up at entrance" : battle.wrong ? "Face the question again (reshuffled)" : "Next question →"}
               </button>
             </div>
           )}
@@ -2339,7 +2749,7 @@ export default function App() {
     const gymUnlocked = criticalsDone === region.concepts.length;
     const at = board.nodes.find((n) => n.id === atNode) || board.nodes[0];
     return (
-      <div style={S.app}><style>{CSS}</style><Toast /><HUD back={() => setScreen(regions.length > 1 ? "regionlist" : "home")} />
+      <div style={S.app}><style>{CSS}</style><Toast /><HUD back={() => setScreen("regionlist")} />
         <div style={{ maxWidth: 620, margin: "0 auto", padding: "12px 14px 50px" }}>
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline" }}>
             <div style={{ fontWeight: 800, fontSize: 17 }}>{region.emoji} {region.name}</div>
@@ -2391,19 +2801,18 @@ export default function App() {
             <div style={{ position: "absolute", left: `${at.x}%`, top: `${at.y}%`, fontSize: 22, transition: "left .5s ease, top .5s ease", pointerEvents: "none", animation: "tokenBob 1.6s ease-in-out infinite", textShadow: "0 2px 4px rgba(0,0,0,0.3)" }}>🧢</div>
           </div>
 
-          {(world.links || []).length > 0 && (
-            <div style={{ display: "flex", flexWrap: "wrap", gap: 6, marginTop: 10, alignItems: "center" }}>
-              <span style={S.mono(9.5)}>STUDY HALL:</span>
-              {world.links.map((l) => <a key={l.url} href={l.url} target="_blank" rel="noreferrer" style={{ ...S.chip(false), textDecoration: "none", fontSize: 11.5, padding: "5px 10px" }}>🔗 {l.label}</a>)}
-            </div>
-          )}
+          <div style={{ display: "flex", flexWrap: "wrap", gap: 6, marginTop: 10, alignItems: "center" }}>
+            <button onClick={startGauntlet} style={{ ...S.btn(T.gold), padding: "6px 12px", fontSize: 12 }}>⚔️ Trial Gauntlet</button>
+            <button onClick={() => setScreen("coach")} style={{ ...S.btn(T.explore), padding: "6px 12px", fontSize: 12 }}>🧪 Coach</button>
+            {(world.links || []).map((l) => <a key={l.url} href={l.url} target="_blank" rel="noreferrer" style={{ ...S.chip(false), textDecoration: "none", fontSize: 11.5, padding: "5px 10px" }}>🔗 {l.label}</a>)}
+          </div>
 
           <div style={{ marginTop: 12 }}>
             {region.concepts.map((c) => (
               <div key={c.id} onClick={() => tapNode("c:" + c.id)} style={{ display: "flex", alignItems: "center", gap: 10, padding: "8px 10px", borderRadius: 10, background: capturedSet.has(c.id) ? T.rewardSoft : T.card, border: `1px solid ${T.line}`, marginBottom: 6, cursor: "pointer" }}>
                 <span style={{ fontSize: 18 }}>{c.sprite}</span>
                 <span style={{ fontWeight: 700, fontSize: 13.5, flex: 1 }}>{c.name}</span>
-                <span style={S.mono(9, capturedSet.has(c.id) ? T.reward : T.action)}>{capturedSet.has(c.id) ? "CAPTURED · re-read lore" : "CRITICAL"}</span>
+                <span style={S.mono(9, capturedSet.has(c.id) ? T.reward : T.action)}>{capturedSet.has(c.id) ? "CAPTURED · re-read lore" : `CRITICAL · ${c.questions.length}Q`}</span>
               </div>
             ))}
             {(region.sides || []).map((s) => {

@@ -1,100 +1,219 @@
-# Edokai
+# Edokai / Rollout World v3
 
-Edokai is a small experiment in making hard learning material feel less like homework and more like wandering around a game board looking for the next fight.
+Edokai is a gamified learning interface for people who want technical study to feel less like forcing themselves through a giant blog tab and more like moving across a game board looking for the next fight.
 
-The original vibe in my head was Dragon Ball Z: Budokai 2: a board layout, a main route with boss encounters, little side encounters off the path, and that feeling of slowly clearing a world instead of staring at a giant wall of text. But instead of grinding capsules or beating up Cell for the tenth time, the enemies here are concepts: agentic RL, attention, KL divergence, diffusion, inference systems, model architectures, and all the other stuff I keep wanting to understand without forcing myself through another endless blog post.
+The original inspiration was Dragon Ball Z: Budokai 2: board layout, main-path encounters, optional side fights, and boss battles that make a world feel clearable. Edokai takes that shape and points it at learning. Instead of grinding capsules, the encounters are concepts. Instead of plain LeetCode repetition, the Dojo gives you coding katas, live tests, and a reason to keep going.
 
-I called it Edokai because the pitch is basically: Budokai, but for education.
+I started this because my self-prescribed ADHD makes the normal study flow hard. Long papers matter, but I bounce off them. Dense blogs are useful, but I rarely want to sit there passively reading. Plain LeetCode can be valuable, but it often feels mind-numbing: submit, pass, forget why I cared. This is an attempt to make the effort more directed and more playful without pretending the material is easy.
 
-## Why this exists
+The app is still branded "Rollout World" internally, but this repo is the broader Edokai project: Budokai, but for education.
 
-I have a self-prescribed ADHD problem with learning technical material the normal way.
+## v3 status
 
-Long papers are important, but my brain bounces off them. Huge blogs are useful, but only if I can actually stay with them. Plain LeetCode is valuable, but a lot of the time it feels mind-numbing: solve the box, submit, move on, forget why I cared.
+Rollout World v3 is now in this repo as both:
 
-Edokai is an attempt to turn that loop into something with a little friction, reward, and play:
+- a source artifact: `rollout-world-v3.jsx`
+- a complete Electron + Vite desktop project: `package.json`, `src/`, `electron/`, `index.html`, `vite.config.js`
 
-- concepts become "critical encounters"
-- deeper checks become boss/gym battles
-- side encounters reinforce what you just learned instead of letting it evaporate
-- XP, HP, badges, captured concepts, and progress tracking give the session a shape
-- implementation katas make the learning code-first instead of just read-and-nod
-- paper/blog/PDF ingestion can turn outside material into a new mini-world
+The old `rollout-ultimate.jsx` file has also been updated to the same v3 app content so older links still point at the newest prototype.
 
-This is not trying to make learning effortless. The point is to make effort feel directed. If I am going to struggle with a dense topic anyway, I would rather struggle through a map, a duel, a dojo, and a boss fight than through a blank tab and vibes.
+Verified locally:
 
-## What is in this repo right now
+- main app file: 2,860 lines
+- Vite production build: 375.83 kB JS bundle, 127.26 kB gzip
+- macOS desktop package built with electron-builder
+- mac artifact: `release/Rollout World-3.0.0-arm64.dmg`
 
-The main prototype is `rollout-ultimate.jsx`.
+Note: the mac build is unsigned because there is no Developer ID signing identity on this machine. macOS may show the normal Gatekeeper warning for unsigned apps.
 
-It is a single-file React app prototype currently titled "Rollout World" in the UI. Edokai is the repo/project name and the broader idea around it.
+## What changed in v3
 
-The file includes:
+### Per-world Conceptdex
 
-- a Budokai-style board map for learning worlds
-- critical concept encounters with lore and multiple-choice battles
-- side duels for reinforcement and prerequisite checks
-- gym/boss battles that unlock badges
-- XP, HP, captured concepts, side clears, kata progress, and local save state
-- a small WebAudio chiptune music engine, no external audio assets needed
-- a "Bring your own resource" flow for URLs, PDFs, pasted text, or concept names
-- built-in model routing for Claude plus OpenAI-compatible local endpoints like Ollama, LM Studio, and llama.cpp
-- a Paper Scout flow for finding papers and turning them into study worlds
-- a Dojo with guided implementation katas and code review
+The 📖 dex is no longer one giant global bucket. It now opens with world-selector chips, and each world has its own Conceptdex with its own capture count, organized by region.
 
-The built-in learning content currently covers Agentic RL in the most detail, plus atlas-style worlds for topics like diffusion models, VLMs, mixture of experts, orchestration, embeddings, attention, inference systems, autoencoders, KL divergence, and LLM architectures.
+That matters because the whole point of Edokai is map-shaped learning. A dex should answer: what did I capture in this world, not just what did I ever touch anywhere.
 
-The Dojo includes examples such as self-attention from scratch, transformer blocks, Flash/PagedAttention-style systems ideas, LoRA, training loops, Blind 75-style coding, and LLM inference server design.
+### New World Models content
 
-## How I imagine using it
+There is now a World Models region called "The Imagination Engine" covering:
 
-A normal study session should feel more like this:
+- latent world models and Dreamer-style imagined rollouts
+- JEPA-style prediction in representation space, including I-JEPA / V-JEPA and the collapse problem
+- LeJEPA and SIGReg, including the isotropic-Gaussian objective
 
-1. Pick a world.
-2. Walk the board.
-3. Read just enough lore to fight the current concept.
-4. Answer questions and take damage if I am hand-waving.
-5. Clear the main route.
-6. Hit side duels to reinforce the stuff I am likely to forget.
-7. Fight the boss/gym once the core concepts are captured.
-8. Jump into the Dojo when the topic needs implementation, not just recognition.
+There is also an honest acronym-disambiguation note baked into gameplay: GEPA is not a world model. It is DSPy's reflective prompt optimizer that happens to rhyme with JEPA. Instead of quietly dropping that confusion, v3 turns it into a side encounter called "Mirage of Acronyms" that drills the difference.
 
-The important part is that the interface gives me a reason to continue without pretending that learning is just "consume content until enlightened."
+### Umbrella worlds
 
-## Running the prototype
+The 11 old flat worlds have been reorganized into 5 umbrella worlds, closer to the multi-region structure that Agentic RL already had:
 
-This repo currently ships the prototype as a single React component file. The quickest way to play with it is to drop it into a Vite React app as the app component.
+1. Agentic RL & Agent Systems
+   - the 6 RL regions
+   - orchestration content
 
-Example:
+2. Transformer Architecture
+   - embeddings
+   - attention
+   - MoE
+   - modern architectures
+
+3. Generative Models
+   - KL divergence
+   - autoencoders
+   - diffusion
+   - dependency-ordered instead of random-topic ordered
+
+4. Perception & World Models
+   - VLMs
+   - the new Imagination Engine region
+
+5. LLM Systems & Serving
+   - inference split into Cache Vaults and Throughput Works
+   - new quantization, speculative decoding, and disaggregation concepts
+
+### Question quality pass
+
+Question quality got both a manual cleanup and a structural fix.
+
+A regex audit found that 98 of 230 questions had the correct answer as the longest option. That made the quiz gameable in a bad way. I repaired this with roughly 190 hand edits: trimming verbose correct answers, lengthening thin distractors, and generally making the options less obviously patterned. The audit ended at 29 marginal cases, with gaps under about 16 characters.
+
+Then v3 adds the more important structural fix: options are shuffled at render time. They reshuffle every question and every retry, so the answer position and any leftover length pattern cannot just be memorized.
+
+Repetition is also structurally fixed: enemy HP now equals question count times damage. A battle should not recycle questions just because the enemy had too much HP.
+
+### Interactive coding
+
+The Dojo now has a live Code Lab powered by Pyodide: real Python + NumPy in the browser/desktop app.
+
+Six katas support editable starter code, ▶ Run, and ✓ Run tests with assertions:
+
+- self-attention
+- MLP forward/backward
+- attention backward, including numeric gradient checks in the tests
+- Two Sum
+- sliding window
+- PagedAttention
+
+Caveat: the claude.ai sandbox can sometimes block the Pyodide runtime CDN. The app falls back gracefully there. The desktop build runs the Code Lab without those sandbox CORS headaches.
+
+### Comprehensiveness + self-improvement
+
+Fixed nodes plus fixed questions can never be truly exhaustive, so v3 makes coverage grow.
+
+Every answer feeds per-topic telemetry. The 🧪 Coach shows an accuracy table per concept and can forge new scenario drills targeting your weakest topics. Those drills join the per-world Trial Gauntlet.
+
+The Trial Gauntlet gives you:
+
+- 3 lives
+- the entire world's question pool shuffled
+- coach-forged drills included
+- weakest-topic report at the end
+
+In other words, self-improvement and comprehensiveness are one mechanism: the system teaches harder where you are weakest.
+
+### Desktop executable/package
+
+The zip provided for this update contained a complete Electron + Vite project. I integrated it into the repo and built the mac desktop package locally.
+
+The app file in `src/App.jsx` is byte-identical to the provided v3 artifact. The desktop entry point adds a `window.storage` to `localStorage` shim so the artifact code can run as a normal desktop app.
+
+Settings now includes an Anthropic API key field. That field is irrelevant inside claude.ai, but it powers generation, Coach, Paper Scout, PDF/URL import, and code review in the desktop app. Local Ollama / LM Studio / llama.cpp endpoints also work from the desktop app without the usual browser CORS gymnastics.
+
+## Run from source
+
+Requires Node.js and npm.
 
 ```bash
-npm create vite@latest edokai-playground -- --template react
-cd edokai-playground
-cp /path/to/rollout-ultimate.jsx src/App.jsx
 npm install
 npm run dev
 ```
 
-Then open the local Vite URL.
+Open the Vite URL printed in the terminal.
 
-If you use a local model endpoint for generation or review, make sure it is OpenAI-compatible and has browser CORS enabled. For Ollama, that usually means starting it with an origin that allows the dev server.
+## Launch the desktop app locally
 
-## Notes on the prototype
+```bash
+npm install
+npm run start
+```
 
-This is intentionally rough and exploratory.
+`npm run start` builds the Vite app and launches Electron.
 
-The current app is packed into one big JSX file because the priority was to get the interaction loop into existence: map, encounters, retention, katas, generation, and save state. A later pass should split it into real components, move the world/kata content into data files, and wire up a cleaner app scaffold.
+## Build installers
 
-Things I would like to improve next:
+Installers should be built on the OS you are targeting.
 
-- rename the in-app branding from Rollout World to Edokai
-- split the single-file prototype into components and content modules
-- add a proper Vite/React project scaffold
-- add tests for board progression and battle state
-- make the generated worlds easier to export/import
-- improve accessibility and keyboard navigation
-- tune the question generation rules so distractors stay fair
-- add more code-first MLE interview and systems katas
+On macOS:
+
+```bash
+npm install
+npm run dist:mac
+```
+
+Output:
+
+```text
+release/Rollout World-3.0.0-arm64.dmg
+```
+
+On Windows:
+
+```bash
+npm install
+npm run dist:win
+```
+
+Expected output:
+
+```text
+release/Rollout World Setup 3.0.0.exe
+```
+
+## First-run setup for generation features
+
+Open ⚙️ Settings in the app.
+
+For built-in Claude-powered generation outside claude.ai, paste an Anthropic API key. This is needed for:
+
+- world generation
+- Coach drill generation
+- Paper Scout
+- PDF / URL import
+- code review
+
+For local models, point the custom endpoint at an OpenAI-compatible server:
+
+- Ollama: `http://localhost:11434/v1`
+- LM Studio: `http://localhost:1234/v1`
+- llama.cpp server: `http://localhost:8080/v1`
+
+The desktop app avoids the browser sandbox issues that made local endpoints annoying in web-only prototypes.
+
+## Project layout
+
+```text
+.
+├── electron/main.cjs              # Electron shell
+├── src/App.jsx                    # Rollout World v3 app
+├── src/main.jsx                   # React entry + storage shim
+├── rollout-world-v3.jsx           # standalone v3 artifact
+├── rollout-ultimate.jsx           # compatibility copy, updated to v3
+├── package.json                   # Vite/Electron scripts
+├── vite.config.js
+└── release/Rollout World-3.0.0-arm64.dmg
+```
+
+## Prototype notes
+
+This is still very much an exploratory prototype. The gameplay loop exists, but future cleanup should probably include:
+
+- renaming in-app branding from Rollout World to Edokai
+- splitting the large app file into components and content modules
+- adding automated tests for board progression, question shuffling, telemetry, and gauntlets
+- improving keyboard navigation and accessibility
+- adding icons/signing/notarization for the desktop release
+- expanding the MLE interview and systems-design kata library
 
 ## License
 
