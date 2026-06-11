@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from "react";
 
 /* ============================================================
-   ROLLOUT WORLD — ULTIMATE EDITION
+   EDOKAI — ULTIMATE EDITION
    Two modes:
    🌍 LEARN — Budokai-style board worlds. Criticals teach, sides
       drill retention (with recommended level + prereq lore).
@@ -2226,7 +2226,7 @@ export default function App() {
     <div style={{ ...S.app, display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", textAlign: "center", padding: 20 }}>
       <style>{CSS}</style>
       <div style={{ fontSize: 60, animation: "bob 2.5s ease-in-out infinite" }}>🧢</div>
-      <h1 style={{ fontSize: 32, fontWeight: 800, letterSpacing: "-0.02em", margin: "8px 0 2px" }}>ROLLOUT WORLD</h1>
+      <h1 style={{ fontSize: 32, fontWeight: 800, letterSpacing: "-0.02em", margin: "8px 0 2px" }}>EDOKAI</h1>
       <span style={S.mono(11, T.explore)}>5 UMBRELLA WORLDS · DOJO + PYTHON LAB · SELF-IMPROVING COACH</span>
       <p style={{ color: T.inkSoft, maxWidth: 430, lineHeight: 1.6, fontSize: 14.5, marginTop: 14 }}>
         Board worlds for <b style={{ color: T.action }}>concepts</b>, a <b style={{ color: T.explore }}>Dojo</b> with runnable Python katas, per-world <b>Trial Gauntlets</b>, and a <b style={{ color: T.reward }}>Coach</b> that watches your misses and forges new drills targeting your weaknesses. Bring your own model, resource, or concept.
