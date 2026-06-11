@@ -3,3 +3,4 @@ dist/
 release/mac*/
 .DS_Store
 *.log
+release/*installer.dmg
