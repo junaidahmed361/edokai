@@ -224,13 +224,15 @@ The macOS DMG is packaged as a GitHub release candidate. Download the attached `
 
 Important macOS Gatekeeper note: Edokai is ad-hoc signed but not Apple Developer ID signed/notarized yet. On some macOS versions, a browser-downloaded DMG can still produce the misleading "app is damaged/broken and should be moved to Trash" dialog before Privacy & Security offers an unblock button. That is Gatekeeper quarantine behavior for an unnotarized app, not a failed DMG checksum.
 
-For the current RC, the recommended install path is the helper script attached to the release, which downloads the DMG, verifies its SHA-256, copies Edokai to `/Applications`, strips the quarantine xattr, verifies the local code signature, and opens the app:
+For the current RC, use `Edokai-3.0.0-arm64-installer.dmg`. It packages Edokai.app together with an `Install Edokai.command` helper. Open the DMG, then run the helper instead of launching the app directly from the DMG. The helper copies Edokai to `/Applications`, strips the quarantine xattr from the installed copy, verifies the local code signature, and opens the app.
+
+If macOS blocks the helper too, Control-click `Install Edokai.command` and choose Open. You can also use the terminal-only helper attached to the release:
 
 ```bash
-curl -L https://github.com/junaidahmed361/edokai/releases/download/v3.0.0-rc.3/install-edokai-macos.sh | bash
+curl -L https://github.com/junaidahmed361/edokai/releases/download/v3.0.0-rc.4/install-edokai-macos.sh | bash
 ```
 
-If you installed a previous RC manually, delete `/Applications/Edokai.app` first or let the script replace it.
+If you installed a previous RC manually, delete `/Applications/Edokai.app` first or let the helper replace it.
 
 A fully normal double-click install requires Apple Developer ID signing and notarization.
 
