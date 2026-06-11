@@ -24,9 +24,20 @@
   },
   "build": {
     "appId": "ai.edokai.app",
-    "files": ["dist/**/*", "electron/**/*"],
-    "directories": { "output": "release" },
-    "mac": { "target": "dmg", "category": "public.app-category.education" },
-    "win": { "target": "nsis" }
+    "files": [
+      "dist/**/*",
+      "electron/**/*"
+    ],
+    "directories": {
+      "output": "release"
+    },
+    "mac": {
+      "target": "dmg",
+      "category": "public.app-category.education"
+    },
+    "win": {
+      "target": "nsis"
+    },
+    "afterPack": "scripts/sign-mac-ad-hoc.cjs"
   }
 }

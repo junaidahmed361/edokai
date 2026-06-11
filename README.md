@@ -24,7 +24,7 @@ Verified locally:
 - macOS desktop package built with electron-builder
 - mac artifact: `release/Edokai-3.0.0-arm64.dmg`
 
-Note: the mac build is unsigned because there is no Developer ID signing identity on this machine. macOS may show the normal Gatekeeper warning for unsigned apps.
+Note: the mac build is ad-hoc signed so the Electron bundle is internally valid, but it is not Developer ID signed or notarized because there is no Apple Developer ID signing identity on this machine. macOS may still show Gatekeeper warnings for the downloaded app.
 
 ## What changed in v3
 
