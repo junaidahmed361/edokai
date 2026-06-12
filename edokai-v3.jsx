@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from "react";
 
 /* ============================================================
-   EDOKAI — ULTIMATE EDITION
+   EDOKAI
    Two modes:
    🌍 LEARN — Budokai-style board worlds. Criticals teach, sides
       drill retention (with recommended level + prereq lore).
@@ -1224,6 +1224,64 @@ const INF_REGION_B = {
 /* ============================================================
    UMBRELLA WORLDS — pooled regions per category
    ============================================================ */
+const ENV_REGION = {
+  id: "env-r", name: "The Env Foundry", emoji: "🧫",
+  intro: "Where training grounds themselves are built, debugged, and scaled.",
+  npc: { name: "The Env Smith", text: "In the LLM era an environment is not just a simulator — it is a bundle: Tasks, a Harness, a Verifier (reward), State, and Config. The policy is only ever as good as the arena you forge for it. And heed the oldest law of this foundry: READ YOUR TRAJECTORIES." },
+  concepts: [
+    { id: "envanatomy", name: "Anatomy of an Env", sprite: "🧬",
+      lore: "A complete LLM-RL environment bundles five things: E = {Tasks, Harness, Verifier, State, Config}. TASKS: the dataset of inputs — bundled WITH the env because a coding task means nothing outside a coding sandbox. HARNESS: how the model plugs in — chat template, tool schemas, turn loop. VERIFIER: the reward function scoring outputs. STATE: what persists across turns (files, a Wordle board, a desktop). CONFIG: knobs like max turns and tool budgets. The interaction contract is still Gym's: reset() → observation; step(action) → (observation, reward, terminated). Single-turn envs end after one response; multi-turn envs (a Jupyter agent, computer use) loop tools and observations until termination — and everything from the Tool-Calling Forest applies inside them.",
+      questions: [
+        { q: "Why are tasks bundled INSIDE the environment rather than kept separate?", options: ["tasks are only meaningful with their env's tools and state", "datasets are too large to store separately", "the Gym API requires it since v1.0", "rewards cannot reference external data"], a: 0, why: "A coding task belongs to a coding sandbox — task and arena are inseparable." },
+        { q: "The five-piece bundle of a modern LLM env:", options: ["tasks, harness, verifier, state, config", "model, optimizer, scheduler, loss, data", "prompt, response, reward, critic, judge", "reset, step, render, seed, close"], a: 0, why: "E = {T, H, V, S, C} — the taxonomy that survives across frameworks." },
+        { q: "step(action) returns…", options: ["observation, reward, and termination signal", "the next task in the dataset", "the updated model weights", "a new environment instance"], a: 0, why: "The Gym contract: act, observe consequence, learn whether the episode continues." },
+      ] },
+    { id: "verifrewards", name: "Verifiable Rewards", sprite: "✅",
+      lore: "The foundry's first commandment: verifiable beats judgeable. Programmatic checks — string match, unit tests, code execution, terminal-state validation functions — are faster, cheaper, more consistent, and far harder to charm than an LLM-as-judge; use judges when there is no other option, not as the default. Independent of TYPE is GRANULARITY: trajectory-level (did the final output pass?), turn-level (was each tool call useful? — enabling credit like 'the bad search query was turn 23, not the whole episode'), or per-step process rewards. Partial credit is the antidote to sparsity: an env where every rollout scores 0.0 gives GRPO literally nothing to learn from.",
+      questions: [
+        { q: "'Verifiable beats judgeable' argues for…", options: ["programmatic checks as the default reward source", "always using the strongest LLM judge", "human labels on every rollout", "removing rewards entirely"], a: 0, why: "Code execution and exact checks are cheap, consistent, and resistant to persuasion." },
+        { q: "Turn-level reward granularity buys you…", options: ["credit assignment to the specific failing step", "smaller models at inference", "shorter episodes by design", "freedom from any verifier"], a: 0, why: "Localize the bad tool call instead of condemning the whole trajectory — Foundry-region thinking, applied to envs." },
+        { q: "Every rollout in your new env returns exactly 0.0 reward. For GRPO this means…", options: ["zero advantage everywhere — no learning signal at all", "faster convergence from clean signal", "the critic compensates automatically", "exploration increases to find reward"], a: 0, why: "Group-relative advantages need variance; identical scores normalize to nothing." },
+      ] },
+    { id: "envdebug", name: "Debugging & Scaling", sprite: "🔬",
+      lore: "Before any training run: execute ONE rollout and read the trajectory by hand. Did the model see what you expected? Did tool returns make sense? Did the reward fire correctly? If a human can't read a trajectory and tell whether the model did well, neither can a reward function — and the biggest env-design mistakes are caught by reading 5 trajectories, not by 1000 training steps. The failure taxonomy: reward too SPARSE (all zeros → add partial credit or easier tasks), reward too LEAKY (shortcuts score well — read trajectories, hunt the exploit), tasks too EASY (solved in one tool call → no multi-turn signal), tools too POWERFUL (one tool does everything → no exploration). Scaling: frameworks (OpenEnv, Verifiers, SkyRL Gym, NeMo Gym, GEM) are dialects of the same anatomy, and envs are scaled by programmatic synthesis — generate scenarios plus terminal-state validation functions whose pass-rate IS the reward.",
+      questions: [
+        { q: "The guide's highest-leverage debugging act:", options: ["reading a handful of rollout trajectories by hand", "running 1000 training steps and watching loss", "doubling the learning rate to expose bugs", "adding a second reward model"], a: 0, why: "Five read trajectories catch what a thousand training steps hide." },
+        { q: "An agent scores well but its behavior won't generalize. The taxonomy names this…", options: ["leaky reward — the env permits shortcuts", "sparse reward — no signal exists", "task bundling failure", "harness misconfiguration"], a: 0, why: "Reward fires for the wrong thing; trajectories reveal the exploit." },
+        { q: "'One tool can solve everything' is a design smell because…", options: ["exploration and multi-step skill never develop", "tool calls become too expensive", "the verifier cannot score tools", "config files grow too large"], a: 0, why: "All-powerful tools collapse the decision space — nothing left to learn." },
+      ] },
+  ],
+  sides: [
+    { id: "env-s1", name: "Trajectory Gremlin", sprite: "🐛", anchor: 1, recLevel: 7, prereqs: ["envanatomy", "verifrewards", "envdebug"],
+      desc: "Lives inside unread rollouts. Feeds on training runs launched without a smoke test.",
+      code: `# a minimal verifiable env (Verifiers-style sketch)
+class WordleEnv:
+    def reset(self, task):
+        self.secret, self.turns = task["word"], 0
+        return {"prompt": "Guess the 5-letter word."}
+    def step(self, guess):
+        self.turns += 1
+        fb = grade(guess, self.secret)   # greens/yellows
+        done = guess == self.secret or self.turns >= 6
+        # partial credit fights sparsity:
+        r = 1.0 if guess == self.secret else 0.1 * fb.greens
+        return {"feedback": fb}, r, done`,
+      codeNote: "Note the 0.1×greens term — without it, GRPO sees all-zero groups until the first lucky solve.",
+      questions: [
+        { q: "SCENARIO: Your math env rewards 1.0 only on exact final answers; the 7B model never solves any. Training is flat. The foundry's fix:", options: ["partial credit (steps, formats) or easier task tiers first", "a 10× larger group size in GRPO", "switching the judge to a bigger model", "longer episodes with more retries"], a: 0, why: "Sparse-to-the-point-of-silent reward starves learning; shape a gradient of progress." },
+        { q: "SCENARIO: In the env above, a model learns to guess 'AROSE' every turn 1 regardless of task, scoring steady 0.2s. What failure, what response?", options: ["leaky reward — read trajectories, cap repeated-guess credit", "sparse reward — raise the green bonus", "task too hard — shrink the word list", "harness bug — fix the chat template"], a: 0, why: "Partial credit leaked into a degenerate strategy; trajectory reading catches it in minutes." },
+        { q: "RETENTION: 'Plan adheres to clinical protocol' (Foundry region) vs 'unit tests pass' — by THIS region's commandment, which is the default-preferred reward and why?", options: ["unit tests — programmatic verification beats judge scoring", "the protocol judge — nuance always wins", "both equally — type doesn't matter", "neither — only human labels count"], a: 0, why: "Verifiable beats judgeable; reserve judges for what code cannot check." },
+      ] },
+  ],
+  gym: { leader: "The Env Smith", badge: "Env Foundry Badge", sprite: "🏛️", taunt: "Forge an arena worthy of a policy!",
+    questions: [
+      { q: "The training loop through an env, in order:", options: ["reset → model acts via harness → verifier scores → update", "verify → reset → score → act", "act → reset → update → observe", "score → act → terminate → reset"], a: 0, why: "Arena up, policy acts, verifier judges, gradients flow." },
+      { q: "Which pairing is WRONG?", options: ["sparse reward — model finds shortcuts", "leaky reward — ungeneralizable behavior scores well", "tasks too easy — no multi-turn signal", "tools too powerful — no exploration pressure"], a: 0, why: "Sparse reward means NO signal (all zeros); shortcuts are the LEAKY failure." },
+      { q: "Scaling to thousands of envs leans on…", options: ["programmatic scenario synthesis with validation-function rewards", "manually authoring each environment", "removing verifiers for speed", "one mega-environment with every tool"], a: 0, why: "Generate scenarios + terminal-state checks; pass-rate becomes reward — envs become data." },
+      { q: "This region powers a feature of THIS app: the Wilds generates fresh grounded questions per episode. In env terms, the lore is the ___ and the answer-check is the ___:", options: ["task material — verifier", "harness — config", "policy — critic", "optimizer — scheduler"], a: 0, why: "You're inside an RL environment over knowledge: grounded tasks, verifiable answers, adaptive targeting." },
+    ] },
+};
+
 const _g = (id) => ATLAS.find((w) => w.id === id).regions[0];
 const BUILTIN_WORLDS = [
   { id: "w-rl", title: "Agentic RL & Agent Systems", emoji: "🤖",
@@ -1234,8 +1292,10 @@ const BUILTIN_WORLDS = [
       { label: "3b1b · But what is a GPT?", url: "https://www.youtube.com/watch?v=wjZofJX0v4M" },
       { label: "Karpathy · Deep RL: Pong from Pixels", url: "https://karpathy.github.io/2016/05/31/rl/" },
       { label: "Karpathy · A Recipe for Training Neural Networks", url: "https://karpathy.github.io/2019/04/25/recipe/" },
+      { label: "AdithyaSK · Ultimate Guide to RL Environments", url: "https://huggingface.co/spaces/AdithyaSK/rl-environments-guide" },
+      { label: "RL_Envs_101 (companion repo)", url: "https://github.com/adithya-s-k/RL_Envs_101" },
     ],
-    regions: [...RL_REGIONS, _g("w-orch")] },
+    regions: [...RL_REGIONS, _g("w-orch"), ENV_REGION] },
   { id: "w-tf", title: "Transformer Architecture", emoji: "🏛️",
     blurb: "Position → attention variants → MoE → the modern block gallery.",
     links: [
@@ -2486,6 +2546,8 @@ export default function App() {
   const [paperQ, setPaperQ] = useState(""); const [papers, setPapers] = useState(null);
   const [gaunt, setGaunt] = useState(null);            // {pool, idx, lives, score, ord}
   const [deepLore, setDeepLore] = useState({});        // conceptId -> model-expanded lore
+  const [wilds, setWilds] = useState(null);            // the knowledge RL environment
+  const [repl, setRepl] = useState("");                // REPL input line
 
   useEffect(() => {
     (async () => {
@@ -2710,6 +2772,53 @@ export default function App() {
     } catch (e) { /* silent — variants are a bonus, never a blocker */ }
   };
 
+  /* ---------- the WILDS: an RL environment over each world's knowledge ----------
+     Env anatomy (see the Env Foundry region): TASKS are generated fresh each
+     episode, grounded in the lore (the evidence); the VERIFIER is the answer
+     key + quoted evidence; STATE is your per-topic miss telemetry, which the
+     env uses to target weak areas; episodes never repeat questions. */
+  const scopeLore = (scopeId) => {
+    if (scopeId === "world") {
+      let s = "";
+      for (const r of regions) for (const c of r.concepts) { s += c.name + ": " + c.lore + "\n"; if (s.length > 5200) return s.slice(0, 5200); }
+      return s;
+    }
+    for (const r of regions) { const c = r.concepts.find((x) => x.id === scopeId); if (c) return c.name + ": " + c.lore + (deepLore[c.id] ? "\n" + deepLore[c.id] : ""); }
+    return "";
+  };
+  const runEpisode = async (scopeId, scopeName) => {
+    setWilds({ scope: scopeId, name: scopeName, busy: true, qs: null, idx: 0, score: 0, ord: shuf4(), fb: null });
+    setScreen("wilds");
+    try {
+      const seen = [...((aug[world.id] || []).map((q) => q.q))].slice(-14);
+      const weak = coachRows().filter((r) => r.m > 0).slice(0, 3).map((r) => r.name);
+      const parsed = parseJSON(await askModel(
+        `You are an RL environment generating TASKS over study material. Generate 3 NEW multiple-choice questions grounded STRICTLY in this material (every answer must be verifiable from it):\n"""${scopeLore(scopeId)}"""\n${weak.length ? "The learner is weakest on: " + weak.join(", ") + " — bias toward these where the material allows." : ""}\nDo NOT repeat: ${JSON.stringify(seen)}\nRespond ONLY raw JSON: {"questions":[{"q":"...","options":["...","...","...","..."],"a":0,"why":"one line","evidence":"short phrase quoted from the material that verifies the answer"}]}\n${QUALITY_RULES}`, cfg));
+      const qs = (parsed.questions || []).filter((q) => q.options && q.options.length === 4).map((q) => ({ ...q, src: scopeId === "world" ? undefined : scopeId }));
+      if (!qs.length) throw new Error("empty");
+      if (scopeId !== "world") persistAug({ ...aug, [world.id]: [...(aug[world.id] || []), ...qs] });
+      setWilds({ scope: scopeId, name: scopeName, busy: false, qs, idx: 0, score: 0, ord: shuf4(), fb: null });
+    } catch (e) {
+      setWilds({ scope: scopeId, name: scopeName, busy: false, error: "Episode generation failed — check model settings, then try again.", qs: null });
+    }
+  };
+  const answerWilds = (dispIdx) => {
+    if (!wilds || !wilds.qs || wilds.fb) return;
+    const q = wilds.qs[wilds.idx];
+    const correct = wilds.ord[dispIdx] === q.a;
+    const s = { ...save };
+    if (q.src) recStat(s, q.src, correct);
+    if (correct) s.xp += 10;
+    persist(s);
+    setWilds({ ...wilds, score: wilds.score + (correct ? 1 : 0), fb: { ok: correct, msg: q.why, ev: q.evidence } });
+  };
+  const nextWilds = () => {
+    if (!wilds) return;
+    const idx = wilds.idx + 1;
+    if (idx >= wilds.qs.length) setWilds({ ...wilds, done: true, fb: null });
+    else setWilds({ ...wilds, idx, ord: shuf4(), fb: null });
+  };
+
   /* ---------- spawn ---------- */
   const onPdfPick = (e) => {
     const f = e.target.files && e.target.files[0];
@@ -2824,6 +2933,48 @@ export default function App() {
     setBusy("");
   };
 
+  /* ---------- code editor keybindings ---------- */
+  const PY_WORDS = ["import","def","class","return","torch","numpy","np","nn","self","range","len","print","assert","tensor","Linear","Module","forward","backward","softmax","sigmoid","matmul","transpose","reshape","randn","zeros","ones","float32","requires_grad","optimizer","gradient","enumerate","lambda","while","break","continue","True","False","None","shape","append","sum","mean","max","min","exp","sqrt"];
+  const editorKeys = (e, value, setValue, onRun) => {
+    const ta = e.target;
+    const { selectionStart: s, selectionEnd: en } = ta;
+    const set = (v, pos) => { setValue(v); requestAnimationFrame(() => { ta.selectionStart = ta.selectionEnd = pos; }); };
+    if ((e.metaKey || e.ctrlKey) && e.key === "Enter") { e.preventDefault(); if (onRun) onRun(); return; }
+    if (e.key === "Tab" && !e.shiftKey) {
+      e.preventDefault();
+      const before = value.slice(0, s);
+      const m = before.match(/[A-Za-z_][A-Za-z0-9_]*$/);          // word under cursor?
+      if (m && m[0].length >= 2) {
+        const stem = m[0];
+        const bufWords = [...new Set((value.match(/[A-Za-z_][A-Za-z0-9_]{2,}/g) || []))];
+        const cands = [...new Set([...bufWords, ...PY_WORDS])].filter((w) => w.startsWith(stem) && w !== stem);
+        if (cands.length) {
+          // complete to the longest common prefix (or the single match)
+          let lcp = cands[0];
+          for (const c of cands) { let i = 0; while (i < lcp.length && lcp[i] === c[i]) i++; lcp = lcp.slice(0, i); }
+          const add = (lcp.length > stem.length ? lcp : cands[0]).slice(stem.length);
+          if (add) { set(before + add + value.slice(en), s + add.length); return; }
+        }
+      }
+      set(value.slice(0, s) + "    " + value.slice(en), s + 4);   // plain indent
+      return;
+    }
+    if (e.key === "Tab" && e.shiftKey) {
+      e.preventDefault();
+      const ls = value.lastIndexOf("\n", s - 1) + 1;
+      const rm = value.slice(ls).startsWith("    ") ? 4 : value.slice(ls).startsWith("\t") ? 1 : 0;
+      if (rm) set(value.slice(0, ls) + value.slice(ls + rm), Math.max(ls, s - rm));
+      return;
+    }
+    if (e.key === "Enter") {
+      e.preventDefault();
+      const ls = value.lastIndexOf("\n", s - 1) + 1;
+      const line = value.slice(ls, s);
+      const indent = (line.match(/^\s*/) || [""])[0] + (line.trimEnd().endsWith(":") ? "    " : "");
+      set(value.slice(0, s) + "\n" + indent + value.slice(en), s + 1 + indent.length);
+    }
+  };
+
   /* ---------- styles ---------- */
   const S = {
     app: { minHeight: "100vh", background: T.paper, color: T.ink, fontFamily: "'Space Grotesk', system-ui, sans-serif" },
@@ -2860,7 +3011,7 @@ export default function App() {
   );
   const Tabs = () => (
     <div style={{ display: "flex", gap: 6, marginTop: 14, flexWrap: "wrap" }}>
-      {[["home", "🌍 Learn"], ["dojo", "⌨️ Dojo"], ["coach", "🧪 Coach"], ["papers", "📡 Papers"]].map(([id, label]) => {
+      {[["home", "🌍 Learn"], ["dojo", "⌨️ Dojo"], ["wildspick", "🌿 Wilds"], ["coach", "🧪 Coach"], ["papers", "📡 Papers"]].map(([id, label]) => {
         const on = screen === id || (id === "home" && ["home", "regionlist", "region"].includes(screen));
         return <button key={id} onClick={() => setScreen(id)} style={{ ...S.btn(on ? T.ink : T.card, on ? "#fff" : T.inkSoft), border: `1px solid ${T.line}`, padding: "8px 14px", fontSize: 13 }}>{label}</button>;
       })}
@@ -3021,7 +3172,7 @@ export default function App() {
             <button onClick={forgeDrills} disabled={busy === "coach"} style={{ ...S.btn(T.explore), flex: 1 }}>{busy === "coach" ? "Reflecting on your misses…" : "🔨 Reflect & forge new drills"}</button>
             <button onClick={() => startGauntlet()} style={S.btn(T.gold)}>⚔️ Gauntlet</button>
           </div>
-          <span style={S.mono(10)}>{augCount} COACH-FORGED DRILLS IN THIS WORLD'S POOL</span>
+          <span style={S.mono(10)}>{augCount} GENERATED QUESTIONS IN THIS WORLD'S POOL · 🌿 = fresh wilds episode on that topic · ⚔️ = pool drill</span>
           {rows.length === 0 && <div style={{ ...S.card, marginTop: 10, color: T.inkSoft, fontSize: 13.5 }}>No telemetry yet for this world — fight some encounters first, then come back.</div>}
           {rows.map((r) => (
             <div key={r.id} style={{ ...S.card, marginTop: 8, padding: "10px 14px", display: "flex", alignItems: "center", gap: 10 }}>
@@ -3032,9 +3183,87 @@ export default function App() {
                 </div>
               </div>
               <span style={S.mono(10, r.rate > 0.4 ? T.penalty : T.inkSoft)}>{Math.round((1 - r.rate) * 100)}% · {r.a} ans</span>
-              <button onClick={() => startGauntlet(r.id)} style={{ ...S.btn(T.gold), padding: "6px 10px", fontSize: 11 }}>Drill ⚔️</button>
+              <button onClick={() => runEpisode(r.id, r.name)} style={{ ...S.btn(T.explore), padding: "6px 10px", fontSize: 11 }}>🌿</button>
+              <button onClick={() => startGauntlet(r.id)} style={{ ...S.btn(T.gold), padding: "6px 10px", fontSize: 11 }}>⚔️</button>
             </div>
           ))}
+        </div>
+      </div>
+    );
+  }
+
+  /* ============ WILDS PICKER ============ */
+  if (screen === "wildspick") {
+    return (
+      <div style={S.app}><style>{CSS}</style><Toast /><HUD back={() => setScreen("home")} />
+        <div style={{ ...S.wrap }}>
+          <Tabs />
+          <h2 style={{ fontSize: 20, fontWeight: 800, margin: "14px 0 2px" }}>🌿 The Wilds — {world.title}</h2>
+          <p style={{ color: T.inkSoft, fontSize: 13, lineHeight: 1.55 }}>An RL environment over this world's knowledge (the Env Foundry region explains the machinery). Each episode, the env generates <b>brand-new questions</b> grounded strictly in the lore — with quoted evidence as the verifier — targeted at your weak spots and never repeating. Correct answers: +10 XP. Generated questions join the side-duel and gauntlet pools.</p>
+          <button onClick={() => runEpisode("world", world.title)} style={{ ...S.btn(T.reward), width: "100%", marginTop: 8 }}>▶ Episode over the whole world</button>
+          <div style={{ marginTop: 14 }}><span style={S.mono(10)}>OR SCOPE TO ONE CONCEPT:</span></div>
+          {regions.map((r) => (
+            <div key={r.id} style={{ marginTop: 10 }}>
+              <span style={S.mono(10, T.inkSoft)}>{r.emoji} {r.name.toUpperCase()}</span>
+              <div style={{ display: "flex", flexWrap: "wrap", gap: 6, marginTop: 6 }}>
+                {r.concepts.map((c) => <button key={c.id} onClick={() => runEpisode(c.id, c.name)} style={S.chip(false)}>{c.sprite} {c.name}</button>)}
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    );
+  }
+
+  /* ============ WILDS EPISODE ============ */
+  if (screen === "wilds" && wilds) {
+    if (wilds.busy) return (
+      <div style={{ ...S.app, background: T.night, display: "flex", alignItems: "center", justifyContent: "center", flexDirection: "column", gap: 12 }}><style>{CSS}</style>
+        <div style={{ fontSize: 48, animation: "bob 1.6s ease-in-out infinite" }}>🌿</div>
+        <span style={{ ...S.mono(11, "#9FA8CC") }}>THE ENV IS FORGING TASKS: {wilds.name.toUpperCase()}…</span>
+        <button onClick={() => { setWilds(null); setScreen("wildspick"); }} style={{ background: "none", border: "1px solid #46548F", color: "#9FA8CC", borderRadius: 8, padding: "6px 14px", cursor: "pointer", fontFamily: "inherit", fontWeight: 700 }}>← Back</button>
+      </div>
+    );
+    if (wilds.error) return (
+      <div style={S.app}><style>{CSS}</style><HUD back={() => { setWilds(null); setScreen("wildspick"); }} />
+        <div style={{ ...S.wrap, paddingTop: 20 }}><div style={{ ...S.card, color: T.penalty, fontSize: 13.5 }}>{wilds.error}</div></div>
+      </div>
+    );
+    if (wilds.done) return (
+      <div style={S.app}><style>{CSS}</style><Toast /><HUD back={() => { setWilds(null); setScreen("wildspick"); }} />
+        <div style={{ ...S.wrap, paddingTop: 20 }}>
+          <div style={{ ...S.card, textAlign: "center" }}>
+            <div style={{ fontSize: 42 }}>🌿</div>
+            <h2 style={{ fontSize: 20, fontWeight: 800, margin: "6px 0 2px" }}>Episode complete</h2>
+            <span style={S.mono(11, T.reward)}>{wilds.score}/{wilds.qs.length} · +{wilds.score * 10} XP · questions banked into the pools</span>
+            <div style={{ display: "flex", gap: 8, justifyContent: "center", marginTop: 12 }}>
+              <button onClick={() => runEpisode(wilds.scope, wilds.name)} style={S.btn(T.reward)}>▶ New episode (fresh tasks)</button>
+              <button onClick={() => { setWilds(null); setScreen("coach"); }} style={S.btn(T.explore)}>🧪 Coach</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+    const q = wilds.qs[wilds.idx];
+    return (
+      <div style={{ ...S.app, background: T.night }}><style>{CSS}</style><Toast />
+        <div style={{ maxWidth: 620, margin: "0 auto", padding: "16px 14px 60px" }}>
+          <button onClick={() => { setWilds(null); setScreen("wildspick"); }} style={{ background: "none", border: "1px solid #46548F", color: "#9FA8CC", borderRadius: 8, padding: "5px 12px", fontSize: 12, cursor: "pointer", fontFamily: "inherit", fontWeight: 700, marginBottom: 8 }}>← Leave the Wilds</button>
+          <div style={{ display: "flex", justifyContent: "space-between" }}>
+            <span style={S.mono(10, "#9FA8CC")}>🌿 WILDS EPISODE · {wilds.name.toUpperCase()}</span>
+            <span style={S.mono(10, "#9FA8CC")}>Q{wilds.idx + 1}/{wilds.qs.length} · {wilds.score} ✓</span>
+          </div>
+          <div style={{ marginTop: 10 }}>
+            <QCard q={q} ord={wilds.ord} onAnswer={answerWilds} label="FRESH TASK — GROUNDED IN LORE · +10 XP" color={T.reward} />
+          </div>
+          {wilds.fb && (
+            <div style={{ background: wilds.fb.ok ? T.rewardSoft : T.penaltySoft, borderRadius: 14, padding: 14, marginTop: 12, animation: "slideUp .25s ease" }}>
+              <b style={{ color: wilds.fb.ok ? T.reward : T.penalty, fontSize: 13 }}>{wilds.fb.ok ? "✓ Verified correct" : "✗ Miss"}</b>
+              <p style={{ fontSize: 13, lineHeight: 1.55, margin: "6px 0 4px" }}>{wilds.fb.msg}</p>
+              {wilds.fb.ev && <p style={{ fontSize: 12, color: T.inkSoft, margin: "0 0 10px" }}>📜 EVIDENCE: "{wilds.fb.ev}"</p>}
+              <button onClick={nextWilds} style={{ ...S.btn(T.ink), width: "100%" }}>Next →</button>
+            </div>
+          )}
         </div>
       </div>
     );
@@ -3234,14 +3463,14 @@ export default function App() {
               <div key={fam} style={{ marginTop: 16 }}>
                 <div style={{ fontWeight: 800, fontSize: 14.5 }}>{label}</div>
                 {ks.map((k) => {
-                  const p = kProgress(k.id); const done = p >= k.steps.length;
+                  const p = kProgress(k.id); const done = p >= (k.steps.length || 1);
                   return (
                     <div key={k.id} onClick={() => openKata(k)} style={{ ...S.card, marginTop: 8, padding: 13, display: "flex", gap: 12, alignItems: "center", cursor: "pointer", background: done ? T.rewardSoft : T.card }}>
                       <span style={{ fontSize: 22 }}>{k.emoji || "⌨️"}</span>
                       <div style={{ flex: 1 }}>
                         <div style={{ fontWeight: 700, fontSize: 14 }}>{k.title} {LABS[k.id] ? "🧪" : ""}</div>
                         <div style={{ fontSize: 12, color: T.inkSoft, lineHeight: 1.45 }}>{k.blurb}</div>
-                        <span style={S.mono(9, done ? T.reward : T.inkSoft)}>{done ? "COMPLETE ✓" : `${p}/${k.steps.length} steps`} · {k.frameworks.join(" / ")}{LABS[k.id] ? " · LIVE LAB" : ""}</span>
+                        <span style={S.mono(9, done ? T.reward : T.inkSoft)}>{done ? "COMPLETE ✓" : k.steps.length ? `${p}/${k.steps.length} hints` : "code kata — not started"} · {k.frameworks.join(" / ")}{LABS[k.id] ? " · LIVE LAB" : ""}</span>
                       </div>
                       <span style={{ color: T.explore, fontWeight: 800 }}>›</span>
                     </div>
@@ -3279,13 +3508,35 @@ export default function App() {
               <span style={S.mono(10, T.action)}>⌨️ WORKSPACE — fill the TODOs</span>
               <span style={S.mono(9)}>{lab ? "runs in-browser (Pyodide)" : "PyTorch — run locally, review here"}</span>
             </div>
-            <textarea value={labCode} onChange={(e) => setLabCode(e.target.value)} rows={16} spellCheck={false} style={{ ...S.input, marginTop: 8, resize: "vertical", fontSize: 12, lineHeight: 1.55 }} />
+            <textarea value={labCode} onChange={(e) => setLabCode(e.target.value)} onKeyDown={(e) => editorKeys(e, labCode, setLabCode, lab ? () => runLab(false) : null)} rows={16} spellCheck={false} autoCapitalize="off" autoCorrect="off" style={{ ...S.input, marginTop: 8, resize: "vertical", fontSize: 12, lineHeight: 1.55, tabSize: 4 }} />
+            <span style={S.mono(8.5)}>TAB completes/indents · SHIFT+TAB dedents · ENTER auto-indents · {navigator.platform && navigator.platform.includes("Mac") ? "⌘" : "CTRL"}+ENTER runs</span>
             <div style={{ display: "flex", gap: 8, marginTop: 8, flexWrap: "wrap" }}>
               {lab && <button onClick={() => runLab(false)} disabled={busy === "lab"} style={{ ...S.btn(T.ink), flex: 1, minWidth: 90 }}>{busy === "lab" ? "Running…" : "▶ Run"}</button>}
               {lab && <button onClick={() => runLab(true)} disabled={busy === "lab"} style={{ ...S.btn(T.reward), flex: 1, minWidth: 110 }}>{busy === "lab" ? "Running…" : "✓ Run tests"}</button>}
               <button onClick={doReview} disabled={busy === "review"} style={{ ...S.btn(T.explore), flex: 1, minWidth: 120 }}>{busy === "review" ? "Reviewing…" : "🔍 AI review"}</button>
             </div>
             {labOut && <pre style={{ ...S.pre, marginTop: 8, maxHeight: 220, overflowY: "auto", background: "#0B0F1E" }}>{labOut}</pre>}
+            {lab && (
+              <div style={{ display: "flex", gap: 6, marginTop: 8, alignItems: "center" }}>
+                <span style={{ ...S.mono(12, T.reward) }}>&gt;&gt;&gt;</span>
+                <input value={repl} onChange={(e) => setRepl(e.target.value)} onKeyDown={async (e) => {
+                  if (e.key !== "Enter" || !repl.trim() || busy === "lab") return;
+                  const line = repl; setRepl(""); setBusy("lab");
+                  setLabOut((o) => (o ? o + "\n" : "") + ">>> " + line);
+                  try {
+                    const py = await getPyodide();
+                    let out = "";
+                    py.setStdout({ batched: (s) => { out += s + "\n"; } });
+                    py.setStderr({ batched: (s) => { out += s + "\n"; } });
+                    let val;
+                    try { val = await py.runPythonAsync(line); } catch (err) { out += String(err.message || err).split("\n").slice(-3).join("\n"); }
+                    if (val !== undefined && val !== null) out += String(val);
+                    setLabOut((o) => o + (out ? "\n" + out.trimEnd() : ""));
+                  } catch (err) { setLabOut((o) => o + "\n⚠️ " + (err.message || err)); }
+                  setBusy("");
+                }} placeholder="REPL — shares the session with ▶ Run (try: out.shape)" spellCheck={false} style={{ ...S.input, flex: 1, padding: "8px 10px", fontSize: 12 }} />
+              </div>
+            )}
             {review && <div style={{ marginTop: 10, fontSize: 13, lineHeight: 1.6, whiteSpace: "pre-wrap", padding: "10px 12px", background: T.exploreSoft, borderRadius: 10 }}>{review}</div>}
           </div>
 
