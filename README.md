@@ -19,8 +19,8 @@ The old `rollout-ultimate.jsx` file has also been updated with Edokai v3 brandin
 
 Verified locally:
 
-- main app file: 2,860 lines
-- Vite production build: 375.83 kB JS bundle, 127.26 kB gzip
+- main app file: 3,583 lines
+- Vite production build: 411.04 kB JS bundle, 137.91 kB gzip
 - macOS desktop package built with electron-builder
 - mac artifact: `release/Edokai-3.0.0-arm64.dmg`
 

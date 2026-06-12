@@ -24,8 +24,16 @@ const T = {
    MUSIC ENGINE — generative lo-fi chiptune (WebAudio, no assets)
    ============================================================ */
 class MusicEngine {
-  constructor() { this.ctx = null; this.playing = false; this.timer = null; this.step = 0; }
+  constructor() { this.ctx = null; this.playing = false; this.timer = null; this.step = 0; this.customUrl = null; this.audioEl = null; }
+  setCustom(url) { this.customUrl = url; if (this.playing) { this.stop(); this.start(); } }
   start() {
+    if (this.customUrl) {
+      if (!this.audioEl) { this.audioEl = new Audio(); this.audioEl.loop = true; this.audioEl.volume = 0.5; }
+      this.audioEl.src = this.customUrl;
+      this.audioEl.play().catch(() => {});
+      this.playing = true;
+      return;
+    }
     if (this.playing) return;
     try {
       if (!this.ctx) this.ctx = new (window.AudioContext || window.webkitAudioContext)();
@@ -66,6 +74,7 @@ class MusicEngine {
   }
   stop() {
     this.playing = false;
+    if (this.audioEl) { try { this.audioEl.pause(); } catch (e) {} }
     if (this.timer) { clearInterval(this.timer); this.timer = null; }
     if (this.master) { try { this.master.disconnect(); } catch (e) {} }
   }
@@ -668,7 +677,7 @@ x_prev = ddim_step(x_t, eps, t)       # 50 steps, not 1000`,
       { id: "vlm-s1", name: "Pixel Sphinx", sprite: "🦉", anchor: 1, recLevel: 3, prereqs: ["clip", "llava", "patches"],
         desc: "Asks how you'd ACTUALLY build a medical VLM.",
         questions: [
-          { q: "SCENARIO: Building a chest-X-ray VLM for a clinical sim. CLIP-336 misses small nodules entirely. First architectural lever?", options: ["a bigger LLM behind the projector", "higher input resolution via tiling/AnyRes", "more instruction-tuning epochs", "a second contrastive text encoder"], a: 1, why: "Subtle findings die at low res — resolution strategy before model scale." },
+          { q: "SCENARIO: Building a chest-X-ray VLM. The CLIP-336 vision tower misses small nodules entirely. First architectural lever?", options: ["a bigger LLM behind the projector", "higher input resolution via tiling/AnyRes", "more instruction-tuning epochs", "a second contrastive text encoder"], a: 1, why: "Subtle findings die at low res — resolution strategy before model scale." },
           { q: "SCENARIO: Budget allows training ~20M parameters total on 100k caption pairs. The LLaVA-style move:", options: ["LoRA the vision encoder only", "train the projector, freeze both towers", "train the LLM's embedding layer", "distill CLIP into a smaller ViT"], a: 1, why: "The projector IS the cheap alignment stage — exactly this budget." },
           { q: "SCENARIO: Your VLM hallucinates objects not in the image. A grounded mitigation at the data level:", options: ["raise the sampling temperature", "negative/contrastive instruction data", "remove all text-only data", "shrink the patch size further"], a: 1, why: "Teaching 'no' explicitly counters the LM prior's tendency to confabulate objects." },
         ] },
@@ -760,7 +769,7 @@ x_prev = ddim_step(x_t, eps, t)       # 50 steps, not 1000`,
       { id: "orch-s1", name: "Cascade Wraith", sprite: "🌊", anchor: 1, recLevel: 4, prereqs: ["patterns", "comms", "governance"],
         desc: "Feeds on error cascades in agent pipelines. It has seen your architecture diagrams.",
         questions: [
-          { q: "SCENARIO: A clinical-sim platform runs patient-twin, nurse-twin, and scenario-director agents. The director's summaries to twins keep dropping vital constraints. Best structural fix?", options: ["a louder system prompt for the director", "structured artifacts", "have twins re-derive constraints themselves", "merge everything into one mega-prompt"], a: 1, why: "Lossy summaries → move invariants into shared, schema'd state instead of prose handoffs." },
+          { q: "SCENARIO: A simulation platform runs three agents — two domain agents and a scenario director. The director's prose summaries keep dropping vital constraints on their way to the others. Best structural fix?", options: ["a louder system prompt for the director", "structured artifacts", "have twins re-derive constraints themselves", "merge everything into one mega-prompt"], a: 1, why: "Lossy summaries → move invariants into shared, schema'd state instead of prose handoffs." },
           { q: "SCENARIO: Tickets are one of: billing, technical, refund. Each has a stable resolution flow. Simplest correct shape?", options: ["orchestrator-workers with dynamic planning", "routing into three specialized chains", "evaluator-optimizer on every reply", "a single agent with all instructions"], a: 1, why: "Known categories + stable flows = routing. Don't pay orchestrator complexity." },
           { q: "SCENARIO: Your 5-agent system's cost is 15× chat and one task looped for 2 hours overnight. Triage order:", options: ["budgets/caps first, then tracing, then architecture review", "rewrite every agent's prompts immediately", "add a sixth dedicated supervisor agent", "switch every agent to a larger model"], a: 0, why: "Stop the bleeding (caps), see the system (traces), then redesign with evidence." },
         ] },
@@ -842,6 +851,13 @@ def rope(x, pos):                  # x: [seq, dim]
     intro: "MHA's royal court, and the pretenders trimming its costs.",
     npc: { name: "Judge QKV", text: "Every attention variant you'll meet exists for one reason: the KV cache. At inference, every generated token attends over all cached keys/values — cache size = layers × kv_heads × seq × head_dim × 2. Shrink kv_heads (MQA/GQA), shrink seq (sliding window), or compress the cache itself (MLA). Memory is the battlefield." },
     concepts: [
+      { id: "attncomp", name: "The Attention Computation", sprite: "🧮",
+        lore: "Walk it step by step (Raschka's classic derivation). Each token embedding x is projected three ways: q = xW_q (what am I looking for?), k = xW_k (what do I contain?), v = xW_v (what do I give if attended to?). Unnormalized score ω_ij = q_i·k_j measures query-key compatibility. Two transformations make ω usable: divide by √d_k — dot-product variance grows with dimension, and large logits saturate softmax into a near-one-hot whose gradients vanish — then softmax each row into attention weights α that sum to 1. The output context vector is z_i = Σ_j α_ij v_j: a learned mixture of value vectors. Causality is one surgical edit: set ω_ij = −∞ for j > i BEFORE softmax, so future positions get exactly zero weight. Multi-head = run h of these in parallel on d/h-dim slices, concatenate, project with W_o.",
+        questions: [
+          { q: "Why scale scores by √d_k rather than feed q·k straight to softmax?", options: ["large-variance logits saturate softmax, killing gradients", "unscaled scores overflow float16 storage", "softmax requires inputs between 0 and 1", "it makes the score matrix symmetric"], a: 0, why: "Variance grows with d_k; near-one-hot softmax outputs propagate almost no gradient." },
+          { q: "The context vector z_i is best described as…", options: ["the value vector of the most attended token", "an attention-weighted mixture of value vectors", "the sum of all query projections", "the row-max of the score matrix"], a: 1, why: "z_i = Σ α_ij v_j — a soft, learned blend, not a hard selection." },
+          { q: "Causal masking sets ω to −∞ for future positions BEFORE softmax because…", options: ["−∞ is cheaper to store than zero", "post-softmax zeroing breaks row normalization", "softmax cannot process negative inputs", "the mask must be differentiable"], a: 1, why: "exp(−∞)=0 inside the softmax keeps each row a clean distribution; zeroing after would leave rows summing to less than 1." },
+        ] },
       { id: "mqagqa", name: "MQA & GQA", sprite: "👥",
         lore: "Multi-Head Attention gives every query head its own K and V heads. Multi-Query Attention (MQA) keeps all query heads but shares ONE K/V head — cache shrinks by n_heads×, with some quality cost. Grouped-Query Attention interpolates: groups of query heads share a K/V head (e.g., 32 q-heads, 8 kv-heads → 4× cache reduction, near-MHA quality). GQA is the modern default (Llama, Gemma, Qwen). The cache formula's kv_heads term is exactly what these attack.",
         questions: [
@@ -1120,7 +1136,7 @@ const WM_REGION = {
       desc: "A trickster that shuffles lookalike acronyms and watches you grab the wrong one.",
       questions: [
         { q: "SCENARIO: A teammate cites 'GEPA' as the newest JEPA variant for your vision stack. Your correction:", options: ["GEPA is JEPA's GAN-based cousin", "GEPA is a reflective prompt-evolution optimizer (DSPy), not a world model", "GEPA is V-JEPA 2's robot module", "they're right — GEPA extends I-JEPA"], a: 1, why: "Genetic-Pareto prompt optimization lives in the DSPy world — same letters, different universe. (See the DSPy kata.)" },
-        { q: "SCENARIO: Carol's sim needs to predict patient-monitor futures for planning. Pixel-level video prediction keeps burning capacity on waveform noise. The JEPA-aligned move:", options: ["higher-resolution pixel reconstruction", "predict future states in representation space", "add a GAN loss for sharper frames", "predict raw audio instead of video"], a: 1, why: "Abstract away the unpredictable detail; plan over latents — the family's core thesis." },
+        { q: "SCENARIO: A robotics team needs to predict camera futures for planning. Pixel-level video prediction keeps burning capacity on texture noise the planner never uses. The JEPA-aligned move:", options: ["higher-resolution pixel reconstruction", "predict future states in representation space", "add a GAN loss for sharper frames", "predict raw audio instead of video"], a: 1, why: "Abstract away the unpredictable detail; plan over latents — the family's core thesis." },
         { q: "SCENARIO: Mid-pretraining, every embedding's cosine similarity approaches 1.0 and loss plummets. Diagnosis and the LeJEPA-era fix:", options: ["overfitting / add dropout layers", "collapse / SIGReg-style distributional regularization", "underfitting / enlarge the predictor", "data leakage / reshuffle the dataset"], a: 1, why: "Trivially happy loss + identical embeddings = collapse; regularize the embedding distribution." },
       ] },
   ],
@@ -1160,11 +1176,21 @@ const DISAGG_CONCEPT = {
     { q: "Its characteristic new cost:", options: ["transferring KV caches between pools", "recomputing the prompt on decode nodes", "doubled model weights per request", "losing the ability to batch"], a: 0, why: "The cache must travel from prefill workers to decode workers — bandwidth and plumbing." },
     { q: "Chunked prefill exists to…", options: ["interleave decode steps during long prompt processing", "compress prompts before encoding", "skip attention for early chunks", "quantize the prompt tokens"], a: 0, why: "Slicing the burst prevents head-of-line blocking of everyone's token streams." },
   ] };
+const CAPACITY_CONCEPT = {
+  id: "capacity", name: "Capacity Planning", sprite: "📐",
+  lore: "Production serving (the vLLM zero-to-hero recipe) is napkin math plus load tests. Memory budget: usable KV pool ≈ GPU_mem × gpu-memory-utilization (typically 0.85–0.95) − model weights. Per-request footprint ≈ context_len × bytes-per-token (the cache formula from the KV vault). Concurrency ceiling ≈ pool ÷ per-request footprint — which is why max-model-len is a capacity knob, not just a feature flag: doubling allowed context halves concurrent users. The three metrics that matter: TTFT (time to first token — prefill latency), TPOT/ITL (time per output token — decode pace), and total throughput (tokens/sec across all requests). Knobs: gpu-memory-utilization (too low wastes VRAM, too high risks OOM), max-num-seqs (in-flight ceiling), tensor-parallel-size for models that don't fit. The classic sin: tuning to a synthetic benchmark instead of your real traffic's prompt/output length mix.",
+  questions: [
+    { q: "Doubling max-model-len on a fixed GPU roughly does what to max concurrency?", options: ["halves it — per-request KV footprint doubles", "leaves it unchanged — context is free", "doubles it — longer sequences batch better", "quarters it — footprint grows quadratically"], a: 0, why: "Footprint scales linearly with allowed context; the pool is fixed, so users trade off against length." },
+    { q: "TTFT and TPOT respectively measure…", options: ["prefill latency and per-token decode pace", "throughput and total request latency", "queue depth and batch size", "cache hit rate and eviction rate"], a: 0, why: "First token = prompt processing speed; each subsequent token = decode cadence. They bottleneck differently." },
+    { q: "Setting gpu-memory-utilization to 0.99 risks ___, while 0.60 causes ___:", options: ["OOM crashes / wasted VRAM and smaller batches", "slow prefill / faster decode", "dtype errors / fragmentation", "nothing / nothing — it's cosmetic"], a: 0, why: "Headroom protects against spikes; unused VRAM is concurrency left on the table." },
+    { q: "Why is benchmarking with uniform 100-token prompts a capacity-planning trap?", options: ["real traffic's length mix shifts prefill/decode balance and KV pressure", "benchmarks cannot saturate a GPU", "vLLM disables batching for benchmarks", "short prompts disable PagedAttention"], a: 0, why: "Config tuned to synthetic shapes misallocates memory and scheduling for the traffic you actually get." },
+  ] };
+
 const INF_REGION_A = {
   id: "inf-cache", name: "The Cache Vaults", emoji: "📦",
   intro: "Memory is the currency of serving. Spend it well.",
   npc: _INF.npc,
-  concepts: [_INF.concepts[0], _INF.concepts[1], QUANT_CONCEPT],
+  concepts: [_INF.concepts[0], _INF.concepts[1], QUANT_CONCEPT, CAPACITY_CONCEPT],
   sides: [_INF.sides[0]],
   gym: { leader: "Vault Keeper", badge: "Cache Badge", sprite: "🏛️", taunt: "Account for every byte!",
     questions: [
@@ -1206,6 +1232,8 @@ const BUILTIN_WORLDS = [
       { label: "Source primer · aman.ai Agentic RL", url: "https://aman.ai/primers/ai/agentic-RL/" },
       { label: "Anthropic · Building Effective Agents", url: "https://www.anthropic.com/research/building-effective-agents" },
       { label: "3b1b · But what is a GPT?", url: "https://www.youtube.com/watch?v=wjZofJX0v4M" },
+      { label: "Karpathy · Deep RL: Pong from Pixels", url: "https://karpathy.github.io/2016/05/31/rl/" },
+      { label: "Karpathy · A Recipe for Training Neural Networks", url: "https://karpathy.github.io/2019/04/25/recipe/" },
     ],
     regions: [...RL_REGIONS, _g("w-orch")] },
   { id: "w-tf", title: "Transformer Architecture", emoji: "🏛️",
@@ -1215,6 +1243,9 @@ const BUILTIN_WORLDS = [
       { label: "3b1b · Attention, visually", url: "https://www.youtube.com/watch?v=eMlx5fFNoYc" },
       { label: "Raschka · LLM Architecture Gallery", url: "https://sebastianraschka.com/llm-architecture-gallery/" },
       { label: "Raschka · Recent Developments (KV sharing, mHC)", url: "https://magazine.sebastianraschka.com/p/recent-developments-in-llm-architectures" },
+      { label: "Raschka · Understanding & Coding Self-Attention", url: "https://magazine.sebastianraschka.com/p/understanding-and-coding-self-attention" },
+      { label: "Karpathy · Let's build GPT from scratch", url: "https://www.youtube.com/watch?v=kCc8FmEb1nY" },
+      { label: "Karpathy · nanoGPT", url: "https://github.com/karpathy/nanoGPT" },
     ],
     regions: [_g("w-embed"), _g("w-attn"), _g("w-moe"), _g("w-arch")] },
   { id: "w-gen", title: "Generative Models", emoji: "🌫️",
@@ -1222,6 +1253,7 @@ const BUILTIN_WORLDS = [
     links: [
       { label: "Lilian Weng · From AE to VAE", url: "https://lilianweng.github.io/posts/2018-08-12-vae/" },
       { label: "Lilian Weng · Diffusion Models", url: "https://lilianweng.github.io/posts/2021-07-11-diffusion-models/" },
+      { label: "Karpathy · Neural Networks: Zero to Hero (makemore→GPT)", url: "https://karpathy.ai/zero-to-hero.html" },
     ],
     regions: [_g("w-kl"), _g("w-ae"), _g("w-diffusion")] },
   { id: "w-percept", title: "Perception & World Models", emoji: "👁️",
@@ -1229,6 +1261,9 @@ const BUILTIN_WORLDS = [
     links: [
       { label: "CNN Explainer (interactive)", url: "https://poloclub.github.io/cnn-explainer/" },
       { label: "Meta AI · V-JEPA 2", url: "https://ai.meta.com/vjepa/" },
+      { label: "Fei-Fei Li's CS231n · CNNs for Visual Recognition", url: "https://cs231n.github.io/" },
+      { label: "Fei-Fei Li · World Labs on spatial intelligence", url: "https://www.worldlabs.ai/blog" },
+      { label: "LeCun · A Path Towards Autonomous Machine Intelligence", url: "https://openreview.net/pdf?id=BZ5a1r-kVsf" },
     ],
     regions: [_g("w-vlm"), WM_REGION] },
   { id: "w-sys", title: "LLM Systems & Serving", emoji: "⚙️",
@@ -1236,6 +1271,7 @@ const BUILTIN_WORLDS = [
     links: [
       { label: "Raschka · Coding the KV Cache", url: "https://magazine.sebastianraschka.com/p/coding-the-kv-cache-in-llms" },
       { label: "vLLM · PagedAttention paper", url: "https://arxiv.org/abs/2309.06180" },
+      { label: "Zero to Hero with vLLM (capacity planning §8.3)", url: "https://martinuke0.github.io/posts/2026-01-04-zero-to-hero-with-vllm-a-practical-guide-for-highthroughput-llm-inference/#83-capacity-planning" },
     ],
     regions: [INF_REGION_A, INF_REGION_B] },
 ];
@@ -1259,6 +1295,26 @@ const LABS = {
   "k-slidewin": { needs: null,
     starter: `def longest_substring(s):\n    # sliding window over a set\n    pass\n`,
     test: `\nassert longest_substring("abcabcbb") == 3\nassert longest_substring("bbbbb") == 1\nassert longest_substring("pwwkew") == 3\nassert longest_substring("") == 0\nprint("ALL TESTS PASSED ✓")\n` },
+  "tl-bpe": { needs: null,
+    starter: `def get_pair_counts(tokens):
+    # count adjacent pairs
+    pass
+
+def merge(tokens, pair, new_token):
+    pass
+
+def bpe_train(text, n_merges):
+    tokens = list(text); merges = []
+    # repeat: most frequent pair -> merge
+    return tokens, merges
+`,
+    test: `
+toks, merges = bpe_train("aaabdaaabac", 3)
+assert merges[0] == ("a","a"), f"first merge should be ('a','a'), got {merges[0] if merges else None}"
+assert len(merges) == 3
+assert "".join(toks) == "aaabdaaabac", "merging must preserve the underlying text"
+print("ALL TESTS PASSED ✓")
+` },
   "k-paged": { needs: "numpy",
     starter: `import numpy as np\n\nclass PagedKVCache:\n    def __init__(self, n_blocks=64, block=4, d=8):\n        # K,V pools, free list, tables{}, lens{}\n        pass\n    def append(self, seq, k, v):\n        pass\n    def gather(self, seq):\n        # return (ks, vs) for seq, length-trimmed\n        pass\n`,
     test: `\nc = PagedKVCache()\nfor i in range(10):\n    c.append("a", np.full(8, i, float), np.full(8, -i, float))\nks, vs = c.gather("a")\nassert ks.shape == (10, 8) and vs.shape == (10, 8)\nassert ks[7,0] == 7 and vs[3,0] == -3\nprint("ALL TESTS PASSED ✓")\n` },
@@ -1271,6 +1327,7 @@ const KATAS = [
   links: [
     { label: "Transformer Explainer", url: "https://poloclub.github.io/transformer-explainer/" },
     { label: "3b1b · Attention, visually", url: "https://www.youtube.com/watch?v=eMlx5fFNoYc" },
+    { label: "Raschka · Coding Self-Attention", url: "https://magazine.sebastianraschka.com/p/understanding-and-coding-self-attention" },
   ],
   steps: [
     { prompt: "We project input X [seq, d] into queries, keys, values. Fill the blank:", code: `Q = X @ W_q     # [seq, d_k]
@@ -1498,7 +1555,7 @@ class PagedKVCache:
   id: "k-attnback", family: "ml", title: "Attention Backward Pass", emoji: "↩️",
   blurb: "Derive and code the gradients through softmax(QKᵀ/√d)V by hand.",
   frameworks: ["numpy"],
-  links: [{ label: "3b1b · Backpropagation", url: "https://www.youtube.com/watch?v=Ilg3gGewQ5U" }],
+  links: [{ label: "3b1b · Backpropagation", url: "https://www.youtube.com/watch?v=Ilg3gGewQ5U" }, { label: "Karpathy · micrograd", url: "https://github.com/karpathy/micrograd" }],
   steps: [
     { prompt: "Forward: O = P V where P = softmax(S). Given dO (= ∂L/∂O), the easy gradients first:", code: `dV = ____
 dP = ____`,
@@ -1580,7 +1637,7 @@ class LoRALinear(nn.Module):
   id: "k-mlp", family: "ml", title: "MLP Forward & Backward", emoji: "🧮",
   blurb: "The fundamentals: two layers, ReLU, chain rule, gradient check.",
   frameworks: ["numpy"],
-  links: [{ label: "3b1b · Backpropagation calculus", url: "https://www.youtube.com/watch?v=tIeHLnjs5U8" }],
+  links: [{ label: "3b1b · Backpropagation calculus", url: "https://www.youtube.com/watch?v=tIeHLnjs5U8" }, { label: "Karpathy · micrograd", url: "https://github.com/karpathy/micrograd" }],
   steps: [
     { prompt: "Forward: X→[W1,ReLU]→H→[W2]→logits. The hidden layer:", code: `Z1 = X @ W1 + b1
 H  = ____`,
@@ -1617,7 +1674,7 @@ def backward(dlogits, cache, p):
   id: "k-trainloop", family: "ml", title: "Training Loop (PyTorch & JAX)", emoji: "🔁",
   blurb: "The five-step heartbeat — and the JAX way: pure functions, grad transforms, jit.",
   frameworks: ["pytorch", "jax"],
-  links: [{ label: "3b1b · Gradient descent", url: "https://www.youtube.com/watch?v=IHZwWFHWa-w" }],
+  links: [{ label: "3b1b · Gradient descent", url: "https://www.youtube.com/watch?v=IHZwWFHWa-w" }, { label: "Karpathy · A Recipe for Training NNs", url: "https://karpathy.github.io/2019/04/25/recipe/" }],
   steps: [
     { prompt: "PyTorch's canonical five-step loop. What's missing — and where?", code: `for x, y in loader:
     loss = criterion(model(x), y)
@@ -1809,24 +1866,566 @@ compiled.save("triage_v1.json")   # the optimized program`,
 },
 ];
 
+
+/* ============================================================
+   TORCHLEET — practical PyTorch workthroughs
+   Source: github.com/Exorust/TorchLeet (Chandrahas Aroori)
+   Fill the TODOs in the workspace, reveal the reference,
+   get an AI review. Copy starters into your local env to run
+   torch (the in-browser lab runs python/numpy katas only).
+   ============================================================ */
+const TORCHLEET = [
+{ id: "tl-linreg", family: "torchleet", emoji: "📈", tier: "BASIC",
+  title: "Linear Regression", blurb: "The five-step training heartbeat on the simplest possible model.",
+  frameworks: ["pytorch"], steps: [],
+  links: [{ label: "TorchLeet problem", url: "https://github.com/Exorust/TorchLeet/blob/main/torch/basic/lin-regression/lin-regression.ipynb" }],
+  starter: `import torch, torch.nn as nn
+
+X = torch.rand(100, 1) * 10
+y = 2 * X + 3 + torch.randn(100, 1)
+
+class LinearRegressionModel(nn.Module):
+    def __init__(self):
+        super().__init__()
+        # TODO: one linear layer, 1 -> 1
+    def forward(self, x):
+        # TODO
+        pass
+
+model = LinearRegressionModel()
+criterion = None   # TODO: which loss for regression?
+optimizer = None   # TODO: SGD, lr=0.01
+
+for epoch in range(1000):
+    # TODO: the 5 steps — zero, forward, loss, backward, step
+    pass
+
+print([p.item() for p in model.parameters()])  # ≈ [2, 3]`,
+  solution: `class LinearRegressionModel(nn.Module):
+    def __init__(self):
+        super().__init__()
+        self.linear = nn.Linear(1, 1)
+    def forward(self, x):
+        return self.linear(x)
+
+model = LinearRegressionModel()
+criterion = nn.MSELoss()
+optimizer = torch.optim.SGD(model.parameters(), lr=0.01)
+
+for epoch in range(1000):
+    optimizer.zero_grad()          # 1 clear stale grads
+    pred = model(X)                # 2 forward
+    loss = criterion(pred, y)      # 3 loss
+    loss.backward()                # 4 backprop
+    optimizer.step()               # 5 update
+# weight → ~2, bias → ~3` },
+{ id: "tl-dataset", family: "torchleet", emoji: "🗂️", tier: "BASIC",
+  title: "Custom Dataset & DataLoader", blurb: "Load from CSV: __len__, __getitem__, batching.",
+  frameworks: ["pytorch"], steps: [],
+  links: [{ label: "TorchLeet problem", url: "https://github.com/Exorust/TorchLeet/blob/main/torch/basic/custom-dataset/custom-dataset.ipynb" }],
+  starter: `import torch, pandas as pd
+from torch.utils.data import Dataset, DataLoader
+
+class CSVDataset(Dataset):
+    def __init__(self, path):
+        # TODO: read csv; split features / label column
+        pass
+    def __len__(self):
+        # TODO
+        pass
+    def __getitem__(self, idx):
+        # TODO: return (x_tensor, y_tensor) for one row
+        pass
+
+loader = DataLoader(CSVDataset("data.csv"),
+                    batch_size=32, shuffle=True)
+for xb, yb in loader:
+    print(xb.shape, yb.shape); break`,
+  solution: `class CSVDataset(Dataset):
+    def __init__(self, path):
+        df = pd.read_csv(path)
+        self.X = torch.tensor(df.iloc[:, :-1].values,
+                              dtype=torch.float32)
+        self.y = torch.tensor(df.iloc[:, -1].values,
+                              dtype=torch.float32).unsqueeze(1)
+    def __len__(self):
+        return len(self.X)
+    def __getitem__(self, idx):
+        return self.X[idx], self.y[idx]
+# DataLoader handles batching, shuffling, and parallel
+# workers — __getitem__ only ever sees ONE example.` },
+{ id: "tl-huber", family: "torchleet", emoji: "🛡️", tier: "BASIC",
+  title: "Custom Loss (Huber)", blurb: "L2 near zero, L1 in the tails — robust regression, by hand.",
+  frameworks: ["pytorch"], steps: [],
+  links: [{ label: "TorchLeet problem", url: "https://github.com/Exorust/TorchLeet/blob/main/torch/basic/custom-loss/custom-loss.ipynb" }],
+  starter: `import torch, torch.nn as nn
+
+class HuberLoss(nn.Module):
+    def __init__(self, delta=1.0):
+        super().__init__()
+        self.delta = delta
+    def forward(self, y_pred, y):
+        # TODO:
+        #  err = y - y_pred
+        #  |err| <= delta : 0.5 * err^2
+        #  |err| >  delta : delta * (|err| - 0.5*delta)
+        # hint: torch.where — and it must handle batches
+        pass
+
+# sanity: matches nn.HuberLoss()
+print(HuberLoss()(torch.tensor([2.5]), torch.tensor([1.0])))`,
+  solution: `class HuberLoss(nn.Module):
+    def __init__(self, delta=1.0):
+        super().__init__()
+        self.delta = delta
+    def forward(self, y_pred, y):
+        err = y - y_pred
+        abs_err = err.abs()
+        quad = 0.5 * err ** 2
+        lin  = self.delta * (abs_err - 0.5 * self.delta)
+        return torch.where(abs_err <= self.delta,
+                           quad, lin).mean()
+# torch.where keeps it vectorized & differentiable —
+# no python if on tensor values (that breaks batching).` },
+{ id: "tl-dnn", family: "torchleet", emoji: "🕸️", tier: "BASIC",
+  title: "Deep Neural Network", blurb: "Stack Linear+ReLU into an MLP classifier, train it end to end.",
+  frameworks: ["pytorch"], steps: [],
+  links: [{ label: "TorchLeet problem", url: "https://github.com/Exorust/TorchLeet/blob/main/torch/basic/custom-DNN/custon-DNN.ipynb" }],
+  starter: `import torch, torch.nn as nn
+
+class DNN(nn.Module):
+    def __init__(self, d_in=20, d_hidden=64, n_classes=3):
+        super().__init__()
+        # TODO: Sequential — Linear, ReLU, Linear, ReLU, Linear
+    def forward(self, x):
+        # TODO
+        pass
+
+model = DNN()
+# TODO: pick the right loss for multi-class classification
+# (careful: does it want logits or probabilities?)
+criterion = None
+opt = torch.optim.AdamW(model.parameters(), lr=1e-3)`,
+  solution: `class DNN(nn.Module):
+    def __init__(self, d_in=20, d_hidden=64, n_classes=3):
+        super().__init__()
+        self.net = nn.Sequential(
+            nn.Linear(d_in, d_hidden), nn.ReLU(),
+            nn.Linear(d_hidden, d_hidden), nn.ReLU(),
+            nn.Linear(d_hidden, n_classes),   # raw logits!
+        )
+    def forward(self, x):
+        return self.net(x)
+
+criterion = nn.CrossEntropyLoss()
+# CrossEntropyLoss applies log-softmax itself — the classic
+# bug is adding a Softmax layer before it (double softmax).` },
+{ id: "tl-cnn", family: "torchleet", emoji: "🖼️", tier: "EASY",
+  title: "CNN on CIFAR-10", blurb: "Conv→pool→flatten→linear, and the shape arithmetic in between.",
+  frameworks: ["pytorch"], steps: [],
+  links: [{ label: "TorchLeet problem", url: "https://github.com/Exorust/TorchLeet/blob/main/torch/easy/cnn/CNN.ipynb" },
+          { label: "CNN Explainer", url: "https://poloclub.github.io/cnn-explainer/" },
+          { label: "Fei-Fei Li's CS231n notes", url: "https://cs231n.github.io/" }],
+  starter: `import torch, torch.nn as nn
+
+class CNN(nn.Module):
+    def __init__(self):
+        super().__init__()
+        # CIFAR-10 input: [B, 3, 32, 32]
+        # TODO: conv1 3->32 (k=3,pad=1), conv2 32->64 (k=3,pad=1)
+        #       maxpool 2x2 after each conv+relu
+        #       then Linear(? , 10)  <- compute the flattened size!
+    def forward(self, x):
+        # TODO
+        pass
+
+print(CNN()(torch.randn(2, 3, 32, 32)).shape)  # [2, 10]`,
+  solution: `class CNN(nn.Module):
+    def __init__(self):
+        super().__init__()
+        self.conv1 = nn.Conv2d(3, 32, 3, padding=1)
+        self.conv2 = nn.Conv2d(32, 64, 3, padding=1)
+        self.pool  = nn.MaxPool2d(2, 2)
+        self.relu  = nn.ReLU()
+        # 32x32 -> pool -> 16x16 -> pool -> 8x8
+        self.fc = nn.Linear(64 * 8 * 8, 10)
+    def forward(self, x):
+        x = self.pool(self.relu(self.conv1(x)))
+        x = self.pool(self.relu(self.conv2(x)))
+        x = x.flatten(1)              # keep batch dim
+        return self.fc(x)
+# padding=1 with k=3 preserves H,W; each pool halves them.
+# The Linear in_features is where everyone's shape bug lives.` },
+{ id: "tl-rnn", family: "torchleet", emoji: "🔄", tier: "EASY",
+  title: "RNN from Scratch", blurb: "The recurrence: h_t = tanh(W_x x_t + W_h h_{t-1} + b), unrolled by hand.",
+  frameworks: ["pytorch"], steps: [],
+  links: [{ label: "TorchLeet problem", url: "https://github.com/Exorust/TorchLeet/blob/main/torch/easy/rnn/RNN.ipynb" }],
+  starter: `import torch, torch.nn as nn
+
+class VanillaRNN(nn.Module):
+    def __init__(self, d_in, d_hidden, d_out):
+        super().__init__()
+        # TODO: W_xh, W_hh (as nn.Linear), and an output head
+    def forward(self, x):           # x: [B, T, d_in]
+        B, T, _ = x.shape
+        h = None  # TODO: init hidden state (zeros)
+        for t in range(T):
+            # TODO: h = tanh(W_xh x_t + W_hh h)
+            pass
+        # TODO: predict from the LAST hidden state
+        pass`,
+  solution: `class VanillaRNN(nn.Module):
+    def __init__(self, d_in, d_hidden, d_out):
+        super().__init__()
+        self.W_xh = nn.Linear(d_in, d_hidden)
+        self.W_hh = nn.Linear(d_hidden, d_hidden)
+        self.head = nn.Linear(d_hidden, d_out)
+    def forward(self, x):
+        B, T, _ = x.shape
+        h = torch.zeros(B, self.W_hh.in_features,
+                        device=x.device)
+        for t in range(T):
+            h = torch.tanh(self.W_xh(x[:, t]) + self.W_hh(h))
+        return self.head(h)
+# Same weights every step — that IS the recurrence.
+# tanh keeps h bounded; gradients through T steps still
+# vanish/explode, which is why LSTM exists (next kata).` },
+{ id: "tl-ae", family: "torchleet", emoji: "🪞", tier: "EASY",
+  title: "Autoencoder for Anomaly Detection", blurb: "Train on normal data; reconstruction error becomes the alarm.",
+  frameworks: ["pytorch"], steps: [],
+  links: [{ label: "TorchLeet problem", url: "https://github.com/Exorust/TorchLeet/blob/main/torch/easy/autoencoder/autoencoder.ipynb" }],
+  starter: `import torch, torch.nn as nn
+
+class AE(nn.Module):
+    def __init__(self, d=20, z=4):
+        super().__init__()
+        # TODO: encoder d->16->z, decoder z->16->d
+    def forward(self, x):
+        # TODO: return reconstruction
+        pass
+
+# TODO (concept): train ONLY on normal samples with MSE.
+# At test time, score = per-sample reconstruction error;
+# flag scores above a percentile threshold as anomalies.
+def anomaly_scores(model, X):
+    # TODO: per-sample MSE (no reduction across batch!)
+    pass`,
+  solution: `class AE(nn.Module):
+    def __init__(self, d=20, z=4):
+        super().__init__()
+        self.enc = nn.Sequential(nn.Linear(d, 16), nn.ReLU(),
+                                 nn.Linear(16, z))
+        self.dec = nn.Sequential(nn.Linear(z, 16), nn.ReLU(),
+                                 nn.Linear(16, d))
+    def forward(self, x):
+        return self.dec(self.enc(x))
+
+@torch.no_grad()
+def anomaly_scores(model, X):
+    recon = model(X)
+    return ((X - recon) ** 2).mean(dim=1)   # per-sample!
+# threshold = scores_on_normal_val.quantile(0.99)
+# The bottleneck z<<d forces the AE to learn 'normal';
+# off-manifold inputs come back mangled → high score.` },
+{ id: "tl-lstm", family: "torchleet", emoji: "🚪", tier: "MEDIUM",
+  title: "LSTM from Scratch", blurb: "Four gates, two states — the cell that beat vanishing gradients.",
+  frameworks: ["pytorch"], steps: [],
+  links: [{ label: "TorchLeet problem", url: "https://github.com/Exorust/TorchLeet/blob/main/torch/medium/lstm/LSTM.ipynb" }],
+  starter: `import torch, torch.nn as nn
+
+class LSTMCell(nn.Module):
+    def __init__(self, d_in, d_h):
+        super().__init__()
+        # one big projection for all 4 gates is the trick:
+        self.gates = nn.Linear(d_in + d_h, 4 * d_h)
+        self.d_h = d_h
+    def forward(self, x_t, h, c):
+        # TODO:
+        #  z = gates([x_t, h])  -> chunk into i, f, g, o
+        #  i, f, o -> sigmoid;  g -> tanh
+        #  c_new = f*c + i*g
+        #  h_new = o * tanh(c_new)
+        pass`,
+  solution: `class LSTMCell(nn.Module):
+    def __init__(self, d_in, d_h):
+        super().__init__()
+        self.gates = nn.Linear(d_in + d_h, 4 * d_h)
+        self.d_h = d_h
+    def forward(self, x_t, h, c):
+        z = self.gates(torch.cat([x_t, h], dim=-1))
+        i, f, g, o = z.chunk(4, dim=-1)
+        i, f, o = i.sigmoid(), f.sigmoid(), o.sigmoid()
+        g = g.tanh()
+        c_new = f * c + i * g        # additive cell update!
+        h_new = o * torch.tanh(c_new)
+        return h_new, c_new
+# The additive c update is the gradient highway: f≈1 lets
+# gradients flow across many steps — the fix RNNs lacked.` },
+{ id: "tl-silu", family: "torchleet", emoji: "⚙️", tier: "HARD",
+  title: "Custom Autograd (SiLU)", blurb: "torch.autograd.Function: write forward AND backward yourself.",
+  frameworks: ["pytorch"], steps: [],
+  links: [{ label: "TorchLeet problem", url: "https://github.com/Exorust/TorchLeet/blob/main/torch/hard/custom-autograd/custom-autgrad-function.ipynb" }],
+  starter: `import torch
+
+class SiLU(torch.autograd.Function):
+    # silu(x) = x * sigmoid(x)
+    @staticmethod
+    def forward(ctx, x):
+        # TODO: compute, and ctx.save_for_backward what
+        # the backward pass will need
+        pass
+    @staticmethod
+    def backward(ctx, grad_out):
+        # TODO: d/dx [x*s(x)] = s(x) * (1 + x * (1 - s(x)))
+        pass
+
+x = torch.randn(5, requires_grad=True)
+SiLU.apply(x).sum().backward()
+print(torch.allclose(x.grad,
+      torch.nn.functional.silu(x).sum().backward() or x.grad))`,
+  solution: `class SiLU(torch.autograd.Function):
+    @staticmethod
+    def forward(ctx, x):
+        s = torch.sigmoid(x)
+        ctx.save_for_backward(x, s)
+        return x * s
+    @staticmethod
+    def backward(ctx, grad_out):
+        x, s = ctx.saved_tensors
+        return grad_out * (s * (1 + x * (1 - s)))
+# gradcheck it (double precision):
+# torch.autograd.gradcheck(SiLU.apply,
+#     torch.randn(4, dtype=torch.double,
+#                 requires_grad=True))
+# save_for_backward is the contract: forward stores,
+# backward consumes, autograd handles the graph.` },
+{ id: "tl-transformer", family: "torchleet", emoji: "🤖", tier: "HARD",
+  title: "Full Transformer", blurb: "TorchLeet's capstone: embeddings, blocks, and a generate() loop.",
+  frameworks: ["pytorch"], steps: [],
+  links: [{ label: "TorchLeet problem", url: "https://github.com/Exorust/TorchLeet/blob/main/torch/hard/transformer/transformer.ipynb" }, { label: "Karpathy · Let's build GPT", url: "https://www.youtube.com/watch?v=kCc8FmEb1nY" }, { label: "Karpathy · nanoGPT", url: "https://github.com/karpathy/nanoGPT" }],
+  starter: `import torch, torch.nn as nn
+
+class TinyGPT(nn.Module):
+    def __init__(self, vocab, d=128, n_layers=2, h=4, max_T=64):
+        super().__init__()
+        # TODO: token embedding, position embedding,
+        # n_layers transformer blocks (reuse the Dojo block!),
+        # final RMSNorm/LayerNorm + lm_head to vocab
+    def forward(self, idx):         # idx: [B, T] token ids
+        # TODO: embed + pos, blocks, norm, logits
+        pass
+    @torch.no_grad()
+    def generate(self, idx, n_new):
+        for _ in range(n_new):
+            # TODO: crop to max_T, forward, take LAST step
+            # logits, softmax, sample, append
+            pass
+        return idx`,
+  solution: `class TinyGPT(nn.Module):
+    def __init__(self, vocab, d=128, n_layers=2, h=4, max_T=64):
+        super().__init__()
+        self.tok = nn.Embedding(vocab, d)
+        self.pos = nn.Embedding(max_T, d)
+        self.blocks = nn.ModuleList(
+            [Block(d, h) for _ in range(n_layers)])
+        self.norm = nn.LayerNorm(d)
+        self.head = nn.Linear(d, vocab, bias=False)
+        self.max_T = max_T
+    def forward(self, idx):
+        B, T = idx.shape
+        x = self.tok(idx) + self.pos(
+            torch.arange(T, device=idx.device))
+        for b in self.blocks: x = b(x)
+        return self.head(self.norm(x))      # [B, T, vocab]
+    @torch.no_grad()
+    def generate(self, idx, n_new):
+        for _ in range(n_new):
+            ctx = idx[:, -self.max_T:]
+            logits = self(ctx)[:, -1]       # last position only
+            probs = logits.softmax(-1)
+            nxt = torch.multinomial(probs, 1)
+            idx = torch.cat([idx, nxt], 1)
+        return idx
+# Block = the pre-norm causal block from the ML dojo kata.` },
+{ id: "tl-gan", family: "torchleet", emoji: "🎭", tier: "HARD",
+  title: "GAN", blurb: "Two optimizers, two losses, one adversarial game.",
+  frameworks: ["pytorch"], steps: [],
+  links: [{ label: "TorchLeet problem", url: "https://github.com/Exorust/TorchLeet/blob/main/torch/hard/GAN/GAN.ipynb" }],
+  starter: `import torch, torch.nn as nn
+
+G = nn.Sequential(nn.Linear(16, 64), nn.ReLU(),
+                  nn.Linear(64, 2))          # noise -> sample
+D = nn.Sequential(nn.Linear(2, 64), nn.LeakyReLU(0.2),
+                  nn.Linear(64, 1))          # sample -> logit
+bce = nn.BCEWithLogitsLoss()
+optG = torch.optim.Adam(G.parameters(), lr=2e-4)
+optD = torch.optim.Adam(D.parameters(), lr=2e-4)
+
+for step in range(2000):
+    real = sample_real_batch(64)             # given
+    z = torch.randn(64, 16)
+    # TODO D step: real->1, G(z).detach()->0
+    # TODO G step: D(G(z))->1   (why detach above but not here?)
+    pass`,
+  solution: `for step in range(2000):
+    real = sample_real_batch(64)
+    z = torch.randn(64, 16)
+    # --- Discriminator ---
+    optD.zero_grad()
+    fake = G(z).detach()        # block grads into G here!
+    lossD = bce(D(real), torch.ones(64, 1)) + \\
+            bce(D(fake), torch.zeros(64, 1))
+    lossD.backward(); optD.step()
+    # --- Generator ---
+    optG.zero_grad()
+    lossG = bce(D(G(z)), torch.ones(64, 1))  # fool D
+    lossG.backward(); optG.step()
+# detach() in the D step stops D's loss from training G;
+# the G step keeps the graph so gradients flow THROUGH D
+# into G — but only optG.step() updates weights.` },
+{ id: "tl-bpe", family: "torchleet", emoji: "🔤", tier: "LLM",
+  title: "Byte-Pair Encoding", blurb: "The tokenizer beneath every LLM: merge the most frequent pair, repeat.",
+  frameworks: ["pytorch"], steps: [],
+  links: [{ label: "TorchLeet problem", url: "https://github.com/Exorust/TorchLeet/blob/main/llm/Byte-Pair-Encoder/BPE-q3.ipynb" }, { label: "Karpathy · Let's build the GPT Tokenizer", url: "https://www.youtube.com/watch?v=zduSFxRajkE" }, { label: "Karpathy · minbpe", url: "https://github.com/karpathy/minbpe" }],
+  starter: `# pure python — runnable right here in the lab!
+def get_pair_counts(tokens):
+    # TODO: count adjacent pairs in a list of tokens
+    pass
+
+def merge(tokens, pair, new_token):
+    # TODO: replace every occurrence of pair with new_token
+    pass
+
+def bpe_train(text, n_merges):
+    tokens = list(text)
+    merges = []
+    for _ in range(n_merges):
+        # TODO: most frequent pair -> merge it, record it
+        pass
+    return tokens, merges`,
+  solution: `def get_pair_counts(tokens):
+    counts = {}
+    for a, b in zip(tokens, tokens[1:]):
+        counts[(a, b)] = counts.get((a, b), 0) + 1
+    return counts
+
+def merge(tokens, pair, new_token):
+    out, i = [], 0
+    while i < len(tokens):
+        if (i < len(tokens) - 1
+                and (tokens[i], tokens[i+1]) == pair):
+            out.append(new_token); i += 2
+        else:
+            out.append(tokens[i]); i += 1
+    return out
+
+def bpe_train(text, n_merges):
+    tokens, merges = list(text), []
+    for _ in range(n_merges):
+        counts = get_pair_counts(tokens)
+        if not counts: break
+        pair = max(counts, key=counts.get)
+        new = pair[0] + pair[1]
+        tokens = merge(tokens, pair, new)
+        merges.append(pair)
+    return tokens, merges` },
+{ id: "tl-gqa", family: "torchleet", emoji: "👥", tier: "LLM",
+  title: "Grouped-Query Attention", blurb: "Fewer KV heads than Q heads — implement the sharing.",
+  frameworks: ["pytorch"], steps: [],
+  links: [{ label: "TorchLeet problem", url: "https://github.com/Exorust/TorchLeet/blob/main/llm/Grouped-Query-Attention/grouped-query-attention-Question.ipynb" }],
+  starter: `import torch, torch.nn as nn, math
+
+class GQA(nn.Module):
+    def __init__(self, d=256, n_q=8, n_kv=2):
+        super().__init__()
+        assert n_q % n_kv == 0
+        self.dh = d // n_q
+        self.W_q = nn.Linear(d, n_q * self.dh, bias=False)
+        self.W_k = nn.Linear(d, n_kv * self.dh, bias=False)
+        self.W_v = nn.Linear(d, n_kv * self.dh, bias=False)
+        self.W_o = nn.Linear(d, d, bias=False)
+        self.n_q, self.n_kv = n_q, n_kv
+    def forward(self, x):           # [B, T, d]
+        B, T, _ = x.shape
+        # TODO: project; reshape q->[B,n_q,T,dh], kv->[B,n_kv,T,dh]
+        # TODO: expand kv heads to match q heads
+        #       (hint: repeat_interleave by n_q//n_kv on dim 1)
+        # TODO: scaled-dot-product attention, merge heads, W_o
+        pass`,
+  solution: `    def forward(self, x):
+        B, T, _ = x.shape
+        q = self.W_q(x).view(B, T, self.n_q, self.dh)
+        k = self.W_k(x).view(B, T, self.n_kv, self.dh)
+        v = self.W_v(x).view(B, T, self.n_kv, self.dh)
+        q, k, v = (t.transpose(1, 2) for t in (q, k, v))
+        g = self.n_q // self.n_kv          # queries per kv head
+        k = k.repeat_interleave(g, dim=1)  # share KV across group
+        v = v.repeat_interleave(g, dim=1)
+        att = (q @ k.transpose(-2, -1)) / math.sqrt(self.dh)
+        y = att.softmax(-1) @ v            # [B, n_q, T, dh]
+        y = y.transpose(1, 2).reshape(B, T, -1)
+        return self.W_o(y)
+# Only n_kv heads are CACHED at inference — that's the whole
+# point. repeat_interleave is a view-time convenience; real
+# kernels index the shared heads instead of materializing.` },
+{ id: "tl-sin", family: "torchleet", emoji: "〰️", tier: "LLM",
+  title: "Sinusoidal Embeddings", blurb: "The original position code: interleaved sin/cos at geometric frequencies.",
+  frameworks: ["pytorch"], steps: [],
+  links: [{ label: "TorchLeet problem", url: "https://github.com/Exorust/TorchLeet/blob/main/llm/Sinusoidal-Positional-Embedding/sinusoidal-q7-Question.ipynb" }],
+  starter: `import torch, math
+
+def sinusoidal_pe(max_T, d):
+    # TODO: pe[pos, 2i]   = sin(pos / 10000^(2i/d))
+    #       pe[pos, 2i+1] = cos(pos / 10000^(2i/d))
+    # build with tensor ops, no python double-loop
+    pass
+
+pe = sinusoidal_pe(64, 128)
+print(pe.shape)            # [64, 128]
+print(pe[0, :4])           # [0, 1, 0, 1] — sin(0), cos(0)`,
+  solution: `def sinusoidal_pe(max_T, d):
+    pos = torch.arange(max_T).unsqueeze(1)         # [T, 1]
+    div = torch.exp(torch.arange(0, d, 2)
+                    * (-math.log(10000.0) / d))    # [d/2]
+    pe = torch.zeros(max_T, d)
+    pe[:, 0::2] = torch.sin(pos * div)
+    pe[:, 1::2] = torch.cos(pos * div)
+    return pe
+# div is 10000^(-2i/d) computed in log-space for stability.
+# Low dims oscillate fast (fine position), high dims slowly
+# (coarse position) — a multi-scale ruler, added to embeddings.` },
+];
+
 /* ============================================================
    PYODIDE — in-browser Python (+numpy) for the Code Lab
    ============================================================ */
 let _pyodide = null;
-async function getPyodide() {
+const PYODIDE_CDNS = [
+  "https://cdn.jsdelivr.net/pyodide/v0.26.2/full/",   // official full bundle (has numpy wheels)
+  "https://cdnjs.cloudflare.com/ajax/libs/pyodide/0.26.2/",
+];
+async function getPyodide(onStatus) {
   if (_pyodide) return _pyodide;
-  await new Promise((res, rej) => {
-    if (window.loadPyodide) return res();
-    const s = document.createElement("script");
-    s.src = "https://cdnjs.cloudflare.com/ajax/libs/pyodide/0.26.2/pyodide.min.js";
-    s.onload = res; s.onerror = () => rej(new Error("load"));
-    document.head.appendChild(s);
-  });
-  _pyodide = await window.loadPyodide({ indexURL: "https://cdnjs.cloudflare.com/ajax/libs/pyodide/0.26.2/" });
-  return _pyodide;
+  let lastErr = null;
+  for (const base of PYODIDE_CDNS) {
+    try {
+      if (onStatus) onStatus("⏳ loading Python runtime from " + new URL(base).host + "…");
+      await new Promise((res, rej) => {
+        if (window.loadPyodide) return res();
+        const s = document.createElement("script");
+        s.src = base + "pyodide.js";
+        s.onload = res; s.onerror = () => rej(new Error("script blocked"));
+        document.head.appendChild(s);
+      });
+      _pyodide = await window.loadPyodide({ indexURL: base });
+      return _pyodide;
+    } catch (e) { lastErr = e; }
+  }
+  throw new Error("Python runtime couldn't load (" + (lastErr && lastErr.message) + "). The claude.ai sandbox blocks some CDNs — the desktop build runs it reliably.");
 }
-async function runPython(code, needs) {
-  const py = await getPyodide();
+async function runPython(code, needs, onStatus) {
+  const py = await getPyodide(onStatus);
+  if (onStatus) onStatus("⏳ runtime ready — executing…");
   if (needs === "numpy") { try { await py.loadPackage("numpy"); } catch (e) { throw new Error("numpy unavailable in this sandbox — pure-Python katas still run; the desktop build has the full environment."); } }
   let out = "";
   py.setStdout({ batched: (s) => { out += s + "\n"; } });
@@ -1886,6 +2485,7 @@ export default function App() {
   const [labCode, setLabCode] = useState(""); const [labOut, setLabOut] = useState("");
   const [paperQ, setPaperQ] = useState(""); const [papers, setPapers] = useState(null);
   const [gaunt, setGaunt] = useState(null);            // {pool, idx, lives, score, ord}
+  const [deepLore, setDeepLore] = useState({});        // conceptId -> model-expanded lore
 
   useEffect(() => {
     (async () => {
@@ -1895,6 +2495,7 @@ export default function App() {
       setWorlds(await loadStore("ru-worlds", []));
       setUKatas(await loadStore("ru-ukatas", []));
       setAug(await loadStore("ru-aug", {}));
+      setDeepLore(await loadStore("ru-lore", {}));
       const c = await loadStore("ru-cfg", { provider: "builtin", baseUrl: "", apiKey: "", model: "", anthropicKey: "" });
       setCfg(c); GLOBAL_KEY = c.anthropicKey || "";
     })();
@@ -1903,6 +2504,26 @@ export default function App() {
   const persistWorlds = (w) => { setWorlds(w); saveStore("ru-worlds", w); };
   const persistUKatas = (k) => { setUKatas(k); saveStore("ru-ukatas", k); };
   const persistAug = (a) => { setAug(a); saveStore("ru-aug", a); };
+  const persistLore = (l) => { setDeepLore(l); saveStore("ru-lore", l); };
+  const deepenLore = async (c) => {
+    if (deepLore[c.id] || busy === "lore") return;
+    setBusy("lore");
+    try {
+      const extra = await askModel(`You are a patient ML teacher. A learner read this summary of "${c.name}":\n"""${c.lore}"""\nExpand it with ~150 words of deeper explanation: the intuition behind it, one concrete worked example with small numbers where possible, and the most common misconception. Plain text, no markdown headers.`, cfg);
+      if (extra && extra.length > 40) persistLore({ ...deepLore, [c.id]: extra.trim() });
+    } catch (e) { showToast("Couldn't deepen the lore — check model settings."); }
+    setBusy("");
+  };
+  // lore the player should review for the current battle
+  const battleNotes = () => {
+    if (!battle) return [];
+    if (battle.kind === "critical") return [battle.concept];
+    if (battle.kind === "gym") return region.concepts;
+    const ids = battle.side.prereqs || [];
+    const out = [];
+    for (const r of regions) for (const c of r.concepts) if (ids.includes(c.id)) out.push(c);
+    return out;
+  };
   const persistCfg = (c) => { setCfg(c); GLOBAL_KEY = c.anthropicKey || ""; saveStore("ru-cfg", c); };
   const showToast = (m) => { setToast(m); setTimeout(() => setToast(null), 2600); };
   const toggleMusic = () => { if (musicOn) { music.stop(); setMusicOn(false); } else { music.start(); setMusicOn(true); } };
@@ -1915,7 +2536,7 @@ export default function App() {
   const maxHp = 100 + (level - 1) * 10;
   const capturedSet = new Set(save ? save.captured : []);
   const sidesSet = new Set(save ? save.sides : []);
-  const allKatas = [...KATAS, ...uKatas];
+  const allKatas = [...KATAS, ...TORCHLEET, ...uKatas];
   const conceptName = (id) => {
     for (const w of allWorlds) for (const r of w.regions) {
       const c = r.concepts.find((x) => x.id === id); if (c) return c.name;
@@ -1930,14 +2551,21 @@ export default function App() {
   /* ---------- battle ---------- */
   const DMG = 40, CRIT = 20;
   const startBattle = (kind, payload) => {
-    const nQ = kind === "gym" ? region.gym.questions.length : payload.questions.length;
+    let pool = null;
+    if (kind === "side") {
+      const extras = (aug[world.id] || []).filter((q) => q.src === payload.id || (payload.prereqs || []).includes(q.src));
+      pool = [...payload.questions, ...extras];
+      for (let i = pool.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [pool[i], pool[j]] = [pool[j], pool[i]]; }
+      pool = pool.slice(0, Math.max(3, Math.min(5, pool.length)));   // each visit: a different draw
+    }
+    const nQ = kind === "gym" ? region.gym.questions.length : kind === "side" ? pool.length : payload.questions.length;
     const max = nQ * DMG;
     if (kind === "critical") setBattle({ kind, concept: payload, phase: "lore", enemyHp: max, enemyMax: max, qIdx: 0, streak: 0, ord: shuf4(), showCode: false, log: `${payload.name} blocks the path!` });
-    else if (kind === "side") setBattle({ kind, side: payload, phase: "briefing", enemyHp: max, enemyMax: max, qIdx: 0, streak: 0, ord: shuf4(), showCode: true, log: payload.desc });
+    else if (kind === "side") setBattle({ kind, side: payload, pool, phase: "briefing", enemyHp: max, enemyMax: max, qIdx: 0, streak: 0, ord: shuf4(), showCode: true, log: payload.desc });
     else setBattle({ kind, gym: region.gym, phase: "lore", enemyHp: max, enemyMax: max, qIdx: 0, streak: 0, ord: shuf4(), showCode: false, log: `${region.gym.leader}: "${region.gym.taunt}"` });
     setScreen("battle");
   };
-  const bQuestions = battle ? (battle.kind === "critical" ? battle.concept.questions : battle.kind === "side" ? battle.side.questions : battle.gym.questions) : [];
+  const bQuestions = battle ? (battle.kind === "critical" ? battle.concept.questions : battle.kind === "side" ? (battle.pool || battle.side.questions) : battle.gym.questions) : [];
   const battleSrc = battle ? (battle.kind === "critical" ? battle.concept.id : battle.kind === "side" ? battle.side.id : "gym:" + region.id) : "";
   const answerBattle = (dispIdx) => {
     if (!battle || battle.phase !== "question") return;
@@ -1971,7 +2599,7 @@ export default function App() {
     if (!battle) return;
     if (battle.phase === "victory") {
       if (battle.kind === "critical") showToast(`${battle.concept.name} captured! +50 XP`);
-      else if (battle.kind === "side") showToast(`Reinforced! +30 XP · +25 HP`);
+      else if (battle.kind === "side") { showToast(`Reinforced! +30 XP · +25 HP`); forgeVariants(battle.side); }
       else showToast(`${region.gym.badge} earned! +150 XP`);
       setBattle(null); setScreen("region");
     } else if (battle.phase === "defeat") { setBattle(null); setAtNode("start"); setScreen("region"); }
@@ -2018,7 +2646,13 @@ export default function App() {
     for (let i = pool.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [pool[i], pool[j]] = [pool[j], pool[i]]; }
     return pool;
   };
-  const startGauntlet = () => { setGaunt({ pool: buildGauntletPool(), idx: 0, lives: 3, score: 0, ord: shuf4(), fb: null }); setScreen("gauntlet"); };
+  const startGauntlet = (srcFilter) => {
+    let pool = buildGauntletPool();
+    if (srcFilter) pool = pool.filter((q) => q.src === srcFilter);
+    if (!pool.length) { showToast("No questions found for that topic yet."); return; }
+    setGaunt({ pool, idx: 0, lives: 3, score: 0, ord: shuf4(), fb: null, focus: srcFilter ? conceptName(srcFilter) : null });
+    setScreen("gauntlet");
+  };
   const answerGauntlet = (dispIdx) => {
     if (!gaunt || gaunt.fb) return;
     const q = gaunt.pool[gaunt.idx];
@@ -2062,6 +2696,18 @@ export default function App() {
       showToast(`Coach forged ${qs.length} new drills → they now appear in the Trial Gauntlet.`);
     } catch (e) { showToast("Drill forging failed — check model settings and try again."); }
     setBusy("");
+  };
+
+  // silent background generation: 2 fresh scenario variants per defeated side,
+  // so revisits (heal-farming included) face a stochastic, ever-growing pool
+  const forgeVariants = async (side) => {
+    try {
+      const seen = [...side.questions, ...((aug[world.id] || []).filter((q) => q.src === side.id))].map((q) => q.q).slice(0, 12);
+      const parsed = parseJSON(await askModel(
+        `Generate 2 NEW variant scenario questions for the drill "${side.name}" (${side.desc}). Cover the same concepts from fresh angles — different surface scenarios, same underlying principles. Do NOT repeat these existing questions:\n${JSON.stringify(seen)}\nRespond ONLY raw JSON: {"questions":[{"q":"SCENARIO: ...","options":["...","...","...","..."],"a":0,"why":"one line"}]}\n${QUALITY_RULES}`, cfg));
+      const qs = (parsed.questions || []).filter((q) => q.options && q.options.length === 4).map((q) => ({ ...q, src: side.id }));
+      if (qs.length) persistAug({ ...aug, [world.id]: [...(aug[world.id] || []), ...qs] });
+    } catch (e) { /* silent — variants are a bonus, never a blocker */ }
   };
 
   /* ---------- spawn ---------- */
@@ -2118,12 +2764,17 @@ export default function App() {
   const kProgress = (id) => save && save.katas[id] ? save.katas[id] : 0;
   const openKata = (k) => {
     setKataId(k.id); setFw(k.frameworks[0] || "pytorch");
-    const p = kProgress(k.id);
-    setStepIdx(p >= k.steps.length ? 0 : p);
-    setKPhase(p >= k.steps.length ? "done" : "step");
-    setKFeedback(null); setKOrd(shuf4()); setMyCode(""); setReview("");
-    setLabCode(LABS[k.id] ? LABS[k.id].starter : ""); setLabOut("");
+    setStepIdx(Math.min(kProgress(k.id), Math.max(0, k.steps.length - 1)));
+    setKPhase("work"); setKFeedback(null); setKOrd(shuf4()); setReview("");
+    setMyCode("");   // showSol flag rides in myCode? no — dedicated state below
+    setLabCode(LABS[k.id] ? LABS[k.id].starter : (k.starter || "# paste or write your attempt here\n"));
+    setLabOut("");
     setScreen("kata");
+  };
+  const markKataComplete = () => {
+    if (!kata || kProgress(kata.id) >= (kata.steps.length || 1)) return;
+    const s = { ...save, xp: save.xp + 60, katas: { ...save.katas, [kata.id]: kata.steps.length || 1 } };
+    persist(s); showToast("Kata complete! +60 XP");
   };
   const answerKata = (dispIdx) => {
     if (!kata || kFeedback) return;
@@ -2137,8 +2788,8 @@ export default function App() {
       const next = stepIdx + 1;
       if (next >= kata.steps.length) {
         s.xp += 60; s.katas = { ...s.katas, [kata.id]: kata.steps.length };
-        persist(s); setKFeedback({ ok: true, msg: st.why + " — KATA COMPLETE! +60 XP bonus." });
-        setTimeout(() => { setKPhase("done"); setKFeedback(null); }, 1600);
+        persist(s); setKFeedback({ ok: true, msg: st.why + " — ALL HINTS CLEARED! +60 XP bonus." });
+        setTimeout(() => { setKPhase("work"); setKFeedback(null); }, 1800);
       } else {
         s.katas = { ...s.katas, [kata.id]: Math.max(kProgress(kata.id), next) };
         persist(s); setKFeedback({ ok: true, msg: st.why });
@@ -2147,16 +2798,23 @@ export default function App() {
     } else { persist(s); setKFeedback({ ok: false, msg: st.why }); setTimeout(() => { setKOrd(shuf4()); setKFeedback(null); }, 1800); }
   };
   const doReview = async () => {
-    if (!myCode.trim() || !kata) return;
+    if (!labCode.trim() || !kata) return;
     setBusy("review"); setReview("");
-    try { setReview(await reviewCode(kata.title, fw, myCode, cfg)); } catch (e) { setReview("Review failed — check model settings (custom endpoints need CORS enabled)."); }
+    try { setReview(await reviewCode(kata.title, fw, labCode, cfg)); } catch (e) { setReview("Review failed — check model settings (custom endpoints need CORS enabled)."); }
     setBusy("");
   };
   const runLab = async (withTests) => {
     if (!kata || !LABS[kata.id]) return;
-    setBusy("lab"); setLabOut("⏳ starting Python… (first run downloads the runtime)");
-    try { setLabOut(await runPython(withTests ? labCode + "\n" + LABS[kata.id].test : labCode, LABS[kata.id].needs)); }
-    catch (e) { setLabOut("⚠️ " + (e.message || "Python runtime unavailable in this sandbox — pure-Python katas may still work; the desktop build ships the full environment.")); }
+    setBusy("lab"); setLabOut("⏳ starting Python… (first run downloads the runtime, ~10-20s)");
+    try {
+      const out = await runPython(withTests ? labCode + "\n" + LABS[kata.id].test : labCode, LABS[kata.id].needs, (s) => setLabOut(s));
+      setLabOut(out);
+      if (withTests && out.includes("ALL TESTS PASSED") && kProgress(kata.id) < kata.steps.length) {
+        const s = { ...save, xp: save.xp + 60, katas: { ...save.katas, [kata.id]: kata.steps.length || 1 } };
+        persist(s); showToast("Tests passed — kata complete! +60 XP");
+      }
+    }
+    catch (e) { setLabOut("⚠️ " + (e.message || e)); }
     setBusy("");
   };
   const doPapers = async () => {
@@ -2227,7 +2885,7 @@ export default function App() {
       <style>{CSS}</style>
       <div style={{ fontSize: 60, animation: "bob 2.5s ease-in-out infinite" }}>🧢</div>
       <h1 style={{ fontSize: 32, fontWeight: 800, letterSpacing: "-0.02em", margin: "8px 0 2px" }}>EDOKAI</h1>
-      <span style={S.mono(11, T.explore)}>5 UMBRELLA WORLDS · DOJO + PYTHON LAB · SELF-IMPROVING COACH</span>
+      <span style={S.mono(11, T.explore)}>5 UMBRELLA WORLDS · TORCHLEET DOJO · SELF-IMPROVING COACH</span>
       <p style={{ color: T.inkSoft, maxWidth: 430, lineHeight: 1.6, fontSize: 14.5, marginTop: 14 }}>
         Board worlds for <b style={{ color: T.action }}>concepts</b>, a <b style={{ color: T.explore }}>Dojo</b> with runnable Python katas, per-world <b>Trial Gauntlets</b>, and a <b style={{ color: T.reward }}>Coach</b> that watches your misses and forges new drills targeting your weaknesses. Bring your own model, resource, or concept.
       </p>
@@ -2273,7 +2931,7 @@ export default function App() {
       <div style={{ ...S.wrap, paddingTop: 16 }}>
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
           <h2 style={{ fontSize: 20, fontWeight: 800, margin: 0 }}>{world.emoji} {world.title}</h2>
-          <button onClick={startGauntlet} style={{ ...S.btn(T.gold), padding: "8px 12px", fontSize: 12 }}>⚔️ Trial Gauntlet</button>
+          <button onClick={() => startGauntlet()} style={{ ...S.btn(T.gold), padding: "8px 12px", fontSize: 12 }}>⚔️ Trial Gauntlet</button>
         </div>
         {(world.links || []).length > 0 && (
           <div style={{ display: "flex", flexWrap: "wrap", gap: 6, margin: "10px 0" }}>
@@ -2317,7 +2975,7 @@ export default function App() {
                 <p style={{ fontSize: 13, color: T.inkSoft, marginTop: 10, lineHeight: 1.55 }}>Weakest right now: <b>{weak.map((w) => w.name).join(", ")}</b>. Visit the 🧪 Coach to forge targeted drills.</p>
               )}
               <div style={{ display: "flex", gap: 8, justifyContent: "center", marginTop: 12 }}>
-                <button onClick={startGauntlet} style={S.btn(T.gold)}>Run it again</button>
+                <button onClick={() => startGauntlet()} style={S.btn(T.gold)}>Run it again</button>
                 <button onClick={() => setScreen("coach")} style={S.btn(T.explore)}>🧪 Coach</button>
               </div>
             </div>
@@ -2329,8 +2987,9 @@ export default function App() {
     return (
       <div style={{ ...S.app, background: T.night }}><style>{CSS}</style><Toast />
         <div style={{ maxWidth: 620, margin: "0 auto", padding: "16px 14px 60px" }}>
+          <button onClick={() => { setGaunt(null); setScreen("regionlist"); }} style={{ background: "none", border: "1px solid #46548F", color: "#9FA8CC", borderRadius: 8, padding: "5px 12px", fontSize: 12, cursor: "pointer", fontFamily: "inherit", fontWeight: 700, marginBottom: 8 }}>← Exit gauntlet</button>
           <div style={{ display: "flex", justifyContent: "space-between", color: "#9FA8CC" }}>
-            <span style={S.mono(10, "#9FA8CC")}>TRIAL GAUNTLET · {world.title.toUpperCase()}</span>
+            <span style={S.mono(10, "#9FA8CC")}>{gaunt.focus ? `FOCUSED DRILL · ${gaunt.focus.toUpperCase()}` : `TRIAL GAUNTLET · ${world.title.toUpperCase()}`}</span>
             <span style={S.mono(10, "#9FA8CC")}>Q{gaunt.idx + 1}/{gaunt.pool.length} · {"❤️".repeat(gaunt.lives)}{"🖤".repeat(3 - gaunt.lives)} · {gaunt.score} ✓</span>
           </div>
           <div style={{ marginTop: 10 }}>
@@ -2360,7 +3019,7 @@ export default function App() {
           <p style={{ color: T.inkSoft, fontSize: 13, lineHeight: 1.55 }}>The teaching system improves itself: every answer you give is tracked per concept. The Coach reads your miss patterns and forges NEW scenario drills aimed at exactly what you get wrong — they join the Trial Gauntlet pool, so coverage grows where you're weakest.</p>
           <div style={{ display: "flex", gap: 8, margin: "10px 0" }}>
             <button onClick={forgeDrills} disabled={busy === "coach"} style={{ ...S.btn(T.explore), flex: 1 }}>{busy === "coach" ? "Reflecting on your misses…" : "🔨 Reflect & forge new drills"}</button>
-            <button onClick={startGauntlet} style={S.btn(T.gold)}>⚔️ Gauntlet</button>
+            <button onClick={() => startGauntlet()} style={S.btn(T.gold)}>⚔️ Gauntlet</button>
           </div>
           <span style={S.mono(10)}>{augCount} COACH-FORGED DRILLS IN THIS WORLD'S POOL</span>
           {rows.length === 0 && <div style={{ ...S.card, marginTop: 10, color: T.inkSoft, fontSize: 13.5 }}>No telemetry yet for this world — fight some encounters first, then come back.</div>}
@@ -2373,6 +3032,7 @@ export default function App() {
                 </div>
               </div>
               <span style={S.mono(10, r.rate > 0.4 ? T.penalty : T.inkSoft)}>{Math.round((1 - r.rate) * 100)}% · {r.a} ans</span>
+              <button onClick={() => startGauntlet(r.id)} style={{ ...S.btn(T.gold), padding: "6px 10px", fontSize: 11 }}>Drill ⚔️</button>
             </div>
           ))}
         </div>
@@ -2460,8 +3120,14 @@ export default function App() {
                       <span style={{ fontWeight: 800, fontSize: 15 }}>{got ? c.name : "???"}</span>
                       {got && <span style={{ ...S.mono(9, T.reward), marginLeft: "auto" }}>CAPTURED</span>}
                     </div>
-                    {got ? <p style={{ fontSize: 13, lineHeight: 1.6, margin: "8px 0 0" }}>{c.lore}</p>
-                      : <p style={{ fontSize: 12.5, color: T.inkSoft, margin: "6px 0 0" }}>A critical encounter in {r.name}. Defeat it to unlock its lore.</p>}
+                    {got ? (
+                      <>
+                        <p style={{ fontSize: 13, lineHeight: 1.6, margin: "8px 0 0" }}>{c.lore}</p>
+                        {deepLore[c.id]
+                          ? <p style={{ fontSize: 12.5, lineHeight: 1.6, margin: "8px 0 0", padding: "8px 10px", background: T.exploreSoft, borderRadius: 8 }}>🔍 {deepLore[c.id]}</p>
+                          : <button onClick={() => deepenLore(c)} disabled={busy === "lore"} style={{ ...S.chip(false), marginTop: 8, fontSize: 11.5 }}>{busy === "lore" ? "…" : "🔍 Deepen"}</button>}
+                      </>
+                    ) : <p style={{ fontSize: 12.5, color: T.inkSoft, margin: "6px 0 0" }}>A critical encounter in {r.name}. Defeat it to unlock its lore.</p>}
                   </div>
                 );
               })}
@@ -2504,6 +3170,19 @@ export default function App() {
           </div>
         )}
         <div style={{ ...S.card, marginTop: 12 }}>
+          <span style={S.mono(10)}>SOUNDTRACK</span>
+          <p style={{ fontSize: 12.5, color: T.inkSoft, lineHeight: 1.5, margin: "6px 0 8px" }}>Default is a generated lo-fi loop (no copyrighted audio can ship with the app). Load your own music file — e.g. a track you've downloaded — and the 🎵 toggle plays it on loop instead. Lasts for this session.</p>
+          <label style={{ ...S.chip(false), display: "inline-block", cursor: "pointer" }}>
+            🎵 Choose audio file…
+            <input type="file" accept="audio/*" style={{ display: "none" }} onChange={(e) => {
+              const f = e.target.files && e.target.files[0];
+              if (!f) return;
+              music.setCustom(URL.createObjectURL(f));
+              showToast(`Soundtrack loaded: ${f.name} — hit 🎵 to play`);
+            }} />
+          </label>
+        </div>
+        <div style={{ ...S.card, marginTop: 12 }}>
           <span style={S.mono(10)}>SAVE DATA</span>
           <p style={{ fontSize: 12.5, color: T.inkSoft, margin: "6px 0 10px" }}>XP {save.xp} · {save.captured.length} concepts · {save.badges.length} badges · {Object.keys(save.katas).length} katas · telemetry on {Object.keys(save.qstats).length} topics</p>
           <button onClick={() => { persist({ xp: 0, hp: 100, badges: [], captured: [], sides: [], katas: {}, qstats: {} }); persistAug({}); showToast("Save reset."); }} style={{ ...S.btn(T.penalty), padding: "8px 14px", fontSize: 12.5 }}>Reset progress</button>
@@ -2541,13 +3220,13 @@ export default function App() {
 
   /* ============ DOJO ============ */
   if (screen === "dojo") {
-    const fams = [["ml", "🧠 ML Engineering"], ["swe", "🧩 SWE · Blind 75"], ["sys", "🏰 System Design"], ["custom", "🌀 Your forged katas"]];
+    const fams = [["torchleet", "🔥 TorchLeet · PyTorch practice"], ["ml", "🧠 ML Engineering"], ["swe", "🧩 SWE · Blind 75"], ["sys", "🏰 System Design"], ["custom", "🌀 Your forged katas"]];
     return (
       <div style={S.app}><style>{CSS}</style><Toast /><HUD back={() => setScreen("home")} />
         <div style={{ ...S.wrap }}>
           <Tabs />
           <h2 style={{ fontSize: 20, fontWeight: 800, margin: "14px 0 0" }}>⌨️ The Dojo</h2>
-          <span style={S.mono(10)}>guided steps · runnable Python lab · +15 XP/step · +60 XP/completion</span>
+          <span style={S.mono(10)}>code-first workthroughs · TorchLeet set · in-browser Python lab · AI review</span>
           {fams.map(([fam, label]) => {
             const ks = allKatas.filter((k) => k.family === fam);
             if (!ks.length) return null;
@@ -2576,21 +3255,50 @@ export default function App() {
     );
   }
 
-  /* ============ KATA PLAYER ============ */
+  /* ============ KATA PLAYER — code-first workspace ============ */
   if (screen === "kata" && kata) {
-    const st = kata.steps[stepIdx];
     const lab = LABS[kata.id];
+    const done = kProgress(kata.id) >= (kata.steps.length || 1);
+    const st = kata.steps[stepIdx];
+    const showSol = kPhase === "sol";
+    const showHints = kPhase === "hints";
     return (
       <div style={S.app}><style>{CSS}</style><Toast /><HUD back={() => setScreen("dojo")} />
         <div style={{ ...S.wrap, paddingTop: 16 }}>
-          <h2 style={{ fontSize: 19, fontWeight: 800, margin: 0 }}>{kata.emoji || "⌨️"} {kata.title}</h2>
-          <div style={{ display: "flex", gap: 6, flexWrap: "wrap", margin: "8px 0" }}>
+          <h2 style={{ fontSize: 19, fontWeight: 800, margin: 0 }}>{kata.emoji || "⌨️"} {kata.title} {done && "✓"}</h2>
+          <div style={{ fontSize: 12.5, color: T.inkSoft, lineHeight: 1.5, margin: "4px 0 8px" }}>{kata.blurb}</div>
+          <div style={{ display: "flex", gap: 6, flexWrap: "wrap", marginBottom: 10 }}>
+            {kata.tier && <span style={{ ...S.mono(10, T.gold) }}>{kata.tier}</span>}
             {kata.frameworks.map((f) => <button key={f} onClick={() => setFw(f)} style={S.chip(fw === f)}>{f}</button>)}
             {(kata.links || []).map((l) => <a key={l.url} href={l.url} target="_blank" rel="noreferrer" style={{ ...S.chip(false), textDecoration: "none" }}>🔗 {l.label}</a>)}
           </div>
-          {kPhase === "step" && st && (
-            <div style={{ ...S.card, animation: "slideUp .25s ease" }}>
-              <span style={S.mono(10, T.explore)}>STEP {stepIdx + 1}/{kata.steps.length}</span>
+
+          {/* WORKSPACE — the primary surface */}
+          <div style={S.card}>
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+              <span style={S.mono(10, T.action)}>⌨️ WORKSPACE — fill the TODOs</span>
+              <span style={S.mono(9)}>{lab ? "runs in-browser (Pyodide)" : "PyTorch — run locally, review here"}</span>
+            </div>
+            <textarea value={labCode} onChange={(e) => setLabCode(e.target.value)} rows={16} spellCheck={false} style={{ ...S.input, marginTop: 8, resize: "vertical", fontSize: 12, lineHeight: 1.55 }} />
+            <div style={{ display: "flex", gap: 8, marginTop: 8, flexWrap: "wrap" }}>
+              {lab && <button onClick={() => runLab(false)} disabled={busy === "lab"} style={{ ...S.btn(T.ink), flex: 1, minWidth: 90 }}>{busy === "lab" ? "Running…" : "▶ Run"}</button>}
+              {lab && <button onClick={() => runLab(true)} disabled={busy === "lab"} style={{ ...S.btn(T.reward), flex: 1, minWidth: 110 }}>{busy === "lab" ? "Running…" : "✓ Run tests"}</button>}
+              <button onClick={doReview} disabled={busy === "review"} style={{ ...S.btn(T.explore), flex: 1, minWidth: 120 }}>{busy === "review" ? "Reviewing…" : "🔍 AI review"}</button>
+            </div>
+            {labOut && <pre style={{ ...S.pre, marginTop: 8, maxHeight: 220, overflowY: "auto", background: "#0B0F1E" }}>{labOut}</pre>}
+            {review && <div style={{ marginTop: 10, fontSize: 13, lineHeight: 1.6, whiteSpace: "pre-wrap", padding: "10px 12px", background: T.exploreSoft, borderRadius: 10 }}>{review}</div>}
+          </div>
+
+          {/* hints / solution / completion controls */}
+          <div style={{ display: "flex", gap: 8, marginTop: 10, flexWrap: "wrap" }}>
+            {kata.steps.length > 0 && <button onClick={() => setKPhase(showHints ? "work" : "hints")} style={{ ...S.btn(showHints ? T.ink : T.card, showHints ? "#fff" : T.inkSoft), border: `1px solid ${T.line}`, flex: 1 }}>💡 Guided hints ({kProgress(kata.id) >= kata.steps.length ? "done" : `${Math.min(kProgress(kata.id), kata.steps.length)}/${kata.steps.length}`})</button>}
+            <button onClick={() => setKPhase(showSol ? "work" : "sol")} style={{ ...S.btn(showSol ? T.ink : T.card, showSol ? "#fff" : T.inkSoft), border: `1px solid ${T.line}`, flex: 1 }}>{showSol ? "Hide solution" : "📖 Reveal solution"}</button>
+            {!done && <button onClick={markKataComplete} style={{ ...S.btn(T.gold), flex: 1 }}>🏁 Mark complete (+60 XP)</button>}
+          </div>
+
+          {showHints && st && (
+            <div style={{ ...S.card, marginTop: 10, animation: "slideUp .25s ease" }}>
+              <span style={S.mono(10, T.explore)}>HINT {stepIdx + 1}/{kata.steps.length} — answer to advance (+15 XP)</span>
               <div style={{ fontWeight: 700, fontSize: 14.5, lineHeight: 1.5, margin: "8px 0 10px" }}>{st.prompt}</div>
               {st.code && <pre style={S.pre}>{st.code}</pre>}
               <div style={{ marginTop: 12 }}>
@@ -2602,36 +3310,14 @@ export default function App() {
               </div>
               {kFeedback && (
                 <div style={{ background: kFeedback.ok ? T.rewardSoft : T.penaltySoft, borderRadius: 10, padding: "10px 13px", fontSize: 13, lineHeight: 1.5 }}>
-                  <b style={{ color: kFeedback.ok ? T.reward : T.penalty }}>{kFeedback.ok ? "✓ +15 XP — " : "✗ Not quite — "}</b>{kFeedback.msg}
+                  <b style={{ color: kFeedback.ok ? T.reward : T.penalty }}>{kFeedback.ok ? "✓ " : "✗ "}</b>{kFeedback.msg}
                 </div>
               )}
             </div>
           )}
-          {kPhase === "done" && (
-            <>
-              <div style={{ ...S.card, background: T.rewardSoft, border: `1px solid ${T.reward}` }}>
-                <span style={S.mono(10, T.reward)}>KATA COMPLETE — REFERENCE SOLUTION ({fw.toUpperCase()})</span>
-              </div>
-              <pre style={{ ...S.pre, marginTop: 10 }}>{kata.solutions[fw] || kata.solutions[Object.keys(kata.solutions)[0]] || "// no reference for this framework"}</pre>
-              {lab && (
-                <div style={{ ...S.card, marginTop: 12 }}>
-                  <span style={S.mono(10, T.action)}>🧪 CODE LAB — runs real Python in your browser (Pyodide)</span>
-                  <textarea value={labCode} onChange={(e) => setLabCode(e.target.value)} rows={14} spellCheck={false} style={{ ...S.input, marginTop: 8, resize: "vertical", fontSize: 12, lineHeight: 1.55 }} />
-                  <div style={{ display: "flex", gap: 8, marginTop: 8 }}>
-                    <button onClick={() => runLab(false)} disabled={busy === "lab"} style={{ ...S.btn(T.ink), flex: 1 }}>{busy === "lab" ? "Running…" : "▶ Run"}</button>
-                    <button onClick={() => runLab(true)} disabled={busy === "lab"} style={{ ...S.btn(T.reward), flex: 1 }}>{busy === "lab" ? "Running…" : "✓ Run tests"}</button>
-                  </div>
-                  {labOut && <pre style={{ ...S.pre, marginTop: 8, maxHeight: 220, overflowY: "auto", background: "#0B0F1E" }}>{labOut}</pre>}
-                </div>
-              )}
-              <div style={{ ...S.card, marginTop: 12 }}>
-                <span style={S.mono(10, T.explore)}>AI REVIEW OF YOUR IMPLEMENTATION</span>
-                <textarea value={myCode} onChange={(e) => setMyCode(e.target.value)} rows={7} placeholder={`Paste your ${fw} implementation (or your lab code) for a strict review…`} style={{ ...S.input, marginTop: 8, resize: "vertical" }} />
-                <button onClick={doReview} disabled={busy === "review"} style={{ ...S.btn(T.explore), width: "100%", marginTop: 8 }}>{busy === "review" ? "Reviewing…" : "Review my code"}</button>
-                {review && <div style={{ marginTop: 10, fontSize: 13, lineHeight: 1.6, whiteSpace: "pre-wrap" }}>{review}</div>}
-              </div>
-              <button onClick={() => { setStepIdx(0); setKPhase("step"); setKOrd(shuf4()); setKFeedback(null); }} style={{ ...S.btn(T.ink), width: "100%", marginTop: 12 }}>Replay steps</button>
-            </>
+
+          {showSol && (
+            <pre style={{ ...S.pre, marginTop: 10 }}>{(kata.solutions && (kata.solutions[fw] || kata.solutions[Object.keys(kata.solutions)[0]])) || kata.solution || "// reference not available"}</pre>
           )}
         </div>
       </div>
@@ -2650,7 +3336,10 @@ export default function App() {
     return (
       <div style={{ ...S.app, background: T.night }}><style>{CSS}</style><Toast />
         <div style={{ maxWidth: 620, margin: "0 auto", padding: "16px 14px 60px" }}>
-          <span style={{ ...S.mono(10, "#9FA8CC") }}>{kindLabel} · {Math.min(battle.qIdx + 1, bQuestions.length)}/{bQuestions.length} QUESTIONS</span>
+          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 4 }}>
+            <button onClick={() => { setBattle(null); setScreen("region"); }} style={{ background: "none", border: "1px solid #46548F", color: "#9FA8CC", borderRadius: 8, padding: "5px 12px", fontSize: 12, cursor: "pointer", fontFamily: "inherit", fontWeight: 700 }}>← Retreat & review</button>
+            <span style={{ ...S.mono(10, "#9FA8CC") }}>{kindLabel} · {Math.min(battle.qIdx + 1, bQuestions.length)}/{bQuestions.length} Q</span>
+          </div>
           <div style={{ background: "linear-gradient(180deg,#2E3A66 0%,#3D4E85 100%)", borderRadius: 16, padding: "18px 16px 14px", border: "1px solid #46548F", marginTop: 6 }}>
             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start" }}>
               <div style={{ background: "rgba(255,255,255,0.95)", borderRadius: 10, padding: "8px 12px", minWidth: 165 }}>
@@ -2705,18 +3394,52 @@ export default function App() {
 
           {battle.phase === "lore" && (
             <div style={{ background: T.card, borderRadius: 14, padding: 16, marginTop: 12, animation: "slideUp .3s ease" }}>
-              <span style={S.mono(10, kindColor)}>{battle.kind === "critical" ? "LORE — READ TO ARM YOURSELF" : "CHALLENGE"}</span>
-              <p style={{ fontSize: 14, lineHeight: 1.65, margin: "8px 0 0" }}>{battle.kind === "critical" ? battle.concept.lore : battle.log}</p>
+              <span style={S.mono(10, kindColor)}>{battle.kind === "critical" ? "LORE — READ TO ARM YOURSELF" : "GYM RECAP — EVERYTHING THIS REGION TAUGHT"}</span>
+              {battle.kind === "critical" ? (
+                <>
+                  <p style={{ fontSize: 14, lineHeight: 1.65, margin: "8px 0 0" }}>{battle.concept.lore}</p>
+                  {deepLore[battle.concept.id]
+                    ? <p style={{ fontSize: 13.5, lineHeight: 1.65, margin: "10px 0 0", padding: "10px 12px", background: T.exploreSoft, borderRadius: 10 }}>🔍 {deepLore[battle.concept.id]}</p>
+                    : <button onClick={() => deepenLore(battle.concept)} disabled={busy === "lore"} style={{ ...S.btn(T.card, T.explore), border: `1.5px solid ${T.explore}`, width: "100%", marginTop: 10, fontSize: 13 }}>{busy === "lore" ? "Asking the sage…" : "🔍 Deepen this lore (intuition + worked example)"}</button>}
+                </>
+              ) : (
+                <>
+                  <p style={{ fontSize: 13, color: T.inkSoft, lineHeight: 1.55, margin: "8px 0 0" }}>{battle.log} The gym tests every concept below — review before engaging. You can also retreat and replay any encounter.</p>
+                  <div style={{ maxHeight: 300, overflowY: "auto", marginTop: 10, paddingRight: 4 }}>
+                    {region.concepts.map((c) => (
+                      <div key={c.id} style={{ marginBottom: 10, padding: "10px 12px", background: T.paper, borderRadius: 10 }}>
+                        <div style={{ fontWeight: 800, fontSize: 13.5 }}>{c.sprite} {c.name}</div>
+                        <p style={{ fontSize: 12.5, lineHeight: 1.6, margin: "4px 0 0" }}>{c.lore}</p>
+                        {deepLore[c.id] && <p style={{ fontSize: 12.5, lineHeight: 1.6, margin: "6px 0 0", color: T.explore }}>🔍 {deepLore[c.id]}</p>}
+                      </div>
+                    ))}
+                  </div>
+                </>
+              )}
               <button onClick={continueBattle} style={{ ...S.btn(T.action), width: "100%", marginTop: 14 }}>⚔️ Engage</button>
             </div>
           )}
 
           {battle.phase === "question" && q && (
             <div style={{ background: T.card, borderRadius: 14, padding: 16, marginTop: 12, animation: "slideUp .3s ease" }}>
-              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: 6 }}>
                 <span style={S.mono(10, kindColor)}>{battle.kind === "side" ? "APPLIED SCENARIO" : "CHOOSE YOUR MOVE"} · wrong = −{battle.kind === "gym" ? 22 : 16} HP</span>
-                {side && side.code && <button onClick={() => setBattle({ ...battle, showCode: !battle.showCode })} style={{ ...S.chip(battle.showCode), padding: "4px 10px", fontSize: 11 }}>{"</>"}</button>}
+                <span style={{ display: "flex", gap: 6 }}>
+                  <button onClick={() => setBattle({ ...battle, showNotes: !battle.showNotes })} style={{ ...S.chip(battle.showNotes), padding: "4px 10px", fontSize: 11 }}>📜 notes</button>
+                  {side && side.code && <button onClick={() => setBattle({ ...battle, showCode: !battle.showCode })} style={{ ...S.chip(battle.showCode), padding: "4px 10px", fontSize: 11 }}>{"</>"}</button>}
+                </span>
               </div>
+              {battle.showNotes && (
+                <div style={{ maxHeight: 220, overflowY: "auto", marginTop: 8, padding: "10px 12px", background: T.paper, borderRadius: 10 }}>
+                  {battleNotes().map((c) => (
+                    <div key={c.id} style={{ marginBottom: 8 }}>
+                      <b style={{ fontSize: 12.5 }}>{c.sprite} {c.name}:</b>
+                      <span style={{ fontSize: 12.5, lineHeight: 1.55 }}> {c.lore}{deepLore[c.id] ? " 🔍 " + deepLore[c.id] : ""}</span>
+                    </div>
+                  ))}
+                  <span style={S.mono(9)}>consulting notes is studying, not cheating — retention comes from use</span>
+                </div>
+              )}
               {side && side.code && battle.showCode && <pre style={{ ...S.pre, marginTop: 8, maxHeight: 180, overflowY: "auto" }}>{side.code}</pre>}
               <div style={{ fontWeight: 700, fontSize: 15, lineHeight: 1.55, margin: "8px 0 12px" }}>{q.q}</div>
               {battle.ord.map((optIdx, i) => (
@@ -2802,7 +3525,7 @@ export default function App() {
           </div>
 
           <div style={{ display: "flex", flexWrap: "wrap", gap: 6, marginTop: 10, alignItems: "center" }}>
-            <button onClick={startGauntlet} style={{ ...S.btn(T.gold), padding: "6px 12px", fontSize: 12 }}>⚔️ Trial Gauntlet</button>
+            <button onClick={() => startGauntlet()} style={{ ...S.btn(T.gold), padding: "6px 12px", fontSize: 12 }}>⚔️ Trial Gauntlet</button>
             <button onClick={() => setScreen("coach")} style={{ ...S.btn(T.explore), padding: "6px 12px", fontSize: 12 }}>🧪 Coach</button>
             {(world.links || []).map((l) => <a key={l.url} href={l.url} target="_blank" rel="noreferrer" style={{ ...S.chip(false), textDecoration: "none", fontSize: 11.5, padding: "5px 10px" }}>🔗 {l.label}</a>)}
           </div>
