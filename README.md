@@ -20,7 +20,7 @@ Launch polish added after the first public cut:
 
 - dark mode for late-night study sessions
 - bundled low-volume background music from `public/audio/dbz_songs.mp3`
-- Dojo coding problems now include kata-level lore, TODO-level lore, unlockable per-TODO hints, and an XP penalty for hints after you have already made a run/review attempt
+- Dojo coding problems now include kata-level lore, TODO-level lore, unlockable per-TODO hints, syntax-highlighted Python editors, tab completion in the editor/REPL, and an XP penalty for hints after you have already made a run/review attempt
 
 
 ## v3 status
@@ -34,8 +34,8 @@ The old `rollout-ultimate.jsx` file has also been updated with Edokai v3 brandin
 
 Verified locally:
 
-- main app file: 3,922 lines
-- Vite production build: 435.77 kB JS bundle, 146.75 kB gzip
+- main app file: 3,961 lines
+- Vite production build: 438.36 kB JS bundle, 147.78 kB gzip
 - macOS desktop package built with electron-builder
 - mac artifact: `release/Edokai-3.0.0-arm64.dmg`
 

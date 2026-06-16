@@ -2997,8 +2997,21 @@ export default function App() {
     setBusy("");
   };
 
-  /* ---------- code editor keybindings ---------- */
-  const PY_WORDS = ["import","def","class","return","torch","numpy","np","nn","self","range","len","print","assert","tensor","Linear","Module","forward","backward","softmax","sigmoid","matmul","transpose","reshape","randn","zeros","ones","float32","requires_grad","optimizer","gradient","enumerate","lambda","while","break","continue","True","False","None","shape","append","sum","mean","max","min","exp","sqrt"];
+  /* ---------- code editor keybindings + lightweight Python highlighting ---------- */
+  const PY_WORDS = ["import","from","as","def","class","return","if","elif","else","for","in","try","except","finally","with","yield","raise","pass","torch","numpy","np","nn","self","range","len","print","assert","tensor","Linear","Module","forward","backward","softmax","sigmoid","matmul","transpose","reshape","view","permute","randn","zeros","ones","float32","requires_grad","optimizer","gradient","enumerate","lambda","while","break","continue","True","False","None","shape","append","sum","mean","max","min","exp","sqrt","Dataset","DataLoader","ModuleList","Sequential","Parameter","CrossEntropyLoss","MSELoss","SGD","AdamW"];
+  const completeStem = (value, s, en, extra = []) => {
+    const before = value.slice(0, s);
+    const m = before.match(/[A-Za-z_][A-Za-z0-9_]*$/);
+    if (!m || m[0].length < 2) return null;
+    const stem = m[0];
+    const bufWords = [...new Set((value.match(/[A-Za-z_][A-Za-z0-9_]{2,}/g) || []))];
+    const cands = [...new Set([...bufWords, ...PY_WORDS, ...extra])].filter((w) => w.startsWith(stem) && w !== stem).sort();
+    if (!cands.length) return null;
+    let lcp = cands[0];
+    for (const c of cands) { let i = 0; while (i < lcp.length && lcp[i] === c[i]) i++; lcp = lcp.slice(0, i); }
+    const add = (lcp.length > stem.length ? lcp : cands[0]).slice(stem.length);
+    return add ? { value: before + add + value.slice(en), pos: s + add.length, label: cands.slice(0, 4).join(", ") } : null;
+  };
   const editorKeys = (e, value, setValue, onRun) => {
     const ta = e.target;
     const { selectionStart: s, selectionEnd: en } = ta;
@@ -3006,20 +3019,8 @@ export default function App() {
     if ((e.metaKey || e.ctrlKey) && e.key === "Enter") { e.preventDefault(); if (onRun) onRun(); return; }
     if (e.key === "Tab" && !e.shiftKey) {
       e.preventDefault();
-      const before = value.slice(0, s);
-      const m = before.match(/[A-Za-z_][A-Za-z0-9_]*$/);          // word under cursor?
-      if (m && m[0].length >= 2) {
-        const stem = m[0];
-        const bufWords = [...new Set((value.match(/[A-Za-z_][A-Za-z0-9_]{2,}/g) || []))];
-        const cands = [...new Set([...bufWords, ...PY_WORDS])].filter((w) => w.startsWith(stem) && w !== stem);
-        if (cands.length) {
-          // complete to the longest common prefix (or the single match)
-          let lcp = cands[0];
-          for (const c of cands) { let i = 0; while (i < lcp.length && lcp[i] === c[i]) i++; lcp = lcp.slice(0, i); }
-          const add = (lcp.length > stem.length ? lcp : cands[0]).slice(stem.length);
-          if (add) { set(before + add + value.slice(en), s + add.length); return; }
-        }
-      }
+      const completed = completeStem(value, s, en);
+      if (completed) { set(completed.value, completed.pos); showToast(`completed: ${completed.label}`); return; }
       set(value.slice(0, s) + "    " + value.slice(en), s + 4);   // plain indent
       return;
     }
@@ -3037,6 +3038,37 @@ export default function App() {
       const indent = (line.match(/^\s*/) || [""])[0] + (line.trimEnd().endsWith(":") ? "    " : "");
       set(value.slice(0, s) + "\n" + indent + value.slice(en), s + 1 + indent.length);
     }
+  };
+  const tokenStyle = (tok) => {
+    if (/^#/.test(tok)) return { color: "#7F8AA8", fontStyle: "italic" };
+    if (/^(import|from|as|def|class|return|if|elif|else|for|in|try|except|finally|with|yield|raise|pass|lambda|while|break|continue)$/.test(tok)) return { color: darkMode ? "#FFB86C" : "#B54708", fontWeight: 800 };
+    if (/^(True|False|None)$/.test(tok)) return { color: darkMode ? "#BD93F9" : "#6F42C1", fontWeight: 800 };
+    if (/^(self|torch|nn|np|numpy)$/.test(tok)) return { color: darkMode ? "#8BE9FD" : "#0B7285", fontWeight: 800 };
+    if (/^(print|len|range|enumerate|sum|mean|max|min|assert|shape|append)$/.test(tok)) return { color: darkMode ? "#50FA7B" : "#087F5B", fontWeight: 700 };
+    if (/^(['\"]).*\1$/.test(tok)) return { color: darkMode ? "#F1FA8C" : "#2F9E44" };
+    if (/^\d+(\.\d+)?$/.test(tok)) return { color: darkMode ? "#BD93F9" : "#7048E8" };
+    return { color: T.codeText };
+  };
+  const highlightPython = (src) => {
+    const out = [];
+    src.split("\n").forEach((line, li) => {
+      const commentAt = line.indexOf("#");
+      const code = commentAt >= 0 ? line.slice(0, commentAt) : line;
+      const comment = commentAt >= 0 ? line.slice(commentAt) : "";
+      const parts = code.match(/\s+|[A-Za-z_][A-Za-z0-9_]*|\d+(?:\.\d+)?|(['\"])(?:\\.|(?!\1).)*\1|./g) || [""];
+      parts.forEach((tok, i) => out.push(<span key={`${li}-${i}`} style={tokenStyle(tok)}>{tok}</span>));
+      if (comment) out.push(<span key={`${li}-c`} style={tokenStyle(comment)}>{comment}</span>);
+      if (li < src.split("\n").length - 1) out.push("\n");
+    });
+    return out;
+  };
+  const CodeEditor = ({ value, onChange, onRun, rows = 16 }) => {
+    const preRef = useRef(null);
+    const shared = { fontFamily: "'JetBrains Mono', monospace", fontSize: 12, lineHeight: 1.55, tabSize: 4 };
+    return <div style={{ position: "relative", marginTop: 8, border: `1px solid ${T.line}`, borderRadius: 10, background: T.code, minHeight: rows * 18.6, overflow: "hidden" }}>
+      <pre ref={preRef} aria-hidden="true" style={{ ...shared, position: "absolute", inset: 0, margin: 0, padding: "11px 12px", whiteSpace: "pre-wrap", overflow: "auto", color: T.codeText, pointerEvents: "none" }}>{highlightPython(value || " ")}</pre>
+      <textarea value={value} onChange={(e) => onChange(e.target.value)} onScroll={(e) => { if (preRef.current) { preRef.current.scrollTop = e.currentTarget.scrollTop; preRef.current.scrollLeft = e.currentTarget.scrollLeft; } }} onKeyDown={(e) => editorKeys(e, value, onChange, onRun)} rows={rows} spellCheck={false} autoCapitalize="off" autoCorrect="off" style={{ ...shared, position: "relative", zIndex: 1, width: "100%", boxSizing: "border-box", border: "none", borderRadius: 10, padding: "11px 12px", resize: "vertical", background: "transparent", color: "transparent", caretColor: darkMode ? "#FFFFFF" : "#111827", outline: "none", overflow: "auto" }} />
+    </div>;
   };
 
   /* ---------- styles ---------- */
@@ -3587,8 +3619,8 @@ export default function App() {
               <span style={S.mono(10, T.action)}>⌨️ WORKSPACE — fill the TODOs</span>
               <span style={S.mono(9)}>{lab ? "runs in-browser (Pyodide)" : "PyTorch — run locally, review here"}</span>
             </div>
-            <textarea value={labCode} onChange={(e) => setLabCode(e.target.value)} onKeyDown={(e) => editorKeys(e, labCode, setLabCode, lab ? () => runLab(false) : null)} rows={16} spellCheck={false} autoCapitalize="off" autoCorrect="off" style={{ ...S.input, marginTop: 8, resize: "vertical", fontSize: 12, lineHeight: 1.55, tabSize: 4 }} />
-            <span style={S.mono(8.5)}>TAB completes/indents · SHIFT+TAB dedents · ENTER auto-indents · {navigator.platform && navigator.platform.includes("Mac") ? "⌘" : "CTRL"}+ENTER runs</span>
+            <CodeEditor value={labCode} onChange={setLabCode} onRun={lab ? () => runLab(false) : null} rows={16} />
+            <span style={S.mono(8.5)}>syntax-highlighted Python · TAB completes/indents · SHIFT+TAB dedents · ENTER auto-indents · {navigator.platform && navigator.platform.includes("Mac") ? "⌘" : "CTRL"}+ENTER runs</span>
             <div style={{ display: "flex", gap: 8, marginTop: 8, flexWrap: "wrap" }}>
               {lab && <button onClick={() => runLab(false)} disabled={busy === "lab"} style={{ ...S.btn(T.ink), flex: 1, minWidth: 90 }}>{busy === "lab" ? "Running…" : "▶ Run"}</button>}
               {lab && <button onClick={() => runLab(true)} disabled={busy === "lab"} style={{ ...S.btn(T.reward), flex: 1, minWidth: 110 }}>{busy === "lab" ? "Running…" : "✓ Run tests"}</button>}
@@ -3599,6 +3631,13 @@ export default function App() {
               <div style={{ display: "flex", gap: 6, marginTop: 8, alignItems: "center" }}>
                 <span style={{ ...S.mono(12, T.reward) }}>&gt;&gt;&gt;</span>
                 <input value={repl} onChange={(e) => setRepl(e.target.value)} onKeyDown={async (e) => {
+                  if (e.key === "Tab") {
+                    e.preventDefault();
+                    const el = e.currentTarget;
+                    const completed = completeStem(repl, el.selectionStart || repl.length, el.selectionEnd || repl.length, labCode.match(/[A-Za-z_][A-Za-z0-9_]{2,}/g) || []);
+                    if (completed) { setRepl(completed.value); requestAnimationFrame(() => { el.selectionStart = el.selectionEnd = completed.pos; }); showToast(`REPL completed: ${completed.label}`); }
+                    return;
+                  }
                   if (e.key !== "Enter" || !repl.trim() || busy === "lab") return;
                   const line = repl; setRepl(""); setBusy("lab");
                   setLabOut((o) => (o ? o + "\n" : "") + ">>> " + line);
