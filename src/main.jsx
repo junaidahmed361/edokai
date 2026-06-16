@@ -24,5 +24,28 @@ if (!window.storage) {
   };
 }
 
+class ErrorBoundary extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = { error: null };
+  }
+  static getDerivedStateFromError(error) {
+    return { error };
+  }
+  componentDidCatch(error, info) {
+    console.error("Edokai render error", error, info);
+  }
+  render() {
+    if (!this.state.error) return this.props.children;
+    return (
+      <div style={{ minHeight: "100vh", background: "#0B1020", color: "#EDF2FF", fontFamily: "system-ui, sans-serif", padding: 24 }}>
+        <h1>Edokai hit a render error</h1>
+        <p>Please copy this message into an issue or reset local save data if it was caused by old browser state.</p>
+        <pre style={{ whiteSpace: "pre-wrap", background: "#141B31", padding: 16, borderRadius: 12 }}>{String(this.state.error?.stack || this.state.error?.message || this.state.error)}</pre>
+      </div>
+    );
+  }
+}
+
 import App from "./App.jsx";
-createRoot(document.getElementById("root")).render(<App />);
+createRoot(document.getElementById("root")).render(<ErrorBoundary><App /></ErrorBoundary>);

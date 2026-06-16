@@ -16,6 +16,12 @@ That site is the quickest way to try the current launch build: board worlds for 
 
 The built-in Claude generation path now defaults to Claude Opus 4.8 (`claude-opus-4-8`) for higher-quality generation, coaching, imports, and review. You can still bring your own local/OpenAI-compatible model from Settings.
 
+Launch polish added after the first public cut:
+
+- dark mode for late-night study sessions
+- bundled low-volume background music from `public/audio/dbz_songs.mp3`
+- Dojo coding problems now include kata-level lore, TODO-level lore, unlockable per-TODO hints, and an XP penalty for hints after you have already made a run/review attempt
+
 
 ## v3 status
 
@@ -28,8 +34,8 @@ The old `rollout-ultimate.jsx` file has also been updated with Edokai v3 brandin
 
 Verified locally:
 
-- main app file: 3,834 lines
-- Vite production build: 429.94 kB JS bundle, 144.57 kB gzip
+- main app file: 3,922 lines
+- Vite production build: 435.77 kB JS bundle, 146.75 kB gzip
 - macOS desktop package built with electron-builder
 - mac artifact: `release/Edokai-3.0.0-arm64.dmg`
 

@@ -12,34 +12,49 @@ import React, { useState, useEffect, useRef } from "react";
    resource (URL, PDF, pasted text, or just a concept name).
    ============================================================ */
 
-const T = {
-  paper: "#EBEFF6", card: "#FFFFFF", ink: "#1B2440", inkSoft: "#5A6480",
-  line: "#D4DAE8", reward: "#1F9D6B", rewardSoft: "#E2F4EC",
-  penalty: "#D9534F", penaltySoft: "#FBE9E8", action: "#E8643F",
-  explore: "#5B4FD6", exploreSoft: "#ECEAFB", gold: "#C99A2C", night: "#232B47",
-  code: "#141A2E", codeText: "#D6DEF5",
+const THEMES = {
+  light: {
+    paper: "#EBEFF6", card: "#FFFFFF", ink: "#1B2440", inkSoft: "#5A6480",
+    line: "#D4DAE8", reward: "#1F9D6B", rewardSoft: "#E2F4EC",
+    penalty: "#D9534F", penaltySoft: "#FBE9E8", action: "#E8643F",
+    explore: "#5B4FD6", exploreSoft: "#ECEAFB", gold: "#C99A2C", night: "#232B47",
+    code: "#141A2E", codeText: "#D6DEF5", hud: "rgba(235,239,246,0.94)", shadow: "rgba(27,36,64,0.08)",
+  },
+  dark: {
+    paper: "#0B1020", card: "#141B31", ink: "#EDF2FF", inkSoft: "#A9B4D0",
+    line: "#2B3557", reward: "#5BE0A2", rewardSoft: "#123629",
+    penalty: "#FF7A76", penaltySoft: "#3B1E25", action: "#FF916B",
+    explore: "#9E94FF", exploreSoft: "#26214C", gold: "#FFD166", night: "#070B16",
+    code: "#050816", codeText: "#DDE7FF", hud: "rgba(11,16,32,0.94)", shadow: "rgba(0,0,0,0.35)",
+  },
 };
+const T = { ...THEMES.light };
 
 /* ============================================================
-   MUSIC ENGINE — generative lo-fi chiptune (WebAudio, no assets)
+   MUSIC ENGINE — bundled low-volume lo-fi background track
    ============================================================ */
 class MusicEngine {
-  constructor() { this.ctx = null; this.playing = false; this.timer = null; this.step = 0; this.customUrl = null; this.audioEl = null; }
+  constructor() { this.ctx = null; this.playing = false; this.timer = null; this.step = 0; this.defaultUrl = "/audio/dbz_songs.mp3"; this.customUrl = null; this.audioEl = null; this.volume = 0.13; }
   setCustom(url) { this.customUrl = url; if (this.playing) { this.stop(); this.start(); } }
   start() {
-    if (this.customUrl) {
-      if (!this.audioEl) { this.audioEl = new Audio(); this.audioEl.loop = true; this.audioEl.volume = 0.5; }
-      this.audioEl.src = this.customUrl;
-      this.audioEl.play().catch(() => {});
+    const track = this.customUrl || this.defaultUrl;
+    if (track) {
+      if (!this.audioEl) { this.audioEl = new Audio(); this.audioEl.loop = true; }
+      this.audioEl.volume = this.volume;
+      this.audioEl.src = track;
+      this.audioEl.play().then(() => { this.playing = true; }).catch(() => { this.startGeneratedLoop(); });
       this.playing = true;
       return;
     }
-    if (this.playing) return;
+    this.startGeneratedLoop();
+  }
+  startGeneratedLoop() {
+    if (this.playing && this.timer) return;
     try {
       if (!this.ctx) this.ctx = new (window.AudioContext || window.webkitAudioContext)();
       if (this.ctx.state === "suspended") this.ctx.resume();
       this.playing = true;
-      this.master = this.ctx.createGain(); this.master.gain.value = 0.16; this.master.connect(this.ctx.destination);
+      this.master = this.ctx.createGain(); this.master.gain.value = 0.08; this.master.connect(this.ctx.destination);
       const lead = [0, 3, 5, 7, 10, 7, 5, 3];     // minor pentatonic steps
       const bass = [0, 0, -5, -5, -7, -7, -5, -5];
       const base = 220; // A3
@@ -168,10 +183,10 @@ async function buildRegionFrom(sourceDesc, section, idx, cfg, pdfB64) {
 }
 async function buildKataFrom(sourceDesc, cfg, pdfB64) {
   const prompt = `${pdfB64 ? "From this document" : "Read " + sourceDesc + (cfg && cfg.provider !== "builtin" ? "" : " (use web search)")}, design ONE hands-on implementation kata for its core method. Respond ONLY raw JSON:
-{"title":"Implement <method>","blurb":"40 words on what gets built","frameworks":["pytorch"],"steps":[{"prompt":"step instruction referencing the code","code":"short python snippet with ____ blank","options":["...","...","...","..."],"a":0,"why":"one line"},{...},{...}],"solution":"complete commented reference implementation, <60 lines"}
+{"title":"Implement <method>","blurb":"40 words on what gets built","lore":"why this kata matters and what mechanism it teaches","frameworks":["pytorch"],"steps":[{"prompt":"TODO instruction referencing the code","lore":"why this TODO matters","hint":"small nudge, not the full answer","code":"short python snippet with ____ blank","options":["...","...","...","..."],"a":0,"why":"one line"},{...},{...}],"solution":"complete commented reference implementation, <60 lines"}
 Exactly 3 steps. ${QUALITY_RULES}`;
   const parsed = parseJSON(await askModel(prompt, cfg, { needsWeb: !pdfB64 && (!cfg || cfg.provider === "builtin"), pdfBase64: pdfB64 }));
-  return { id: "uk" + Date.now(), family: "custom", title: parsed.title || "Custom kata", blurb: parsed.blurb || "", frameworks: parsed.frameworks || ["pytorch"], steps: parsed.steps || [], solutions: { pytorch: parsed.solution || "" }, links: [] };
+  return { id: "uk" + Date.now(), family: "custom", title: parsed.title || "Custom kata", blurb: parsed.blurb || "", lore: parsed.lore || "", frameworks: parsed.frameworks || ["pytorch"], steps: parsed.steps || [], solutions: { pytorch: parsed.solution || "" }, links: [] };
 }
 async function fetchPapers(topic, cfg) {
   return parseJSON(await askModel(
@@ -2548,18 +2563,22 @@ export default function App() {
   const [deepLore, setDeepLore] = useState({});        // conceptId -> model-expanded lore
   const [wilds, setWilds] = useState(null);            // the knowledge RL environment
   const [repl, setRepl] = useState("");                // REPL input line
+  const [darkMode, setDarkMode] = useState(false);
+  const [kataAttempts, setKataAttempts] = useState(0);
+
+  Object.assign(T, darkMode ? THEMES.dark : THEMES.light);
 
   useEffect(() => {
     (async () => {
-      const s = await loadStore("ru-save", { xp: 0, hp: 100, badges: [], captured: [], sides: [], katas: {}, qstats: {} });
-      s.sides = s.sides || []; s.katas = s.katas || {}; s.qstats = s.qstats || {};
+      const s = await loadStore("ru-save", { xp: 0, hp: 100, badges: [], captured: [], sides: [], katas: {}, qstats: {}, kataHints: {}, kataAttempts: {} });
+      s.sides = s.sides || []; s.katas = s.katas || {}; s.qstats = s.qstats || {}; s.kataHints = s.kataHints || {}; s.kataAttempts = s.kataAttempts || {};
       setSave(s);
       setWorlds(await loadStore("ru-worlds", []));
       setUKatas(await loadStore("ru-ukatas", []));
       setAug(await loadStore("ru-aug", {}));
       setDeepLore(await loadStore("ru-lore", {}));
-      const c = await loadStore("ru-cfg", { provider: "builtin", baseUrl: "", apiKey: "", model: "", anthropicKey: "" });
-      setCfg(c); GLOBAL_KEY = c.anthropicKey || "";
+      const c = await loadStore("ru-cfg", { provider: "builtin", baseUrl: "", apiKey: "", model: "", anthropicKey: "", darkMode: false });
+      setCfg(c); setDarkMode(!!c.darkMode); GLOBAL_KEY = c.anthropicKey || "";
     })();
   }, []);
   const persist = (s) => { setSave(s); saveStore("ru-save", s); };
@@ -2586,9 +2605,10 @@ export default function App() {
     for (const r of regions) for (const c of r.concepts) if (ids.includes(c.id)) out.push(c);
     return out;
   };
-  const persistCfg = (c) => { setCfg(c); GLOBAL_KEY = c.anthropicKey || ""; saveStore("ru-cfg", c); };
+  const persistCfg = (c) => { setCfg(c); setDarkMode(!!c.darkMode); GLOBAL_KEY = c.anthropicKey || ""; saveStore("ru-cfg", c); };
   const showToast = (m) => { setToast(m); setTimeout(() => setToast(null), 2600); };
   const toggleMusic = () => { if (musicOn) { music.stop(); setMusicOn(false); } else { music.start(); setMusicOn(true); } };
+  const toggleTheme = () => persistCfg({ ...cfg, darkMode: !darkMode });
 
   const allWorlds = [...BUILTIN_WORLDS, ...worlds];
   const world = allWorlds.find((w) => w.id === activeWorld) || BUILTIN_WORLDS[0];
@@ -2871,10 +2891,52 @@ export default function App() {
   /* ---------- dojo ---------- */
   const kata = allKatas.find((k) => k.id === kataId);
   const kProgress = (id) => save && save.katas[id] ? save.katas[id] : 0;
+  const kHintKey = (id, idx) => `${id}:${idx}`;
+  const kataHintRevealed = (id, idx) => !!(save && save.kataHints && save.kataHints[kHintKey(id, idx)]);
+  const kataLore = (k) => k.lore || `${k.title} is a dojo drill: read the TODOs, implement the missing behavior, run the code, then use hints only when you have a concrete stuck point. The win condition is understanding the mechanism well enough to rebuild it without peeking at the final solution.`;
+  const kataStepLore = (step, idx) => step.lore || `TODO ${idx + 1} isolates one moving part of the implementation. Translate the prompt into the smallest code change that makes the data shape or invariant true, then run before moving on.`;
+  const kataStepHint = (step) => step.hint || step.why || "Compare the TODO against the reference invariant in the prompt; the missing expression should make the stated shape, gradient, or edge case work.";
+  const getKataTodos = (k, lab) => {
+    if (!k) return [];
+    if (k.steps && k.steps.length) return k.steps;
+    const source = (lab && lab.starter) || k.starter || "";
+    const lines = source.split("\n");
+    const todos = [];
+    lines.forEach((line, i) => {
+      if (!/TODO|____|None\s*(#|$)/i.test(line)) return;
+      const cleaned = line.replace(/^\s*#?\s*/, "").replace(/TODO:?\s*/i, "").trim() || `Fill the missing implementation on line ${i + 1}`;
+      todos.push({
+        prompt: cleaned,
+        code: lines.slice(Math.max(0, i - 1), Math.min(lines.length, i + 2)).join("\n"),
+        lore: `This TODO is one checkpoint in the kata's implementation path. Solve it by asking what invariant this line is responsible for: object shape, loss choice, optimizer wiring, data flow, or the training-loop step order.`,
+        hint: `Focus on line ${i + 1}: replace the placeholder with the smallest concrete PyTorch expression that satisfies the comment and keeps the surrounding code unchanged.`,
+        why: "A TODO-level hint should unblock the local mechanism without revealing the whole final solution."
+      });
+    });
+    return todos;
+  };
+  const recordKataAttempt = () => {
+    if (!kata) return 0;
+    const next = ((save.kataAttempts && save.kataAttempts[kata.id]) || 0) + 1;
+    const s = { ...save, kataAttempts: { ...(save.kataAttempts || {}), [kata.id]: next } };
+    persist(s); setKataAttempts(next);
+    return next;
+  };
+  const revealKataHint = (idx) => {
+    if (!kata) return;
+    const key = kHintKey(kata.id, idx);
+    if (kataHintRevealed(kata.id, idx)) return;
+    const attempts = (save.kataAttempts && save.kataAttempts[kata.id]) || kataAttempts || 0;
+    const penalty = attempts > 0 ? 5 : 0;
+    const s = { ...save, xp: Math.max(0, save.xp - penalty), kataHints: { ...(save.kataHints || {}), [key]: true } };
+    persist(s);
+    showToast(penalty ? `Hint unlocked — ${penalty} XP focus tax because you already attempted this kata.` : "Hint unlocked free — no attempt logged yet.");
+  };
   const openKata = (k) => {
     setKataId(k.id); setFw(k.frameworks[0] || "pytorch");
     setStepIdx(Math.min(kProgress(k.id), Math.max(0, k.steps.length - 1)));
     setKPhase("work"); setKFeedback(null); setKOrd(shuf4()); setReview("");
+    setKataAttempts((save.kataAttempts && save.kataAttempts[k.id]) || 0);
     setMyCode("");   // showSol flag rides in myCode? no — dedicated state below
     setLabCode(LABS[k.id] ? LABS[k.id].starter : (k.starter || "# paste or write your attempt here\n"));
     setLabOut("");
@@ -2908,12 +2970,14 @@ export default function App() {
   };
   const doReview = async () => {
     if (!labCode.trim() || !kata) return;
+    recordKataAttempt("review");
     setBusy("review"); setReview("");
     try { setReview(await reviewCode(kata.title, fw, labCode, cfg)); } catch (e) { setReview("Review failed — check model settings (custom endpoints need CORS enabled)."); }
     setBusy("");
   };
   const runLab = async (withTests) => {
     if (!kata || !LABS[kata.id]) return;
+    recordKataAttempt(withTests ? "tests" : "run");
     setBusy("lab"); setLabOut("⏳ starting Python… (first run downloads the runtime, ~10-20s)");
     try {
       const out = await runPython(withTests ? labCode + "\n" + LABS[kata.id].test : labCode, LABS[kata.id].needs, (s) => setLabOut(s));
@@ -2991,7 +3055,7 @@ export default function App() {
   if (!save) return <div style={{ ...S.app, display: "flex", alignItems: "center", justifyContent: "center" }}><span style={S.mono()}>loading save file…</span></div>;
 
   const HUD = ({ back }) => (
-    <div style={{ position: "sticky", top: 0, zIndex: 20, background: "rgba(235,239,246,0.94)", backdropFilter: "blur(8px)", borderBottom: `1px solid ${T.line}` }}>
+    <div style={{ position: "sticky", top: 0, zIndex: 20, background: T.hud, backdropFilter: "blur(8px)", borderBottom: `1px solid ${T.line}` }}>
       <div style={{ maxWidth: 620, margin: "0 auto", padding: "10px 14px", display: "flex", alignItems: "center", gap: 8 }}>
         {back && <button onClick={back} aria-label="Back" style={{ background: "none", border: `1px solid ${T.line}`, borderRadius: 8, width: 30, height: 30, cursor: "pointer", color: T.ink, flexShrink: 0 }}>←</button>}
         <div style={{ flex: 1, minWidth: 0 }}>
@@ -3003,9 +3067,10 @@ export default function App() {
             <div style={{ height: "100%", width: `${(save.hp / maxHp) * 100}%`, background: save.hp / maxHp > 0.4 ? T.reward : T.penalty, transition: "width .4s" }} />
           </div>
         </div>
-        <button onClick={toggleMusic} title="Lore music" style={{ background: "none", border: `1px solid ${T.line}`, borderRadius: 8, width: 30, height: 30, cursor: "pointer", fontSize: 14 }}>{musicOn ? "🎵" : "🔇"}</button>
+        <button onClick={toggleMusic} title="Low-volume background music" style={{ background: "none", border: `1px solid ${T.line}`, color: T.ink, borderRadius: 8, width: 30, height: 30, cursor: "pointer", fontSize: 14 }}>{musicOn ? "🎵" : "🔇"}</button>
+        <button onClick={toggleTheme} title={darkMode ? "Switch to light mode" : "Switch to dark mode"} style={{ background: "none", border: `1px solid ${T.line}`, color: T.ink, borderRadius: 8, width: 30, height: 30, cursor: "pointer", fontSize: 14 }}>{darkMode ? "☀️" : "🌙"}</button>
         <button onClick={() => { setDexWorld(activeWorld); setScreen("dex"); }} style={{ ...S.btn(T.explore), padding: "7px 10px", fontSize: 12 }}>📖</button>
-        <button onClick={() => setScreen("settings")} style={{ background: "none", border: `1px solid ${T.line}`, borderRadius: 8, width: 30, height: 30, cursor: "pointer", fontSize: 14 }}>⚙️</button>
+        <button onClick={() => setScreen("settings")} style={{ background: "none", border: `1px solid ${T.line}`, color: T.ink, borderRadius: 8, width: 30, height: 30, cursor: "pointer", fontSize: 14 }}>⚙️</button>
       </div>
     </div>
   );
@@ -3399,8 +3464,15 @@ export default function App() {
           </div>
         )}
         <div style={{ ...S.card, marginTop: 12 }}>
+          <span style={S.mono(10)}>DISPLAY</span>
+          <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 12, margin: "8px 0 12px" }}>
+            <p style={{ fontSize: 12.5, color: T.inkSoft, lineHeight: 1.5, margin: 0 }}>Dark mode is built for late-night dojo runs and paper-reading sessions.</p>
+            <button onClick={toggleTheme} style={S.chip(darkMode)}>{darkMode ? "🌙 Dark" : "☀️ Light"}</button>
+          </div>
+        </div>
+        <div style={{ ...S.card, marginTop: 12 }}>
           <span style={S.mono(10)}>SOUNDTRACK</span>
-          <p style={{ fontSize: 12.5, color: T.inkSoft, lineHeight: 1.5, margin: "6px 0 8px" }}>Default is a generated lo-fi loop (no copyrighted audio can ship with the app). Load your own music file — e.g. a track you've downloaded — and the 🎵 toggle plays it on loop instead. Lasts for this session.</p>
+          <p style={{ fontSize: 12.5, color: T.inkSoft, lineHeight: 1.5, margin: "6px 0 8px" }}>The app ships with a DBZ-inspired background track from <code>public/audio/dbz_songs.mp3</code>, played at low lo-fi volume by default so it sits under the study loop instead of overpowering it. You can still load your own file for this session.</p>
           <label style={{ ...S.chip(false), display: "inline-block", cursor: "pointer" }}>
             🎵 Choose audio file…
             <input type="file" accept="audio/*" style={{ display: "none" }} onChange={(e) => {
@@ -3414,7 +3486,7 @@ export default function App() {
         <div style={{ ...S.card, marginTop: 12 }}>
           <span style={S.mono(10)}>SAVE DATA</span>
           <p style={{ fontSize: 12.5, color: T.inkSoft, margin: "6px 0 10px" }}>XP {save.xp} · {save.captured.length} concepts · {save.badges.length} badges · {Object.keys(save.katas).length} katas · telemetry on {Object.keys(save.qstats).length} topics</p>
-          <button onClick={() => { persist({ xp: 0, hp: 100, badges: [], captured: [], sides: [], katas: {}, qstats: {} }); persistAug({}); showToast("Save reset."); }} style={{ ...S.btn(T.penalty), padding: "8px 14px", fontSize: 12.5 }}>Reset progress</button>
+          <button onClick={() => { persist({ xp: 0, hp: 100, badges: [], captured: [], sides: [], katas: {}, qstats: {}, kataHints: {}, kataAttempts: {} }); persistAug({}); showToast("Save reset."); }} style={{ ...S.btn(T.penalty), padding: "8px 14px", fontSize: 12.5 }}>Reset progress</button>
         </div>
       </div>
     </div>
@@ -3487,8 +3559,9 @@ export default function App() {
   /* ============ KATA PLAYER — code-first workspace ============ */
   if (screen === "kata" && kata) {
     const lab = LABS[kata.id];
+    const todoSteps = getKataTodos(kata, lab);
     const done = kProgress(kata.id) >= (kata.steps.length || 1);
-    const st = kata.steps[stepIdx];
+    const st = todoSteps[stepIdx] || kata.steps[stepIdx];
     const showSol = kPhase === "sol";
     const showHints = kPhase === "hints";
     return (
@@ -3500,6 +3573,12 @@ export default function App() {
             {kata.tier && <span style={{ ...S.mono(10, T.gold) }}>{kata.tier}</span>}
             {kata.frameworks.map((f) => <button key={f} onClick={() => setFw(f)} style={S.chip(fw === f)}>{f}</button>)}
             {(kata.links || []).map((l) => <a key={l.url} href={l.url} target="_blank" rel="noreferrer" style={{ ...S.chip(false), textDecoration: "none" }}>🔗 {l.label}</a>)}
+          </div>
+
+          <div style={{ ...S.card, marginBottom: 10, background: darkMode ? "#101832" : "#F7F8FD" }}>
+            <span style={S.mono(10, T.explore)}>DOJO LORE — WHY THIS KATA MATTERS</span>
+            <p style={{ fontSize: 13.5, color: T.inkSoft, lineHeight: 1.65, margin: "8px 0 0" }}>{kataLore(kata)}</p>
+            <p style={{ fontSize: 12, color: T.inkSoft, lineHeight: 1.5, margin: "8px 0 0" }}>Attempt counter: <b>{(save.kataAttempts && save.kataAttempts[kata.id]) || kataAttempts || 0}</b>. TODO hints are free before your first run/review; after that, each newly revealed hint costs 5 XP.</p>
           </div>
 
           {/* WORKSPACE — the primary surface */}
@@ -3540,35 +3619,44 @@ export default function App() {
             {review && <div style={{ marginTop: 10, fontSize: 13, lineHeight: 1.6, whiteSpace: "pre-wrap", padding: "10px 12px", background: T.exploreSoft, borderRadius: 10 }}>{review}</div>}
           </div>
 
-          {/* hints / solution / completion controls */}
+          {/* TODO lore / hints / solution / completion controls */}
           <div style={{ display: "flex", gap: 8, marginTop: 10, flexWrap: "wrap" }}>
-            {kata.steps.length > 0 && <button onClick={() => setKPhase(showHints ? "work" : "hints")} style={{ ...S.btn(showHints ? T.ink : T.card, showHints ? "#fff" : T.inkSoft), border: `1px solid ${T.line}`, flex: 1 }}>💡 Guided hints ({kProgress(kata.id) >= kata.steps.length ? "done" : `${Math.min(kProgress(kata.id), kata.steps.length)}/${kata.steps.length}`})</button>}
-            <button onClick={() => setKPhase(showSol ? "work" : "sol")} style={{ ...S.btn(showSol ? T.ink : T.card, showSol ? "#fff" : T.inkSoft), border: `1px solid ${T.line}`, flex: 1 }}>{showSol ? "Hide solution" : "📖 Reveal solution"}</button>
+            {todoSteps.length > 0 && <button onClick={() => setKPhase(showHints ? "work" : "hints")} style={{ ...S.btn(showHints ? T.ink : T.card, showHints ? "#fff" : T.inkSoft), border: `1px solid ${T.line}`, flex: 1 }}>🧭 TODO lore & hints ({Object.keys(save.kataHints || {}).filter((h) => h.startsWith(kata.id + ":")).length}/{todoSteps.length})</button>}
+            <button onClick={() => setKPhase(showSol ? "work" : "sol")} style={{ ...S.btn(showSol ? T.ink : T.card, showSol ? "#fff" : T.inkSoft), border: `1px solid ${T.line}`, flex: 1 }}>{showSol ? "Hide solution" : "📖 Reveal final solution"}</button>
             {!done && <button onClick={markKataComplete} style={{ ...S.btn(T.gold), flex: 1 }}>🏁 Mark complete (+60 XP)</button>}
           </div>
 
-          {showHints && st && (
+          {showHints && todoSteps.length > 0 && (
             <div style={{ ...S.card, marginTop: 10, animation: "slideUp .25s ease" }}>
-              <span style={S.mono(10, T.explore)}>HINT {stepIdx + 1}/{kata.steps.length} — answer to advance (+15 XP)</span>
-              <div style={{ fontWeight: 700, fontSize: 14.5, lineHeight: 1.5, margin: "8px 0 10px" }}>{st.prompt}</div>
-              {st.code && <pre style={S.pre}>{st.code}</pre>}
-              <div style={{ marginTop: 12 }}>
-                {kOrd.map((optIdx, i) => (
-                  <button key={i} onClick={() => answerKata(i)} style={{ ...S.qbtn, fontFamily: "'JetBrains Mono', monospace", fontSize: 13, lineHeight: 1.5 }}>
-                    <span style={S.mono(10, T.explore)}>{String.fromCharCode(65 + i)}</span>&nbsp;&nbsp;{st.options[optIdx]}
-                  </button>
-                ))}
-              </div>
-              {kFeedback && (
-                <div style={{ background: kFeedback.ok ? T.rewardSoft : T.penaltySoft, borderRadius: 10, padding: "10px 13px", fontSize: 13, lineHeight: 1.5 }}>
-                  <b style={{ color: kFeedback.ok ? T.reward : T.penalty }}>{kFeedback.ok ? "✓ " : "✗ "}</b>{kFeedback.msg}
-                </div>
-              )}
+              <span style={S.mono(10, T.explore)}>TODO LORE — hints are optional, not the whole answer</span>
+              <p style={{ fontSize: 12.5, color: T.inkSoft, lineHeight: 1.55, margin: "6px 0 10px" }}>Each TODO has a mini-lore explanation and a separately unlockable hint. Unlocking a new hint after any run/review attempt costs 5 XP; rereading an unlocked hint is free.</p>
+              {todoSteps.map((step, idx) => {
+                const revealed = kataHintRevealed(kata.id, idx);
+                return (
+                  <div key={idx} style={{ borderTop: idx ? `1px solid ${T.line}` : "none", paddingTop: idx ? 12 : 0, marginTop: idx ? 12 : 0 }}>
+                    <div style={{ display: "flex", justifyContent: "space-between", gap: 10, alignItems: "baseline" }}>
+                      <span style={S.mono(10, idx === stepIdx ? T.action : T.explore)}>TODO {idx + 1}/{todoSteps.length}</span>
+                      {idx === stepIdx && <span style={S.mono(9, T.action)}>CURRENT</span>}
+                    </div>
+                    <div style={{ fontWeight: 800, fontSize: 14, lineHeight: 1.5, margin: "6px 0" }}>{step.prompt}</div>
+                    <p style={{ fontSize: 12.5, color: T.inkSoft, lineHeight: 1.6, margin: "0 0 8px" }}>{kataStepLore(step, idx)}</p>
+                    {step.code && <pre style={{ ...S.pre, marginBottom: 8 }}>{step.code}</pre>}
+                    {revealed ? (
+                      <div style={{ background: T.exploreSoft, color: T.ink, borderRadius: 10, padding: "9px 11px", fontSize: 12.5, lineHeight: 1.55 }}><b>Hint:</b> {kataStepHint(step)}</div>
+                    ) : (
+                      <button onClick={() => revealKataHint(idx)} style={{ ...S.chip(false), fontSize: 12 }}>💡 Reveal hint {((save.kataAttempts && save.kataAttempts[kata.id]) || kataAttempts || 0) > 0 ? "(-5 XP)" : "(free before first attempt)"}</button>
+                    )}
+                  </div>
+                );
+              })}
             </div>
           )}
 
           {showSol && (
-            <pre style={{ ...S.pre, marginTop: 10 }}>{(kata.solutions && (kata.solutions[fw] || kata.solutions[Object.keys(kata.solutions)[0]])) || kata.solution || "// reference not available"}</pre>
+            <div style={{ ...S.card, marginTop: 10 }}>
+              <span style={S.mono(10, T.gold)}>FINAL REFERENCE SOLUTION — reveal after you have wrestled with the TODOs</span>
+              <pre style={{ ...S.pre, marginTop: 10 }}>{(kata.solutions && (kata.solutions[fw] || kata.solutions[Object.keys(kata.solutions)[0]])) || kata.solution || "// reference not available"}</pre>
+            </div>
           )}
         </div>
       </div>
