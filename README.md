@@ -8,6 +8,15 @@ I started this because my self-prescribed ADHD makes the normal study flow hard.
 
 The app is now branded Edokai end-to-end: repo, browser title, desktop app name, DMG name, and in-app title screen.
 
+The launch web version is live here:
+
+https://sprightly-paprenjak-d963a0.netlify.app/
+
+That site is the quickest way to try the current launch build: board worlds for concepts, the TorchLeet Dojo with runnable Python katas, per-world Trial Gauntlets, and the self-improving Coach loop that watches misses and forges targeted drills.
+
+The built-in Claude generation path now defaults to Claude Opus 4.8 (`claude-opus-4-8`) for higher-quality generation, coaching, imports, and review. You can still bring your own local/OpenAI-compatible model from Settings.
+
+
 ## v3 status
 
 Edokai v3 is now in this repo as both:
@@ -20,7 +29,7 @@ The old `rollout-ultimate.jsx` file has also been updated with Edokai v3 brandin
 Verified locally:
 
 - main app file: 3,834 lines
-- Vite production build: 429.95 kB JS bundle, 144.57 kB gzip
+- Vite production build: 429.94 kB JS bundle, 144.57 kB gzip
 - macOS desktop package built with electron-builder
 - mac artifact: `release/Edokai-3.0.0-arm64.dmg`
 
@@ -174,7 +183,7 @@ release/Edokai Setup 3.0.0.exe
 
 Open ⚙️ Settings in the app.
 
-For built-in Claude-powered generation outside claude.ai, paste an Anthropic API key. This is needed for:
+For built-in Claude-powered generation outside claude.ai, paste an Anthropic API key. The default built-in model is Claude Opus 4.8 (`claude-opus-4-8`). This is needed for:
 
 - world generation
 - Coach drill generation

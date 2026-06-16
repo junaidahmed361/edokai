@@ -95,7 +95,7 @@ async function askModel(prompt, cfg, opts = {}) {
       ? [{ type: "document", source: { type: "base64", media_type: "application/pdf", data: pdfBase64 } }, { type: "text", text: prompt }]
       : prompt;
     const body = {
-      model: "claude-sonnet-4-20250514", max_tokens: 1000,
+      model: "claude-opus-4-8", max_tokens: 1000,
       messages: [{ role: "user", content }],
     };
     if (needsWeb) body.tools = [{ type: "web_search_20250305", name: "web_search" }];
