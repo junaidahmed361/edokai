@@ -119,6 +119,14 @@ async function askModel(prompt, cfg, opts = {}) {
     };
     if (needsWeb) body.tools = [{ type: "web_search_20250305", name: "web_search" }];
     if (!(cfg && cfg.anthropicKey)) {
+      if (typeof window !== "undefined" && window.edokaiAuth && typeof window.edokaiAuth.completeWithClaudeCode === "function" && !pdfBase64) {
+        try {
+          return await window.edokaiAuth.completeWithClaudeCode(prompt, { needsWeb });
+        } catch (e) {
+          // Fall through to hosted proxy if present; desktop builds will surface the proxy error below.
+          console.warn("Claude Code auth bridge failed", e);
+        }
+      }
       const proxied = await fetch("/.netlify/functions/anthropic", {
         method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(body),
       });
@@ -174,6 +182,28 @@ function keepFairQuestions(qs) {
 
 const QUALITY_RULES = `CRITICAL QUALITY RULES for questions: all 4 options must be similar length (within ~3 words and similar punctuation); the correct option must NEVER be the longest or most detailed; do not make the correct answer the only option with examples/numbers; distractors must be technically plausible; vary "a" (0-3) across questions.`;
 
+const TEACH_SOURCE = "mattpocock/skills productivity/teach";
+const TEACHING_PARADIGM = {
+  source: TEACH_SOURCE,
+  mission: "Tie every world, region, and encounter to a concrete learner mission.",
+  resources: "Ground knowledge in high-trust resources; never lean on vibes when a source is available.",
+  lesson: "Teach one tightly-scoped win at a time: lore first, then an immediate feedback loop.",
+  retention: "Build storage strength through retrieval, spacing, interleaving, and desirable difficulty.",
+  wisdom: "When judgment depends on practice, point learners toward communities and real-world use.",
+  reference: "Compress captured concepts into a durable glossary/reference layer for later review.",
+};
+const TEACH_PROMPT = `Teaching paradigm to apply everywhere (from ${TEACH_SOURCE}): make the learner mission explicit; ground claims in high-trust resources; each lesson/region teaches one tangible win; separate easy knowledge acquisition from effortful skill practice; build storage strength with retrieval, spacing, interleaving, and desirable difficulty; use immediate feedback; cite/source resources; surface wisdom/community practice when useful; keep glossary/reference terms crisp and consistent.`;
+const teachMissionFor = (w) => `Master ${w.title} well enough to explain mechanisms, solve applied questions, and transfer the ideas into code or design decisions.`;
+const applyTeachingParadigm = (w) => ({
+  ...w,
+  teaching: { ...TEACHING_PARADIGM, mission: w.mission || teachMissionFor(w), resources: (w.links || []).map((l) => l.label).slice(0, 4) },
+  regions: (w.regions || []).map((r, i) => ({
+    ...r,
+    teachPhase: r.teachPhase || (i === 0 ? "mission + foundations" : "spaced transfer"),
+    referenceHint: r.referenceHint || `Reference terms: ${(r.concepts || []).map((c) => c.name).join(", ")}.`,
+  })),
+});
+
 async function scanUrl(url, cfg) {
   return parseJSON(await askModel(
     `Read the content at this URL (use web search): ${url}\nIdentify the title and 3-6 main learnable sections.\nRespond ONLY raw JSON: {"title":"...","sections":["...","..."]}`, cfg, { needsWeb: true }));
@@ -190,8 +220,8 @@ async function findResource(concept, cfg) {
   return parseJSON(await askModel(
     `Find the single best free online resource (article/primer/docs) with optimal coverage for learning: "${concept}". Use web search.\nRespond ONLY raw JSON: {"title":"...","url":"...","sections":["3-6 main learnable sections of that resource"]}`, cfg, { needsWeb: true }));
 }
-const REGION_JSON_SPEC = `{"npcText":"40-word NPC summary of the key principle","concepts":[{"name":"...","sprite":"emoji","lore":"dense 60-80 word teaching of intricate details","questions":[{"q":"...","options":["...","...","...","..."],"a":0,"why":"one line"},{...}]}],"side":{"name":"creature name","sprite":"emoji","recLevel":2,"questions":[{"q":"SCENARIO: applied real-world scenario","options":[4 options],"a":0,"why":"..."},{...}]}}
-Exactly 2 concepts (2 questions each) + 1 side (2 scenario questions). ${QUALITY_RULES}`;
+const REGION_JSON_SPEC = `{"npcText":"40-word NPC summary of the key principle","referenceHint":"one sentence glossary/reference summary","concepts":[{"name":"...","sprite":"emoji","lore":"dense 60-80 word teaching of intricate details","questions":[{"q":"...","options":["...","...","...","..."],"a":0,"why":"one line"},{...}]}],"side":{"name":"creature name","sprite":"emoji","recLevel":2,"questions":[{"q":"SCENARIO: applied real-world scenario","options":[4 options],"a":0,"why":"..."},{...}]}}
+Exactly 2 concepts (2 questions each) + 1 side (2 scenario questions). Apply this teaching paradigm: ${TEACH_PROMPT} ${QUALITY_RULES}`;
 
 async function buildRegionFrom(sourceDesc, section, idx, cfg, pdfB64) {
   const prompt = pdfB64
@@ -203,6 +233,8 @@ async function buildRegionFrom(sourceDesc, section, idx, cfg, pdfB64) {
   return {
     id: `gr${idx}`, name: section, emoji: "🌀", intro: `Generated region: ${section}`,
     npc: { name: "The Archivist", text: parsed.npcText || "Study this region's concepts carefully." },
+    teachPhase: "resource-grounded mini lesson",
+    referenceHint: parsed.referenceHint || `Reference terms: ${concepts.map((c) => c.name).join(", ")}.`,
     concepts, sides,
     gym: { leader: "Region Warden", badge: `${section} Badge`, sprite: "🏛️", taunt: "Prove you absorbed everything in this region!", questions: concepts.flatMap((c) => c.questions || []).slice(0, 4) },
   };
@@ -210,7 +242,7 @@ async function buildRegionFrom(sourceDesc, section, idx, cfg, pdfB64) {
 async function buildKataFrom(sourceDesc, cfg, pdfB64) {
   const prompt = `${pdfB64 ? "From this document" : "Read " + sourceDesc + (cfg && cfg.provider !== "builtin" ? "" : " (use web search)")}, design ONE hands-on implementation kata for its core method. Respond ONLY raw JSON:
 {"title":"Implement <method>","blurb":"40 words on what gets built","lore":"why this kata matters and what mechanism it teaches","frameworks":["pytorch"],"steps":[{"prompt":"TODO instruction referencing the code","lore":"why this TODO matters","hint":"small nudge, not the full answer","code":"short python snippet with ____ blank","options":["...","...","...","..."],"a":0,"why":"one line"},{...},{...}],"solution":"complete commented reference implementation, <60 lines"}
-Exactly 3 steps. ${QUALITY_RULES}`;
+Exactly 3 steps. Apply this teaching paradigm: ${TEACH_PROMPT} ${QUALITY_RULES}`;
   const parsed = parseJSON(await askModel(prompt, cfg, { needsWeb: !pdfB64 && (!cfg || cfg.provider === "builtin"), pdfBase64: pdfB64 }));
   return { id: "uk" + Date.now(), family: "custom", title: parsed.title || "Custom kata", blurb: parsed.blurb || "", lore: parsed.lore || "", frameworks: parsed.frameworks || ["pytorch"], steps: parsed.steps || [], solutions: { pytorch: parsed.solution || "" }, links: [] };
 }
@@ -2928,6 +2960,7 @@ export default function App() {
   const [dojoOpen, setDojoOpen] = useState({ swe: true, torchleet: true, ml: true, sys: true, custom: true });
   const [kataAttempts, setKataAttempts] = useState(0);
   const [todoGuidance, setTodoGuidance] = useState(true);
+  const [claudeCodeAuth, setClaudeCodeAuth] = useState(null);
 
   Object.assign(T, darkMode ? THEMES.dark : THEMES.light);
 
@@ -2942,6 +2975,9 @@ export default function App() {
       setDeepLore(await loadStore("ru-lore", {}));
       const c = await loadStore("ru-cfg", { provider: "builtin", baseUrl: "", apiKey: "", model: "", anthropicKey: "", darkMode: false });
       if (!c.anthropicKey && typeof window !== "undefined" && window.edokaiAuth && window.edokaiAuth.anthropicKey) c.anthropicKey = window.edokaiAuth.anthropicKey;
+      if (typeof window !== "undefined" && window.edokaiAuth && typeof window.edokaiAuth.claudeCodeStatus === "function") {
+        window.edokaiAuth.claudeCodeStatus().then(setClaudeCodeAuth).catch((e) => setClaudeCodeAuth({ loggedIn: false, error: e.message || String(e) }));
+      }
       setCfg(c); setDarkMode(!!c.darkMode); GLOBAL_KEY = c.anthropicKey || "";
     })();
   }, []);
@@ -2954,7 +2990,7 @@ export default function App() {
     if (deepLore[c.id] || busy === "lore") return;
     setBusy("lore");
     try {
-      const extra = await askModel(`You are a patient ML teacher. A learner read this summary of "${c.name}":\n"""${c.lore}"""\nExpand it with ~150 words of deeper explanation: the intuition behind it, one concrete worked example with small numbers where possible, and the most common misconception. Plain text, no markdown headers.`, cfg);
+      const extra = await askModel(`You are a patient ML teacher using this paradigm: ${TEACH_PROMPT}\nA learner read this summary of "${c.name}":\n"""${c.lore}"""\nExpand it with ~150 words of deeper explanation: the intuition behind it, one concrete worked example with small numbers where possible, and the most common misconception. Plain text, no markdown headers.`, cfg);
       if (extra && extra.length > 40) persistLore({ ...deepLore, [c.id]: extra.trim() });
     } catch (e) { showToast(`Model deepen failed: ${e.message || "check model settings"}.`); }
     setBusy("");
@@ -2974,7 +3010,7 @@ export default function App() {
   const toggleMusic = () => { if (musicOn) { music.stop(); setMusicOn(false); } else { music.start(); setMusicOn(true); } };
   const toggleTheme = () => persistCfg({ ...cfg, darkMode: !darkMode });
 
-  const allWorlds = [...BUILTIN_WORLDS, ...worlds];
+  const allWorlds = [...BUILTIN_WORLDS, ...worlds].map(applyTeachingParadigm);
   const world = allWorlds.find((w) => w.id === activeWorld) || BUILTIN_WORLDS[0];
   const regions = world.regions;
   const region = regions[regionIdx];
@@ -3135,7 +3171,7 @@ export default function App() {
     setBusy("coach");
     try {
       const parsed = parseJSON(await askModel(
-        `You are an adaptive tutor. The learner's weakest topics in "${world.title}" (with miss rates):\n${JSON.stringify(hints)}\nWrite 4 NEW applied-scenario multiple-choice questions targeting these weaknesses (different angles than typical textbook phrasing; realistic engineering scenarios). Respond ONLY raw JSON:\n{"questions":[{"q":"SCENARIO: ...","options":["...","...","...","..."],"a":0,"why":"one line","src":"the id of the topic targeted"}]}\nReject any question where the correct answer is visibly longer or more specific than the distractors.
+        `You are an adaptive tutor using this teaching paradigm: ${TEACH_PROMPT}\nThe learner's weakest topics in "${world.title}" (with miss rates):\n${JSON.stringify(hints)}\nWrite 4 NEW applied-scenario multiple-choice questions targeting these weaknesses (different angles than typical textbook phrasing; realistic engineering scenarios). Respond ONLY raw JSON:\n{"questions":[{"q":"SCENARIO: ...","options":["...","...","...","..."],"a":0,"why":"one line","src":"the id of the topic targeted"}]}\nReject any question where the correct answer is visibly longer or more specific than the distractors.
 ${QUALITY_RULES}`, cfg.provider === "builtin" ? cfg : cfg));
       const qs = keepFairQuestions(parsed.questions || []);
       if (!qs.length) throw new Error("empty");
@@ -3151,7 +3187,7 @@ ${QUALITY_RULES}`, cfg.provider === "builtin" ? cfg : cfg));
     try {
       const seen = [...side.questions, ...((aug[world.id] || []).filter((q) => q.src === side.id))].map((q) => q.q).slice(0, 12);
       const parsed = parseJSON(await askModel(
-        `Generate 2 NEW variant scenario questions for the drill "${side.name}" (${side.desc}). Cover the same concepts from fresh angles — different surface scenarios, same underlying principles. Do NOT repeat these existing questions:\n${JSON.stringify(seen)}\nRespond ONLY raw JSON: {"questions":[{"q":"SCENARIO: ...","options":["...","...","...","..."],"a":0,"why":"one line"}]}\nReject any question where the correct answer is visibly longer or more specific than the distractors.
+        `Use this teaching paradigm: ${TEACH_PROMPT}\nGenerate 2 NEW variant scenario questions for the drill "${side.name}" (${side.desc}). Cover the same concepts from fresh angles — different surface scenarios, same underlying principles. Do NOT repeat these existing questions:\n${JSON.stringify(seen)}\nRespond ONLY raw JSON: {"questions":[{"q":"SCENARIO: ...","options":["...","...","...","..."],"a":0,"why":"one line"}]}\nReject any question where the correct answer is visibly longer or more specific than the distractors.
 ${QUALITY_RULES}`, cfg));
       const qs = keepFairQuestions(parsed.questions || []).map((q) => ({ ...q, src: side.id }));
       if (qs.length) persistAug({ ...aug, [world.id]: [...(aug[world.id] || []), ...qs] });
@@ -3173,6 +3209,21 @@ ${QUALITY_RULES}`, cfg));
     return "";
   };
 
+  const localWildsFallback = (scopeId) => {
+    const pool = [];
+    for (const r of regions) {
+      for (const c of r.concepts) {
+        if (scopeId !== "world" && c.id !== scopeId) continue;
+        (c.questions || []).forEach((q) => pool.push({ ...q, src: c.id, name: c.name, evidence: c.lore.slice(0, 110) + "…" }));
+      }
+      if (scopeId === "world") {
+        (r.sides || []).forEach((sd) => (sd.questions || []).forEach((q) => pool.push({ ...q, src: sd.id, name: sd.name, evidence: sd.desc || "Side duel scenario" })));
+      }
+    }
+    for (let i = pool.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [pool[i], pool[j]] = [pool[j], pool[i]]; }
+    return pool.slice(0, 3);
+  };
+
   const runEpisode = async (scopeId, scopeName) => {
     setWilds({ scope: scopeId, name: scopeName, busy: true, qs: null, idx: 0, score: 0, ord: shuf4(), fb: null });
     setScreen("wilds");
@@ -3180,14 +3231,20 @@ ${QUALITY_RULES}`, cfg));
       const seen = [...((aug[world.id] || []).map((q) => q.q))].slice(-14);
       const weak = coachRows().filter((r) => r.m > 0).slice(0, 3).map((r) => r.name);
       const parsed = parseJSON(await askModel(
-        `You are an RL environment generating TASKS over study material. Generate 3 NEW multiple-choice questions grounded STRICTLY in this material (every answer must be verifiable from it):\n"""${scopeLore(scopeId)}"""\n${weak.length ? "The learner is weakest on: " + weak.join(", ") + " — bias toward these where the material allows." : ""}\nDo NOT repeat: ${JSON.stringify(seen)}\nRespond ONLY raw JSON: {"questions":[{"q":"...","options":["...","...","...","..."],"a":0,"why":"one line","evidence":"short phrase quoted from the material that verifies the answer"}]}\nReject any question where the correct answer is visibly longer or more specific than the distractors.
+        `You are an RL environment generating TASKS over study material. Use this teaching paradigm: ${TEACH_PROMPT}\nGenerate 3 NEW multiple-choice questions grounded STRICTLY in this material (every answer must be verifiable from it):\n"""${scopeLore(scopeId)}"""\n${weak.length ? "The learner is weakest on: " + weak.join(", ") + " — bias toward these where the material allows." : ""}\nDo NOT repeat: ${JSON.stringify(seen)}\nRespond ONLY raw JSON: {"questions":[{"q":"...","options":["...","...","...","..."],"a":0,"why":"one line","evidence":"short phrase quoted from the material that verifies the answer"}]}\nReject any question where the correct answer is visibly longer or more specific than the distractors.
 ${QUALITY_RULES}`, cfg));
       const qs = keepFairQuestions(parsed.questions || []).map((q) => ({ ...q, src: scopeId === "world" ? undefined : scopeId }));
       if (!qs.length) throw new Error("empty");
       if (scopeId !== "world") persistAug({ ...aug, [world.id]: [...(aug[world.id] || []), ...qs] });
       setWilds({ scope: scopeId, name: scopeName, busy: false, qs, idx: 0, score: 0, ord: shuf4(), fb: null });
     } catch (e) {
-      setWilds({ scope: scopeId, name: scopeName, busy: false, error: `Episode generation failed from the model: ${e.message || "unknown error"}. Add an Anthropic key in Settings or use an environment with the Claude model bridge.`, qs: null });
+      const fallback = localWildsFallback(scopeId);
+      if (fallback.length) {
+        setWilds({ scope: scopeId, name: scopeName, busy: false, qs: fallback, idx: 0, score: 0, ord: shuf4(), fb: null, fallback: true });
+        showToast("Model generation failed — using local verifier-backed review questions.");
+      } else {
+        setWilds({ scope: scopeId, name: scopeName, busy: false, error: `Episode generation failed from the model: ${e.message || "unknown error"}. Add an Anthropic key in Settings or use an environment with the Claude model bridge.`, qs: null });
+      }
     }
   };
   const answerWilds = (dispIdx) => {
@@ -3496,6 +3553,24 @@ ${QUALITY_RULES}`, cfg));
       ))}
     </div>
   );
+  const TeachingPanel = ({ target = world, region: teachRegion = null, compact = false }) => {
+    const tp = target.teaching || TEACHING_PARADIGM;
+    const chips = [
+      ["🎯", compact ? "mission" : tp.mission],
+      ["🔗", compact ? "resources" : (tp.resources && tp.resources.length ? `Resources: ${tp.resources.join(", ")}` : tp.resources)],
+      ["🧠", compact ? "storage strength" : tp.retention],
+      ["📚", compact ? "reference" : (teachRegion?.referenceHint || tp.reference)],
+    ];
+    return (
+      <div style={{ ...S.card, marginTop: 10, background: darkMode ? "#101832" : "#F7F8FD" }}>
+        <span style={S.mono(10, T.explore)}>TEACHING PARADIGM · {TEACH_SOURCE}</span>
+        {!compact && <p style={{ fontSize: 12.5, color: T.inkSoft, lineHeight: 1.55, margin: "6px 0 8px" }}>Every concept world now follows mission → resource-grounded mini lesson → retrieval duel → spaced/interleaved review → reference/glossary compression.</p>}
+        <div style={{ display: "flex", flexWrap: "wrap", gap: 6 }}>
+          {chips.map(([icon, text], i) => <span key={i} style={{ ...S.mono(9.5, i === 0 ? T.action : i === 1 ? T.explore : i === 2 ? T.reward : T.gold), background: T.card, border: `1px solid ${T.line}`, borderRadius: 999, padding: "5px 9px" }}>{icon} {text}</span>)}
+        </div>
+      </div>
+    );
+  };
 
   /* ============ TITLE ============ */
   if (screen === "title") return (
@@ -3505,7 +3580,7 @@ ${QUALITY_RULES}`, cfg));
       <h1 style={{ fontSize: 32, fontWeight: 800, letterSpacing: "-0.02em", margin: "8px 0 2px" }}>EDOKAI</h1>
       <span style={S.mono(11, T.explore)}>5 UMBRELLA WORLDS · TORCHLEET DOJO · SELF-IMPROVING COACH</span>
       <p style={{ color: T.inkSoft, maxWidth: 430, lineHeight: 1.6, fontSize: 14.5, marginTop: 14 }}>
-        Board worlds for <b style={{ color: T.action }}>concepts</b>, a <b style={{ color: T.explore }}>Dojo</b> with runnable Python katas, per-world <b>Trial Gauntlets</b>, and a <b style={{ color: T.reward }}>Coach</b> that watches your misses and forges new drills targeting your weaknesses. Bring your own model, resource, or concept.
+        Board worlds for <b style={{ color: T.action }}>concepts</b>, a <b style={{ color: T.explore }}>Dojo</b> with runnable Python katas, per-world <b>Trial Gauntlets</b>, and a <b style={{ color: T.reward }}>Coach</b> that watches your misses and forges new drills. The teaching loop is mission-grounded, resource-first, and built for storage strength.
       </p>
       <button onClick={() => setScreen("home")} style={{ ...S.btn(T.explore), fontSize: 16, padding: "13px 30px", marginTop: 18 }}>{save.xp > 0 ? "Continue journey →" : "Begin journey →"}</button>
     </div>
@@ -3520,6 +3595,7 @@ ${QUALITY_RULES}`, cfg));
           <h2 style={{ fontSize: 20, fontWeight: 800, margin: 0 }}>Concept Worlds</h2>
           <button onClick={() => { setScan(null); setScreen("spawn"); }} style={{ ...S.btn(T.action), padding: "7px 12px", fontSize: 12 }}>+ Bring your own</button>
         </div>
+        <TeachingPanel target={world} compact />
         {allWorlds.map((w) => {
           const total = w.regions.reduce((n, r) => n + r.concepts.length, 0);
           const got = w.regions.reduce((n, r) => n + r.concepts.filter((c) => capturedSet.has(c.id)).length, 0);
@@ -3557,6 +3633,7 @@ ${QUALITY_RULES}`, cfg));
             {world.links.map((l) => <a key={l.url} href={l.url} target="_blank" rel="noreferrer" style={{ ...S.chip(false), textDecoration: "none", fontSize: 11.5, padding: "5px 10px" }}>🔗 {l.label}</a>)}
           </div>
         )}
+        <TeachingPanel target={world} />
         {regions.map((r, i) => {
           const locked = !(i === 0 || save.badges.includes(regions[i - 1].gym.badge));
           const got = r.concepts.filter((c) => capturedSet.has(c.id)).length;
@@ -3634,7 +3711,7 @@ ${QUALITY_RULES}`, cfg));
         <div style={{ ...S.wrap }}>
           <Tabs />
           <h2 style={{ fontSize: 20, fontWeight: 800, margin: "14px 0 2px" }}>🧪 The Coach — {world.title}</h2>
-          <p style={{ color: T.inkSoft, fontSize: 13, lineHeight: 1.55 }}>The teaching system improves itself: every answer you give is tracked per concept. The Coach reads your miss patterns and forges NEW scenario drills aimed at exactly what you get wrong — they join the Trial Gauntlet pool, so coverage grows where you're weakest.</p>
+          <p style={{ color: T.inkSoft, fontSize: 13, lineHeight: 1.55 }}>The teaching system improves itself: every answer you give is tracked per concept. The Coach reads your miss patterns and forges NEW scenario drills aimed at exactly what you get wrong — retrieval practice, spacing, and interleaving grow where you're weakest.</p>
           <div style={{ display: "flex", gap: 8, margin: "10px 0" }}>
             <button onClick={forgeDrills} disabled={busy === "coach"} style={{ ...S.btn(T.explore), flex: 1 }}>{busy === "coach" ? "Reflecting on your misses…" : "🔨 Reflect & forge new drills"}</button>
             <button onClick={() => startGauntlet()} style={S.btn(T.gold)}>⚔️ Gauntlet</button>
@@ -3666,7 +3743,7 @@ ${QUALITY_RULES}`, cfg));
         <div style={{ ...S.wrap }}>
           <Tabs />
           <h2 style={{ fontSize: 20, fontWeight: 800, margin: "14px 0 2px" }}>🌿 The Wilds — {world.title}</h2>
-          <p style={{ color: T.inkSoft, fontSize: 13, lineHeight: 1.55 }}>An RL environment over any selected concept world (the Env Foundry region explains the machinery). Each episode generates fresh tasks grounded in that world's lore; if the model call fails, Edokai falls back to local verifier-backed questions so the Wilds still works.</p>
+          <p style={{ color: T.inkSoft, fontSize: 13, lineHeight: 1.55 }}>An RL environment over any selected concept world (the Env Foundry region explains the machinery). Each episode creates resource-grounded retrieval practice from the world's lore; if the model call fails, Edokai falls back to local verifier-backed questions so the happy path still works.</p>
           <div style={{ display: "flex", flexWrap: "wrap", gap: 6, margin: "8px 0" }}>{allWorlds.map((w) => <button key={w.id} onClick={() => { setActiveWorld(w.id); setRegionIdx(0); }} style={S.chip(w.id === world.id)}>{w.emoji} {w.title}</button>)}</div>
           <button onClick={() => runEpisode("world", world.title)} style={{ ...S.btn(T.reward), width: "100%", marginTop: 8 }}>▶ Episode over {world.title}</button>
           <div style={{ marginTop: 14 }}><span style={S.mono(10)}>OR SCOPE TO ONE CONCEPT:</span></div>
@@ -3703,7 +3780,7 @@ ${QUALITY_RULES}`, cfg));
           <div style={{ ...S.card, textAlign: "center" }}>
             <div style={{ fontSize: 42 }}>🌿</div>
             <h2 style={{ fontSize: 20, fontWeight: 800, margin: "6px 0 2px" }}>Episode complete</h2>
-            <span style={S.mono(11, T.reward)}>{wilds.score}/{wilds.qs.length} · +{wilds.score * 10} XP · questions banked into the pools</span>
+            <span style={S.mono(11, T.reward)}>{wilds.score}/{wilds.qs.length} · +{wilds.score * 10} XP · {wilds.fallback ? "local review set" : wilds.scope === "world" ? "fresh world episode" : "questions banked into pools"}</span>
             <div style={{ display: "flex", gap: 8, justifyContent: "center", marginTop: 12 }}>
               <button onClick={() => runEpisode(wilds.scope, wilds.name)} style={S.btn(T.reward)}>▶ New episode (fresh tasks)</button>
               <button onClick={() => { setWilds(null); setScreen("coach"); }} style={S.btn(T.explore)}>🧪 Coach</button>
@@ -3742,7 +3819,7 @@ ${QUALITY_RULES}`, cfg));
     <div style={S.app}><style>{CSS}</style><Toast /><HUD back={() => setScreen("home")} />
       <div style={{ ...S.wrap, paddingTop: 18 }}>
         <h2 style={{ fontSize: 20, fontWeight: 800, margin: "0 0 4px" }}>Bring your own resource</h2>
-        <p style={{ color: T.inkSoft, fontSize: 13.5, lineHeight: 1.55 }}>Paste a link or text, upload a PDF, or just name a concept — the agent finds the best resource. Then choose: <b>learn</b> it as a board world, or <b>implement</b> it as a dojo kata.</p>
+        <p style={{ color: T.inkSoft, fontSize: 13.5, lineHeight: 1.55 }}>Paste a link or text, upload a PDF, or just name a concept — Edokai finds or uses the best resource first. Then choose: <b>learn</b> it as a mission-grounded board world, or <b>implement</b> it as a dojo kata with feedback loops.</p>
         <div style={{ display: "flex", gap: 6, flexWrap: "wrap", marginTop: 8 }}>
           {[["url", "🔗 URL"], ["pdf", "📄 PDF"], ["text", "📋 Paste"], ["concept", "💡 Concept"]].map(([id, label]) => (
             <button key={id} onClick={() => { setResTab(id); setScan(null); }} style={S.chip(resTab === id)}>{label}</button>
@@ -3840,14 +3917,22 @@ ${QUALITY_RULES}`, cfg));
     <div style={S.app}><style>{CSS}</style><Toast /><HUD back={() => setScreen("home")} />
       <div style={{ ...S.wrap, paddingTop: 18 }}>
         <h2 style={{ fontSize: 20, fontWeight: 800, margin: "0 0 4px" }}>Model settings</h2>
-        <p style={{ color: T.inkSoft, fontSize: 13, lineHeight: 1.55 }}>Generation can run through the Claude bridge, the Netlify Anthropic proxy, a user-supplied Anthropic key, or any OpenAI-compatible endpoint. Web browsing (URL scans, Concept finder, Paper Scout, Coach) and PDFs use the Claude path; Paste-text generation and code review honor your choice.</p>
+        <p style={{ color: T.inkSoft, fontSize: 13, lineHeight: 1.55 }}>Generation can run through the Claude bridge, the desktop Claude Code OAuth bridge, the Netlify Anthropic proxy, a user-supplied Anthropic key, or any OpenAI-compatible endpoint. On desktop, signing in once with <code>claude auth login</code> lets Edokai use Claude Code's browser-based authentication without an explicit API-key environment variable.</p>
         <div style={{ display: "flex", gap: 6, marginTop: 8 }}>
           <button onClick={() => persistCfg({ ...cfg, provider: "builtin" })} style={S.chip(cfg.provider === "builtin")}>Claude</button>
           <button onClick={() => persistCfg({ ...cfg, provider: "custom" })} style={S.chip(cfg.provider === "custom")}>Custom endpoint</button>
         </div>
         <div style={{ ...S.card, marginTop: 12 }}>
-          <span style={S.mono(10)}>ANTHROPIC API KEY (optional locally; Netlify can use ANTHROPIC_API_KEY server-side)</span>
-          <input value={cfg.anthropicKey || ""} onChange={(e) => persistCfg({ ...cfg, anthropicKey: e.target.value })} type="password" placeholder="sk-ant-… (leave blank inside claude.ai)" style={{ ...S.input, margin: "6px 0 0" }} />
+          <span style={S.mono(10)}>CLAUDE CODE BROWSER AUTH</span>
+          <p style={{ fontSize: 12.5, color: T.inkSoft, lineHeight: 1.5, margin: "6px 0 8px" }}>
+            {claudeCodeAuth ? (claudeCodeAuth.loggedIn ? `Signed in via ${claudeCodeAuth.authMethod || "Claude Code"}${claudeCodeAuth.email ? ` · ${claudeCodeAuth.email}` : ""}` : `Not signed in${claudeCodeAuth.error ? ` · ${claudeCodeAuth.error}` : ""}`) : "Checking Claude Code auth…"}
+          </p>
+          <button onClick={() => window.edokaiAuth && window.edokaiAuth.claudeCodeStatus && window.edokaiAuth.claudeCodeStatus().then(setClaudeCodeAuth).catch((e) => setClaudeCodeAuth({ loggedIn: false, error: e.message || String(e) }))} style={{ ...S.chip(false), fontSize: 12 }}>Refresh Claude Code status</button>
+          <p style={{ fontSize: 11.5, color: T.inkSoft, lineHeight: 1.5, margin: "8px 0 0" }}>If this says not signed in, run <code>claude auth login</code> once. Claude Code opens the browser and stores OAuth locally; Edokai reuses it at launch.</p>
+        </div>
+        <div style={{ ...S.card, marginTop: 12 }}>
+          <span style={S.mono(10)}>ANTHROPIC API KEY (optional fallback; Netlify can use ANTHROPIC_API_KEY server-side)</span>
+          <input value={cfg.anthropicKey || ""} onChange={(e) => persistCfg({ ...cfg, anthropicKey: e.target.value })} type="password" placeholder="sk-ant-… (leave blank to use Claude Code OAuth when available)" style={{ ...S.input, margin: "6px 0 0" }} />
         </div>
         {cfg.provider === "custom" && (
           <div style={{ ...S.card, marginTop: 12 }}>
@@ -4238,6 +4323,7 @@ ${QUALITY_RULES}`, cfg));
             <span style={S.mono(9.5, T.explore)}>◇ SIDE = retention duel (heals)</span>
             <span style={S.mono(9.5, T.gold)}>🏛 GYM = badge</span>
           </div>
+          <TeachingPanel target={world} region={region} compact />
           <div style={{ position: "relative", width: "100%", aspectRatio: "5/4", background: "linear-gradient(160deg,#A8D8A0 0%,#7BC47F 45%,#69B583 100%)", borderRadius: 16, border: `3px solid ${T.ink}`, overflow: "hidden", boxShadow: "0 8px 28px rgba(27,36,64,0.2)" }}>
             <div style={{ position: "absolute", inset: 0, opacity: 0.35, fontSize: 18, pointerEvents: "none" }}>
               <span style={{ position: "absolute", left: "4%", top: "8%" }}>🌲</span>
