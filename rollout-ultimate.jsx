@@ -34,7 +34,7 @@ const T = { ...THEMES.light };
    MUSIC ENGINE — bundled low-volume lo-fi background track
    ============================================================ */
 class MusicEngine {
-  constructor() { this.ctx = null; this.playing = false; this.timer = null; this.step = 0; this.defaultUrl = "/audio/dbz_songs.mp3"; this.customUrl = null; this.audioEl = null; this.volume = 0.10; }
+  constructor() { this.ctx = null; this.playing = false; this.timer = null; this.step = 0; this.defaultUrl = "/audio/dbz_songs.mp3"; this.customUrl = null; this.audioEl = null; this.volume = 0.05; }
   setCustom(url) { this.customUrl = url; if (this.playing) { this.stop(); this.start(); } }
   start() {
     const track = this.customUrl || this.defaultUrl;
@@ -106,25 +106,40 @@ async function askModel(prompt, cfg, opts = {}) {
   if (!cfg || cfg.provider === "builtin") cfg = { provider: "builtin", anthropicKey: (cfg && cfg.anthropicKey) || GLOBAL_KEY };
   const { needsWeb = false, pdfBase64 = null } = opts;
   if (!cfg || cfg.provider === "builtin") {
+    // Claude/Artifacts bridge when available; Anthropic API with user key elsewhere.
+    if (typeof window !== "undefined" && window.claude && typeof window.claude.complete === "function" && !pdfBase64 && !needsWeb) {
+      return await window.claude.complete(prompt);
+    }
     const content = pdfBase64
       ? [{ type: "document", source: { type: "base64", media_type: "application/pdf", data: pdfBase64 } }, { type: "text", text: prompt }]
       : prompt;
     const body = {
-      model: (cfg && cfg.model) || "claude-opus-4-8", max_tokens: 1000,
+      model: "claude-opus-4-20250514", max_tokens: 1600,
       messages: [{ role: "user", content }],
     };
     if (needsWeb) body.tools = [{ type: "web_search_20250305", name: "web_search" }];
-    const hdrs = { "Content-Type": "application/json" };
-    if (cfg && cfg.anthropicKey) {            // desktop / outside claude.ai
-      hdrs["x-api-key"] = cfg.anthropicKey;
-      hdrs["anthropic-version"] = "2023-06-01";
-      hdrs["anthropic-dangerous-direct-browser-access"] = "true";
+    if (!(cfg && cfg.anthropicKey)) {
+      const proxied = await fetch("/.netlify/functions/anthropic", {
+        method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(body),
+      });
+      const pdata = await proxied.json().catch(() => ({}));
+      if (!proxied.ok || pdata.error) throw new Error(pdata.error?.message || pdata.error || `Model proxy error ${proxied.status}`);
+      const pout = (pdata.content || []).filter((b) => b.type === "text").map((b) => b.text).join("\n");
+      if (!pout.trim()) throw new Error("EMPTY_MODEL_RESPONSE");
+      return pout;
     }
+    const hdrs = { "Content-Type": "application/json" };
+    hdrs["x-api-key"] = cfg.anthropicKey;
+    hdrs["anthropic-version"] = "2023-06-01";
+    hdrs["anthropic-dangerous-direct-browser-access"] = "true";
     const res = await fetch("https://api.anthropic.com/v1/messages", {
       method: "POST", headers: hdrs, body: JSON.stringify(body),
     });
-    const data = await res.json();
-    return (data.content || []).filter((b) => b.type === "text").map((b) => b.text).join("\n");
+    const data = await res.json().catch(() => ({}));
+    if (!res.ok || data.error) throw new Error(data.error?.message || `Anthropic error ${res.status}`);
+    const out = (data.content || []).filter((b) => b.type === "text").map((b) => b.text).join("\n");
+    if (!out.trim()) throw new Error("EMPTY_MODEL_RESPONSE");
+    return out;
   }
   // custom OpenAI-compatible endpoint
   if (needsWeb) throw new Error("WEB_NEEDED");
@@ -135,9 +150,11 @@ async function askModel(prompt, cfg, opts = {}) {
     method: "POST", headers,
     body: JSON.stringify({ model: cfg.model, max_tokens: 1200, messages: [{ role: "user", content: prompt }] }),
   });
-  if (!res.ok) throw new Error(`Endpoint error ${res.status}`);
-  const data = await res.json();
-  return data.choices?.[0]?.message?.content || "";
+  const data = await res.json().catch(() => ({}));
+  if (!res.ok || data.error) throw new Error(data.error?.message || `Endpoint error ${res.status}`);
+  const out = data.choices?.[0]?.message?.content || "";
+  if (!out.trim()) throw new Error("EMPTY_MODEL_RESPONSE");
+  return out;
 }
 function parseJSON(text) {
   const clean = text.replace(/```json|```/g, "").trim();
@@ -145,8 +162,17 @@ function parseJSON(text) {
   if (s === -1 || e === -1) throw new Error("no json");
   return JSON.parse(clean.slice(s, e + 1));
 }
+function optionTellBad(q) {
+  if (!q || !q.options || q.options.length !== 4) return true;
+  const lens = q.options.map((o) => String(o || "").trim().split(/\s+/).filter(Boolean).length);
+  const max = Math.max(...lens), min = Math.min(...lens);
+  return (lens[q.a] === max && lens.filter((x) => x === max).length === 1) || (max - min > 5);
+}
+function keepFairQuestions(qs) {
+  return (qs || []).filter((q) => q.options && q.options.length === 4 && Number.isInteger(q.a) && q.a >= 0 && q.a < 4 && !optionTellBad(q));
+}
 
-const QUALITY_RULES = `CRITICAL QUALITY RULES for questions: all 4 options similar length (within ~5 words); the correct option must NOT be the longest; distractors technically plausible; vary "a" (0-3) across questions.`;
+const QUALITY_RULES = `CRITICAL QUALITY RULES for questions: all 4 options must be similar length (within ~3 words and similar punctuation); the correct option must NEVER be the longest or most detailed; do not make the correct answer the only option with examples/numbers; distractors must be technically plausible; vary "a" (0-3) across questions.`;
 
 async function scanUrl(url, cfg) {
   return parseJSON(await askModel(
@@ -1299,8 +1325,8 @@ class WordleEnv:
 
 
 const SECURITY_AI_REGION = {
-  id: "secai-r", name: "Security Agent Lab", emoji: "🛡️",
-  intro: "Post-train agents that automate analyst procedures, then prove they actually work.",
+  id: "agentic-workflows-r", name: "Agentic Workflows", emoji: "🛡️",
+  intro: "Post-train and orchestrate agents, then prove their workflows work on real tasks.",
   npc: { name: "SOC Research Lead", text: "Security agents need more than clever prompts: post-training, tool workflows, planning research, eval rigor, inference discipline, and production collaboration all have to line up before an analyst can trust them." },
   concepts: [
     { id: "sec-posttrain", name: "Post-train for Security", sprite: "🎯", lore: "Post-training turns a general model into a reliable security operator. SFT teaches procedure traces: triage steps, tool syntax, report formats, and analyst etiquette. RLHF/RLAIF, PPO/GRPO/DPO, and reward modeling then optimize outcomes: correct classification, lower false positives, valid tool use, calibrated escalation, and evidence-backed writeups. Security is unforgiving because a plausible answer is not enough — the agent must improve measured reliability on real tasks like alert triage, vuln analysis, detection engineering, and incident summarization.", questions: [
@@ -1338,8 +1364,8 @@ SECURITY_AI_REGION.gym.questions = SECURITY_AI_REGION.concepts.flatMap(c => c.qu
 
 const _g = (id) => ATLAS.find((w) => w.id === id).regions[0];
 const BUILTIN_WORLDS = [
-  { id: "w-rl", title: "Agentic RL & Agent Systems", emoji: "🤖",
-    blurb: "MDPs → SFT → tool rewards → PPO/GRPO → agents → orchestration.",
+  { id: "w-rl", title: "Agents", emoji: "🤖",
+    blurb: "Agentic workflows → MDPs → SFT → tool rewards → PPO/GRPO/DPO → orchestration.",
     links: [
       { label: "Source primer · aman.ai Agentic RL", url: "https://aman.ai/primers/ai/agentic-RL/" },
       { label: "Anthropic · Building Effective Agents", url: "https://www.anthropic.com/research/building-effective-agents" },
@@ -1349,15 +1375,7 @@ const BUILTIN_WORLDS = [
       { label: "AdithyaSK · Ultimate Guide to RL Environments", url: "https://huggingface.co/spaces/AdithyaSK/rl-environments-guide" },
       { label: "RL_Envs_101 (companion repo)", url: "https://github.com/adithya-s-k/RL_Envs_101" },
     ],
-    regions: [...RL_REGIONS, _g("w-orch"), ENV_REGION] },
-
-  { id: "w-secai", title: "Security AI Agents", emoji: "🛡️",
-    blurb: "Post-training, planning workflows, eval rigor, inference optimization, and research-to-production for real security automation.",
-    links: [
-      { label: "Anthropic · Building Effective Agents", url: "https://www.anthropic.com/research/building-effective-agents" },
-      { label: "OpenAI · Evals", url: "https://github.com/openai/evals" },
-    ],
-    regions: [SECURITY_AI_REGION] },
+    regions: [SECURITY_AI_REGION, ...RL_REGIONS, _g("w-orch"), ENV_REGION] },
   { id: "w-tf", title: "Transformer Architecture", emoji: "🏛️",
     blurb: "Position → attention variants → MoE → the modern block gallery.",
     links: [
@@ -2863,11 +2881,7 @@ export default function App() {
     try {
       const extra = await askModel(`You are a patient ML teacher. A learner read this summary of "${c.name}":\n"""${c.lore}"""\nExpand it with ~150 words of deeper explanation: the intuition behind it, one concrete worked example with small numbers where possible, and the most common misconception. Plain text, no markdown headers.`, cfg);
       if (extra && extra.length > 40) persistLore({ ...deepLore, [c.id]: extra.trim() });
-    } catch (e) {
-      const fallback = `${c.name} in practice: ${c.lore} A useful way to study it is to ask: what state is being tracked, what decision changes next, what feedback tells us we were wrong, and what metric would prove improvement? Mini-example: take one tiny input, write the expected intermediate state by hand, then compare the model/agent/tool output to that expectation. Common misconception: treating the term as a buzzword instead of a mechanism with inputs, transitions, and measurable failure modes.`;
-      persistLore({ ...deepLore, [c.id]: fallback });
-      showToast("Model deepen failed; added local expanded lore instead.");
-    }
+    } catch (e) { showToast(`Model deepen failed: ${e.message || "check model settings"}.`); }
     setBusy("");
   };
   // lore the player should review for the current battle
@@ -3046,8 +3060,9 @@ export default function App() {
     setBusy("coach");
     try {
       const parsed = parseJSON(await askModel(
-        `You are an adaptive tutor. The learner's weakest topics in "${world.title}" (with miss rates):\n${JSON.stringify(hints)}\nWrite 4 NEW applied-scenario multiple-choice questions targeting these weaknesses (different angles than typical textbook phrasing; realistic engineering scenarios). Respond ONLY raw JSON:\n{"questions":[{"q":"SCENARIO: ...","options":["...","...","...","..."],"a":0,"why":"one line","src":"the id of the topic targeted"}]}\n${QUALITY_RULES}`, cfg.provider === "builtin" ? cfg : cfg));
-      const qs = (parsed.questions || []).filter((q) => q.options && q.options.length === 4);
+        `You are an adaptive tutor. The learner's weakest topics in "${world.title}" (with miss rates):\n${JSON.stringify(hints)}\nWrite 4 NEW applied-scenario multiple-choice questions targeting these weaknesses (different angles than typical textbook phrasing; realistic engineering scenarios). Respond ONLY raw JSON:\n{"questions":[{"q":"SCENARIO: ...","options":["...","...","...","..."],"a":0,"why":"one line","src":"the id of the topic targeted"}]}\nReject any question where the correct answer is visibly longer or more specific than the distractors.
+${QUALITY_RULES}`, cfg.provider === "builtin" ? cfg : cfg));
+      const qs = keepFairQuestions(parsed.questions || []);
       if (!qs.length) throw new Error("empty");
       persistAug({ ...aug, [world.id]: [...(aug[world.id] || []), ...qs] });
       showToast(`Coach forged ${qs.length} new drills → they now appear in the Trial Gauntlet.`);
@@ -3061,8 +3076,9 @@ export default function App() {
     try {
       const seen = [...side.questions, ...((aug[world.id] || []).filter((q) => q.src === side.id))].map((q) => q.q).slice(0, 12);
       const parsed = parseJSON(await askModel(
-        `Generate 2 NEW variant scenario questions for the drill "${side.name}" (${side.desc}). Cover the same concepts from fresh angles — different surface scenarios, same underlying principles. Do NOT repeat these existing questions:\n${JSON.stringify(seen)}\nRespond ONLY raw JSON: {"questions":[{"q":"SCENARIO: ...","options":["...","...","...","..."],"a":0,"why":"one line"}]}\n${QUALITY_RULES}`, cfg));
-      const qs = (parsed.questions || []).filter((q) => q.options && q.options.length === 4).map((q) => ({ ...q, src: side.id }));
+        `Generate 2 NEW variant scenario questions for the drill "${side.name}" (${side.desc}). Cover the same concepts from fresh angles — different surface scenarios, same underlying principles. Do NOT repeat these existing questions:\n${JSON.stringify(seen)}\nRespond ONLY raw JSON: {"questions":[{"q":"SCENARIO: ...","options":["...","...","...","..."],"a":0,"why":"one line"}]}\nReject any question where the correct answer is visibly longer or more specific than the distractors.
+${QUALITY_RULES}`, cfg));
+      const qs = keepFairQuestions(parsed.questions || []).map((q) => ({ ...q, src: side.id }));
       if (qs.length) persistAug({ ...aug, [world.id]: [...(aug[world.id] || []), ...qs] });
     } catch (e) { /* silent — variants are a bonus, never a blocker */ }
   };
@@ -3082,19 +3098,6 @@ export default function App() {
     return "";
   };
 
-  const localWildQuestions = (scopeId) => {
-    const material = scopeId === "world" ? regions.flatMap((r) => r.concepts) : regions.flatMap((r) => r.concepts).filter((c) => c.id === scopeId);
-    const pool = (material.length ? material : regions.flatMap((r) => r.concepts)).slice(0, 6);
-    return pool.slice(0, 3).map((c, i) => ({
-      q: `According to the lore, what is the key idea behind ${c.name}?`,
-      options: [c.lore.split(/[.;]/)[0].slice(0, 120), "It is only a UI styling preference", "It removes the need for evaluation", "It is unrelated to agent reliability"],
-      a: 0,
-      why: `The answer is grounded directly in ${c.name}'s lore.`,
-      evidence: c.lore.split(/[.;]/)[0].slice(0, 140),
-      src: c.id
-    }));
-  };
-
   const runEpisode = async (scopeId, scopeName) => {
     setWilds({ scope: scopeId, name: scopeName, busy: true, qs: null, idx: 0, score: 0, ord: shuf4(), fb: null });
     setScreen("wilds");
@@ -3102,19 +3105,14 @@ export default function App() {
       const seen = [...((aug[world.id] || []).map((q) => q.q))].slice(-14);
       const weak = coachRows().filter((r) => r.m > 0).slice(0, 3).map((r) => r.name);
       const parsed = parseJSON(await askModel(
-        `You are an RL environment generating TASKS over study material. Generate 3 NEW multiple-choice questions grounded STRICTLY in this material (every answer must be verifiable from it):\n"""${scopeLore(scopeId)}"""\n${weak.length ? "The learner is weakest on: " + weak.join(", ") + " — bias toward these where the material allows." : ""}\nDo NOT repeat: ${JSON.stringify(seen)}\nRespond ONLY raw JSON: {"questions":[{"q":"...","options":["...","...","...","..."],"a":0,"why":"one line","evidence":"short phrase quoted from the material that verifies the answer"}]}\n${QUALITY_RULES}`, cfg));
-      const qs = (parsed.questions || []).filter((q) => q.options && q.options.length === 4).map((q) => ({ ...q, src: scopeId === "world" ? undefined : scopeId }));
+        `You are an RL environment generating TASKS over study material. Generate 3 NEW multiple-choice questions grounded STRICTLY in this material (every answer must be verifiable from it):\n"""${scopeLore(scopeId)}"""\n${weak.length ? "The learner is weakest on: " + weak.join(", ") + " — bias toward these where the material allows." : ""}\nDo NOT repeat: ${JSON.stringify(seen)}\nRespond ONLY raw JSON: {"questions":[{"q":"...","options":["...","...","...","..."],"a":0,"why":"one line","evidence":"short phrase quoted from the material that verifies the answer"}]}\nReject any question where the correct answer is visibly longer or more specific than the distractors.
+${QUALITY_RULES}`, cfg));
+      const qs = keepFairQuestions(parsed.questions || []).map((q) => ({ ...q, src: scopeId === "world" ? undefined : scopeId }));
       if (!qs.length) throw new Error("empty");
       if (scopeId !== "world") persistAug({ ...aug, [world.id]: [...(aug[world.id] || []), ...qs] });
       setWilds({ scope: scopeId, name: scopeName, busy: false, qs, idx: 0, score: 0, ord: shuf4(), fb: null });
     } catch (e) {
-      const qs = localWildQuestions(scopeId);
-      if (qs.length) {
-        setWilds({ scope: scopeId, name: scopeName, busy: false, qs, idx: 0, score: 0, ord: shuf4(), fb: null, local: true });
-        showToast("Model episode failed; using local verifier-backed Wilds tasks.");
-      } else {
-        setWilds({ scope: scopeId, name: scopeName, busy: false, error: "Episode generation failed — check model settings, then try again.", qs: null });
-      }
+      setWilds({ scope: scopeId, name: scopeName, busy: false, error: `Episode generation failed from the model: ${e.message || "unknown error"}. Add an Anthropic key in Settings or use an environment with the Claude model bridge.`, qs: null });
     }
   };
   const answerWilds = (dispIdx) => {
@@ -3765,13 +3763,13 @@ export default function App() {
     <div style={S.app}><style>{CSS}</style><Toast /><HUD back={() => setScreen("home")} />
       <div style={{ ...S.wrap, paddingTop: 18 }}>
         <h2 style={{ fontSize: 20, fontWeight: 800, margin: "0 0 4px" }}>Model settings</h2>
-        <p style={{ color: T.inkSoft, fontSize: 13, lineHeight: 1.55 }}>Generation can run on the built-in Claude or any OpenAI-compatible endpoint. Web browsing (URL scans, Concept finder, Paper Scout, Coach) and PDFs use the Claude path; Paste-text generation and code review honor your choice.</p>
+        <p style={{ color: T.inkSoft, fontSize: 13, lineHeight: 1.55 }}>Generation can run through the Claude bridge, the Netlify Anthropic proxy, a user-supplied Anthropic key, or any OpenAI-compatible endpoint. Web browsing (URL scans, Concept finder, Paper Scout, Coach) and PDFs use the Claude path; Paste-text generation and code review honor your choice.</p>
         <div style={{ display: "flex", gap: 6, marginTop: 8 }}>
           <button onClick={() => persistCfg({ ...cfg, provider: "builtin" })} style={S.chip(cfg.provider === "builtin")}>Claude</button>
           <button onClick={() => persistCfg({ ...cfg, provider: "custom" })} style={S.chip(cfg.provider === "custom")}>Custom endpoint</button>
         </div>
         <div style={{ ...S.card, marginTop: 12 }}>
-          <span style={S.mono(10)}>ANTHROPIC API KEY (only needed OUTSIDE claude.ai — e.g. the desktop build)</span>
+          <span style={S.mono(10)}>ANTHROPIC API KEY (optional locally; Netlify can use ANTHROPIC_API_KEY server-side)</span>
           <input value={cfg.anthropicKey || ""} onChange={(e) => persistCfg({ ...cfg, anthropicKey: e.target.value })} type="password" placeholder="sk-ant-… (leave blank inside claude.ai)" style={{ ...S.input, margin: "6px 0 0" }} />
         </div>
         {cfg.provider === "custom" && (
@@ -3849,7 +3847,7 @@ export default function App() {
 
   /* ============ DOJO ============ */
   if (screen === "dojo") {
-    const fams = [["swe", "🧩 Software Engineering · Blind 75"], ["sys", "🏰 System Design"], ["torchleet", "🔥 TorchLeet · PyTorch practice"], ["ml", "🧠 ML Engineering · ranked for current interviews"], ["custom", "🌀 Your forged katas"]];
+    const fams = [["swe", "🧩 Software Engineering · Blind 75"], ["sys", "🏰 System Design"], ["ml", "🧠 ML Engineering · ranked for current interviews"], ["torchleet", "🔥 TorchLeet · PyTorch practice"], ["custom", "🌀 Your forged katas"]];
     return (
       <div style={S.app}><style>{CSS}</style><Toast /><HUD back={() => setScreen("home")} />
         <div style={{ ...S.wrap }}>

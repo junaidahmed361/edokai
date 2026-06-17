@@ -14,14 +14,15 @@ https://sprightly-paprenjak-d963a0.netlify.app/
 
 That site is the quickest way to try the current launch build: board worlds for concepts, the TorchLeet Dojo with runnable Python katas, per-world Trial Gauntlets, and the self-improving Coach loop that watches misses and forges targeted drills.
 
-The built-in Claude generation path now defaults to Claude Opus 4.8 (`claude-opus-4-8`) for higher-quality generation, coaching, imports, and review. You can still bring your own local/OpenAI-compatible model from Settings.
+The built-in Claude generation path now uses a valid Claude Opus API route (`claude-opus-4-20250514`) or the hosted Claude bridge when available, so Deepen Lore, Wilds, coaching, imports, and review are real model calls instead of local fallbacks. You can still bring your own local/OpenAI-compatible model from Settings.
 
 Launch polish added after the first public cut:
+- Netlify function proxy for Claude generation so Deepen Lore/Wilds can run on the launch site with `ANTHROPIC_API_KEY` configured server-side
 
 - dark mode for late-night study sessions
-- a Security AI Agents learning world covering post-training, agent workflows, planning research, eval rigor, inference optimization, cross-functional production, and AI field tracking
-- bundled low-volume background music from `public/audio/dbz_songs.mp3` at 10% default volume
-- Wilds now exposes world selection and falls back to local verifier-backed episodes when model generation fails
+- an Agentic Workflows lab inside the Agents world covering post-training, agent workflows, planning research, eval rigor, inference optimization, cross-functional production, and AI field tracking
+- bundled low-volume background music from `public/audio/dbz_songs.mp3` at 5% default volume
+- Wilds now exposes world selection, uses the model path directly for fresh episodes, and filters generated options to remove “longest correct answer” tells
 - Dojo coding problems now include kata-level lore, TODO-level lore, unlockable per-TODO hints, syntax-highlighted Python editors, tab completion in the editor/REPL, collapsible sections with SWE first, 75 Blind 75-style SWE drills, and an XP penalty for hints after you have already made a run/review attempt
 
 
@@ -36,8 +37,8 @@ The old `rollout-ultimate.jsx` file has also been updated with Edokai v3 brandin
 
 Verified locally:
 
-- main app file: 4,258 lines
-- Vite production build: 510.90 kB JS bundle, 155.45 kB gzip
+- main app file: 4,256 lines
+- Vite production build: 511.03 kB JS bundle, 155.43 kB gzip
 - macOS desktop package built with electron-builder
 - mac artifact: `release/Edokai-3.0.0-arm64.dmg`
 
@@ -65,8 +66,9 @@ There is also an honest acronym-disambiguation note baked into gameplay: GEPA is
 
 The 11 old flat worlds have been reorganized into 5 umbrella worlds, closer to the multi-region structure that Agentic RL already had:
 
-1. Agentic RL & Agent Systems
-   - the 6 RL regions
+1. Agents
+   - Agentic Workflows lab first
+   - the RL/post-training regions
    - orchestration content
 
 2. Transformer Architecture
