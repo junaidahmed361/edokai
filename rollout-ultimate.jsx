@@ -203,6 +203,7 @@ const applyTeachingParadigm = (w) => ({
     referenceHint: r.referenceHint || `Reference terms: ${(r.concepts || []).map((c) => c.name).join(", ")}.`,
   })),
 });
+const teachRecordId = (worldId, conceptId) => `${worldId}:${conceptId}`;
 
 async function scanUrl(url, cfg) {
   return parseJSON(await askModel(
@@ -2961,13 +2962,14 @@ export default function App() {
   const [kataAttempts, setKataAttempts] = useState(0);
   const [todoGuidance, setTodoGuidance] = useState(true);
   const [claudeCodeAuth, setClaudeCodeAuth] = useState(null);
+  const [modelTest, setModelTest] = useState(null);
 
   Object.assign(T, darkMode ? THEMES.dark : THEMES.light);
 
   useEffect(() => {
     (async () => {
-      const s = await loadStore("ru-save", { xp: 0, hp: 100, badges: [], captured: [], sides: [], katas: {}, qstats: {}, kataHints: {}, kataAttempts: {} });
-      s.sides = s.sides || []; s.katas = s.katas || {}; s.qstats = s.qstats || {}; s.kataHints = s.kataHints || {}; s.kataAttempts = s.kataAttempts || {};
+      const s = await loadStore("ru-save", { xp: 0, hp: 100, badges: [], captured: [], sides: [], katas: {}, qstats: {}, kataHints: {}, kataAttempts: {}, learningRecords: [] });
+      s.sides = s.sides || []; s.katas = s.katas || {}; s.qstats = s.qstats || {}; s.kataHints = s.kataHints || {}; s.kataAttempts = s.kataAttempts || {}; s.learningRecords = s.learningRecords || [];
       setSave(s);
       setWorlds(await loadStore("ru-worlds", []));
       setUKatas(await loadStore("ru-ukatas", []));
@@ -3029,6 +3031,43 @@ export default function App() {
   };
   const stat = (id) => (save.qstats[id] || [0, 0]);
   const recStat = (s, id, correct) => { const [a, m] = s.qstats[id] || [0, 0]; s.qstats = { ...s.qstats, [id]: [a + 1, m + (correct ? 0 : 1)] }; };
+  const recordConceptLearning = (s, c) => {
+    const id = teachRecordId(world.id, c.id);
+    if ((s.learningRecords || []).some((r) => r.id === id)) return;
+    s.learningRecords = [...(s.learningRecords || []), {
+      id,
+      worldId: world.id,
+      title: c.name,
+      summary: `Captured ${c.name}: ${c.lore.slice(0, 180)}${c.lore.length > 180 ? "…" : ""}`,
+      evidence: `Won the critical encounter in ${region.name}.`,
+      ts: Date.now(),
+    }];
+  };
+  const worldLearningRecords = (w = world) => (save.learningRecords || []).filter((r) => r.worldId === w.id);
+  const capturedConceptsFor = (w = world) => w.regions.flatMap((r) => r.concepts.map((c) => ({ ...c, regionName: r.name }))).filter((c) => capturedSet.has(c.id));
+  const testCustomModel = async () => {
+    if (!cfg.baseUrl || !cfg.model) { setModelTest({ ok: false, msg: "Set a base URL and model first." }); return; }
+    setModelTest({ ok: null, msg: "Testing model connection…" });
+    try {
+      const base = cfg.baseUrl.replace(/\/$/, "");
+      const headers = { "Content-Type": "application/json" };
+      if (cfg.apiKey) headers.Authorization = `Bearer ${cfg.apiKey}`;
+      const modelsRes = await fetch(base + "/models", { headers });
+      if (!modelsRes.ok) throw new Error(`models endpoint HTTP ${modelsRes.status}`);
+      const models = await modelsRes.json().catch(() => ({}));
+      const names = (models.data || models.models || []).map((m) => m.id || m.name || m.model).filter(Boolean);
+      const chatRes = await fetch(base + "/chat/completions", {
+        method: "POST", headers,
+        body: JSON.stringify({ model: cfg.model, max_tokens: 16, messages: [{ role: "user", content: "Reply with exactly: EDOKAI_OK" }] }),
+      });
+      const chat = await chatRes.json().catch(() => ({}));
+      if (!chatRes.ok || chat.error) throw new Error(chat.error?.message || `chat endpoint HTTP ${chatRes.status}`);
+      const out = chat.choices?.[0]?.message?.content || "";
+      setModelTest({ ok: true, msg: `Connected to ${cfg.model}${names.length ? ` · ${names.length} model(s) visible` : ""}${out ? ` · sample: ${out.slice(0, 60)}` : ""}` });
+    } catch (e) {
+      setModelTest({ ok: false, msg: `${e.message || e}. For Ollama, run: OLLAMA_ORIGINS=* ollama serve, then use http://localhost:11434/v1.` });
+    }
+  };
 
   /* ---------- battle ---------- */
   const DMG = 40, CRIT = 20;
@@ -3062,7 +3101,7 @@ export default function App() {
       const newHp = Math.max(0, battle.enemyHp - dmg);
       const won = newHp <= 0;
       if (won) {
-        if (battle.kind === "critical") { s.xp += 50; if (!capturedSet.has(battle.concept.id)) s.captured = [...s.captured, battle.concept.id]; }
+        if (battle.kind === "critical") { s.xp += 50; if (!capturedSet.has(battle.concept.id)) { s.captured = [...s.captured, battle.concept.id]; recordConceptLearning(s, battle.concept); } }
         else if (battle.kind === "side") { s.xp += 30; s.hp = Math.min(maxHp, s.hp + 25); if (!sidesSet.has(battle.side.id)) s.sides = [...s.sides, battle.side.id]; }
         else { s.xp += 150; if (!s.badges.includes(region.gym.badge)) s.badges = [...s.badges, region.gym.badge]; }
       }
@@ -3535,7 +3574,7 @@ ${QUALITY_RULES}`, cfg));
   );
   const Tabs = () => (
     <div style={{ display: "flex", gap: 6, marginTop: 14, flexWrap: "wrap" }}>
-      {[["home", "🌍 Learn"], ["dojo", "⌨️ Dojo"], ["wildspick", "🌿 Wilds"], ["coach", "🧪 Coach"], ["papers", "📡 Papers"]].map(([id, label]) => {
+      {[["home", "🌍 Learn"], ["dojo", "⌨️ Dojo"], ["wildspick", "🌿 Wilds"], ["coach", "🧪 Coach"], ["teachspace", "📚 Mission"], ["papers", "📡 Papers"]].map(([id, label]) => {
         const on = screen === id || (id === "home" && ["home", "regionlist", "region"].includes(screen));
         return <button key={id} onClick={() => setScreen(id)} style={{ ...S.btn(on ? T.ink : T.card, on ? "#fff" : T.inkSoft), border: `1px solid ${T.line}`, padding: "8px 14px", fontSize: 13 }}>{label}</button>;
       })}
@@ -3555,16 +3594,21 @@ ${QUALITY_RULES}`, cfg));
   );
   const TeachingPanel = ({ target = world, region: teachRegion = null, compact = false }) => {
     const tp = target.teaching || TEACHING_PARADIGM;
+    const records = worldLearningRecords(target).length;
+    const glossary = capturedConceptsFor(target).length;
     const chips = [
       ["🎯", compact ? "mission" : tp.mission],
       ["🔗", compact ? "resources" : (tp.resources && tp.resources.length ? `Resources: ${tp.resources.join(", ")}` : tp.resources)],
-      ["🧠", compact ? "storage strength" : tp.retention],
-      ["📚", compact ? "reference" : (teachRegion?.referenceHint || tp.reference)],
+      ["🧠", compact ? "retrieval + spacing" : tp.retention],
+      ["📚", compact ? `${glossary} glossary · ${records} records` : (teachRegion?.referenceHint || tp.reference)],
     ];
     return (
       <div style={{ ...S.card, marginTop: 10, background: darkMode ? "#101832" : "#F7F8FD" }}>
-        <span style={S.mono(10, T.explore)}>TEACHING PARADIGM · {TEACH_SOURCE}</span>
-        {!compact && <p style={{ fontSize: 12.5, color: T.inkSoft, lineHeight: 1.55, margin: "6px 0 8px" }}>Every concept world now follows mission → resource-grounded mini lesson → retrieval duel → spaced/interleaved review → reference/glossary compression.</p>}
+        <div style={{ display: "flex", justifyContent: "space-between", gap: 8, alignItems: "center" }}>
+          <span style={S.mono(10, T.explore)}>TEACH WORKSPACE · {TEACH_SOURCE}</span>
+          <button onClick={(e) => { e.stopPropagation(); setDexWorld(target.id); setScreen("teachspace"); }} style={{ ...S.chip(false), fontSize: 11, padding: "5px 9px" }}>Open mission log →</button>
+        </div>
+        {!compact && <p style={{ fontSize: 12.5, color: T.inkSoft, lineHeight: 1.55, margin: "6px 0 8px" }}>This is now stateful, not just a banner: captured concepts become glossary terms, critical wins create learning records, resources stay attached to each world, and Coach/Wilds generate retrieval practice from your misses.</p>}
         <div style={{ display: "flex", flexWrap: "wrap", gap: 6 }}>
           {chips.map(([icon, text], i) => <span key={i} style={{ ...S.mono(9.5, i === 0 ? T.action : i === 1 ? T.explore : i === 2 ? T.reward : T.gold), background: T.card, border: `1px solid ${T.line}`, borderRadius: 999, padding: "5px 9px" }}>{icon} {text}</span>)}
         </div>
@@ -3869,6 +3913,41 @@ ${QUALITY_RULES}`, cfg));
     </div>
   );
 
+  /* ============ TEACH WORKSPACE ============ */
+  if (screen === "teachspace") {
+    const teachW = allWorlds.find((w) => w.id === dexWorld) || world;
+    const tp = teachW.teaching || TEACHING_PARADIGM;
+    const glossary = capturedConceptsFor(teachW);
+    const records = worldLearningRecords(teachW);
+    return (
+      <div style={S.app}><style>{CSS}</style><Toast /><HUD back={() => setScreen("home")} />
+        <div style={{ ...S.wrap, paddingTop: 16 }}>
+          <h2 style={{ fontSize: 20, fontWeight: 800, margin: "0 0 6px" }}>📚 Teach Workspace</h2>
+          <div style={{ display: "flex", gap: 6, flexWrap: "wrap" }}>
+            {allWorlds.map((w) => <button key={w.id} onClick={() => { setDexWorld(w.id); setActiveWorld(w.id); }} style={S.chip(dexWorld === w.id)}>{w.emoji} {w.title}</button>)}
+          </div>
+          <div style={{ ...S.card, marginTop: 12 }}>
+            <span style={S.mono(10, T.action)}>MISSION.md</span>
+            <p style={{ fontSize: 13.5, lineHeight: 1.6, margin: "7px 0 0" }}>{tp.mission}</p>
+            <div style={{ marginTop: 8 }}><span style={S.mono(9.5, T.inkSoft)}>Success: explain mechanisms · answer applied scenarios · transfer ideas into code/design decisions.</span></div>
+          </div>
+          <div style={{ ...S.card, marginTop: 10 }}>
+            <span style={S.mono(10, T.explore)}>RESOURCES.md</span>
+            {(teachW.links || []).length ? teachW.links.map((l) => <div key={l.url} style={{ marginTop: 7 }}><a href={l.url} target="_blank" rel="noreferrer" style={{ color: T.explore, fontWeight: 800, fontSize: 13 }}>{l.label}</a><div style={{ fontSize: 12, color: T.inkSoft }}>Use for source-grounded lore, examples, and follow-up reading.</div></div>) : <p style={{ fontSize: 12.5, color: T.inkSoft }}>Custom worlds built from pasted text/PDFs use that source as their resource.</p>}
+          </div>
+          <div style={{ ...S.card, marginTop: 10 }}>
+            <span style={S.mono(10, T.gold)}>GLOSSARY.md · captured concepts only</span>
+            {glossary.length ? glossary.map((c) => <div key={c.id} style={{ marginTop: 9, borderTop: `1px solid ${T.line}`, paddingTop: 8 }}><b style={{ fontSize: 13.5 }}>{c.sprite} {c.name}</b><p style={{ fontSize: 12.5, color: T.inkSoft, lineHeight: 1.55, margin: "4px 0 0" }}>{c.lore.slice(0, 230)}{c.lore.length > 230 ? "…" : ""}</p></div>) : <p style={{ fontSize: 12.5, color: T.inkSoft }}>Defeat critical encounters to promote terms into the glossary. This keeps the reference layer honest: it only contains concepts you have demonstrated.</p>}
+          </div>
+          <div style={{ ...S.card, marginTop: 10 }}>
+            <span style={S.mono(10, T.reward)}>LEARNING RECORDS</span>
+            {records.length ? records.map((r) => <div key={r.id} style={{ marginTop: 9, borderTop: `1px solid ${T.line}`, paddingTop: 8 }}><b style={{ fontSize: 13.5 }}>{r.title}</b><p style={{ fontSize: 12.5, color: T.inkSoft, lineHeight: 1.55, margin: "4px 0 0" }}>{r.summary}</p><span style={S.mono(9, T.reward)}>{r.evidence}</span></div>) : <p style={{ fontSize: 12.5, color: T.inkSoft }}>Learning records appear when a critical is won. They are evidence of understanding, not a session log.</p>}
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   /* ============ CONCEPTDEX (per world) ============ */
   if (screen === "dex") {
     const dexW = allWorlds.find((w) => w.id === dexWorld) || world;
@@ -3948,7 +4027,11 @@ ${QUALITY_RULES}`, cfg));
             <input value={cfg.model} onChange={(e) => persistCfg({ ...cfg, model: e.target.value })} placeholder="llama3.1, qwen2.5-coder, gpt-4o-mini…" style={{ ...S.input, margin: "4px 0 10px" }} />
             <span style={S.mono(10)}>API KEY (blank for local)</span>
             <input value={cfg.apiKey} onChange={(e) => persistCfg({ ...cfg, apiKey: e.target.value })} type="password" placeholder="sk-…" style={{ ...S.input, margin: "4px 0 6px" }} />
-            <p style={{ fontSize: 11.5, color: T.inkSoft, lineHeight: 1.5, margin: "8px 0 0" }}>⚠️ Local endpoints need CORS enabled (e.g. <code>OLLAMA_ORIGINS=*</code>; LM Studio → enable CORS). The claude.ai sandbox may block non-Anthropic requests — the desktop build has no such limits.</p>
+            <div style={{ display: "flex", gap: 8, alignItems: "center", marginTop: 8 }}>
+              <button onClick={testCustomModel} disabled={modelTest && modelTest.ok === null} style={{ ...S.btn(T.reward), padding: "8px 12px", fontSize: 12 }}>{modelTest && modelTest.ok === null ? "Testing…" : "Test connection"}</button>
+              {modelTest && <span style={{ fontSize: 12, color: modelTest.ok ? T.reward : modelTest.ok === false ? T.penalty : T.inkSoft, lineHeight: 1.4 }}>{modelTest.msg}</span>}
+            </div>
+            <p style={{ fontSize: 11.5, color: T.inkSoft, lineHeight: 1.5, margin: "8px 0 0" }}>⚠️ Local endpoints need CORS enabled (e.g. <code>OLLAMA_ORIGINS=*</code>; LM Studio → enable CORS). The test checks <code>/models</code> and a tiny <code>/chat/completions</code> call against the selected model. The desktop build has no browser sandbox limits.</p>
           </div>
         )}
         <div style={{ ...S.card, marginTop: 12 }}>
@@ -3974,7 +4057,7 @@ ${QUALITY_RULES}`, cfg));
         <div style={{ ...S.card, marginTop: 12 }}>
           <span style={S.mono(10)}>SAVE DATA</span>
           <p style={{ fontSize: 12.5, color: T.inkSoft, margin: "6px 0 10px" }}>XP {save.xp} · {save.captured.length} concepts · {save.badges.length} badges · {Object.keys(save.katas).length} katas · telemetry on {Object.keys(save.qstats).length} topics</p>
-          <button onClick={() => { persist({ xp: 0, hp: 100, badges: [], captured: [], sides: [], katas: {}, qstats: {}, kataHints: {}, kataAttempts: {} }); persistAug({}); showToast("Save reset."); }} style={{ ...S.btn(T.penalty), padding: "8px 14px", fontSize: 12.5 }}>Reset progress</button>
+          <button onClick={() => { persist({ xp: 0, hp: 100, badges: [], captured: [], sides: [], katas: {}, qstats: {}, kataHints: {}, kataAttempts: {}, learningRecords: [] }); persistAug({}); showToast("Save reset."); }} style={{ ...S.btn(T.penalty), padding: "8px 14px", fontSize: 12.5 }}>Reset progress</button>
         </div>
       </div>
     </div>
@@ -4238,6 +4321,10 @@ ${QUALITY_RULES}`, cfg));
               {battle.kind === "critical" ? (
                 <>
                   <p style={{ fontSize: 14, lineHeight: 1.65, margin: "8px 0 0" }}>{battle.concept.lore}</p>
+                  <div style={{ marginTop: 10, padding: "10px 12px", background: T.paper, borderRadius: 10 }}>
+                    <span style={S.mono(9.5, T.explore)}>TEACH LESSON LOOP</span>
+                    <p style={{ fontSize: 12.5, color: T.inkSoft, lineHeight: 1.55, margin: "5px 0 0" }}><b>One win:</b> use {battle.concept.name} correctly in an applied scenario. <b>Storage strength:</b> answer from memory first; open notes only after you commit. A win adds this concept to your glossary and learning records.</p>
+                  </div>
                   {deepLore[battle.concept.id]
                     ? <p style={{ fontSize: 13.5, lineHeight: 1.65, margin: "10px 0 0", padding: "10px 12px", background: T.exploreSoft, borderRadius: 10 }}>🔍 {deepLore[battle.concept.id]}</p>
                     : <button onClick={() => deepenLore(battle.concept)} disabled={busy === "lore"} style={{ ...S.btn(T.card, T.explore), border: `1.5px solid ${T.explore}`, width: "100%", marginTop: 10, fontSize: 13 }}>{busy === "lore" ? "Asking the sage…" : "🔍 Deepen this lore (intuition + worked example)"}</button>}
