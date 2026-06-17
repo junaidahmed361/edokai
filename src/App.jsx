@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef, useMemo } from "react";
 
 /* ============================================================
    EDOKAI
@@ -3481,7 +3481,7 @@ ${QUALITY_RULES}`, cfg));
   const editorKeys = (e, value, setValue, onRun) => {
     const ta = e.target;
     const { selectionStart: s, selectionEnd: en } = ta;
-    const set = (v, pos) => { setValue(v); requestAnimationFrame(() => { ta.selectionStart = ta.selectionEnd = pos; }); };
+    const set = (v, pos) => { setValue(v); requestAnimationFrame(() => { ta.focus({ preventScroll: true }); ta.selectionStart = ta.selectionEnd = pos; }); };
     if ((e.metaKey || e.ctrlKey) && e.key === "Enter") { e.preventDefault(); if (onRun) onRun(); return; }
     if (e.key === "Tab" && !e.shiftKey) {
       e.preventDefault();
@@ -3528,14 +3528,18 @@ ${QUALITY_RULES}`, cfg));
     });
     return out;
   };
-  const CodeEditor = ({ value, onChange, onRun, rows = 16 }) => {
-    const preRef = useRef(null);
-    const shared = { fontFamily: "'JetBrains Mono', monospace", fontSize: 12, lineHeight: 1.55, tabSize: 4 };
-    return <div style={{ position: "relative", marginTop: 8, border: `1px solid ${T.line}`, borderRadius: 10, background: T.code, minHeight: rows * 18.6, overflow: "hidden" }}>
-      <pre ref={preRef} aria-hidden="true" style={{ ...shared, position: "absolute", inset: 0, margin: 0, padding: "11px 12px", whiteSpace: "pre-wrap", overflow: "auto", color: T.codeText, pointerEvents: "none" }}>{highlightPython(value || " ")}</pre>
-      <textarea value={value} onChange={(e) => onChange(e.target.value)} onScroll={(e) => { if (preRef.current) { preRef.current.scrollTop = e.currentTarget.scrollTop; preRef.current.scrollLeft = e.currentTarget.scrollLeft; } }} onKeyDown={(e) => { e.stopPropagation(); editorKeys(e, value, onChange, onRun); }} rows={rows} spellCheck={false} autoCapitalize="off" autoCorrect="off" style={{ ...shared, position: "relative", zIndex: 1, width: "100%", boxSizing: "border-box", border: "none", borderRadius: 10, padding: "11px 12px", resize: "vertical", background: "transparent", color: "transparent", caretColor: darkMode ? "#FFFFFF" : "#111827", outline: "none", overflow: "auto" }} />
-    </div>;
-  };
+  const CodeEditor = useMemo(() => {
+    const StableCodeEditor = ({ value, onChange, onRun, rows = 16 }) => {
+      const preRef = useRef(null);
+      const shared = { fontFamily: "'JetBrains Mono', monospace", fontSize: 12, lineHeight: 1.55, tabSize: 4 };
+      const isolate = (e) => e.stopPropagation();
+      return <div onMouseDown={isolate} onClick={isolate} style={{ position: "relative", marginTop: 8, border: `1px solid ${T.line}`, borderRadius: 10, background: T.code, minHeight: rows * 18.6, overflow: "hidden" }}>
+        <pre ref={preRef} aria-hidden="true" style={{ ...shared, position: "absolute", inset: 0, margin: 0, padding: "11px 12px", whiteSpace: "pre-wrap", overflow: "auto", color: T.codeText, pointerEvents: "none" }}>{highlightPython(value || " ")}</pre>
+        <textarea value={value} onChange={(e) => onChange(e.target.value)} onScroll={(e) => { if (preRef.current) { preRef.current.scrollTop = e.currentTarget.scrollTop; preRef.current.scrollLeft = e.currentTarget.scrollLeft; } }} onKeyDown={(e) => { e.stopPropagation(); editorKeys(e, value, onChange, onRun); }} onKeyUp={isolate} onInput={isolate} rows={rows} spellCheck={false} autoCapitalize="off" autoCorrect="off" style={{ ...shared, position: "relative", zIndex: 1, width: "100%", boxSizing: "border-box", border: "none", borderRadius: 10, padding: "11px 12px", resize: "vertical", background: "transparent", color: "transparent", caretColor: darkMode ? "#FFFFFF" : "#111827", outline: "none", overflow: "auto" }} />
+      </div>;
+    };
+    return StableCodeEditor;
+  }, [darkMode]);
 
   /* ---------- styles ---------- */
   const S = {
@@ -4184,6 +4188,7 @@ ${QUALITY_RULES}`, cfg));
                     return;
                   }
                   if (e.key !== "Enter" || !repl.trim() || busy === "lab") return;
+                  e.preventDefault();
                   const line = repl; setRepl(""); setBusy("lab");
                   setLabOut((o) => (o ? o + "\n" : "") + ">>> " + line);
                   try {
@@ -4197,7 +4202,7 @@ ${QUALITY_RULES}`, cfg));
                     setLabOut((o) => o + (out ? "\n" + out.trimEnd() : ""));
                   } catch (err) { setLabOut((o) => o + "\n⚠️ " + (err.message || err)); }
                   setBusy("");
-                }} placeholder="REPL — shares the session with ▶ Run (try: out.shape)" spellCheck={false} style={{ ...S.input, flex: 1, padding: "8px 10px", fontSize: 12 }} />
+                }} onKeyUp={(e) => e.stopPropagation()} onClick={(e) => e.stopPropagation()} placeholder="REPL — shares the session with ▶ Run (try: out.shape)" spellCheck={false} style={{ ...S.input, flex: 1, padding: "8px 10px", fontSize: 12 }} />
               </div>
             )}
             {review && <div style={{ marginTop: 10, fontSize: 13, lineHeight: 1.6, whiteSpace: "pre-wrap", padding: "10px 12px", background: T.exploreSoft, borderRadius: 10 }}>{review}</div>}
