@@ -19,8 +19,10 @@ The built-in Claude generation path now defaults to Claude Opus 4.8 (`claude-opu
 Launch polish added after the first public cut:
 
 - dark mode for late-night study sessions
-- bundled low-volume background music from `public/audio/dbz_songs.mp3`
-- Dojo coding problems now include kata-level lore, TODO-level lore, unlockable per-TODO hints, syntax-highlighted Python editors, tab completion in the editor/REPL, and an XP penalty for hints after you have already made a run/review attempt
+- a Security AI Agents learning world covering post-training, agent workflows, planning research, eval rigor, inference optimization, cross-functional production, and AI field tracking
+- bundled low-volume background music from `public/audio/dbz_songs.mp3` at 10% default volume
+- Wilds now exposes world selection and falls back to local verifier-backed episodes when model generation fails
+- Dojo coding problems now include kata-level lore, TODO-level lore, unlockable per-TODO hints, syntax-highlighted Python editors, tab completion in the editor/REPL, collapsible sections with SWE first, 75 Blind 75-style SWE drills, and an XP penalty for hints after you have already made a run/review attempt
 
 
 ## v3 status
@@ -34,8 +36,8 @@ The old `rollout-ultimate.jsx` file has also been updated with Edokai v3 brandin
 
 Verified locally:
 
-- main app file: 3,961 lines
-- Vite production build: 438.36 kB JS bundle, 147.78 kB gzip
+- main app file: 4,258 lines
+- Vite production build: 510.90 kB JS bundle, 155.45 kB gzip
 - macOS desktop package built with electron-builder
 - mac artifact: `release/Edokai-3.0.0-arm64.dmg`
 
