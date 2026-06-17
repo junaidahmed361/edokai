@@ -3065,7 +3065,7 @@ export default function App() {
       const out = chat.choices?.[0]?.message?.content || "";
       setModelTest({ ok: true, msg: `Connected to ${cfg.model}${names.length ? ` · ${names.length} model(s) visible` : ""}${out ? ` · sample: ${out.slice(0, 60)}` : ""}` });
     } catch (e) {
-      setModelTest({ ok: false, msg: `${e.message || e}. For Ollama, run: OLLAMA_ORIGINS=* ollama serve, then use http://localhost:11434/v1.` });
+      setModelTest({ ok: false, msg: `${e.message || e}. Ollama: OLLAMA_ORIGINS=* ollama serve → http://localhost:11434/v1. MLX-LM: python -m mlx_lm.server --model <model> --port 8080 → http://localhost:8080/v1.` });
     }
   };
 
@@ -4022,20 +4022,21 @@ ${QUALITY_RULES}`, cfg));
             <span style={S.mono(10)}>PRESETS</span>
             <div style={{ display: "flex", gap: 6, flexWrap: "wrap", margin: "8px 0 12px" }}>
               <button onClick={() => persistCfg({ ...cfg, baseUrl: "http://localhost:11434/v1", model: "llama3.1" })} style={S.chip(false)}>Ollama</button>
+              <button onClick={() => persistCfg({ ...cfg, baseUrl: "http://localhost:8080/v1", model: "mlx-community/Qwen2.5-Coder-7B-Instruct-4bit" })} style={S.chip(false)}>MLX-LM</button>
               <button onClick={() => persistCfg({ ...cfg, baseUrl: "http://localhost:1234/v1", model: "local-model" })} style={S.chip(false)}>LM Studio</button>
               <button onClick={() => persistCfg({ ...cfg, baseUrl: "http://localhost:8080/v1", model: "default" })} style={S.chip(false)}>llama.cpp</button>
             </div>
             <span style={S.mono(10)}>BASE URL (…/v1)</span>
-            <input value={cfg.baseUrl} onChange={(e) => persistCfg({ ...cfg, baseUrl: e.target.value })} placeholder="https://api.provider.com/v1 or http://localhost:11434/v1" style={{ ...S.input, margin: "4px 0 10px" }} />
+            <input value={cfg.baseUrl} onChange={(e) => persistCfg({ ...cfg, baseUrl: e.target.value })} placeholder="https://api.provider.com/v1, http://localhost:11434/v1, or http://localhost:8080/v1" style={{ ...S.input, margin: "4px 0 10px" }} />
             <span style={S.mono(10)}>MODEL</span>
-            <input value={cfg.model} onChange={(e) => persistCfg({ ...cfg, model: e.target.value })} placeholder="llama3.1, qwen2.5-coder, gpt-4o-mini…" style={{ ...S.input, margin: "4px 0 10px" }} />
+            <input value={cfg.model} onChange={(e) => persistCfg({ ...cfg, model: e.target.value })} placeholder="llama3.1, mlx-community/Qwen2.5-Coder-7B-Instruct-4bit, gpt-4o-mini…" style={{ ...S.input, margin: "4px 0 10px" }} />
             <span style={S.mono(10)}>API KEY (blank for local)</span>
             <input value={cfg.apiKey} onChange={(e) => persistCfg({ ...cfg, apiKey: e.target.value })} type="password" placeholder="sk-…" style={{ ...S.input, margin: "4px 0 6px" }} />
             <div style={{ display: "flex", gap: 8, alignItems: "center", marginTop: 8 }}>
               <button onClick={testCustomModel} disabled={modelTest && modelTest.ok === null} style={{ ...S.btn(T.reward), padding: "8px 12px", fontSize: 12 }}>{modelTest && modelTest.ok === null ? "Testing…" : "Test connection"}</button>
               {modelTest && <span style={{ fontSize: 12, color: modelTest.ok ? T.reward : modelTest.ok === false ? T.penalty : T.inkSoft, lineHeight: 1.4 }}>{modelTest.msg}</span>}
             </div>
-            <p style={{ fontSize: 11.5, color: T.inkSoft, lineHeight: 1.5, margin: "8px 0 0" }}>⚠️ Local endpoints need CORS enabled (e.g. <code>OLLAMA_ORIGINS=*</code>; LM Studio → enable CORS). The test checks <code>/models</code> and a tiny <code>/chat/completions</code> call against the selected model. The desktop build has no browser sandbox limits.</p>
+            <p style={{ fontSize: 11.5, color: T.inkSoft, lineHeight: 1.5, margin: "8px 0 0" }}>⚠️ Local endpoints need CORS enabled in browser builds. Ollama: <code>OLLAMA_ORIGINS=* ollama serve</code>. MLX-LM: <code>python -m mlx_lm.server --model mlx-community/Qwen2.5-Coder-7B-Instruct-4bit --host 127.0.0.1 --port 8080</code>, then use <code>http://localhost:8080/v1</code>. The test checks <code>/models</code> and a tiny <code>/chat/completions</code> call against the selected model. The desktop build has no browser sandbox limits.</p>
           </div>
         )}
         <div style={{ ...S.card, marginTop: 12 }}>
