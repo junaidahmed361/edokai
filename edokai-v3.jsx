@@ -1419,6 +1419,79 @@ const BUILTIN_WORLDS = [
 /* ============================================================
    CODE LAB — runnable starters & tests (Pyodide: python+numpy)
    ============================================================ */
+
+const SWE_PATTERN_HINTS = {
+  arrays: "Array/hash-map problems ask you to maintain a compact fact while scanning: seen values, best-so-far, prefix state, or two moving indices.",
+  strings: "String problems usually turn characters into counts, windows, stacks, or normalized keys so equality and constraints become cheap checks.",
+  "linked lists": "Linked-list problems are pointer choreography: preserve the next node before rewiring, and keep a dummy or slow/fast pointer when edges get awkward.",
+  trees: "Tree problems ask what each node returns upward: a boolean, depth, path score, serialized token, or bounded min/max invariant.",
+  graphs: "Graph problems are about state exploration: define nodes, edges, visited state, and whether BFS/DFS/toposort/union-find owns the invariant.",
+  "intervals/matrices": "Interval and matrix problems reward ordering: sort/scan ranges, or flood/search grids from the right frontier so repeated work disappears.",
+  dp: "Dynamic programming problems need a state definition, a recurrence, base cases, and an iteration order that guarantees dependencies are ready.",
+  binary: "Bit/binary-search problems shrink uncertainty: each comparison or bit operation should discard impossible states while preserving the answer.",
+};
+const SWE_IO_EXAMPLES = {
+  "Two Sum": "nums=[2,7,11,15], target=9 → [0,1]; nums=[3,2,4], target=6 → [1,2]",
+  "Longest Substring": "s='abcabcbb' → 3; s='bbbbb' → 1; s='' → 0",
+  "Best Time to Buy and Sell Stock": "prices=[7,1,5,3,6,4] → 5; prices=[7,6,4,3,1] → 0",
+  "Contains Duplicate": "nums=[1,2,3,1] → true; nums=[1,2,3,4] → false",
+  "Product of Array Except Self": "nums=[1,2,3,4] → [24,12,8,6]; nums=[-1,1,0,-3,3] → [0,0,9,0,0]",
+  "Maximum Subarray": "nums=[-2,1,-3,4,-1,2,1,-5,4] → 6; nums=[1] → 1",
+  "Maximum Product Subarray": "nums=[2,3,-2,4] → 6; nums=[-2,0,-1] → 0",
+  "Find Minimum in Rotated Sorted Array": "nums=[3,4,5,1,2] → 1; nums=[4,5,6,7,0,1,2] → 0",
+  "Search in Rotated Sorted Array": "nums=[4,5,6,7,0,1,2], target=0 → 4; target=3 → -1",
+  "3Sum": "nums=[-1,0,1,2,-1,-4] → [[-1,-1,2],[-1,0,1]]; nums=[0,0,0] → [[0,0,0]]",
+  "Container With Most Water": "height=[1,8,6,2,5,4,8,3,7] → 49; height=[1,1] → 1",
+  "Valid Parentheses": "s='()[]{}' → true; s='(]' → false; s='([)]' → false",
+  "Valid Anagram": "s='anagram', t='nagaram' → true; s='rat', t='car' → false",
+  "Group Anagrams": "['eat','tea','tan','ate','nat','bat'] → groups for aet/ant/abt",
+  "Minimum Window Substring": "s='ADOBECODEBANC', t='ABC' → 'BANC'; s='a', t='aa' → ''",
+  "Valid Palindrome": "s='A man, a plan, a canal: Panama' → true; s='race a car' → false",
+  "Reverse Linked List": "1→2→3→4→5 → 5→4→3→2→1; empty list → empty",
+  "Merge Two Sorted Lists": "1→2→4 and 1→3→4 → 1→1→2→3→4→4",
+  "Number of Islands": "grid with three separated land masses → 3; all water → 0",
+  "Climbing Stairs": "n=2 → 2; n=3 → 3; n=5 → 8",
+  "Coin Change": "coins=[1,2,5], amount=11 → 3; coins=[2], amount=3 → -1",
+};
+function sweCategory(k) {
+  const text = `${k.title || ""} ${k.blurb || ""}`.toLowerCase();
+  for (const cat of ["arrays", "strings", "linked lists", "trees", "graphs", "intervals/matrices", "dp", "binary"]) if (text.includes(cat)) return cat;
+  if (/tree|bst|trie/.test(text)) return "trees";
+  if (/graph|island|course|alien|component|clone/.test(text)) return "graphs";
+  if (/string|substring|anagram|palindrome|parentheses/.test(text)) return "strings";
+  if (/list|node/.test(text)) return "linked lists";
+  if (/interval|matrix|meeting|rotate image|spiral|set matrix/.test(text)) return "intervals/matrices";
+  if (/climb|coin|word break|decode|lis|partition|dp/.test(text)) return "dp";
+  if (/bits|binary|sum of two integers|missing number|reverse bits/.test(text)) return "binary";
+  return "arrays";
+}
+function cleanBlindTitle(title) { return String(title || "Kata").replace(/\s*\(Blind 75 #\d+\)\s*/g, "").trim(); }
+function sweIo(k) {
+  const base = cleanBlindTitle(k.title);
+  return SWE_IO_EXAMPLES[base] || "Use the canonical Blind 75 examples: include a normal case, an edge case, and a minimal input; write the expected output before coding so the invariant has something concrete to satisfy.";
+}
+function sweStarter(k, guided = true) {
+  const title = cleanBlindTitle(k.title);
+  const fn = title.toLowerCase().replace(/[^a-z0-9]+/g, "_").replace(/^_|_$/g, "") || "solve";
+  if (!guided) return `def ${fn}(*args):\n    pass\n`;
+  return `def ${fn}(*args):\n    # TODO 1: parse/name the inputs for ${title}; write down the return shape before coding.\n    # TODO 2: choose the core pattern (hash map, two pointers, stack, BFS/DFS, heap, binary search, or DP).\n    # TODO 3: maintain the invariant each loop/recursive call; update only the minimal state needed.\n    # TODO 4: handle edge cases from the test I/O card, then return the expected value.\n    pass\n`;
+}
+function enrichSWEKata(k) {
+  if (!k || k.family !== "swe") return k;
+  const cat = sweCategory(k), title = cleanBlindTitle(k.title), io = k.testIo || sweIo(k);
+  const lore = k.lore || `${title} should turn the problem statement into a precise input→output contract, then use the ${cat} pattern to preserve one invariant until the answer is forced. ${SWE_PATTERN_HINTS[cat] || SWE_PATTERN_HINTS.arrays} The point is not to memorize the final code; it is to recognize what state must stay true after every step.`;
+  const testLore = `Test I/O to satisfy: ${io}`;
+  const steps = (k.steps && k.steps.length ? k.steps : [
+    { prompt: `Define the input/output contract for ${title}.`, lore: testLore, hint: "Start by writing one concrete example and the exact return value before touching the algorithm.", code: "# TODO: write the function signature and expected return type" },
+    { prompt: `Choose the core ${cat} invariant.`, lore: SWE_PATTERN_HINTS[cat] || SWE_PATTERN_HINTS.arrays, hint: "Name the state that makes each new element/node/cell locally checkable.", code: "# TODO: name the state variables that will stay true after every step" },
+    { prompt: `Implement and verify ${title}.`, lore: `Run against: ${io}`, hint: "Handle the smallest input, the ordinary example, and the awkward edge case before optimizing.", code: "# TODO: fill the loop/recursion and return the checked result" },
+  ]).map((s, i) => ({ ...s, lore: s.lore || (i === 0 ? testLore : (SWE_PATTERN_HINTS[cat] || SWE_PATTERN_HINTS.arrays)), hint: s.hint || s.why || "Use the test I/O card to decide what state must change on this line." }));
+  return { ...k, lore, testIo: io, steps, starter: k.starter && k.starter.includes("TODO") ? k.starter : sweStarter(k, true), unguidedStarter: k.unguidedStarter || sweStarter(k, false) };
+}
+function stripGuidance(code) {
+  return String(code || "").split("\n").filter((line) => !/TODO|YOUR CODE|Sketch the canonical|write the invariant/i.test(line)).join("\n").replace(/\n{3,}/g, "\n\n").trimEnd() + "\n";
+}
+
 const LABS = {
   "k-selfattn": { needs: "numpy",
     starter: `import numpy as np\n\ndef softmax(x, axis=-1):\n    e = np.exp(x - x.max(axis=axis, keepdims=True))\n    return e / e.sum(axis=axis, keepdims=True)\n\ndef self_attention(X, W_q, W_k, W_v):\n    # YOUR CODE: Q,K,V projections, scaled scores, softmax, weighted sum\n    pass\n`,
@@ -1430,10 +1503,10 @@ const LABS = {
     starter: `import numpy as np\n\ndef softmax(x):\n    e = np.exp(x - x.max(-1, keepdims=True)); return e/e.sum(-1, keepdims=True)\n\ndef attn_forward(Q, K, V):\n    # return out, cache\n    pass\n\ndef attn_backward(dO, cache):\n    # return dQ, dK, dV\n    pass\n`,
     test: `\nnp.random.seed(2)\nQ,K,V = (np.random.randn(4,6) for _ in range(3))\nO, cache = attn_forward(Q,K,V)\ndQ,dK,dV = attn_backward(np.ones_like(O), cache)\neps=1e-5; Qp=Q.copy(); Qp[0,0]+=eps; O1,_=attn_forward(Qp,K,V)\nQp[0,0]-=2*eps; O2,_=attn_forward(Qp,K,V)\nnum=(O1.sum()-O2.sum())/(2*eps)\nassert abs(num-dQ[0,0])<1e-4, f"dQ check failed: {num} vs {dQ[0,0]}"\nprint("ALL TESTS PASSED ✓ (numeric dQ check)")\n` },
   "k-twosum": { needs: null,
-    starter: `def two_sum(nums, target):\n    # one pass, hash map\n    pass\n`,
+    starter: `def two_sum(nums, target):\n    # TODO 1: create a hash map from value -> index for numbers already seen.\n    # TODO 2: for each num, compute complement = target - num.\n    # TODO 3: if complement was seen, return [seen[complement], current_index].\n    # TODO 4: otherwise store the current num and keep scanning; return [] if none.\n    pass\n`,
     test: `\nassert two_sum([2,7,11,15], 9) == [0,1]\nassert two_sum([3,2,4], 6) == [1,2]\nassert two_sum([3,3], 6) == [0,1]\nassert two_sum([1,2], 99) == []\nprint("ALL TESTS PASSED ✓")\n` },
   "k-slidewin": { needs: null,
-    starter: `def longest_substring(s):\n    # sliding window over a set\n    pass\n`,
+    starter: `def longest_substring(s):\n    # TODO 1: keep a left pointer and a set/dict of characters in the current window.\n    # TODO 2: move right through the string one character at a time.\n    # TODO 3: while the new character duplicates the window, advance left until valid.\n    # TODO 4: update the best window length after the invariant is restored.\n    pass\n`,
     test: `\nassert longest_substring("abcabcbb") == 3\nassert longest_substring("bbbbb") == 1\nassert longest_substring("pwwkew") == 3\nassert longest_substring("") == 0\nprint("ALL TESTS PASSED ✓")\n` },
   "tl-bpe": { needs: null,
     starter: `def get_pair_counts(tokens):
@@ -2854,6 +2927,7 @@ export default function App() {
   const [darkMode, setDarkMode] = useState(false);
   const [dojoOpen, setDojoOpen] = useState({ swe: true, torchleet: true, ml: true, sys: true, custom: true });
   const [kataAttempts, setKataAttempts] = useState(0);
+  const [todoGuidance, setTodoGuidance] = useState(true);
 
   Object.assign(T, darkMode ? THEMES.dark : THEMES.light);
 
@@ -2867,6 +2941,7 @@ export default function App() {
       setAug(await loadStore("ru-aug", {}));
       setDeepLore(await loadStore("ru-lore", {}));
       const c = await loadStore("ru-cfg", { provider: "builtin", baseUrl: "", apiKey: "", model: "", anthropicKey: "", darkMode: false });
+      if (!c.anthropicKey && typeof window !== "undefined" && window.edokaiAuth && window.edokaiAuth.anthropicKey) c.anthropicKey = window.edokaiAuth.anthropicKey;
       setCfg(c); setDarkMode(!!c.darkMode); GLOBAL_KEY = c.anthropicKey || "";
     })();
   }, []);
@@ -2907,7 +2982,7 @@ export default function App() {
   const maxHp = 100 + (level - 1) * 10;
   const capturedSet = new Set(save ? save.captured : []);
   const sidesSet = new Set(save ? save.sides : []);
-  const allKatas = [...KATAS, ...BLIND75_EXTRA, ...TORCHLEET, ...uKatas];
+  const allKatas = [...KATAS, ...BLIND75_EXTRA, ...TORCHLEET, ...uKatas].map(enrichSWEKata);
   const conceptName = (id) => {
     for (const w of allWorlds) for (const r of w.regions) {
       const c = r.concepts.find((x) => x.id === id); if (c) return c.name;
@@ -3231,7 +3306,9 @@ ${QUALITY_RULES}`, cfg));
     setKPhase("work"); setKFeedback(null); setKOrd(shuf4()); setReview("");
     setKataAttempts((save.kataAttempts && save.kataAttempts[k.id]) || 0);
     setMyCode("");   // showSol flag rides in myCode? no — dedicated state below
-    setLabCode(LABS[k.id] ? LABS[k.id].starter : (k.starter || "# paste or write your attempt here\n"));
+    const ek = enrichSWEKata(k);
+    const starter = LABS[k.id] ? LABS[k.id].starter : (todoGuidance ? (ek.starter || "# paste or write your attempt here\n") : (ek.unguidedStarter || stripGuidance(ek.starter || "# paste or write your attempt here\n")));
+    setLabCode(starter);
     setLabOut("");
     setScreen("kata");
   };
@@ -3904,15 +3981,20 @@ ${QUALITY_RULES}`, cfg));
           <div style={{ ...S.card, marginBottom: 10, background: darkMode ? "#101832" : "#F7F8FD" }}>
             <span style={S.mono(10, T.explore)}>DOJO LORE — WHY THIS KATA MATTERS</span>
             <p style={{ fontSize: 13.5, color: T.inkSoft, lineHeight: 1.65, margin: "8px 0 0" }}>{kataLore(kata)}</p>
+            {kata.family === "swe" && <div style={{ marginTop: 8, padding: "8px 10px", borderRadius: 10, background: T.card, border: `1px solid ${T.line}` }}><span style={S.mono(9, T.reward)}>TEST INPUTS → EXPECTED OUTPUTS</span><div style={{ fontSize: 12.5, color: T.ink, lineHeight: 1.55, marginTop: 4 }}>{kata.testIo || sweIo(kata)}</div></div>}
             <p style={{ fontSize: 12, color: T.inkSoft, lineHeight: 1.5, margin: "8px 0 0" }}>Attempt counter: <b>{(save.kataAttempts && save.kataAttempts[kata.id]) || kataAttempts || 0}</b>. TODO hints are free before your first run/review; after that, each newly revealed hint costs 5 XP.</p>
           </div>
 
           {/* WORKSPACE — the primary surface */}
           <div style={S.card}>
-            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-              <span style={S.mono(10, T.action)}>⌨️ WORKSPACE — fill the TODOs</span>
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: 8 }}>
+              <span style={S.mono(10, T.action)}>⌨️ WORKSPACE — {todoGuidance ? "fill the TODOs" : "less-guided blank slate"}</span>
               <span style={S.mono(9)}>{lab ? "runs in-browser (Pyodide)" : "PyTorch — run locally, review here"}</span>
             </div>
+            {kata.family === "swe" && <div style={{ display: "flex", gap: 8, marginTop: 8, alignItems: "center", flexWrap: "wrap" }}>
+              <button onClick={() => { const next = !todoGuidance; setTodoGuidance(next); const ek = enrichSWEKata(kata); setLabCode(next ? (LABS[kata.id]?.starter || ek.starter || labCode) : (ek.unguidedStarter || stripGuidance(labCode))); }} style={S.chip(todoGuidance)}>{todoGuidance ? "🧭 TODO guidance on" : "🧭 TODO guidance off"}</button>
+              <span style={S.mono(9)}>Toggle off removes scaffold comments for a more interview-like attempt.</span>
+            </div>}
             <CodeEditor value={labCode} onChange={setLabCode} onRun={lab ? () => runLab(false) : null} rows={16} />
             <span style={S.mono(8.5)}>syntax-highlighted Python · TAB completes/indents · SHIFT+TAB dedents · ENTER auto-indents · {navigator.platform && navigator.platform.includes("Mac") ? "⌘" : "CTRL"}+ENTER runs</span>
             <div style={{ display: "flex", gap: 8, marginTop: 8, flexWrap: "wrap" }}>

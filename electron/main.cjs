@@ -8,7 +8,10 @@ function createWindow() {
     minWidth: 420,
     title: "Edokai",
     backgroundColor: "#EBEFF6",
-    webPreferences: { contextIsolation: true },
+    webPreferences: {
+      contextIsolation: true,
+      preload: path.join(__dirname, "preload.cjs"),
+    },
   });
   win.removeMenu();
   win.loadFile(path.join(__dirname, "..", "dist", "index.html"));

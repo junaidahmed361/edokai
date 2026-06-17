@@ -23,7 +23,7 @@ Launch polish added after the first public cut:
 - an Agentic Workflows lab inside the Agents world covering post-training, agent workflows, planning research, eval rigor, inference optimization, cross-functional production, and AI field tracking
 - bundled low-volume background music from `public/audio/dbz_songs.mp3` at 5% default volume
 - Wilds now exposes world selection, uses the model path directly for fresh episodes, and filters generated options to remove “longest correct answer” tells
-- Dojo coding problems now include kata-level lore, TODO-level lore, unlockable per-TODO hints, syntax-highlighted Python editors, tab completion in the editor/REPL, collapsible sections with SWE first, 75 Blind 75-style SWE drills, and an XP penalty for hints after you have already made a run/review attempt
+- Dojo coding problems now include kata-level lore, SWE test input/output cards, TODO-level lore, unlockable per-TODO hints, syntax-highlighted Python editors, tab completion in the editor/REPL, collapsible sections with SWE first, 75 Blind 75-style SWE drills, a TODO-guidance toggle for less-guided practice, and an XP penalty for hints after you have already made a run/review attempt
 
 
 ## v3 status
@@ -37,8 +37,8 @@ The old `rollout-ultimate.jsx` file has also been updated with Edokai v3 brandin
 
 Verified locally:
 
-- main app file: 4,256 lines
-- Vite production build: 511.03 kB JS bundle, 155.43 kB gzip
+- main app file: 4,338 lines
+- Vite production build: 518.65 kB JS bundle, 158.52 kB gzip
 - macOS desktop package built with electron-builder
 - mac artifact: `release/Edokai-3.0.0-arm64.dmg`
 
