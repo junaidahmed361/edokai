@@ -1,9 +1,522 @@
 {
   "schema_version": 1,
-  "updated_at": null,
-  "sources": {},
-  "nodes": {},
-  "edges": [],
-  "open_questions": [],
-  "run_history": []
+  "updated_at": "2026-06-28T02:12:39Z",
+  "sources": {
+    "hf-space-trl-distillation-trainer-2026": {
+      "id": "hf-space-trl-distillation-trainer-2026",
+      "url": "https://huggingface.co/spaces/HuggingFaceTB/trl-distillation-trainer",
+      "title": "Distilling 100B+ Models 40x Faster with TRL",
+      "source_type": "huggingface-space-research-article",
+      "authors": [
+        "Carlos Miguel Patiño",
+        "Kashif Rasul",
+        "Edward Beeching",
+        "Lewis Tunstall"
+      ],
+      "published": "2026-04-12",
+      "discovered_at": "2026-06-28T02:12:39Z",
+      "last_read_at": "2026-06-28T02:12:39Z",
+      "provenance": [
+        "Primary Space page metadata and app/src/content/article.mdx raw content from Hugging Face Space.",
+        "Article states TRL supports on-policy distillation with 100B+ parameter teacher models and trains up to 40x faster using generation buffer, batched teacher-server requests, and binary logprob encoding."
+      ],
+      "confidence": 0.96
+    },
+    "hf-space-api-trl-distillation-trainer-2026": {
+      "id": "hf-space-api-trl-distillation-trainer-2026",
+      "url": "https://huggingface.co/api/spaces/HuggingFaceTB/trl-distillation-trainer",
+      "title": "Hugging Face Space API metadata for HuggingFaceTB/trl-distillation-trainer",
+      "source_type": "metadata-api",
+      "authors": [
+        "HuggingFaceTB"
+      ],
+      "published": null,
+      "discovered_at": "2026-06-28T02:12:39Z",
+      "last_read_at": "2026-06-28T02:12:39Z",
+      "provenance": [
+        "API metadata reports public Docker Space, running status, lastModified 2026-04-14T15:45:44.000Z, and linked models including HuggingFaceTB/SmolLM3-3B and Llama 3.x models."
+      ],
+      "confidence": 0.92
+    },
+    "trl-distillation-trainer-docs-2026": {
+      "id": "trl-distillation-trainer-docs-2026",
+      "url": "https://huggingface.co/docs/trl/distillation_trainer",
+      "title": "TRL Distillation Trainer documentation",
+      "source_type": "documentation",
+      "authors": [
+        "Hugging Face"
+      ],
+      "published": null,
+      "discovered_at": "2026-06-28T02:12:39Z",
+      "last_read_at": "2026-06-28T02:12:39Z",
+      "provenance": [
+        "Docs describe DistillationTrainer under trl.experimental.distillation, DistillationConfig options lmbda, beta, loss_top_k, external teacher server support, generation buffer, and binary-encoded logprob payloads."
+      ],
+      "confidence": 0.9
+    },
+    "trl-distillation-bibliography-2026": {
+      "id": "trl-distillation-bibliography-2026",
+      "url": "https://huggingface.co/spaces/HuggingFaceTB/trl-distillation-trainer/raw/main/app/src/content/bibliography.bib",
+      "title": "Bibliography for Distilling 100B+ Models 40x Faster with TRL",
+      "source_type": "bibliography",
+      "authors": [
+        "HuggingFaceTB"
+      ],
+      "published": null,
+      "discovered_at": "2026-06-28T02:12:39Z",
+      "last_read_at": "2026-06-28T02:12:39Z",
+      "provenance": [
+        "BibTeX entries cite GKD arXiv:2306.13649, GOLD Hugging Face Space, Thinking Machines on-policy distillation blog, teacher-assistant distillation arXiv:1902.03393, and reasoning distillation arXiv:2501.16937."
+      ],
+      "confidence": 0.9
+    }
+  },
+  "nodes": {
+    "distilling-100b-models-40x-faster-with-trl": {
+      "id": "distilling-100b-models-40x-faster-with-trl",
+      "label": "Distilling 100B+ Models 40x Faster with TRL",
+      "type": "paper",
+      "summary": "Hugging Face research article/Space presenting TRL on-policy distillation for 100B+ teacher models, centered on generation buffering, batched vLLM teacher-server logprob requests, and binary logprob payload encoding.",
+      "aliases": [
+        "TRL distillation article",
+        "trl-distillation-trainer Space"
+      ],
+      "source_ids": [
+        "hf-space-trl-distillation-trainer-2026",
+        "hf-space-api-trl-distillation-trainer-2026"
+      ],
+      "confidence": 0.96,
+      "first_seen": "2026-06-28T02:12:39Z",
+      "last_seen": "2026-06-28T02:12:39Z",
+      "world_hint": "generative-models"
+    },
+    "trl-distillation-trainer": {
+      "id": "trl-distillation-trainer",
+      "label": "TRL DistillationTrainer",
+      "type": "implementation",
+      "summary": "Experimental TRL trainer imported from trl.experimental.distillation for distilling teacher language models into student models with configurable on/off-policy data, KL/JSD-style loss settings, vLLM rollout generation, and optional external teacher server support.",
+      "aliases": [
+        "DistillationTrainer",
+        "TRL experimental distillation trainer"
+      ],
+      "source_ids": [
+        "hf-space-trl-distillation-trainer-2026",
+        "trl-distillation-trainer-docs-2026"
+      ],
+      "confidence": 0.94,
+      "first_seen": "2026-06-28T02:12:39Z",
+      "last_seen": "2026-06-28T02:12:39Z",
+      "world_hint": "llm-systems-serving"
+    },
+    "on-policy-distillation": {
+      "id": "on-policy-distillation",
+      "label": "On-policy distillation",
+      "type": "method",
+      "summary": "Distillation setup where the student generates its own rollouts during training while the teacher scores those exact rollouts with log-probabilities, letting the student learn from self-generated mistakes instead of only imitating teacher trajectories.",
+      "aliases": [
+        "student-generated distillation",
+        "GKD-style on-policy distillation"
+      ],
+      "source_ids": [
+        "hf-space-trl-distillation-trainer-2026",
+        "trl-distillation-trainer-docs-2026",
+        "trl-distillation-bibliography-2026"
+      ],
+      "confidence": 0.96,
+      "first_seen": "2026-06-28T02:12:39Z",
+      "last_seen": "2026-06-28T02:12:39Z",
+      "world_hint": "generative-models"
+    },
+    "off-policy-distillation": {
+      "id": "off-policy-distillation",
+      "label": "Off-policy distillation",
+      "type": "method",
+      "summary": "Distillation setup where a teacher generates completions for prompts and the student trains on those teacher-generated trajectories, using hard generated tokens or soft teacher output distributions.",
+      "aliases": [
+        "teacher-generated trajectory distillation"
+      ],
+      "source_ids": [
+        "hf-space-trl-distillation-trainer-2026"
+      ],
+      "confidence": 0.94,
+      "first_seen": "2026-06-28T02:12:39Z",
+      "last_seen": "2026-06-28T02:12:39Z",
+      "world_hint": "generative-models"
+    },
+    "generation-buffer": {
+      "id": "generation-buffer",
+      "label": "Generation buffer",
+      "type": "method",
+      "summary": "Throughput optimization that accumulates prompts across a gradient-accumulation window, generates student rollouts in one larger vLLM batch, then consumes buffered rollouts through sequential forward/backward training steps without changing the policy before the optimizer step.",
+      "aliases": [
+        "rollout generation buffer",
+        "gradient-accumulation generation batching"
+      ],
+      "source_ids": [
+        "hf-space-trl-distillation-trainer-2026",
+        "trl-distillation-trainer-docs-2026"
+      ],
+      "confidence": 0.95,
+      "first_seen": "2026-06-28T02:12:39Z",
+      "last_seen": "2026-06-28T02:12:39Z",
+      "world_hint": "llm-systems-serving"
+    },
+    "teacher-server-logprob-serving": {
+      "id": "teacher-server-logprob-serving",
+      "label": "Teacher-server logprob serving",
+      "type": "system",
+      "summary": "External vLLM teacher server pattern where training workers query a large teacher model for token-level log-probabilities, enabling 100B+ teachers that cannot be colocated with student training GPUs.",
+      "aliases": [
+        "external teacher server",
+        "vLLM teacher server"
+      ],
+      "source_ids": [
+        "hf-space-trl-distillation-trainer-2026",
+        "trl-distillation-trainer-docs-2026"
+      ],
+      "confidence": 0.94,
+      "first_seen": "2026-06-28T02:12:39Z",
+      "last_seen": "2026-06-28T02:12:39Z",
+      "world_hint": "llm-systems-serving"
+    },
+    "request-batching-for-teacher-logprobs": {
+      "id": "request-batching-for-teacher-logprobs",
+      "label": "Request batching for teacher logprobs",
+      "type": "method",
+      "summary": "Server-side batching layer that queues concurrent worker requests for a few milliseconds or until sequence/token limits are reached, combines them into one vLLM call, and splits results back to workers, reducing tail latency by about 10x in the article's setup.",
+      "aliases": [
+        "teacher request batching",
+        "asyncio queue teacher batching"
+      ],
+      "source_ids": [
+        "hf-space-trl-distillation-trainer-2026"
+      ],
+      "confidence": 0.94,
+      "first_seen": "2026-06-28T02:12:39Z",
+      "last_seen": "2026-06-28T02:12:39Z",
+      "world_hint": "llm-systems-serving"
+    },
+    "binary-logprob-encoding": {
+      "id": "binary-logprob-encoding",
+      "label": "Binary logprob encoding",
+      "type": "method",
+      "summary": "Payload optimization that packs top-k log-probabilities and token IDs into preallocated NumPy arrays shaped (batch, max_completion_len, top_k), base64-encodes them for JSON transport, and avoids nested list/Pydantic overhead.",
+      "aliases": [
+        "base64 NumPy logprob payloads",
+        "binary-encoded logprobs"
+      ],
+      "source_ids": [
+        "hf-space-trl-distillation-trainer-2026",
+        "trl-distillation-trainer-docs-2026"
+      ],
+      "confidence": 0.95,
+      "first_seen": "2026-06-28T02:12:39Z",
+      "last_seen": "2026-06-28T02:12:39Z",
+      "world_hint": "llm-systems-serving"
+    },
+    "top-k-kl-approximation": {
+      "id": "top-k-kl-approximation",
+      "label": "Top-k KL approximation",
+      "type": "method",
+      "summary": "Approximation that computes distillation divergence over only the highest-probability token IDs at each step because full-vocabulary logprob comparison can require massive tensors, e.g. about 150 million log-probabilities for a 1k-token Qwen sample with a 150k vocabulary.",
+      "aliases": [
+        "loss_top_k",
+        "top-k logprob loss"
+      ],
+      "source_ids": [
+        "hf-space-trl-distillation-trainer-2026",
+        "trl-distillation-trainer-docs-2026"
+      ],
+      "confidence": 0.95,
+      "first_seen": "2026-06-28T02:12:39Z",
+      "last_seen": "2026-06-28T02:12:39Z",
+      "world_hint": "transformer-architecture"
+    },
+    "forward-kl-divergence": {
+      "id": "forward-kl-divergence",
+      "label": "Forward KL divergence",
+      "type": "concept",
+      "summary": "Divergence direction used in distillation where the teacher distribution is treated as the reference; with top-k approximation, the compared token IDs are selected from the teacher's highest log-probabilities.",
+      "aliases": [
+        "KL(p||q) teacher-reference loss"
+      ],
+      "source_ids": [
+        "hf-space-trl-distillation-trainer-2026",
+        "trl-distillation-bibliography-2026"
+      ],
+      "confidence": 0.91,
+      "first_seen": "2026-06-28T02:12:39Z",
+      "last_seen": "2026-06-28T02:12:39Z",
+      "world_hint": "generative-models"
+    },
+    "reverse-kl-divergence": {
+      "id": "reverse-kl-divergence",
+      "label": "Reverse KL divergence",
+      "type": "concept",
+      "summary": "Divergence direction used in distillation that focuses on student log-probabilities; with top-k approximation, the compared token IDs are selected from the student's highest log-probabilities.",
+      "aliases": [
+        "KL(q||p) student-focused loss"
+      ],
+      "source_ids": [
+        "hf-space-trl-distillation-trainer-2026",
+        "trl-distillation-trainer-docs-2026",
+        "trl-distillation-bibliography-2026"
+      ],
+      "confidence": 0.91,
+      "first_seen": "2026-06-28T02:12:39Z",
+      "last_seen": "2026-06-28T02:12:39Z",
+      "world_hint": "generative-models"
+    },
+    "capacity-gap-in-distillation": {
+      "id": "capacity-gap-in-distillation",
+      "label": "Capacity gap in distillation",
+      "type": "concept",
+      "summary": "Observed limitation where a much larger teacher does not always yield proportionally better students because the smaller student may not absorb all additional teacher capability; the article reports similar AIME25 distilled-student levels from 30B and 235B Qwen teachers and a GPQA drop with the 235B teacher after step 40.",
+      "aliases": [
+        "teacher-student capacity gap"
+      ],
+      "source_ids": [
+        "hf-space-trl-distillation-trainer-2026",
+        "trl-distillation-bibliography-2026"
+      ],
+      "confidence": 0.9,
+      "first_seen": "2026-06-28T02:12:39Z",
+      "last_seen": "2026-06-28T02:12:39Z",
+      "world_hint": "generative-models"
+    },
+    "domain-specific-reasoning-distillation": {
+      "id": "domain-specific-reasoning-distillation",
+      "label": "Domain-specific reasoning distillation",
+      "type": "method",
+      "summary": "Using distillation to transfer targeted capabilities such as bushcraft/survival behavior or math reasoning from larger teachers into smaller deployable students, including experiments with Gemma 4 and Qwen3 teachers/students.",
+      "aliases": [
+        "specialized small-model distillation",
+        "reasoning skill transfer"
+      ],
+      "source_ids": [
+        "hf-space-trl-distillation-trainer-2026"
+      ],
+      "confidence": 0.9,
+      "first_seen": "2026-06-28T02:12:39Z",
+      "last_seen": "2026-06-28T02:12:39Z",
+      "world_hint": "generative-models"
+    },
+    "vllm-batched-inference-engine": {
+      "id": "vllm-batched-inference-engine",
+      "label": "vLLM batched inference engine",
+      "type": "system",
+      "summary": "Inference engine used for efficient student rollout generation and external teacher logprob serving; the article's optimizations are framed around recovering vLLM batching efficiency during training and teacher-server requests.",
+      "aliases": [
+        "vLLM"
+      ],
+      "source_ids": [
+        "hf-space-trl-distillation-trainer-2026",
+        "trl-distillation-trainer-docs-2026"
+      ],
+      "confidence": 0.92,
+      "first_seen": "2026-06-28T02:12:39Z",
+      "last_seen": "2026-06-28T02:12:39Z",
+      "world_hint": "llm-systems-serving"
+    },
+    "qwen3-235b-teacher-distillation": {
+      "id": "qwen3-235b-teacher-distillation",
+      "label": "Qwen3 235B teacher distillation",
+      "type": "system",
+      "summary": "Example large-teacher setup using Qwen/Qwen3-235B-A22B-Instruct-2507 as a teacher to distill capabilities into Qwen/Qwen3-4B, motivated by moving behavior from a model requiring roughly 400GB memory into a much smaller deployable student.",
+      "aliases": [
+        "Qwen/Qwen3-235B-A22B-Instruct-2507 teacher",
+        "Qwen3 235B to 4B distillation"
+      ],
+      "source_ids": [
+        "hf-space-trl-distillation-trainer-2026"
+      ],
+      "confidence": 0.91,
+      "first_seen": "2026-06-28T02:12:39Z",
+      "last_seen": "2026-06-28T02:12:39Z",
+      "world_hint": "llm-systems-serving"
+    }
+  },
+  "edges": [
+    {
+      "source": "distilling-100b-models-40x-faster-with-trl",
+      "target": "trl-distillation-trainer",
+      "relation": "introduces",
+      "confidence": 0.95,
+      "source_ids": [
+        "hf-space-trl-distillation-trainer-2026",
+        "trl-distillation-trainer-docs-2026"
+      ],
+      "evidence": "The article and docs show code importing DistillationConfig and DistillationTrainer from trl.experimental.distillation and describe them as the way to run TRL distillation."
+    },
+    {
+      "source": "on-policy-distillation",
+      "target": "off-policy-distillation",
+      "relation": "contrasts_with",
+      "confidence": 0.96,
+      "source_ids": [
+        "hf-space-trl-distillation-trainer-2026"
+      ],
+      "evidence": "The article contrasts teacher-generated off-policy completions with student-generated on-policy rollouts scored by the teacher."
+    },
+    {
+      "source": "trl-distillation-trainer",
+      "target": "on-policy-distillation",
+      "relation": "implements",
+      "confidence": 0.94,
+      "source_ids": [
+        "hf-space-trl-distillation-trainer-2026",
+        "trl-distillation-trainer-docs-2026"
+      ],
+      "evidence": "Docs describe DistillationTrainer as implementing on-policy knowledge distillation; the article states TRL now supports on-policy distillation with 100B+ teachers."
+    },
+    {
+      "source": "on-policy-distillation",
+      "target": "generation-buffer",
+      "relation": "optimized_by",
+      "confidence": 0.95,
+      "source_ids": [
+        "hf-space-trl-distillation-trainer-2026"
+      ],
+      "evidence": "The article says the generation buffer batches prompts across gradient accumulation steps while preserving on-policy training because student weights stay fixed until the optimizer step."
+    },
+    {
+      "source": "generation-buffer",
+      "target": "vllm-batched-inference-engine",
+      "relation": "uses",
+      "confidence": 0.94,
+      "source_ids": [
+        "hf-space-trl-distillation-trainer-2026"
+      ],
+      "evidence": "The article says the buffer takes advantage of vLLM batching and reports speedups from 1.9x at grad_accum=2 to 41.7x at grad_accum=64."
+    },
+    {
+      "source": "teacher-server-logprob-serving",
+      "target": "vllm-batched-inference-engine",
+      "relation": "uses",
+      "confidence": 0.93,
+      "source_ids": [
+        "hf-space-trl-distillation-trainer-2026",
+        "trl-distillation-trainer-docs-2026"
+      ],
+      "evidence": "The article moved the teacher to an external vLLM server so workers could query it for token log-probabilities."
+    },
+    {
+      "source": "teacher-server-logprob-serving",
+      "target": "request-batching-for-teacher-logprobs",
+      "relation": "optimized_by",
+      "confidence": 0.94,
+      "source_ids": [
+        "hf-space-trl-distillation-trainer-2026"
+      ],
+      "evidence": "The article describes an asyncio.Queue batching layer that drains requests every few milliseconds or on size/token limits and reduced tail latency by about 10x."
+    },
+    {
+      "source": "teacher-server-logprob-serving",
+      "target": "binary-logprob-encoding",
+      "relation": "optimized_by",
+      "confidence": 0.95,
+      "source_ids": [
+        "hf-space-trl-distillation-trainer-2026"
+      ],
+      "evidence": "The article says nested JSON logprob lists were replaced by base64-encoded NumPy arrays, reducing payload size about 5x and improving client decoding from 436.4 ms to 17.0 ms."
+    },
+    {
+      "source": "on-policy-distillation",
+      "target": "top-k-kl-approximation",
+      "relation": "depends_on",
+      "confidence": 0.91,
+      "source_ids": [
+        "hf-space-trl-distillation-trainer-2026",
+        "trl-distillation-trainer-docs-2026"
+      ],
+      "evidence": "The article explains that comparing full vocabularies is expensive and practical systems approximate KL using top-k log-probabilities; docs expose loss_top_k."
+    },
+    {
+      "source": "top-k-kl-approximation",
+      "target": "forward-kl-divergence",
+      "relation": "parameterizes",
+      "confidence": 0.9,
+      "source_ids": [
+        "hf-space-trl-distillation-trainer-2026"
+      ],
+      "evidence": "With top-k forward KL, token IDs are selected from the teacher's highest log-probabilities."
+    },
+    {
+      "source": "top-k-kl-approximation",
+      "target": "reverse-kl-divergence",
+      "relation": "parameterizes",
+      "confidence": 0.9,
+      "source_ids": [
+        "hf-space-trl-distillation-trainer-2026",
+        "trl-distillation-trainer-docs-2026"
+      ],
+      "evidence": "With top-k reverse KL, token IDs are selected from the student's highest log-probabilities; docs say beta=1.0 approximates reverse KL."
+    },
+    {
+      "source": "qwen3-235b-teacher-distillation",
+      "target": "teacher-server-logprob-serving",
+      "relation": "requires",
+      "confidence": 0.91,
+      "source_ids": [
+        "hf-space-trl-distillation-trainer-2026"
+      ],
+      "evidence": "The article says 100B+ teachers such as Qwen/Qwen3-235B-A22B-Instruct-2507 cannot be colocated with training GPUs, motivating an external teacher server."
+    },
+    {
+      "source": "domain-specific-reasoning-distillation",
+      "target": "capacity-gap-in-distillation",
+      "relation": "limited_by",
+      "confidence": 0.88,
+      "source_ids": [
+        "hf-space-trl-distillation-trainer-2026",
+        "trl-distillation-bibliography-2026"
+      ],
+      "evidence": "The article reports that 235B and 30B Qwen teachers yield similar distilled 4B AIME25 results despite different teacher scores, interpreting this as a teacher-student capacity gap."
+    },
+    {
+      "source": "domain-specific-reasoning-distillation",
+      "target": "on-policy-distillation",
+      "relation": "applies",
+      "confidence": 0.9,
+      "source_ids": [
+        "hf-space-trl-distillation-trainer-2026"
+      ],
+      "evidence": "The article demonstrates transferring bushcraft/survival and math reasoning behaviors into smaller students using the described distillation setup."
+    }
+  ],
+  "open_questions": [
+    {
+      "id": "capacity-gap-routing-question",
+      "question": "Should Edokai teach capacity gap as a general model-compression principle under Generative Models, or cross-link it into LLM evaluation/benchmarking once those regions exist?",
+      "source_ids": [
+        "hf-space-trl-distillation-trainer-2026"
+      ],
+      "confidence": 0.72,
+      "created_at": "2026-06-28T02:12:39Z"
+    }
+  ],
+  "run_history": [
+    {
+      "run_id": "manual-telegram-trl-distillation-20260628T021239Z",
+      "trigger": "manual-telegram-link-ingest",
+      "source_ids": [
+        "hf-space-trl-distillation-trainer-2026",
+        "hf-space-api-trl-distillation-trainer-2026",
+        "trl-distillation-trainer-docs-2026",
+        "trl-distillation-bibliography-2026"
+      ],
+      "nodes_added": 15,
+      "nodes_updated": 0,
+      "edges_added": 14,
+      "worlds_changed": [
+        "generative-models",
+        "llm-systems-serving",
+        "transformer-architecture"
+      ],
+      "escalations": [
+        "No new macro-world created; capacity-gap placement should be reviewed later if Edokai adds a dedicated evaluation/compression umbrella."
+      ],
+      "completed_at": "2026-06-28T02:12:39Z"
+    }
+  ]
 }
