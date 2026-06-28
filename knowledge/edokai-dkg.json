@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "updated_at": "2026-06-28T02:12:39Z",
+  "updated_at": "2026-06-28T06:41:30Z",
   "sources": {
     "hf-space-trl-distillation-trainer-2026": {
       "id": "hf-space-trl-distillation-trainer-2026",
@@ -69,6 +69,33 @@
         "BibTeX entries cite GKD arXiv:2306.13649, GOLD Hugging Face Space, Thinking Machines on-policy distillation blog, teacher-assistant distillation arXiv:1902.03393, and reasoning distillation arXiv:2501.16937."
       ],
       "confidence": 0.9
+    },
+    "arxiv-2404-16130-graphrag-2024": {
+      "id": "arxiv-2404-16130-graphrag-2024",
+      "url": "https://arxiv.org/abs/2404.16130",
+      "title": "From Local to Global: A Graph RAG Approach to Query-Focused Summarization",
+      "source_type": "arxiv-paper",
+      "authors": [
+        "Darren Edge",
+        "Ha Trinh",
+        "Newman Cheng",
+        "Joshua Bradley",
+        "Alex Chao",
+        "Apurva Mody",
+        "Steven Truitt",
+        "Dasha Metropolitansky",
+        "Robert Osazuwa Ness",
+        "Jonathan Larson"
+      ],
+      "published": "2024-04-24",
+      "discovered_at": "2026-06-28T07:05:00Z",
+      "last_read_at": "2026-06-28T07:05:00Z",
+      "provenance": [
+        "Verified arXiv abstract page metadata (citation_title/citation_author/citation_arxiv_id 2404.16130) and PDF body pages 1-14 read locally via pdftotext.",
+        "Abstract and method sections describe GraphRAG: LLM-built entity knowledge graph, Leiden hierarchical community detection, pregenerated community summaries, and map-reduce query answering for global sensemaking over ~1M-token corpora.",
+        "Evaluation section reports head-to-head LLM-judged comprehensiveness win rates 72-83% and diversity 62-82% vs conventional vector RAG on Podcast and News datasets, with Directness as a control criterion."
+      ],
+      "confidence": 0.96
     }
   },
   "nodes": {
@@ -334,6 +361,147 @@
       "first_seen": "2026-06-28T02:12:39Z",
       "last_seen": "2026-06-28T02:12:39Z",
       "world_hint": "llm-systems-serving"
+    },
+    "graphrag-query-focused-summarization": {
+      "label": "GraphRAG (Graph RAG)",
+      "type": "method",
+      "summary": "Graph-based RAG approach that answers global sensemaking questions over an entire private corpus by building an LLM-derived entity knowledge graph, partitioning it into a hierarchy of communities, pregenerating community summaries, and answering queries via map-reduce over those summaries.",
+      "aliases": [
+        "GraphRAG",
+        "Graph RAG",
+        "From Local to Global"
+      ],
+      "world_hint": "retrieval-augmented-generation",
+      "confidence": 0.95,
+      "id": "graphrag-query-focused-summarization",
+      "source_ids": [
+        "arxiv-2404-16130-graphrag-2024"
+      ],
+      "first_seen": "2026-06-28T07:05:00Z",
+      "last_seen": "2026-06-28T06:41:30Z"
+    },
+    "global-sensemaking-qfs": {
+      "label": "Global sensemaking / query-focused summarization",
+      "type": "concept",
+      "summary": "Class of queries directed at an entire corpus (e.g. 'What are the main themes?') that require reasoning over connections across the whole dataset rather than retrieving a few relevant chunks; framed as query-focused summarization (QFS) rather than explicit retrieval.",
+      "aliases": [
+        "QFS",
+        "global questions",
+        "sensemaking queries"
+      ],
+      "world_hint": "retrieval-augmented-generation",
+      "confidence": 0.93,
+      "id": "global-sensemaking-qfs",
+      "source_ids": [
+        "arxiv-2404-16130-graphrag-2024"
+      ],
+      "first_seen": "2026-06-28T07:05:00Z",
+      "last_seen": "2026-06-28T06:41:30Z"
+    },
+    "conventional-vector-rag": {
+      "label": "Conventional vector RAG",
+      "type": "method",
+      "summary": "Baseline retrieval-augmented generation that fetches text chunks most similar to a query into the LLM context window; effective for local fact-finding but unable to support sensemaking over an entire corpus when the source exceeds the context window.",
+      "aliases": [
+        "vector RAG",
+        "naive RAG",
+        "semantic-search RAG"
+      ],
+      "world_hint": "retrieval-augmented-generation",
+      "confidence": 0.92,
+      "id": "conventional-vector-rag",
+      "source_ids": [
+        "arxiv-2404-16130-graphrag-2024"
+      ],
+      "first_seen": "2026-06-28T07:05:00Z",
+      "last_seen": "2026-06-28T06:41:30Z"
+    },
+    "entity-knowledge-graph-index": {
+      "label": "LLM-derived entity knowledge graph index",
+      "type": "method",
+      "summary": "Graph index built by prompting an LLM to extract entities (nodes), relationships (edges), and covariates/claims from source text chunks, with duplicate relationships aggregated into edge weights — a form of abstractive summarization of the corpus.",
+      "aliases": [
+        "entity graph index",
+        "graph index",
+        "LLM entity extraction"
+      ],
+      "world_hint": "retrieval-augmented-generation",
+      "confidence": 0.93,
+      "id": "entity-knowledge-graph-index",
+      "source_ids": [
+        "arxiv-2404-16130-graphrag-2024"
+      ],
+      "first_seen": "2026-06-28T07:05:00Z",
+      "last_seen": "2026-06-28T06:41:30Z"
+    },
+    "leiden-hierarchical-community-detection": {
+      "label": "Leiden hierarchical community detection",
+      "type": "method",
+      "summary": "Community-detection step that partitions the entity graph into nested modular communities of closely related nodes using the Leiden algorithm recursively, exploiting graph modularity to create a hierarchy from leaf-level to higher-level communities.",
+      "aliases": [
+        "Leiden algorithm",
+        "community detection",
+        "hierarchical communities"
+      ],
+      "world_hint": "retrieval-augmented-generation",
+      "confidence": 0.93,
+      "id": "leiden-hierarchical-community-detection",
+      "source_ids": [
+        "arxiv-2404-16130-graphrag-2024"
+      ],
+      "first_seen": "2026-06-28T07:05:00Z",
+      "last_seen": "2026-06-28T06:41:30Z"
+    },
+    "community-summaries": {
+      "label": "Community summaries",
+      "type": "method",
+      "summary": "Report-like summaries pregenerated by the LLM for each graph community, built bottom-up so higher-level summaries recursively incorporate lower-level element summaries; together they give global descriptions and insights over the corpus.",
+      "aliases": [
+        "community report summaries",
+        "pregenerated summaries"
+      ],
+      "world_hint": "retrieval-augmented-generation",
+      "confidence": 0.93,
+      "id": "community-summaries",
+      "source_ids": [
+        "arxiv-2404-16130-graphrag-2024"
+      ],
+      "first_seen": "2026-06-28T07:05:00Z",
+      "last_seen": "2026-06-28T06:41:30Z"
+    },
+    "map-reduce-answer-generation": {
+      "label": "Map-reduce community answering",
+      "type": "method",
+      "summary": "Query-time procedure where each relevant community summary independently generates a partial answer (map step) and partial answers are combined into a final global answer (reduce step), distributing sensemaking across many context windows.",
+      "aliases": [
+        "map-reduce QA",
+        "partial-then-final answering"
+      ],
+      "world_hint": "retrieval-augmented-generation",
+      "confidence": 0.92,
+      "id": "map-reduce-answer-generation",
+      "source_ids": [
+        "arxiv-2404-16130-graphrag-2024"
+      ],
+      "first_seen": "2026-06-28T07:05:00Z",
+      "last_seen": "2026-06-28T06:41:30Z"
+    },
+    "llm-judged-sensemaking-metrics": {
+      "label": "LLM-judged sensemaking metrics",
+      "type": "concept",
+      "summary": "Head-to-head evaluation of free-form sensemaking answers via an LLM judge using Comprehensiveness, Diversity, and Empowerment criteria, with Directness as a control criterion that is expected to oppose comprehensiveness/diversity.",
+      "aliases": [
+        "comprehensiveness/diversity/empowerment",
+        "LLM-as-a-judge sensemaking eval"
+      ],
+      "world_hint": "retrieval-augmented-generation",
+      "confidence": 0.9,
+      "id": "llm-judged-sensemaking-metrics",
+      "source_ids": [
+        "arxiv-2404-16130-graphrag-2024"
+      ],
+      "first_seen": "2026-06-28T07:05:00Z",
+      "last_seen": "2026-06-28T06:41:30Z"
     }
   },
   "edges": [
@@ -482,6 +650,86 @@
         "hf-space-trl-distillation-trainer-2026"
       ],
       "evidence": "The article demonstrates transferring bushcraft/survival and math reasoning behaviors into smaller students using the described distillation setup."
+    },
+    {
+      "source": "graphrag-query-focused-summarization",
+      "target": "global-sensemaking-qfs",
+      "relation": "addresses",
+      "confidence": 0.94,
+      "source_ids": [
+        "arxiv-2404-16130-graphrag-2024"
+      ],
+      "evidence": "Abstract frames GraphRAG as combining RAG and QFS strengths to scale with both the generality of user questions and the quantity of source text for global sensemaking."
+    },
+    {
+      "source": "graphrag-query-focused-summarization",
+      "target": "conventional-vector-rag",
+      "relation": "contrasts_with",
+      "confidence": 0.93,
+      "source_ids": [
+        "arxiv-2404-16130-graphrag-2024"
+      ],
+      "evidence": "Paper shows vector RAG fails on global questions over an entire corpus; GraphRAG is proposed to overcome this, achieving 72-83% comprehensiveness win rates over a vector RAG baseline."
+    },
+    {
+      "source": "graphrag-query-focused-summarization",
+      "target": "entity-knowledge-graph-index",
+      "relation": "depends_on",
+      "confidence": 0.94,
+      "source_ids": [
+        "arxiv-2404-16130-graphrag-2024"
+      ],
+      "evidence": "GraphRAG first uses an LLM to derive an entity knowledge graph from source documents (stage 1 of the two-stage index)."
+    },
+    {
+      "source": "entity-knowledge-graph-index",
+      "target": "leiden-hierarchical-community-detection",
+      "relation": "feeds_into",
+      "confidence": 0.93,
+      "source_ids": [
+        "arxiv-2404-16130-graphrag-2024"
+      ],
+      "evidence": "The graph index (nodes, edges, covariates) is partitioned by Leiden community detection into nested communities the LLM can summarize."
+    },
+    {
+      "source": "leiden-hierarchical-community-detection",
+      "target": "community-summaries",
+      "relation": "feeds_into",
+      "confidence": 0.93,
+      "source_ids": [
+        "arxiv-2404-16130-graphrag-2024"
+      ],
+      "evidence": "Detected communities are summarized bottom-up into community summaries, with higher-level summaries recursively incorporating lower-level ones."
+    },
+    {
+      "source": "community-summaries",
+      "target": "map-reduce-answer-generation",
+      "relation": "feeds_into",
+      "confidence": 0.93,
+      "source_ids": [
+        "arxiv-2404-16130-graphrag-2024"
+      ],
+      "evidence": "Each community summary is used to generate a partial response in the map step before partial responses are summarized into a final response in the reduce step."
+    },
+    {
+      "source": "graphrag-query-focused-summarization",
+      "target": "map-reduce-answer-generation",
+      "relation": "implements",
+      "confidence": 0.92,
+      "source_ids": [
+        "arxiv-2404-16130-graphrag-2024"
+      ],
+      "evidence": "GraphRAG answers queries through map-reduce processing of community summaries."
+    },
+    {
+      "source": "graphrag-query-focused-summarization",
+      "target": "llm-judged-sensemaking-metrics",
+      "relation": "evaluated_by",
+      "confidence": 0.9,
+      "source_ids": [
+        "arxiv-2404-16130-graphrag-2024"
+      ],
+      "evidence": "GraphRAG is evaluated head-to-head with an LLM judge on Comprehensiveness, Diversity and Empowerment, using Directness as a control criterion."
     }
   ],
   "open_questions": [
@@ -493,6 +741,15 @@
       ],
       "confidence": 0.72,
       "created_at": "2026-06-28T02:12:39Z"
+    },
+    {
+      "id": "graphrag-rag-region-question",
+      "question": "As more retrieval/RAG sources arrive, should GraphRAG anchor a dedicated 'Retrieval & RAG' region cluster under LLM Systems & Serving, or eventually justify a Knowledge & Retrieval macro world?",
+      "source_ids": [
+        "arxiv-2404-16130-graphrag-2024"
+      ],
+      "confidence": 0.7,
+      "created_at": "2026-06-28T07:05:00Z"
     }
   ],
   "run_history": [
@@ -517,6 +774,23 @@
         "No new macro-world created; capacity-gap placement should be reviewed later if Edokai adds a dedicated evaluation/compression umbrella."
       ],
       "completed_at": "2026-06-28T02:12:39Z"
+    },
+    {
+      "run_id": "manual-telegram-graphrag-20260628T070500Z",
+      "trigger": "manual-telegram-link-ingest",
+      "source_ids": [
+        "arxiv-2404-16130-graphrag-2024"
+      ],
+      "nodes_added": 8,
+      "nodes_updated": 0,
+      "edges_added": 8,
+      "worlds_changed": [
+        "llm-systems-serving"
+      ],
+      "escalations": [
+        "No new macro world created; GraphRAG routed under LLM Systems & Serving as a retrieval/RAG region. Open question logged about a future dedicated RAG/retrieval cluster or macro world."
+      ],
+      "completed_at": "2026-06-28T07:05:00Z"
     }
   ]
 }
