@@ -23,3 +23,14 @@ Append-only operational log for automatic EmergentMind ingestion, Telegram manua
 - Verification: all JSON parses; edge/provenance/source-ref validation OK; `npm run dkg:test` => ALL PASS (GraphRAG regions render live, no world duplication, idempotent merge); `npm run build` => built in ~0.8s (only pre-existing Vite chunk-size warning).
 - Router learning: RAG/GraphRAG/hybrid retrieval/reranking/index construction/query-focused summarization now belongs in `Retrieval-Augmented Generation`, not generic `LLM Systems & Serving`, unless the source is strictly about low-level inference serving infrastructure. No app refactor, no publish/commit performed during the ingest itself.
 
+
+## manual-telegram-trl-distillation-refresh-20260628T071253Z
+
+- Trigger: manual Telegram link ingest / loop-engineered run.
+- Source read: `https://huggingface.co/spaces/HuggingFaceTB/trl-distillation-trainer` plus bounded secondary provenance from the Space API, raw article MDX, bibliography, and TRL Distillation Trainer docs.
+- Maker/checker result: source content matches the prior TRL distillation ingestion already present in the DKG; no new source-backed concepts, edges, or regions were identified beyond the existing distillation cluster.
+- Graph actions: refreshed `last_read_at` on 4 TRL source records and `last_seen` on 15 existing TRL concept/system/method nodes; added 0 nodes and 0 edges to avoid duplicates.
+- Concept-world builder: preserved existing routed regions under `Generative Models`, `LLM Systems & Serving`, and `Transformer Architecture`; no new macro world created because the learning path is already covered by distillation/compression, serving-system, and token-distribution-loss regions.
+- Verification: JSON parse/provenance validation and adapter/build checks run after state update; no fabricated citations introduced.
+- Escalations/manual review: none.
+

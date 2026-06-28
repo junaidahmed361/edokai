@@ -305,6 +305,36 @@ export function snapshotToEdokaiWorlds(payload) {
   });
 }
 
+export function summarizeDkgSnapshot(payload) {
+  if (!payload) return { recentSources: [], recentRuns: [] };
+  const dkg = payload.dkg || payload.edokai_dkg || payload.graph || {};
+  const sources = dkg.sources || {};
+  const recentSources = Object.entries(sources)
+    .map(([id, src]) => ({
+      id,
+      title: src.title || src.label || id,
+      url: src.url || "",
+      type: src.type || src.kind || "source",
+      lastReadAt: src.last_read_at || src.lastReadAt || src.discovered_at || src.first_seen || null,
+    }))
+    .sort((a, b) => String(b.lastReadAt || "").localeCompare(String(a.lastReadAt || "")))
+    .slice(0, 5);
+  const recentRuns = (Array.isArray(dkg.run_history) ? dkg.run_history : [])
+    .slice()
+    .sort((a, b) => String(b.completed_at || "").localeCompare(String(a.completed_at || "")))
+    .slice(0, 3)
+    .map((run) => ({
+      id: run.run_id || run.id || "run",
+      trigger: run.trigger || "ingest",
+      completedAt: run.completed_at || null,
+      nodesAdded: run.nodes_added || 0,
+      nodesUpdated: run.nodes_updated || 0,
+      edgesAdded: run.edges_added || 0,
+      note: Array.isArray(run.notes) && run.notes.length ? run.notes[0] : "",
+    }));
+  return { recentSources, recentRuns };
+}
+
 /* ============================================================
    Merge live DKG worlds into the app's world list.
    - If a live world's title matches an existing world (builtin or stored),
