@@ -84,48 +84,195 @@ export function subscribeDkgSnapshot(onSnapshot, onStatus = () => {}) {
   };
 }
 
-const slug = (value) => String(value || "concept").toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, "").slice(0, 64) || "concept";
+/* ============================================================
+   DKG snapshot -> Edokai world adapter
 
-const defaultQuestion = (label) => ({
-  q: `What should you remember about ${label}?`,
-  options: ["source-grounded mechanism", "random memorized token", "unrelated UI detail", "unsupported claim"],
-  a: 0,
-  why: "Edokai imports DKG concepts only when they have source-grounded provenance.",
-});
+   The Hermes ingest loop writes:
+   - knowledge/edokai-dkg.json      -> payload.dkg      { sources, nodes }
+   - knowledge/concept-world-index.json -> payload.conceptWorldIndex { macro_worlds }
 
-function normalizeConcept(raw, sourceIds = []) {
-  const label = raw.name || raw.label || raw.title || raw.id || "Imported Concept";
+   macro_worlds[id] = {
+     label, description, emoji?,
+     regions: [{
+       id, label, summary, source_ids[],
+       concept_ids[],            // string refs into dkg.nodes
+       critical_concepts[],      // subset of concept_ids
+       prerequisite_links[],     // {from,to,why}
+       side_retention_duels[],   // {id,prompt,left,right,answer}
+       quiz_questions[],         // {question,choices,answer_index,source_ids}
+     }]
+   }
+
+   The Edokai app expects each world:
+   { id, title, emoji, blurb, links[], regions[] }
+   and each region:
+   { id, name, emoji, intro, npc{name,text},
+     concepts[{ id, name, sprite, lore, questions[{q,options,a,why}] }],
+     sides[{ id, name, sprite, anchor, recLevel, prereqs[], desc, questions[] }],
+     gym{ leader, badge, sprite, taunt, questions[] } }
+   ============================================================ */
+
+const slug = (value) =>
+  String(value || "concept")
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-+|-+$/g, "")
+    .slice(0, 64) || "concept";
+
+const truncate = (s, n = 96) => {
+  s = String(s || "").replace(/\s+/g, " ").trim();
+  return s.length > n ? `${s.slice(0, n - 1)}…` : s;
+};
+
+// Small deterministic hash so the correct answer is not always option 0.
+function hashCode(str) {
+  let h = 0;
+  for (let i = 0; i < String(str).length; i += 1) {
+    h = (h * 31 + String(str).charCodeAt(i)) | 0;
+  }
+  return Math.abs(h);
+}
+
+function nodeLabel(node, fallback = "Imported Concept") {
+  return node.label || node.name || node.title || node.id || fallback;
+}
+
+// Convert an authored quiz_question (real answer_index) to the app's question shape.
+function quizToQuestion(quiz) {
+  if (!quiz || !Array.isArray(quiz.choices) || !quiz.choices.length) return null;
+  const a = Number.isInteger(quiz.answer_index) ? quiz.answer_index : 0;
   return {
-    id: slug(raw.id || label),
-    name: label,
-    sprite: raw.sprite || "🧠",
-    lore: raw.lore || raw.summary || raw.description || `Imported from the live Edokai DKG.${sourceIds.length ? ` Sources: ${sourceIds.join(", ")}.` : ""}`,
-    questions: Array.isArray(raw.questions) && raw.questions.length ? raw.questions : [defaultQuestion(label)],
+    q: quiz.question || "Recall the source-grounded fact:",
+    options: quiz.choices.slice(),
+    a: Math.max(0, Math.min(a, quiz.choices.length - 1)),
+    why: "Source-grounded from the ingested DKG entry.",
   };
 }
 
-function normalizeRegion(raw, idx, fallbackConcepts = []) {
-  const name = raw.name || raw.label || raw.title || `Imported Region ${idx + 1}`;
-  const concepts = Array.isArray(raw.concepts) && raw.concepts.length
-    ? raw.concepts.map((c) => normalizeConcept(c))
-    : fallbackConcepts;
-  if (!concepts.length) return null;
+// Synthesize an honest recall question for a node using sibling summaries as distractors.
+function nodeRecallQuestion(node, siblingSummaries) {
+  const label = nodeLabel(node);
+  const correct = truncate(node.summary || node.description || label);
+  const pool = siblingSummaries
+    .filter((s) => s && s !== (node.summary || node.description))
+    .map((s) => truncate(s));
+  const filler = [
+    "An unrelated claim with no source backing in this graph.",
+    "A mechanism the ingested source does not actually describe.",
+    "A concept that belongs to a different region entirely.",
+  ];
+  const distractors = [];
+  for (const cand of [...pool, ...filler]) {
+    if (distractors.length >= 3) break;
+    if (cand !== correct && !distractors.includes(cand)) distractors.push(truncate(cand));
+  }
+  const options = [correct, ...distractors];
+  const idx = hashCode(node.id || label) % options.length;
+  [options[0], options[idx]] = [options[idx], options[0]];
   return {
-    id: slug(raw.id || name),
+    q: `Which description matches "${label}"?`,
+    options,
+    a: idx,
+    why: `Source-grounded summary for ${label}.`,
+  };
+}
+
+function nodeToConcept(node, regionSlug, siblingSummaries, assignedQuiz) {
+  const label = nodeLabel(node);
+  const questions = [];
+  if (assignedQuiz) questions.push(assignedQuiz);
+  questions.push(nodeRecallQuestion(node, siblingSummaries));
+  const sourceNote = Array.isArray(node.source_ids) && node.source_ids.length
+    ? ` Sources: ${node.source_ids.join(", ")}.`
+    : "";
+  return {
+    id: `${regionSlug}-${slug(node.id || label)}`,
+    name: label,
+    sprite: node.sprite || node.emoji || "🧠",
+    lore: `${node.summary || node.description || node.lore || `Imported from the live Edokai DKG.`}${sourceNote}`,
+    questions,
+  };
+}
+
+function duelToSide(duel, idx, regionSlug, conceptIds, fallbackQuestions) {
+  const prompt = duel.prompt || duel.question || "Retention check";
+  // Duels do not carry a reliable answer index, so present the contrast in the
+  // side's description/lore and battle with the region's real quiz questions.
+  const desc = [duel.left ? `A: ${duel.left}` : null, duel.right ? `B: ${duel.right}` : null]
+    .filter(Boolean)
+    .join("  •  ");
+  return {
+    id: `${regionSlug}-duel-${slug(duel.id || String(idx))}`,
+    name: truncate(prompt, 40),
+    sprite: "⚔️",
+    anchor: 1,
+    recLevel: 2,
+    prereqs: conceptIds.slice(0, 2),
+    desc: `${prompt}${desc ? `  —  ${desc}` : ""}${duel.answer ? `  →  ${duel.answer}` : ""}`,
+    questions: fallbackQuestions.length ? fallbackQuestions.slice(0, 2) : [],
+  };
+}
+
+function buildRegion(region, idx, nodesById, worldLabel) {
+  const regionSlug = `dkg-${slug(region.id || region.label || `region-${idx}`)}`;
+  const name = region.label || region.name || region.title || `Imported Region ${idx + 1}`;
+
+  // Resolve concept_ids -> DKG nodes (skip refs that have no matching node).
+  const conceptIds = Array.isArray(region.concept_ids) ? region.concept_ids : [];
+  const resolved = conceptIds
+    .map((cid) => nodesById[cid] || nodesById[slug(cid)])
+    .filter(Boolean);
+  if (!resolved.length) return null;
+
+  const siblingSummaries = resolved.map((n) => n.summary || n.description || nodeLabel(n));
+  const realQuizzes = (Array.isArray(region.quiz_questions) ? region.quiz_questions : [])
+    .map(quizToQuestion)
+    .filter(Boolean);
+
+  // Distribute real quizzes across concepts (first-come), the rest get synthesized recall Qs.
+  const concepts = resolved.map((node, i) =>
+    nodeToConcept(node, regionSlug, siblingSummaries, realQuizzes[i] || null)
+  );
+  const conceptIdsResolved = concepts.map((c) => c.id);
+
+  const sides = (Array.isArray(region.side_retention_duels) ? region.side_retention_duels : [])
+    .map((duel, i) => duelToSide(duel, i, regionSlug, conceptIdsResolved, realQuizzes))
+    .filter((s) => s.questions.length);
+
+  const gymQuestions = (realQuizzes.length ? realQuizzes : concepts.flatMap((c) => c.questions)).slice(0, 4);
+
+  return {
+    id: regionSlug,
     name,
-    emoji: raw.emoji || "🛰️",
-    intro: raw.intro || raw.description || "A live DKG region synced from Supabase.",
-    npc: raw.npc || { name: "Graph Curator", text: raw.description || "These concepts came from the live Edokai dynamic knowledge graph." },
+    emoji: region.emoji || "🛰️",
+    intro: region.summary || region.description || `Live DKG region synced into ${worldLabel}.`,
+    npc: {
+      name: "Graph Curator",
+      text: region.summary || region.description || "These concepts came from the live Edokai dynamic knowledge graph.",
+    },
     concepts,
-    sides: Array.isArray(raw.sides) ? raw.sides : [],
-    gym: raw.gym || {
+    sides,
+    gym: {
       leader: "Graph Curator",
       badge: `${name} Badge`,
       sprite: "🏛️",
       taunt: "Show that you understand the source-grounded mechanism.",
-      questions: concepts.slice(0, 3).map((c) => defaultQuestion(c.name)),
+      questions: gymQuestions,
     },
   };
+}
+
+function linksFromSources(sources, sourceIds) {
+  const out = [];
+  const seen = new Set();
+  for (const sid of sourceIds) {
+    const src = sources[sid];
+    if (!src || !src.url || seen.has(src.url)) continue;
+    seen.add(src.url);
+    out.push({ label: `Source · ${truncate(src.title || sid, 48)}`, url: src.url });
+    if (out.length >= 6) break;
+  }
+  return out;
 }
 
 export function snapshotToEdokaiWorlds(payload) {
@@ -133,28 +280,60 @@ export function snapshotToEdokaiWorlds(payload) {
   const dkg = payload.dkg || payload.edokai_dkg || payload.graph || {};
   const index = payload.conceptWorldIndex || payload.concept_world_index || payload.worlds || {};
   const macroWorlds = index.macro_worlds || index.macroWorlds || {};
-  const nodes = Object.values(dkg.nodes || {});
+  const nodesById = dkg.nodes || {};
+  const sources = dkg.sources || {};
 
   return Object.entries(macroWorlds).flatMap(([worldId, world]) => {
-    const hintedNodes = nodes
-      .filter((node) => (node.world_hint || node.worldHint || node.macro_world || node.macroWorld) === worldId)
-      .slice(0, 12)
-      .map((node) => normalizeConcept(node, node.source_ids || node.sourceIds || []));
-    const regions = Array.isArray(world.regions)
-      ? world.regions.map((region, idx) => normalizeRegion(region, idx)).filter(Boolean)
-      : [];
-    if (!regions.length && hintedNodes.length) {
-      regions.push(normalizeRegion({ id: `${worldId}-live`, name: "Live DKG Concepts", emoji: "🛰️", description: world.description }, 0, hintedNodes));
-    }
-    if (!regions.length) return [];
+    const rawRegions = Array.isArray(world.regions) ? world.regions : [];
+    const regions = rawRegions
+      .map((region, idx) => buildRegion(region, idx, nodesById, world.label || worldId))
+      .filter(Boolean);
+    if (!regions.length) return []; // empty umbrellas (e.g. seeded but unrouted) add nothing.
+
+    const sourceIds = [...new Set(rawRegions.flatMap((r) => (Array.isArray(r.source_ids) ? r.source_ids : [])))];
+
     return [{
       id: `dkg-${slug(worldId)}`,
+      macroId: worldId,
       title: world.label || world.title || worldId,
       emoji: world.emoji || "🧬",
-      summary: world.description || "Live concept world synced from the Edokai DKG.",
+      blurb: world.description || "Live concept world synced from the Edokai DKG.",
       mission: world.mission || `Master ${world.label || worldId} through source-grounded DKG concepts.`,
-      links: Array.isArray(world.links) ? world.links : [],
+      links: linksFromSources(sources, sourceIds),
       regions,
     }];
   });
+}
+
+/* ============================================================
+   Merge live DKG worlds into the app's world list.
+   - If a live world's title matches an existing world (builtin or stored),
+     append its NEW regions to that world (enhance an existing concept world).
+   - Otherwise add it as a brand-new concept world.
+   Pure function over (existingWorlds, liveWorlds) -> mergedWorlds.
+   ============================================================ */
+const normTitle = (t) => String(t || "").trim().toLowerCase();
+
+export function mergeDkgWorlds(existing, live) {
+  if (!Array.isArray(live) || !live.length) return existing;
+  const out = existing.map((w) => ({ ...w, regions: [...(w.regions || [])] }));
+  const byTitle = new Map();
+  out.forEach((w, i) => byTitle.set(normTitle(w.title), i));
+  const extras = [];
+
+  for (const lw of live) {
+    const matchIdx = byTitle.has(normTitle(lw.title)) ? byTitle.get(normTitle(lw.title)) : -1;
+    if (matchIdx >= 0) {
+      const target = out[matchIdx];
+      const haveRegionIds = new Set(target.regions.map((r) => r.id));
+      const newRegions = (lw.regions || []).filter((r) => !haveRegionIds.has(r.id));
+      if (newRegions.length) target.regions = [...target.regions, ...newRegions];
+      const haveLinks = new Set((target.links || []).map((l) => l.url));
+      const newLinks = (lw.links || []).filter((l) => l.url && !haveLinks.has(l.url));
+      if (newLinks.length) target.links = [...(target.links || []), ...newLinks];
+    } else {
+      extras.push(lw);
+    }
+  }
+  return [...out, ...extras];
 }

@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef, useMemo } from "react";
-import { dkgSyncConfigStatus, subscribeDkgSnapshot, snapshotToEdokaiWorlds } from "./dkgLiveSync";
+import { dkgSyncConfigStatus, subscribeDkgSnapshot, snapshotToEdokaiWorlds, mergeDkgWorlds } from "./dkgLiveSync";
 
 /* ============================================================
    EDOKAI
@@ -2965,6 +2965,7 @@ export default function App() {
   const [claudeCodeAuth, setClaudeCodeAuth] = useState(null);
   const [modelTest, setModelTest] = useState(null);
   const [dkgSync, setDkgSync] = useState({ ...dkgSyncConfigStatus(), status: "booting", updatedAt: null, stats: null });
+  const [dkgWorlds, setDkgWorlds] = useState([]);
 
   Object.assign(T, darkMode ? THEMES.dark : THEMES.light);
 
@@ -2974,6 +2975,7 @@ export default function App() {
       s.sides = s.sides || []; s.katas = s.katas || {}; s.qstats = s.qstats || {}; s.kataHints = s.kataHints || {}; s.kataAttempts = s.kataAttempts || {}; s.learningRecords = s.learningRecords || [];
       setSave(s);
       setWorlds(await loadStore("ru-worlds", []));
+      setDkgWorlds(await loadStore("ru-dkg-worlds", []));
       setUKatas(await loadStore("ru-ukatas", []));
       setAug(await loadStore("ru-aug", {}));
       setDeepLore(await loadStore("ru-lore", {}));
@@ -2987,19 +2989,13 @@ export default function App() {
   }, []);
 
   useEffect(() => {
-    const mergeLiveWorlds = (existing, live) => {
-      if (!live.length) return existing;
-      const liveIds = new Set(live.map((w) => w.id));
-      return [...existing.filter((w) => !liveIds.has(w.id)), ...live];
-    };
     return subscribeDkgSnapshot(
       (snapshot) => {
         const liveWorlds = snapshotToEdokaiWorlds(snapshot.payload);
         if (liveWorlds.length) {
-          setWorlds((prev) => {
-            const next = mergeLiveWorlds(prev, liveWorlds);
-            saveStore("ru-worlds", next);
-            return next;
+          setDkgWorlds(() => {
+            saveStore("ru-dkg-worlds", liveWorlds);
+            return liveWorlds;
           });
         }
         setDkgSync((prev) => ({
@@ -3047,7 +3043,7 @@ export default function App() {
   const toggleMusic = () => { if (musicOn) { music.stop(); setMusicOn(false); } else { music.start(); setMusicOn(true); } };
   const toggleTheme = () => persistCfg({ ...cfg, darkMode: !darkMode });
 
-  const allWorlds = [...BUILTIN_WORLDS, ...worlds].map(applyTeachingParadigm);
+  const allWorlds = mergeDkgWorlds([...BUILTIN_WORLDS, ...worlds], dkgWorlds).map(applyTeachingParadigm);
   const world = allWorlds.find((w) => w.id === activeWorld) || BUILTIN_WORLDS[0];
   const regions = world.regions;
   const region = regions[regionIdx];

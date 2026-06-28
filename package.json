@@ -9,6 +9,7 @@
     "dev": "vite",
     "build": "vite build",
     "dkg:sync": "node scripts/sync-dkg-supabase.mjs",
+    "dkg:test": "node scripts/test-dkg-adapter.mjs",
     "start": "npm run build && electron .",
     "dist:mac": "npm run build && electron-builder --mac",
     "dist:win": "npm run build && electron-builder --win"
