@@ -124,6 +124,37 @@ const truncate = (s, n = 96) => {
   return s.length > n ? `${s.slice(0, n - 1)}…` : s;
 };
 
+const compactSentence = (s, fallback = "source-backed mechanism") => {
+  const clean = String(s || fallback).replace(/\s+/g, " ").trim();
+  if (!clean) return fallback;
+  const first = clean.split(/(?<=[.!?])\s+/)[0] || clean;
+  return first.replace(/[.…]+$/g, "").trim() || fallback;
+};
+
+const optionWords = (o) => String(o || "").trim().split(/\s+/).filter(Boolean).length;
+
+function normalizeOptions(options, answerIndex, seed = "question") {
+  const raw = Array.isArray(options) ? options.map((o) => String(o || "").replace(/\s+/g, " ").trim()).filter(Boolean) : [];
+  const a = Math.max(0, Math.min(Number.isInteger(answerIndex) ? answerIndex : 0, Math.max(raw.length - 1, 0)));
+  const correct = raw[a] || "source-backed mechanism";
+  const fallbacks = [
+    "neighboring mechanism in the region",
+    "unrelated implementation detail",
+    "evaluation-only surface signal",
+    "low-level runtime constraint",
+  ];
+  const unique = [correct, ...raw.filter((_, i) => i !== a), ...fallbacks]
+    .map((o) => o.replace(/[.…]+$/g, ""))
+    .filter((o, i, arr) => o && arr.indexOf(o) === i)
+    .slice(0, 4);
+  while (unique.length < 4) unique.push(`nearby distractor ${unique.length}`);
+  const target = Math.max(...unique.map(optionWords), 4);
+  const balanced = unique.map((o) => `${o}${optionWords(o) < target - 2 ? " in this lesson" : ""}`);
+  const idx = hashCode(seed) % 4;
+  [balanced[0], balanced[idx]] = [balanced[idx], balanced[0]];
+  return { options: balanced, a: idx };
+}
+
 // Small deterministic hash so the correct answer is not always option 0.
 function hashCode(str) {
   let h = 0;
@@ -140,45 +171,42 @@ function nodeLabel(node, fallback = "Imported Concept") {
 // Convert an authored quiz_question (real answer_index) to the app's question shape.
 function quizToQuestion(quiz) {
   if (!quiz || !Array.isArray(quiz.choices) || !quiz.choices.length) return null;
-  const a = Number.isInteger(quiz.answer_index) ? quiz.answer_index : 0;
+  const normalized = normalizeOptions(quiz.choices, Number.isInteger(quiz.answer_index) ? quiz.answer_index : 0, quiz.question || quiz.choices.join("|"));
   return {
     q: quiz.question || "Recall the source-grounded fact:",
-    options: quiz.choices.slice(),
-    a: Math.max(0, Math.min(a, quiz.choices.length - 1)),
-    why: "Source-grounded from the ingested DKG entry.",
+    options: normalized.options,
+    a: normalized.a,
+    why: quiz.explanation || quiz.why || "Source-grounded from the ingested DKG entry.",
   };
 }
 
 // Synthesize an honest recall question for a node using sibling summaries as distractors.
 function nodeRecallQuestion(node, siblingSummaries) {
   const label = nodeLabel(node);
-  const correct = truncate(node.summary || node.description || label);
-  const pool = siblingSummaries
-    .filter((s) => s && s !== (node.summary || node.description))
-    .map((s) => truncate(s));
-  const filler = [
-    "An unrelated claim with no source backing in this graph.",
-    "A mechanism the ingested source does not actually describe.",
-    "A concept that belongs to a different region entirely.",
-  ];
-  const distractors = [];
-  for (const cand of [...pool, ...filler]) {
-    if (distractors.length >= 3) break;
-    if (cand !== correct && !distractors.includes(cand)) distractors.push(truncate(cand));
-  }
-  const options = [correct, ...distractors];
-  const idx = hashCode(node.id || label) % options.length;
-  [options[0], options[idx]] = [options[idx], options[0]];
+  const correct = compactSentence(node.summary || node.description || node.lore || label);
+  const distractors = siblingSummaries
+    .filter((s) => s && s !== (node.summary || node.description || node.lore))
+    .map((s) => compactSentence(s))
+    .filter((s, i, arr) => s !== correct && arr.indexOf(s) === i);
+  const normalized = normalizeOptions([correct, ...distractors], 0, node.id || label);
   return {
-    q: `Which description matches "${label}"?`,
-    options,
-    a: idx,
-    why: `Source-grounded summary for ${label}.`,
+    q: `Which source-backed mechanism advances mastery of "${label}"?`,
+    options: normalized.options,
+    a: normalized.a,
+    why: compactSentence(node.summary || node.description || `Source-grounded summary for ${label}.`, `Source-grounded summary for ${label}`),
   };
 }
 
-function nodeToConcept(node, regionSlug, siblingSummaries, assignedQuiz) {
-  const label = nodeLabel(node);
+
+function nodeToConcept(node, regionSlug, siblingSummaries, assignedQuiz, usedNames, regionName) {
+  const baseLabel = nodeLabel(node);
+  let label = baseLabel;
+  let suffix = 2;
+  while (usedNames.has(label.toLowerCase())) {
+    label = `${baseLabel} · ${regionName || `Facet ${suffix}`}`;
+    suffix += 1;
+  }
+  usedNames.add(label.toLowerCase());
   const questions = [];
   if (assignedQuiz) questions.push(assignedQuiz);
   questions.push(nodeRecallQuestion(node, siblingSummaries));
@@ -189,10 +217,11 @@ function nodeToConcept(node, regionSlug, siblingSummaries, assignedQuiz) {
     id: `${regionSlug}-${slug(node.id || label)}`,
     name: label,
     sprite: node.sprite || node.emoji || "🧠",
-    lore: `${node.summary || node.description || node.lore || `Imported from the live Edokai DKG.`}${sourceNote}`,
+    lore: `In this Edokai region, ${label} is the encounter that turns source evidence into usable judgment: ${compactSentence(node.summary || node.description || node.lore || `Imported from the live Edokai DKG.`, "the source-backed mechanism")}. Capture it by explaining what problem it solves, how the mechanism moves information, and what evidence would show it worked.${sourceNote}`,
     questions,
   };
 }
+
 
 function duelToSide(duel, idx, regionSlug, conceptIds, fallbackQuestions) {
   const prompt = duel.prompt || duel.question || "Retention check";
@@ -208,7 +237,7 @@ function duelToSide(duel, idx, regionSlug, conceptIds, fallbackQuestions) {
     anchor: 1,
     recLevel: 2,
     prereqs: conceptIds.slice(0, 2),
-    desc: `${prompt}${desc ? `  —  ${desc}` : ""}${duel.answer ? `  →  ${duel.answer}` : ""}`,
+    desc: `Healing retention duel: answer these side questions to recover HP while reinforcing the prerequisite path. ${prompt}${desc ? `  —  ${desc}` : ""}${duel.answer ? `  →  ${duel.answer}` : ""}`,
     questions: fallbackQuestions.length ? fallbackQuestions.slice(0, 2) : [],
   };
 }
@@ -230,8 +259,9 @@ function buildRegion(region, idx, nodesById, worldLabel) {
     .filter(Boolean);
 
   // Distribute real quizzes across concepts (first-come), the rest get synthesized recall Qs.
+  const usedNames = new Set();
   const concepts = resolved.map((node, i) =>
-    nodeToConcept(node, regionSlug, siblingSummaries, realQuizzes[i] || null)
+    nodeToConcept(node, regionSlug, siblingSummaries, realQuizzes[i] || null, usedNames, name)
   );
   const conceptIdsResolved = concepts.map((c) => c.id);
 

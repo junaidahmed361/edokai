@@ -1,6 +1,8 @@
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import * as THREE from "three";
 
+const worldColor = (hex) => new THREE.Color(hex);
+
 export default function DkgThreeMap({ worlds, focusedWorld, mapStats, capturedSet, onFocus, onStudy, T, darkMode }) {
   const mountRef = useRef(null);
   const [hovered, setHovered] = useState(null);
@@ -40,6 +42,24 @@ export default function DkgThreeMap({ worlds, focusedWorld, mapStats, capturedSe
     const pickables = [];
     const focusPos = focus ? layout.get(focus.id) : null;
 
+    const stars = new THREE.Group();
+    const starGeo = new THREE.CircleGeometry(0.012, 8);
+    const starMat = new THREE.MeshBasicMaterial({ color: darkMode ? 0x7dd3fc : 0x9ca3af, transparent: true, opacity: darkMode ? 0.55 : 0.24 });
+    for (let i = 0; i < 72; i += 1) {
+      const seed = i * 97;
+      const star = new THREE.Mesh(starGeo, starMat);
+      star.position.set(((seed % 83) / 83) * 8.8 - 4.4, (((seed * 7) % 61) / 61) * 5.7 - 2.85, -0.5);
+      stars.add(star);
+    }
+    scene.add(stars);
+
+    const grid = new THREE.GridHelper(8.8, 10, darkMode ? 0x29324f : 0xcbd5e1, darkMode ? 0x17203f : 0xe2e8f0);
+    grid.rotation.x = Math.PI / 2;
+    grid.position.z = -0.45;
+    grid.material.transparent = true;
+    grid.material.opacity = darkMode ? 0.18 : 0.28;
+    scene.add(grid);
+
     if (focus && focusPos) {
       visibleWorlds.forEach((w) => {
         if (w.id === focus.id) return;
@@ -62,6 +82,12 @@ export default function DkgThreeMap({ worlds, focusedWorld, mapStats, capturedSe
       const st = mapStats(w);
       const isFocus = focus && w.id === focus.id;
       const radius = isFocus ? 0.56 : 0.38 + Math.min(st.concepts, 32) * 0.006;
+      const halo = new THREE.Mesh(
+        new THREE.CircleGeometry(radius + 0.32, 64),
+        new THREE.MeshBasicMaterial({ color: worldColor(p.color), transparent: true, opacity: isFocus ? 0.18 : 0.08 })
+      );
+      halo.position.set(p.x, p.y, -0.01);
+      scene.add(halo);
       const ring = new THREE.Mesh(
         new THREE.RingGeometry(radius + 0.07, radius + 0.11, 64),
         new THREE.MeshBasicMaterial({ color: isFocus ? 0xff916b : 0xd4dae8, transparent: true, opacity: isFocus ? 0.95 : 0.35, side: THREE.DoubleSide })
@@ -76,6 +102,13 @@ export default function DkgThreeMap({ worlds, focusedWorld, mapStats, capturedSe
       island.userData = { worldId: w.id };
       scene.add(island);
       pickables.push(island);
+
+      const core = new THREE.Mesh(
+        new THREE.CircleGeometry(radius * 0.48, 40),
+        new THREE.MeshBasicMaterial({ color: darkMode ? 0xffffff : 0xf8fafc, transparent: true, opacity: isFocus ? 0.23 : 0.16 })
+      );
+      core.position.set(p.x - radius * 0.08, p.y + radius * 0.1, 0.03);
+      scene.add(core);
 
       const progress = st.concepts ? st.captured / st.concepts : 0;
       const arc = new THREE.Mesh(
@@ -152,7 +185,7 @@ export default function DkgThreeMap({ worlds, focusedWorld, mapStats, capturedSe
   });
 
   return (
-    <div style={{ position: "relative", height: 390, borderRadius: 18, overflow: "hidden", border: `1px solid ${T.line}`, background: darkMode ? "#070B16" : "#F7F9FF" }}>
+    <div style={{ position: "relative", height: 430, borderRadius: 22, overflow: "hidden", border: `1px solid ${T.line}`, background: darkMode ? "radial-gradient(circle at 50% 40%, #17203F 0%, #070B16 65%)" : "radial-gradient(circle at 50% 40%, #FFFFFF 0%, #EEF4FF 68%)", boxShadow: darkMode ? "0 18px 55px rgba(0,0,0,0.32)" : "0 18px 48px rgba(91,79,214,0.16)" }}>
       <div ref={mountRef} style={{ position: "absolute", inset: 0 }} />
       {labels.map(({ w, st, left, top }) => {
         const active = focus && w.id === focus.id;
@@ -167,7 +200,7 @@ export default function DkgThreeMap({ worlds, focusedWorld, mapStats, capturedSe
         <div style={{ position: "absolute", left: 12, right: 12, bottom: 12, display: "flex", gap: 8, alignItems: "center", justifyContent: "space-between", background: T.hud, border: `1px solid ${T.line}`, borderRadius: 14, padding: 10, backdropFilter: "blur(8px)" }}>
           <div style={{ minWidth: 0 }}>
             <div style={{ fontWeight: 900, fontSize: 13 }}>{focus.emoji} {focus.title}</div>
-            <div style={{ fontSize: 11.5, color: T.inkSoft, lineHeight: 1.35 }}>Island = macro world · orbiting dots = regions · green arc = captured progress · lines = shared-source proximity.</div>
+            <div style={{ fontSize: 11.5, color: T.inkSoft, lineHeight: 1.35 }}>Island = macro world · orbiting dots = regions · green arc = captured progress · constellation lines = shared-source proximity.</div>
           </div>
           <button onClick={() => onStudy(focus.id)} style={{ background: T.explore, color: "#fff", border: "none", borderRadius: 10, padding: "8px 11px", fontWeight: 800, cursor: "pointer", whiteSpace: "nowrap", fontFamily: "inherit" }}>Study →</button>
         </div>
