@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef, useMemo } from "react";
-import { dkgSyncConfigStatus, subscribeDkgSnapshot, snapshotToEdokaiWorlds, mergeDkgWorlds } from "./dkgLiveSync";
+import { dkgSyncConfigStatus, subscribeDkgSnapshot, snapshotToEdokaiWorlds, mergeDkgWorlds, summarizeDkgSnapshot } from "./dkgLiveSync";
 
 /* ============================================================
    EDOKAI
@@ -2964,7 +2964,7 @@ export default function App() {
   const [todoGuidance, setTodoGuidance] = useState(true);
   const [claudeCodeAuth, setClaudeCodeAuth] = useState(null);
   const [modelTest, setModelTest] = useState(null);
-  const [dkgSync, setDkgSync] = useState({ ...dkgSyncConfigStatus(), status: "booting", updatedAt: null, stats: null });
+  const [dkgSync, setDkgSync] = useState({ ...dkgSyncConfigStatus(), status: "booting", updatedAt: null, stats: null, recentSources: [], recentRuns: [] });
   const [dkgWorlds, setDkgWorlds] = useState([]);
   const [mapFocus, setMapFocus] = useState(null);
 
@@ -2999,11 +2999,14 @@ export default function App() {
             return liveWorlds;
           });
         }
+        const dkgSummary = summarizeDkgSnapshot(snapshot.payload);
         setDkgSync((prev) => ({
           ...prev,
           status: snapshot.realtime ? "live" : snapshot.empty ? "empty" : "synced",
           updatedAt: snapshot.updatedAt || snapshot.payload?.synced_at || null,
           stats: snapshot.payload?.stats || null,
+          recentSources: dkgSummary.recentSources,
+          recentRuns: dkgSummary.recentRuns,
           error: null,
         }));
       },
@@ -3708,6 +3711,23 @@ ${QUALITY_RULES}`, cfg));
                   ? `${dkgSync.stats.node_count || 0} graph nodes · ${dkgSync.stats.edge_count || 0} edges · ${dkgSync.stats.macro_world_count || 0} macro worlds synced from Supabase.`
                   : "Waiting for the latest Supabase graph snapshot…"}
           </p>
+          {!!(dkgSync.recentSources || []).length && <div style={{ marginTop: 10, display: "grid", gap: 6 }}>
+            <span style={S.mono(9.5, T.inkSoft)}>RECENT LIVE INGESTS</span>
+            {(dkgSync.recentSources || []).slice(0, 3).map((src) => (
+              <a key={src.id} href={src.url || undefined} target="_blank" rel="noreferrer" style={{ display: "block", textDecoration: "none", color: T.ink, background: T.card, border: `1px solid ${T.line}`, borderRadius: 12, padding: "8px 10px" }}>
+                <div style={{ display: "flex", justifyContent: "space-between", gap: 8 }}>
+                  <b style={{ fontSize: 12.5 }}>{src.title}</b>
+                  {src.lastReadAt && <span style={S.mono(8.5, T.inkSoft)}>{new Date(src.lastReadAt).toLocaleString()}</span>}
+                </div>
+                <div style={{ fontSize: 11.5, color: T.inkSoft, marginTop: 3 }}>{src.url || src.id}</div>
+              </a>
+            ))}
+            {!!(dkgSync.recentRuns || []).length && <div style={{ fontSize: 11.5, color: T.inkSoft, lineHeight: 1.45 }}>
+              Latest run: {(dkgSync.recentRuns[0].nodesAdded || 0) > 0
+                ? `${dkgSync.recentRuns[0].nodesAdded} new nodes, ${dkgSync.recentRuns[0].edgesAdded || 0} new edges`
+                : `${dkgSync.recentRuns[0].nodesUpdated || 0} existing nodes refreshed · no new nodes`}
+            </div>}
+          </div>}
         </div>
         {allWorlds.map((w) => {
           const total = w.regions.reduce((n, r) => n + r.concepts.length, 0);

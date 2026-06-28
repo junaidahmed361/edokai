@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "updated_at": "2026-06-28T06:41:30Z",
+  "updated_at": "2026-06-28T07:12:53Z",
   "sources": {
     "hf-space-trl-distillation-trainer-2026": {
       "id": "hf-space-trl-distillation-trainer-2026",
@@ -15,7 +15,7 @@
       ],
       "published": "2026-04-12",
       "discovered_at": "2026-06-28T02:12:39Z",
-      "last_read_at": "2026-06-28T02:12:39Z",
+      "last_read_at": "2026-06-28T07:12:53Z",
       "provenance": [
         "Primary Space page metadata and app/src/content/article.mdx raw content from Hugging Face Space.",
         "Article states TRL supports on-policy distillation with 100B+ parameter teacher models and trains up to 40x faster using generation buffer, batched teacher-server requests, and binary logprob encoding."
@@ -32,7 +32,7 @@
       ],
       "published": null,
       "discovered_at": "2026-06-28T02:12:39Z",
-      "last_read_at": "2026-06-28T02:12:39Z",
+      "last_read_at": "2026-06-28T07:12:53Z",
       "provenance": [
         "API metadata reports public Docker Space, running status, lastModified 2026-04-14T15:45:44.000Z, and linked models including HuggingFaceTB/SmolLM3-3B and Llama 3.x models."
       ],
@@ -48,7 +48,7 @@
       ],
       "published": null,
       "discovered_at": "2026-06-28T02:12:39Z",
-      "last_read_at": "2026-06-28T02:12:39Z",
+      "last_read_at": "2026-06-28T07:12:53Z",
       "provenance": [
         "Docs describe DistillationTrainer under trl.experimental.distillation, DistillationConfig options lmbda, beta, loss_top_k, external teacher server support, generation buffer, and binary-encoded logprob payloads."
       ],
@@ -64,7 +64,7 @@
       ],
       "published": null,
       "discovered_at": "2026-06-28T02:12:39Z",
-      "last_read_at": "2026-06-28T02:12:39Z",
+      "last_read_at": "2026-06-28T07:12:53Z",
       "provenance": [
         "BibTeX entries cite GKD arXiv:2306.13649, GOLD Hugging Face Space, Thinking Machines on-policy distillation blog, teacher-assistant distillation arXiv:1902.03393, and reasoning distillation arXiv:2501.16937."
       ],
@@ -114,7 +114,7 @@
       ],
       "confidence": 0.96,
       "first_seen": "2026-06-28T02:12:39Z",
-      "last_seen": "2026-06-28T02:12:39Z",
+      "last_seen": "2026-06-28T07:12:53Z",
       "world_hint": "generative-models"
     },
     "trl-distillation-trainer": {
@@ -132,7 +132,7 @@
       ],
       "confidence": 0.94,
       "first_seen": "2026-06-28T02:12:39Z",
-      "last_seen": "2026-06-28T02:12:39Z",
+      "last_seen": "2026-06-28T07:12:53Z",
       "world_hint": "llm-systems-serving"
     },
     "on-policy-distillation": {
@@ -151,7 +151,7 @@
       ],
       "confidence": 0.96,
       "first_seen": "2026-06-28T02:12:39Z",
-      "last_seen": "2026-06-28T02:12:39Z",
+      "last_seen": "2026-06-28T07:12:53Z",
       "world_hint": "generative-models"
     },
     "off-policy-distillation": {
@@ -167,7 +167,7 @@
       ],
       "confidence": 0.94,
       "first_seen": "2026-06-28T02:12:39Z",
-      "last_seen": "2026-06-28T02:12:39Z",
+      "last_seen": "2026-06-28T07:12:53Z",
       "world_hint": "generative-models"
     },
     "generation-buffer": {
@@ -185,7 +185,7 @@
       ],
       "confidence": 0.95,
       "first_seen": "2026-06-28T02:12:39Z",
-      "last_seen": "2026-06-28T02:12:39Z",
+      "last_seen": "2026-06-28T07:12:53Z",
       "world_hint": "llm-systems-serving"
     },
     "teacher-server-logprob-serving": {
@@ -203,7 +203,7 @@
       ],
       "confidence": 0.94,
       "first_seen": "2026-06-28T02:12:39Z",
-      "last_seen": "2026-06-28T02:12:39Z",
+      "last_seen": "2026-06-28T07:12:53Z",
       "world_hint": "llm-systems-serving"
     },
     "request-batching-for-teacher-logprobs": {
@@ -220,7 +220,7 @@
       ],
       "confidence": 0.94,
       "first_seen": "2026-06-28T02:12:39Z",
-      "last_seen": "2026-06-28T02:12:39Z",
+      "last_seen": "2026-06-28T07:12:53Z",
       "world_hint": "llm-systems-serving"
     },
     "binary-logprob-encoding": {
@@ -238,7 +238,7 @@
       ],
       "confidence": 0.95,
       "first_seen": "2026-06-28T02:12:39Z",
-      "last_seen": "2026-06-28T02:12:39Z",
+      "last_seen": "2026-06-28T07:12:53Z",
       "world_hint": "llm-systems-serving"
     },
     "top-k-kl-approximation": {
@@ -256,7 +256,7 @@
       ],
       "confidence": 0.95,
       "first_seen": "2026-06-28T02:12:39Z",
-      "last_seen": "2026-06-28T02:12:39Z",
+      "last_seen": "2026-06-28T07:12:53Z",
       "world_hint": "transformer-architecture"
     },
     "forward-kl-divergence": {
@@ -273,7 +273,7 @@
       ],
       "confidence": 0.91,
       "first_seen": "2026-06-28T02:12:39Z",
-      "last_seen": "2026-06-28T02:12:39Z",
+      "last_seen": "2026-06-28T07:12:53Z",
       "world_hint": "generative-models"
     },
     "reverse-kl-divergence": {
@@ -291,7 +291,7 @@
       ],
       "confidence": 0.91,
       "first_seen": "2026-06-28T02:12:39Z",
-      "last_seen": "2026-06-28T02:12:39Z",
+      "last_seen": "2026-06-28T07:12:53Z",
       "world_hint": "generative-models"
     },
     "capacity-gap-in-distillation": {
@@ -308,7 +308,7 @@
       ],
       "confidence": 0.9,
       "first_seen": "2026-06-28T02:12:39Z",
-      "last_seen": "2026-06-28T02:12:39Z",
+      "last_seen": "2026-06-28T07:12:53Z",
       "world_hint": "generative-models"
     },
     "domain-specific-reasoning-distillation": {
@@ -325,7 +325,7 @@
       ],
       "confidence": 0.9,
       "first_seen": "2026-06-28T02:12:39Z",
-      "last_seen": "2026-06-28T02:12:39Z",
+      "last_seen": "2026-06-28T07:12:53Z",
       "world_hint": "generative-models"
     },
     "vllm-batched-inference-engine": {
@@ -342,7 +342,7 @@
       ],
       "confidence": 0.92,
       "first_seen": "2026-06-28T02:12:39Z",
-      "last_seen": "2026-06-28T02:12:39Z",
+      "last_seen": "2026-06-28T07:12:53Z",
       "world_hint": "llm-systems-serving"
     },
     "qwen3-235b-teacher-distillation": {
@@ -359,7 +359,7 @@
       ],
       "confidence": 0.91,
       "first_seen": "2026-06-28T02:12:39Z",
-      "last_seen": "2026-06-28T02:12:39Z",
+      "last_seen": "2026-06-28T07:12:53Z",
       "world_hint": "llm-systems-serving"
     },
     "graphrag-query-focused-summarization": {
@@ -791,6 +791,25 @@
         "No new macro world created; GraphRAG routed under LLM Systems & Serving as a retrieval/RAG region. Open question logged about a future dedicated RAG/retrieval cluster or macro world."
       ],
       "completed_at": "2026-06-28T07:05:00Z"
+    },
+    {
+      "run_id": "manual-telegram-trl-distillation-refresh-20260628T071253Z",
+      "trigger": "manual-telegram-link-ingest",
+      "source_ids": [
+        "hf-space-trl-distillation-trainer-2026",
+        "hf-space-api-trl-distillation-trainer-2026",
+        "trl-distillation-trainer-docs-2026",
+        "trl-distillation-bibliography-2026"
+      ],
+      "nodes_added": 0,
+      "nodes_updated": 15,
+      "edges_added": 0,
+      "worlds_changed": [],
+      "escalations": [],
+      "notes": [
+        "Manual re-ingest of the TRL distillation Space found the source already represented in the DKG; refreshed last_read_at/last_seen timestamps and preserved existing routed worlds without duplicating nodes, edges, or regions."
+      ],
+      "completed_at": "2026-06-28T07:12:53Z"
     }
   ]
 }

@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "updated_at": "2026-06-28T06:41:30Z",
+  "updated_at": "2026-06-28T07:12:53Z",
   "macro_worlds": {
     "agents": {
       "label": "Agents",
@@ -566,6 +566,37 @@
         "updated DKG world_hint for GraphRAG concept nodes"
       ],
       "router_learning": "Coherent retrieval clusters with their own index construction, query-time algorithm, and evaluation axis should self-promote to a macro world instead of being appended to generic serving."
+    },
+    {
+      "run_id": "manual-telegram-trl-distillation-refresh-20260628T071253Z",
+      "source_ids": [
+        "hf-space-trl-distillation-trainer-2026",
+        "hf-space-api-trl-distillation-trainer-2026",
+        "trl-distillation-trainer-docs-2026",
+        "trl-distillation-bibliography-2026"
+      ],
+      "routed_concepts": [
+        "distilling-100b-models-40x-faster-with-trl",
+        "trl-distillation-trainer",
+        "on-policy-distillation",
+        "off-policy-distillation",
+        "generation-buffer",
+        "teacher-server-logprob-serving",
+        "request-batching-for-teacher-logprobs",
+        "binary-logprob-encoding",
+        "top-k-kl-approximation",
+        "forward-kl-divergence",
+        "reverse-kl-divergence",
+        "capacity-gap-in-distillation",
+        "domain-specific-reasoning-distillation",
+        "vllm-batched-inference-engine",
+        "qwen3-235b-teacher-distillation"
+      ],
+      "worlds_enhanced": [],
+      "new_worlds_created": [],
+      "manual_review": [],
+      "router_learning": "Re-ingest confirmed TRL distillation spans the existing Generative Models, LLM Systems & Serving, and Transformer Architecture umbrellas; no new macro world was promoted because the cluster is already covered by distillation/compression, serving-system, and token-loss regions.",
+      "completed_at": "2026-06-28T07:12:53Z"
     }
   ]
 }
