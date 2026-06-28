@@ -1,0 +1,33 @@
+{
+  "schema_version": 1,
+  "updated_at": null,
+  "macro_worlds": {
+    "agents": {
+      "label": "Agents",
+      "description": "Agentic workflows, RL/post-training, planning, orchestration, evaluation, and tool-using systems.",
+      "regions": []
+    },
+    "transformer-architecture": {
+      "label": "Transformer Architecture",
+      "description": "Embeddings, attention, MoE, and modern architecture mechanisms.",
+      "regions": []
+    },
+    "generative-models": {
+      "label": "Generative Models",
+      "description": "KL divergence, autoencoders, diffusion, likelihood models, and generation objectives.",
+      "regions": []
+    },
+    "perception-world-models": {
+      "label": "Perception & World Models",
+      "description": "VLMs, latent world models, JEPA-style representation prediction, and embodied/perceptual models.",
+      "regions": []
+    },
+    "llm-systems-serving": {
+      "label": "LLM Systems & Serving",
+      "description": "Inference, caching, quantization, speculative decoding, serving systems, and production throughput.",
+      "regions": []
+    }
+  },
+  "unrouted_concepts": [],
+  "routing_history": []
+}
