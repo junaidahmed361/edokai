@@ -34,3 +34,25 @@ Append-only operational log for automatic EmergentMind ingestion, Telegram manua
 - Verification: JSON parse/provenance validation and adapter/build checks run after state update; no fabricated citations introduced.
 - Escalations/manual review: none.
 
+
+## daily-emergentmind-all-topics-20260628T140150Z
+
+- Trigger: scheduled daily EmergentMind all-topics graph growth loop.
+- Homepage discovery: fetched `https://www.emergentmind.com/` and decoded current bootstrapped trending-paper metadata; selected 12 high-signal ML/AI papers for Edokai ingestion.
+- Sources ingested: emergentmind-2606-24597-qwen-agentworld-2026, emergentmind-2606-25996-autodata-2026, emergentmind-2606-24855-openthoughts-agent-2026, emergentmind-2606-23595-spiral-2026, emergentmind-2606-24020-benchpress-2026, emergentmind-2606-25010-emergent-capabilities-2026, emergentmind-2606-23670-tapered-language-models-2026, emergentmind-2606-26294-red-queen-godel-machine-2026, emergentmind-2606-24937-hitchhikers-guide-agentic-ai-2026, emergentmind-2606-24775-agent-native-memory-2026, emergentmind-2606-24752-plasticity-loss-llms-2026, emergentmind-2606-24251-misalignment-thinking-probes-2026.
+- Graph actions: added 12 source records, updated 0; added 19 nodes, updated 0; added 12 source-backed edges. Totals now 17 sources / 42 nodes / 34 edges.
+- Concept-world builder: enhanced existing worlds agents, llm-systems-serving, transformer-architecture with 9 new or refreshed regions; no new macro world created.
+- Budget note: discovery tooling accidentally fetched 14 EmergentMind paper pages while batching, but checker ingested only the intended 12 homepage-selected papers and no associated arXiv/deep links.
+- Verification: maker/checker provenance pass succeeded before write; JSON validation and app/sync checks run after this log entry in the cron job.
+- Escalations/manual review: keep misalignment-probe claims source-qualified; no deployment/safety guarantee inferred. No publishing, secrets, infra, or broad UI refactor performed.
+
+
+## daily-concept-world-builder-20260628T143101Z
+
+- Trigger: scheduled daily holistic concept-world builder after EmergentMind all-topics DKG growth.
+- Durable-state read: inspected `knowledge/edokai-dkg.json`, `knowledge/concept-world-index.json`, latest upstream run `daily-emergentmind-all-topics-20260628T140150Z`, and existing routing history before making changes.
+- Maker/checker result: no unrouted concepts remained after the upstream ingestion; no new macro world was justified. Existing non-empty Edokai worlds now render as Agents (5 regions), Transformer Architecture (3), Generative Models (2), LLM Systems & Serving (4), and Retrieval-Augmented Generation (2). The seeded Perception & World Models umbrella remains empty pending future source-backed concepts.
+- Content quality action: rotated authored quiz correct-answer positions across 18 source-grounded region quizzes so answers are no longer all position 0; final answer-position distribution is 0:4, 1:5, 2:5, 3:4. Correct choices, source IDs, concepts, and provenance were preserved.
+- Graph/world actions: added 0 sources, 0 nodes, 0 edges, and 0 new macro worlds; appended run-history/routing-history entries for this builder pass.
+- Verification: JSON parse/provenance/reference checks passed (17 sources / 42 nodes / 34 edges / 6 macro worlds / 16 regions); `npm run dkg:test` passed with 5 live non-empty worlds; `npm run build` passed with the existing Vite CJS API deprecation and chunk-size warnings; `npm run dkg:sync` passed and live Supabase readback adapted to 5 rendered worlds.
+- Escalations/manual review: none for this pass. Continue to keep misalignment-probe claims source-qualified; do not infer deployment safety guarantees.

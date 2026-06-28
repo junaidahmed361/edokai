@@ -1,6 +1,8 @@
 import React, { useState, useEffect, useRef, useMemo } from "react";
 import { dkgSyncConfigStatus, subscribeDkgSnapshot, snapshotToEdokaiWorlds, mergeDkgWorlds, summarizeDkgSnapshot } from "./dkgLiveSync";
 
+const DkgThreeMap = React.lazy(() => import("./DkgThreeMap.jsx"));
+
 /* ============================================================
    EDOKAI
    Two modes:
@@ -2967,6 +2969,7 @@ export default function App() {
   const [dkgSync, setDkgSync] = useState({ ...dkgSyncConfigStatus(), status: "booting", updatedAt: null, stats: null, recentSources: [], recentRuns: [] });
   const [dkgWorlds, setDkgWorlds] = useState([]);
   const [mapFocus, setMapFocus] = useState(null);
+  const [sectionOpen, setSectionOpen] = useState({ liveDkg: true, teachPanel: true, studySources: true, teachMission: true, teachResources: true, teachGlossary: true, teachRecords: true });
 
   Object.assign(T, darkMode ? THEMES.dark : THEMES.light);
 
@@ -3044,6 +3047,7 @@ export default function App() {
   };
   const persistCfg = (c) => { setCfg(c); setDarkMode(!!c.darkMode); GLOBAL_KEY = c.anthropicKey || ""; saveStore("ru-cfg", c); };
   const showToast = (m) => { setToast(m); setTimeout(() => setToast(null), 2600); };
+  const toggleSection = (id) => setSectionOpen((s) => ({ ...s, [id]: !s[id] }));
   const toggleMusic = () => { if (musicOn) { music.stop(); setMusicOn(false); } else { music.start(); setMusicOn(true); } };
   const toggleTheme = () => persistCfg({ ...cfg, darkMode: !darkMode });
 
@@ -3649,6 +3653,20 @@ ${QUALITY_RULES}`, cfg));
       ))}
     </div>
   );
+  const Collapsible = ({ id, title, children, color = T.explore, right = null, style = {} }) => {
+    const open = sectionOpen[id] !== false;
+    return (
+      <div style={{ ...S.card, ...style }}>
+        <div style={{ width: "100%", display: "flex", justifyContent: "space-between", alignItems: "center", gap: 10 }}>
+          <button onClick={() => toggleSection(id)} style={{ flex: 1, background: "none", border: "none", color: T.ink, cursor: "pointer", padding: 0, fontFamily: "inherit", textAlign: "left" }}>
+            <span style={S.mono(10, color)}>{open ? "⌄" : "›"} {title}</span>
+          </button>
+          {right || <button onClick={() => toggleSection(id)} style={{ background: "none", border: "none", padding: 0, cursor: "pointer", fontFamily: "inherit" }}><span style={S.mono(9, T.inkSoft)}>{open ? "collapse" : "expand"}</span></button>}
+        </div>
+        {open && <div style={{ marginTop: 8 }}>{children}</div>}
+      </div>
+    );
+  };
   const TeachingPanel = ({ target = world, region: teachRegion = null, compact = false }) => {
     const tp = target.teaching || TEACHING_PARADIGM;
     const records = worldLearningRecords(target).length;
@@ -3660,16 +3678,18 @@ ${QUALITY_RULES}`, cfg));
       ["📚", compact ? `${glossary} glossary · ${records} records` : (teachRegion?.referenceHint || tp.reference)],
     ];
     return (
-      <div style={{ ...S.card, marginTop: 10, background: darkMode ? "#101832" : "#F7F8FD" }}>
-        <div style={{ display: "flex", justifyContent: "space-between", gap: 8, alignItems: "center" }}>
-          <span style={S.mono(10, T.explore)}>TEACH WORKSPACE · {TEACH_SOURCE}</span>
-          <button onClick={(e) => { e.stopPropagation(); setDexWorld(target.id); setScreen("teachspace"); }} style={{ ...S.chip(false), fontSize: 11, padding: "5px 9px" }}>Open mission log →</button>
-        </div>
-        {!compact && <p style={{ fontSize: 12.5, color: T.inkSoft, lineHeight: 1.55, margin: "6px 0 8px" }}>This is now stateful, not just a banner: captured concepts become glossary terms, critical wins create learning records, resources stay attached to each world, and Coach/Wilds generate retrieval practice from your misses.</p>}
+      <Collapsible
+        id="teachPanel"
+        title={`TEACH WORKSPACE · ${TEACH_SOURCE}`}
+        color={T.explore}
+        style={{ marginTop: 10, background: darkMode ? "#101832" : "#F7F8FD" }}
+        right={<button onClick={(e) => { e.stopPropagation(); setDexWorld(target.id); setScreen("teachspace"); }} style={{ ...S.chip(false), fontSize: 11, padding: "5px 9px" }}>Open mission log →</button>}
+      >
+        {!compact && <p style={{ fontSize: 12.5, color: T.inkSoft, lineHeight: 1.55, margin: "0 0 8px" }}>This is now stateful, not just a banner: captured concepts become glossary terms, critical wins create learning records, resources stay attached to each world, and Coach/Wilds generate retrieval practice from your misses.</p>}
         <div style={{ display: "flex", flexWrap: "wrap", gap: 6 }}>
           {chips.map(([icon, text], i) => <span key={i} style={{ ...S.mono(9.5, i === 0 ? T.action : i === 1 ? T.explore : i === 2 ? T.reward : T.gold), background: T.card, border: `1px solid ${T.line}`, borderRadius: 999, padding: "5px 9px" }}>{icon} {text}</span>)}
         </div>
-      </div>
+      </Collapsible>
     );
   };
 
@@ -3697,12 +3717,8 @@ ${QUALITY_RULES}`, cfg));
           <button onClick={() => { setScan(null); setScreen("spawn"); }} style={{ ...S.btn(T.action), padding: "7px 12px", fontSize: 12 }}>+ Bring your own</button>
         </div>
         <TeachingPanel target={world} compact />
-        <div style={{ ...S.card, marginTop: 10, background: dkgSync.status === "error" ? T.penaltySoft : dkgSync.status === "disabled" ? T.card : T.exploreSoft }}>
-          <div style={{ display: "flex", justifyContent: "space-between", gap: 10, alignItems: "center" }}>
-            <span style={S.mono(10, dkgSync.status === "error" ? T.penalty : T.explore)}>LIVE DKG · {dkgSync.status.toUpperCase()}</span>
-            {dkgSync.updatedAt && <span style={S.mono(9, T.inkSoft)}>{new Date(dkgSync.updatedAt).toLocaleString()}</span>}
-          </div>
-          <p style={{ fontSize: 12.5, color: T.inkSoft, lineHeight: 1.5, margin: "6px 0 0" }}>
+        <Collapsible id="liveDkg" title={`LIVE DKG · ${dkgSync.status.toUpperCase()}`} color={dkgSync.status === "error" ? T.penalty : T.explore} style={{ marginTop: 10, background: dkgSync.status === "error" ? T.penaltySoft : dkgSync.status === "disabled" ? T.card : T.exploreSoft }} right={dkgSync.updatedAt ? <span style={S.mono(9, T.inkSoft)}>{new Date(dkgSync.updatedAt).toLocaleString()}</span> : null}>
+          <p style={{ fontSize: 12.5, color: T.inkSoft, lineHeight: 1.5, margin: 0 }}>
             {dkgSync.status === "disabled"
               ? "Set VITE_SUPABASE_ANON_KEY in Netlify to load live Supabase graph snapshots."
               : dkgSync.status === "error"
@@ -3711,24 +3727,25 @@ ${QUALITY_RULES}`, cfg));
                   ? `${dkgSync.stats.node_count || 0} graph nodes · ${dkgSync.stats.edge_count || 0} edges · ${dkgSync.stats.macro_world_count || 0} macro worlds synced from Supabase.`
                   : "Waiting for the latest Supabase graph snapshot…"}
           </p>
-          {!!(dkgSync.recentSources || []).length && <div style={{ marginTop: 10, display: "grid", gap: 6 }}>
-            <span style={S.mono(9.5, T.inkSoft)}>RECENT LIVE INGESTS</span>
-            {(dkgSync.recentSources || []).slice(0, 3).map((src) => (
-              <a key={src.id} href={src.url || undefined} target="_blank" rel="noreferrer" style={{ display: "block", textDecoration: "none", color: T.ink, background: T.card, border: `1px solid ${T.line}`, borderRadius: 12, padding: "8px 10px" }}>
-                <div style={{ display: "flex", justifyContent: "space-between", gap: 8 }}>
-                  <b style={{ fontSize: 12.5 }}>{src.title}</b>
-                  {src.lastReadAt && <span style={S.mono(8.5, T.inkSoft)}>{new Date(src.lastReadAt).toLocaleString()}</span>}
-                </div>
-                <div style={{ fontSize: 11.5, color: T.inkSoft, marginTop: 3 }}>{src.url || src.id}</div>
-              </a>
-            ))}
-            {!!(dkgSync.recentRuns || []).length && <div style={{ fontSize: 11.5, color: T.inkSoft, lineHeight: 1.45 }}>
-              Latest run: {(dkgSync.recentRuns[0].nodesAdded || 0) > 0
-                ? `${dkgSync.recentRuns[0].nodesAdded} new nodes, ${dkgSync.recentRuns[0].edgesAdded || 0} new edges`
-                : `${dkgSync.recentRuns[0].nodesUpdated || 0} existing nodes refreshed · no new nodes`}
-            </div>}
-          </div>}
-        </div>
+          {!!(dkgSync.recentSources || []).length && <Collapsible id="liveDkgSources" title="RECENT LIVE INGESTS / SOURCES" color={T.inkSoft} style={{ marginTop: 10, padding: 10, background: T.card }}>
+            <div style={{ display: "grid", gap: 6 }}>
+              {(dkgSync.recentSources || []).slice(0, 3).map((src) => (
+                <a key={src.id} href={src.url || undefined} target="_blank" rel="noreferrer" style={{ display: "block", textDecoration: "none", color: T.ink, background: darkMode ? "#101832" : "#FAFBFF", border: `1px solid ${T.line}`, borderRadius: 12, padding: "8px 10px" }}>
+                  <div style={{ display: "flex", justifyContent: "space-between", gap: 8 }}>
+                    <b style={{ fontSize: 12.5 }}>{src.title}</b>
+                    {src.lastReadAt && <span style={S.mono(8.5, T.inkSoft)}>{new Date(src.lastReadAt).toLocaleString()}</span>}
+                  </div>
+                  <div style={{ fontSize: 11.5, color: T.inkSoft, marginTop: 3 }}>{src.url || src.id}</div>
+                </a>
+              ))}
+              {!!(dkgSync.recentRuns || []).length && <div style={{ fontSize: 11.5, color: T.inkSoft, lineHeight: 1.45 }}>
+                Latest run: {(dkgSync.recentRuns[0].nodesAdded || 0) > 0
+                  ? `${dkgSync.recentRuns[0].nodesAdded} new nodes, ${dkgSync.recentRuns[0].edgesAdded || 0} new edges`
+                  : `${dkgSync.recentRuns[0].nodesUpdated || 0} existing nodes refreshed · no new nodes`}
+              </div>}
+            </div>
+          </Collapsible>}
+        </Collapsible>
         {allWorlds.map((w) => {
           const total = w.regions.reduce((n, r) => n + r.concepts.length, 0);
           const got = w.regions.reduce((n, r) => n + r.concepts.filter((c) => capturedSet.has(c.id)).length, 0);
@@ -3760,27 +3777,24 @@ ${QUALITY_RULES}`, cfg));
         <div style={{ ...S.wrap }}>
           <Tabs />
           <div style={{ ...S.card, marginTop: 14, background: darkMode ? "linear-gradient(135deg,#101832,#17203f)" : "linear-gradient(135deg,#F5F8FF,#FFFFFF)" }}>
-            <span style={S.mono(10, T.explore)}>EDOKAI ATLAS · COHERENT KNOWLEDGE MAP</span>
-            <h2 style={{ fontSize: 21, fontWeight: 800, margin: "6px 0 4px" }}>See worlds as learnable territories, not a node hairball.</h2>
-            <p style={{ fontSize: 13, color: T.inkSoft, lineHeight: 1.55, margin: 0 }}>Each lane is a macro-world, each stack is a region, and concept chips show the critical path you actually study. Focus one world to unpack its local structure while neighboring worlds stay compressed.</p>
+            <span style={S.mono(10, T.explore)}>EDOKAI ATLAS · THREE.JS TERRITORY MAP</span>
+            <h2 style={{ fontSize: 21, fontWeight: 800, margin: "6px 0 4px" }}>A spatial DKG map you can read at a glance.</h2>
+            <p style={{ fontSize: 13, color: T.inkSoft, lineHeight: 1.55, margin: 0 }}>Each island is a macro-world, orbiting dots are its regions, green arcs show capture progress, and source-overlap lines show nearby territories. Click an island to focus it; use Study to jump into the learner path.</p>
           </div>
 
-          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(145px, 1fr))", gap: 8, marginTop: 10 }}>
-            {allWorlds.map((w) => {
-              const st = mapStats(w);
-              const on = w.id === focusedMapWorld.id;
-              return (
-                <button key={w.id} onClick={() => { setMapFocus(w.id); setActiveWorld(w.id); }}
-                  style={{ ...S.card, textAlign: "left", cursor: "pointer", border: `2px solid ${on ? T.action : T.line}`, background: on ? T.actionSoft : T.card, padding: 12 }}>
-                  <div style={{ display: "flex", justifyContent: "space-between", gap: 8 }}>
-                    <div style={{ fontSize: 24 }}>{w.emoji}</div>
-                    <span style={S.mono(9, st.captured === st.concepts && st.concepts ? T.reward : T.inkSoft)}>{st.captured}/{st.concepts}</span>
-                  </div>
-                  <div style={{ fontWeight: 800, fontSize: 13.5, marginTop: 4 }}>{w.title}</div>
-                  <div style={S.mono(9, T.inkSoft)}>{w.regions.length} regions · {st.sides} duels · {st.sources} sources</div>
-                </button>
-              );
-            })}
+          <div style={{ marginTop: 10 }}>
+            <React.Suspense fallback={<div style={{ ...S.card, height: 390, display: "grid", placeItems: "center", color: T.inkSoft }}><span style={S.mono(10)}>loading three.js atlas…</span></div>}>
+              <DkgThreeMap
+                worlds={allWorlds}
+                focusedWorld={focusedMapWorld}
+                mapStats={mapStats}
+                capturedSet={capturedSet}
+                darkMode={darkMode}
+                T={T}
+                onFocus={(id) => { setMapFocus(id); setActiveWorld(id); }}
+                onStudy={(id) => { setActiveWorld(id); setRegionIdx(0); setAtNode("start"); setScreen("regionlist"); }}
+              />
+            </React.Suspense>
           </div>
 
           <div style={{ ...S.card, marginTop: 12 }}>
@@ -3850,10 +3864,11 @@ ${QUALITY_RULES}`, cfg));
           <button onClick={() => startGauntlet()} style={{ ...S.btn(T.gold), padding: "8px 12px", fontSize: 12 }}>⚔️ Trial Gauntlet</button>
         </div>
         {(world.links || []).length > 0 && (
-          <div style={{ display: "flex", flexWrap: "wrap", gap: 6, margin: "10px 0" }}>
-            <span style={{ ...S.mono(9.5), alignSelf: "center" }}>STUDY HALL:</span>
-            {world.links.map((l) => <a key={l.url} href={l.url} target="_blank" rel="noreferrer" style={{ ...S.chip(false), textDecoration: "none", fontSize: 11.5, padding: "5px 10px" }}>🔗 {l.label}</a>)}
-          </div>
+          <Collapsible id="studySources" title="STUDY HALL / SOURCES" color={T.explore} style={{ marginTop: 10, padding: 12 }}>
+            <div style={{ display: "flex", flexWrap: "wrap", gap: 6 }}>
+              {world.links.map((l) => <a key={l.url} href={l.url} target="_blank" rel="noreferrer" style={{ ...S.chip(false), textDecoration: "none", fontSize: 11.5, padding: "5px 10px" }}>🔗 {l.label}</a>)}
+            </div>
+          </Collapsible>
         )}
         <TeachingPanel target={world} />
         {regions.map((r, i) => {
@@ -4104,23 +4119,19 @@ ${QUALITY_RULES}`, cfg));
           <div style={{ display: "flex", gap: 6, flexWrap: "wrap" }}>
             {allWorlds.map((w) => <button key={w.id} onClick={() => { setDexWorld(w.id); setActiveWorld(w.id); }} style={S.chip(dexWorld === w.id)}>{w.emoji} {w.title}</button>)}
           </div>
-          <div style={{ ...S.card, marginTop: 12 }}>
-            <span style={S.mono(10, T.action)}>MISSION.md</span>
-            <p style={{ fontSize: 13.5, lineHeight: 1.6, margin: "7px 0 0" }}>{tp.mission}</p>
+          <Collapsible id="teachMission" title="MISSION.md" color={T.action} style={{ marginTop: 12 }}>
+            <p style={{ fontSize: 13.5, lineHeight: 1.6, margin: 0 }}>{tp.mission}</p>
             <div style={{ marginTop: 8 }}><span style={S.mono(9.5, T.inkSoft)}>Success: explain mechanisms · answer applied scenarios · transfer ideas into code/design decisions.</span></div>
-          </div>
-          <div style={{ ...S.card, marginTop: 10 }}>
-            <span style={S.mono(10, T.explore)}>RESOURCES.md</span>
+          </Collapsible>
+          <Collapsible id="teachResources" title="RESOURCES.md / SOURCES" color={T.explore} style={{ marginTop: 10 }}>
             {(teachW.links || []).length ? teachW.links.map((l) => <div key={l.url} style={{ marginTop: 7 }}><a href={l.url} target="_blank" rel="noreferrer" style={{ color: T.explore, fontWeight: 800, fontSize: 13 }}>{l.label}</a><div style={{ fontSize: 12, color: T.inkSoft }}>Use for source-grounded lore, examples, and follow-up reading.</div></div>) : <p style={{ fontSize: 12.5, color: T.inkSoft }}>Custom worlds built from pasted text/PDFs use that source as their resource.</p>}
-          </div>
-          <div style={{ ...S.card, marginTop: 10 }}>
-            <span style={S.mono(10, T.gold)}>GLOSSARY.md · captured concepts only</span>
+          </Collapsible>
+          <Collapsible id="teachGlossary" title="GLOSSARY.md · captured concepts only" color={T.gold} style={{ marginTop: 10 }}>
             {glossary.length ? glossary.map((c) => <div key={c.id} style={{ marginTop: 9, borderTop: `1px solid ${T.line}`, paddingTop: 8 }}><b style={{ fontSize: 13.5 }}>{c.sprite} {c.name}</b><p style={{ fontSize: 12.5, color: T.inkSoft, lineHeight: 1.55, margin: "4px 0 0" }}>{c.lore.slice(0, 230)}{c.lore.length > 230 ? "…" : ""}</p></div>) : <p style={{ fontSize: 12.5, color: T.inkSoft }}>Defeat critical encounters to promote terms into the glossary. This keeps the reference layer honest: it only contains concepts you have demonstrated.</p>}
-          </div>
-          <div style={{ ...S.card, marginTop: 10 }}>
-            <span style={S.mono(10, T.reward)}>LEARNING RECORDS</span>
+          </Collapsible>
+          <Collapsible id="teachRecords" title="LEARNING RECORDS" color={T.reward} style={{ marginTop: 10 }}>
             {records.length ? records.map((r) => <div key={r.id} style={{ marginTop: 9, borderTop: `1px solid ${T.line}`, paddingTop: 8 }}><b style={{ fontSize: 13.5 }}>{r.title}</b><p style={{ fontSize: 12.5, color: T.inkSoft, lineHeight: 1.55, margin: "4px 0 0" }}>{r.summary}</p><span style={S.mono(9, T.reward)}>{r.evidence}</span></div>) : <p style={{ fontSize: 12.5, color: T.inkSoft }}>Learning records appear when a critical is won. They are evidence of understanding, not a session log.</p>}
-          </div>
+          </Collapsible>
         </div>
       </div>
     );
