@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "updated_at": "2026-06-28T02:12:39Z",
+  "updated_at": "2026-06-28T06:41:30Z",
   "macro_worlds": {
     "agents": {
       "label": "Agents",
@@ -312,6 +312,178 @@
           ]
         }
       ]
+    },
+    "retrieval-augmented-generation": {
+      "label": "Retrieval-Augmented Generation",
+      "emoji": "🕸️",
+      "description": "RAG systems, graph retrieval, corpus-grounded synthesis, query-focused summarization, and retrieval evaluation mechanisms.",
+      "router_policy": {
+        "created_by": "manual-router-correction-20260628",
+        "promotion_reason": "GraphRAG introduced a coherent retrieval/sensemaking cluster with its own problem framing, index-building pipeline, runtime answering path, and evaluation criteria. Routing it under generic serving hid the learning path.",
+        "future_growth_rule": "Route vector RAG, GraphRAG, hybrid retrieval, reranking, indexing, query-focused summarization, and retrieval evaluation here unless the source is strictly about low-level inference serving infrastructure."
+      },
+      "regions": [
+        {
+          "id": "graph-rag-global-sensemaking",
+          "label": "Graph RAG & Global Sensemaking",
+          "summary": "How graph-structured indexes let LLMs answer corpus-wide 'sensemaking' questions that conventional chunk-retrieval RAG cannot, by summarizing communities of related entities.",
+          "source_ids": [
+            "arxiv-2404-16130-graphrag-2024"
+          ],
+          "concept_ids": [
+            "graphrag-query-focused-summarization",
+            "global-sensemaking-qfs",
+            "conventional-vector-rag",
+            "map-reduce-answer-generation"
+          ],
+          "critical_concepts": [
+            "graphrag-query-focused-summarization",
+            "global-sensemaking-qfs",
+            "conventional-vector-rag"
+          ],
+          "prerequisite_links": [
+            {
+              "from": "conventional-vector-rag",
+              "to": "global-sensemaking-qfs",
+              "why": "Learners first see why similarity-retrieval RAG works for local facts, which exposes the gap on whole-corpus questions."
+            },
+            {
+              "from": "global-sensemaking-qfs",
+              "to": "graphrag-query-focused-summarization",
+              "why": "Once the sensemaking/QFS problem is clear, GraphRAG is introduced as the graph-based solution."
+            },
+            {
+              "from": "graphrag-query-focused-summarization",
+              "to": "map-reduce-answer-generation",
+              "why": "Understanding the overall approach sets up how queries are actually answered at runtime."
+            }
+          ],
+          "side_retention_duels": [
+            {
+              "id": "local-vs-global-rag",
+              "prompt": "Which question type breaks conventional vector RAG?",
+              "left": "'What did section 3 say about X?' (local fact lookup)",
+              "right": "'What are the main themes across the whole corpus?' (global sensemaking)",
+              "answer": "The global, whole-corpus sensemaking question is what vector RAG fails on, because no small set of retrieved chunks contains the answer."
+            },
+            {
+              "id": "map-vs-reduce-step",
+              "prompt": "Where is the single global answer assembled?",
+              "left": "Map step: each community summary gives a partial answer in parallel",
+              "right": "Reduce step: partial answers are combined into the final answer",
+              "answer": "The reduce step combines the partial answers; the map step only produces independent partials."
+            }
+          ],
+          "quiz_questions": [
+            {
+              "question": "Why does GraphRAG outperform conventional vector RAG on questions like 'What are the main themes in this dataset?'",
+              "choices": [
+                "Because such questions need reasoning across the whole corpus, which graph community summaries cover but a few retrieved chunks do not.",
+                "Because GraphRAG uses a larger embedding model for similarity search.",
+                "Because vector RAG cannot read text files at all.",
+                "Because GraphRAG skips the LLM and answers from the graph directly."
+              ],
+              "answer_index": 0,
+              "source_ids": [
+                "arxiv-2404-16130-graphrag-2024"
+              ]
+            },
+            {
+              "question": "What are the two stages GraphRAG uses to build its index?",
+              "choices": [
+                "Derive an entity knowledge graph from source documents, then pregenerate community summaries for groups of related entities.",
+                "Fine-tune the LLM, then quantize it to 4-bit.",
+                "Crawl the web, then store embeddings in a vector database.",
+                "Translate the corpus, then deduplicate sentences."
+              ],
+              "answer_index": 0,
+              "source_ids": [
+                "arxiv-2404-16130-graphrag-2024"
+              ]
+            }
+          ]
+        },
+        {
+          "id": "graph-index-construction",
+          "label": "Graph Index Construction & Community Hierarchy",
+          "summary": "The pipeline that turns raw text into a queryable structure: LLM entity/relationship/claim extraction, Leiden hierarchical community detection, and bottom-up community summarization.",
+          "source_ids": [
+            "arxiv-2404-16130-graphrag-2024"
+          ],
+          "concept_ids": [
+            "entity-knowledge-graph-index",
+            "leiden-hierarchical-community-detection",
+            "community-summaries",
+            "llm-judged-sensemaking-metrics"
+          ],
+          "critical_concepts": [
+            "entity-knowledge-graph-index",
+            "leiden-hierarchical-community-detection",
+            "community-summaries"
+          ],
+          "prerequisite_links": [
+            {
+              "from": "entity-knowledge-graph-index",
+              "to": "leiden-hierarchical-community-detection",
+              "why": "You need the entity graph before you can partition it into communities."
+            },
+            {
+              "from": "leiden-hierarchical-community-detection",
+              "to": "community-summaries",
+              "why": "Communities define which elements get summarized together, bottom-up."
+            },
+            {
+              "from": "community-summaries",
+              "to": "llm-judged-sensemaking-metrics",
+              "why": "Once summaries drive answers, you need sensemaking-specific metrics to evaluate answer quality."
+            }
+          ],
+          "side_retention_duels": [
+            {
+              "id": "nodes-edges-covariates",
+              "prompt": "What three element kinds make up the GraphRAG index?",
+              "left": "Nodes (entities), edges (relationships), covariates (claims)",
+              "right": "Vectors, tokens, and attention heads",
+              "answer": "The graph index spans nodes (entities), edges (relationships), and covariates (claims)."
+            },
+            {
+              "id": "flat-vs-hierarchical-communities",
+              "prompt": "How are communities summarized?",
+              "left": "Bottom-up hierarchy: higher-level summaries fold in lower-level ones",
+              "right": "A single flat summary of the whole graph at once",
+              "answer": "Summaries are built bottom-up over a community hierarchy, with higher levels recursively incorporating lower-level element summaries."
+            }
+          ],
+          "quiz_questions": [
+            {
+              "question": "Which algorithm does GraphRAG use to partition its entity graph into nested communities?",
+              "choices": [
+                "Leiden community detection, applied recursively/hierarchically.",
+                "K-means over token embeddings.",
+                "Beam search decoding.",
+                "Gradient-boosted trees."
+              ],
+              "answer_index": 0,
+              "source_ids": [
+                "arxiv-2404-16130-graphrag-2024"
+              ]
+            },
+            {
+              "question": "In GraphRAG's evaluation, what role does the 'Directness' criterion play?",
+              "choices": [
+                "A control criterion expected to oppose comprehensiveness and diversity, not a target to maximize.",
+                "The primary metric GraphRAG is optimized to win.",
+                "A measure of inference latency in milliseconds.",
+                "A count of GPUs used during indexing."
+              ],
+              "answer_index": 0,
+              "source_ids": [
+                "arxiv-2404-16130-graphrag-2024"
+              ]
+            }
+          ]
+        }
+      ]
     }
   },
   "unrouted_concepts": [],
@@ -349,6 +521,51 @@
         "Capacity gap is currently routed to Generative Models with possible future cross-link to evaluation if Edokai adds a dedicated evaluation world."
       ],
       "completed_at": "2026-06-28T02:12:39Z"
+    },
+    {
+      "run_id": "manual-telegram-graphrag-20260628T070500Z",
+      "source_ids": [
+        "arxiv-2404-16130-graphrag-2024"
+      ],
+      "routed_concepts": [
+        "graphrag-query-focused-summarization",
+        "global-sensemaking-qfs",
+        "conventional-vector-rag",
+        "entity-knowledge-graph-index",
+        "leiden-hierarchical-community-detection",
+        "community-summaries",
+        "map-reduce-answer-generation",
+        "llm-judged-sensemaking-metrics"
+      ],
+      "worlds_enhanced": [
+        "llm-systems-serving"
+      ],
+      "new_worlds_created": [],
+      "manual_review": [
+        "GraphRAG/RAG concepts routed under LLM Systems & Serving as two new regions; consider a dedicated Retrieval & RAG cluster or macro world once more retrieval sources accumulate."
+      ],
+      "completed_at": "2026-06-28T07:05:00Z"
+    },
+    {
+      "run_id": "manual-router-correction-rag-20260628",
+      "source_ids": [
+        "arxiv-2404-16130-graphrag-2024"
+      ],
+      "routed_concepts": [
+        "community-summaries",
+        "conventional-vector-rag",
+        "entity-knowledge-graph-index",
+        "global-sensemaking-qfs",
+        "graphrag-query-focused-summarization",
+        "leiden-hierarchical-community-detection",
+        "llm-judged-sensemaking-metrics",
+        "map-reduce-answer-generation"
+      ],
+      "world_actions": [
+        "promoted GraphRAG regions from LLM Systems & Serving into new Retrieval-Augmented Generation macro world",
+        "updated DKG world_hint for GraphRAG concept nodes"
+      ],
+      "router_learning": "Coherent retrieval clusters with their own index construction, query-time algorithm, and evaluation axis should self-promote to a macro world instead of being appended to generic serving."
     }
   ]
 }

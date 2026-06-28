@@ -2966,6 +2966,7 @@ export default function App() {
   const [modelTest, setModelTest] = useState(null);
   const [dkgSync, setDkgSync] = useState({ ...dkgSyncConfigStatus(), status: "booting", updatedAt: null, stats: null });
   const [dkgWorlds, setDkgWorlds] = useState([]);
+  const [mapFocus, setMapFocus] = useState(null);
 
   Object.assign(T, darkMode ? THEMES.dark : THEMES.light);
 
@@ -3045,6 +3046,24 @@ export default function App() {
 
   const allWorlds = mergeDkgWorlds([...BUILTIN_WORLDS, ...worlds], dkgWorlds).map(applyTeachingParadigm);
   const world = allWorlds.find((w) => w.id === activeWorld) || BUILTIN_WORLDS[0];
+  const focusedMapWorld = allWorlds.find((w) => w.id === (mapFocus || activeWorld)) || world;
+  const mapStats = (w) => {
+    const concepts = w.regions.reduce((n, r) => n + r.concepts.length, 0);
+    const sides = w.regions.reduce((n, r) => n + (r.sides || []).length, 0);
+    const sources = (w.links || []).length;
+    const capturedIds = new Set(save?.captured || []);
+    const captured = w.regions.reduce((n, r) => n + r.concepts.filter((c) => capturedIds.has(c.id)).length, 0);
+    return { concepts, sides, sources, captured };
+  };
+  const worldSourceOverlap = (a, b) => {
+    const au = new Set((a.links || []).map((l) => l.url));
+    return (b.links || []).filter((l) => au.has(l.url)).length;
+  };
+  const mapNeighbors = allWorlds
+    .filter((w) => w.id !== focusedMapWorld.id)
+    .map((w) => ({ world: w, overlap: worldSourceOverlap(focusedMapWorld, w), stats: mapStats(w) }))
+    .sort((a, b) => b.overlap - a.overlap || b.stats.concepts - a.stats.concepts)
+    .slice(0, 5);
   const regions = world.regions;
   const region = regions[regionIdx];
   const level = save ? Math.floor(save.xp / 150) + 1 : 1;
@@ -3609,7 +3628,7 @@ ${QUALITY_RULES}`, cfg));
   );
   const Tabs = () => (
     <div style={{ display: "flex", gap: 6, marginTop: 14, flexWrap: "wrap" }}>
-      {[["home", "🌍 Learn"], ["dojo", "⌨️ Dojo"], ["wildspick", "🌿 Wilds"], ["coach", "🧪 Coach"], ["teachspace", "📚 Mission"], ["papers", "📡 Papers"]].map(([id, label]) => {
+      {[["home", "🌍 Learn"], ["map", "🗺️ Map"], ["dojo", "⌨️ Dojo"], ["wildspick", "🌿 Wilds"], ["coach", "🧪 Coach"], ["teachspace", "📚 Mission"], ["papers", "📡 Papers"]].map(([id, label]) => {
         const on = screen === id || (id === "home" && ["home", "regionlist", "region"].includes(screen));
         return <button key={id} onClick={() => setScreen(id)} style={{ ...S.btn(on ? T.ink : T.card, on ? "#fff" : T.inkSoft), border: `1px solid ${T.line}`, padding: "8px 14px", fontSize: 13 }}>{label}</button>;
       })}
@@ -3712,6 +3731,95 @@ ${QUALITY_RULES}`, cfg));
       </div>
     </div>
   );
+
+  /* ============ WORLDS MAP ============ */
+  if (screen === "map") {
+    const focusStats = mapStats(focusedMapWorld);
+    return (
+      <div style={S.app}><style>{CSS}</style><Toast /><HUD back={() => setScreen("home")} />
+        <div style={{ ...S.wrap }}>
+          <Tabs />
+          <div style={{ ...S.card, marginTop: 14, background: darkMode ? "linear-gradient(135deg,#101832,#17203f)" : "linear-gradient(135deg,#F5F8FF,#FFFFFF)" }}>
+            <span style={S.mono(10, T.explore)}>EDOKAI ATLAS · COHERENT KNOWLEDGE MAP</span>
+            <h2 style={{ fontSize: 21, fontWeight: 800, margin: "6px 0 4px" }}>See worlds as learnable territories, not a node hairball.</h2>
+            <p style={{ fontSize: 13, color: T.inkSoft, lineHeight: 1.55, margin: 0 }}>Each lane is a macro-world, each stack is a region, and concept chips show the critical path you actually study. Focus one world to unpack its local structure while neighboring worlds stay compressed.</p>
+          </div>
+
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(145px, 1fr))", gap: 8, marginTop: 10 }}>
+            {allWorlds.map((w) => {
+              const st = mapStats(w);
+              const on = w.id === focusedMapWorld.id;
+              return (
+                <button key={w.id} onClick={() => { setMapFocus(w.id); setActiveWorld(w.id); }}
+                  style={{ ...S.card, textAlign: "left", cursor: "pointer", border: `2px solid ${on ? T.action : T.line}`, background: on ? T.actionSoft : T.card, padding: 12 }}>
+                  <div style={{ display: "flex", justifyContent: "space-between", gap: 8 }}>
+                    <div style={{ fontSize: 24 }}>{w.emoji}</div>
+                    <span style={S.mono(9, st.captured === st.concepts && st.concepts ? T.reward : T.inkSoft)}>{st.captured}/{st.concepts}</span>
+                  </div>
+                  <div style={{ fontWeight: 800, fontSize: 13.5, marginTop: 4 }}>{w.title}</div>
+                  <div style={S.mono(9, T.inkSoft)}>{w.regions.length} regions · {st.sides} duels · {st.sources} sources</div>
+                </button>
+              );
+            })}
+          </div>
+
+          <div style={{ ...S.card, marginTop: 12 }}>
+            <div style={{ display: "flex", justifyContent: "space-between", gap: 10, alignItems: "flex-start" }}>
+              <div>
+                <span style={S.mono(10, T.action)}>FOCUSED WORLD · {focusStats.concepts} CONCEPTS</span>
+                <h2 style={{ fontSize: 22, fontWeight: 800, margin: "4px 0" }}>{focusedMapWorld.emoji} {focusedMapWorld.title}</h2>
+                <p style={{ fontSize: 13, color: T.inkSoft, lineHeight: 1.55, margin: 0 }}>{focusedMapWorld.blurb}</p>
+              </div>
+              <button onClick={() => { setActiveWorld(focusedMapWorld.id); setRegionIdx(0); setAtNode("start"); setScreen("regionlist"); }} style={{ ...S.btn(T.explore), padding: "8px 11px", fontSize: 12, whiteSpace: "nowrap" }}>Study →</button>
+            </div>
+
+            <div style={{ display: "grid", gap: 10, marginTop: 12 }}>
+              {focusedMapWorld.regions.map((r, i) => {
+                const done = r.concepts.filter((c) => capturedSet.has(c.id)).length;
+                return (
+                  <div key={r.id} style={{ border: `1px solid ${T.line}`, borderRadius: 16, padding: 12, background: darkMode ? "#0D142A" : "#FAFBFF" }}>
+                    <div style={{ display: "flex", gap: 10, alignItems: "flex-start" }}>
+                      <div style={{ width: 34, height: 34, borderRadius: 12, background: T.exploreSoft, display: "grid", placeItems: "center", flexShrink: 0 }}>{r.emoji}</div>
+                      <div style={{ flex: 1, minWidth: 0 }}>
+                        <div style={{ display: "flex", justifyContent: "space-between", gap: 8 }}>
+                          <div style={{ fontWeight: 800, fontSize: 14.5 }}>{i + 1}. {r.name}</div>
+                          <span style={S.mono(9, done === r.concepts.length ? T.reward : T.inkSoft)}>{done}/{r.concepts.length}</span>
+                        </div>
+                        <p style={{ fontSize: 12.5, color: T.inkSoft, lineHeight: 1.45, margin: "5px 0 8px" }}>{r.intro}</p>
+                        <div style={{ display: "flex", flexWrap: "wrap", gap: 6 }}>
+                          {r.concepts.map((c) => (
+                            <span key={c.id} title={c.lore} style={{ ...S.chip(capturedSet.has(c.id)), fontSize: 11, padding: "5px 8px", maxWidth: "100%" }}>{capturedSet.has(c.id) ? "✓ " : "○ "}{c.name}</span>
+                          ))}
+                        </div>
+                        {(r.sides || []).length > 0 && <div style={{ marginTop: 7, ...S.mono(9.5, T.gold) }}>⚔ {r.sides.length} contrast duel{r.sides.length === 1 ? "" : "s"}: {(r.sides || []).map((s) => s.name).slice(0, 2).join(" · ")}{r.sides.length > 2 ? " · …" : ""}</div>}
+                      </div>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+
+          <div style={{ ...S.card, marginTop: 12 }}>
+            <span style={S.mono(10, T.explore)}>NEARBY TERRITORIES</span>
+            <p style={{ fontSize: 12.5, color: T.inkSoft, lineHeight: 1.5, margin: "5px 0 10px" }}>Compressed neighbors keep the full DKG visible without turning the UI into an unreadable graph. Shared-source overlap is highlighted when present.</p>
+            <div style={{ display: "grid", gap: 8 }}>
+              {mapNeighbors.map(({ world: w, overlap, stats }) => (
+                <button key={w.id} onClick={() => { setMapFocus(w.id); setActiveWorld(w.id); }} style={{ ...S.card, padding: 10, display: "flex", gap: 10, alignItems: "center", textAlign: "left", cursor: "pointer" }}>
+                  <div style={{ fontSize: 22 }}>{w.emoji}</div>
+                  <div style={{ flex: 1 }}>
+                    <div style={{ fontWeight: 800, fontSize: 13.5 }}>{w.title}</div>
+                    <div style={S.mono(9, T.inkSoft)}>{stats.concepts} concepts · {w.regions.length} regions{overlap ? ` · ${overlap} shared source${overlap === 1 ? "" : "s"}` : ""}</div>
+                  </div>
+                  <span style={{ color: T.explore, fontWeight: 800 }}>focus</span>
+                </button>
+              ))}
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   /* ============ REGION LIST ============ */
   if (screen === "regionlist") return (

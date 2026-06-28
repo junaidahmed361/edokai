@@ -26,6 +26,8 @@ Edokai uses loop-engineering style automation to grow a source-grounded dynamic 
 
 **Cadence:** runs after manual ingest and daily after automatic ingest.
 
+**Router self-improvement:** when a source-backed cluster has its own problem framing, mechanism pipeline, runtime path, and evaluation axis, the router should promote it into a macro world instead of hiding it inside the nearest umbrella. Example learned rule: RAG/GraphRAG/hybrid retrieval/reranking/index construction/query-focused summarization belongs in `Retrieval-Augmented Generation`, not generic `LLM Systems & Serving`, unless the source is strictly about low-level inference serving infrastructure.
+
 ## State spine
 
 - `knowledge/edokai-dkg.json` — graph nodes, edges, sources, confidence, provenance.
