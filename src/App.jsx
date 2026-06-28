@@ -130,9 +130,14 @@ async function askModel(prompt, cfg, opts = {}) {
           console.warn("Claude Code auth bridge failed", e);
         }
       }
-      const proxied = await fetch("/.netlify/functions/anthropic", {
-        method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(body),
-      });
+      let proxied;
+      try {
+        proxied = await fetch("/.netlify/functions/anthropic", {
+          method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(body),
+        });
+      } catch (e) {
+        throw new Error("Hosted model proxy is unreachable from this app session. In local browser dev, run Netlify Dev or use Settings → Custom endpoint; in the desktop app, run `claude auth login` so the Claude Code bridge can answer.");
+      }
       const pdata = await proxied.json().catch(() => ({}));
       if (!proxied.ok || pdata.error) throw new Error(pdata.error?.message || pdata.error || `Model proxy error ${proxied.status}`);
       const pout = (pdata.content || []).filter((b) => b.type === "text").map((b) => b.text).join("\n");
@@ -157,10 +162,15 @@ async function askModel(prompt, cfg, opts = {}) {
   if (pdfBase64) throw new Error("PDF_NEEDS_BUILTIN");
   const headers = { "Content-Type": "application/json" };
   if (cfg.apiKey) headers["Authorization"] = `Bearer ${cfg.apiKey}`;
-  const res = await fetch(cfg.baseUrl.replace(/\/$/, "") + "/chat/completions", {
-    method: "POST", headers,
-    body: JSON.stringify({ model: cfg.model, max_tokens: 1200, messages: [{ role: "user", content: prompt }] }),
-  });
+  let res;
+  try {
+    res = await fetch(cfg.baseUrl.replace(/\/$/, "") + "/chat/completions", {
+      method: "POST", headers,
+      body: JSON.stringify({ model: cfg.model, max_tokens: 1200, messages: [{ role: "user", content: prompt }] }),
+    });
+  } catch (e) {
+    throw new Error(`Could not reach custom model endpoint at ${cfg.baseUrl}. Check that the server is running and CORS allows this origin.`);
+  }
   const data = await res.json().catch(() => ({}));
   if (!res.ok || data.error) throw new Error(data.error?.message || `Endpoint error ${res.status}`);
   const out = data.choices?.[0]?.message?.content || "";
@@ -3095,13 +3105,20 @@ export default function App() {
   const persistUKatas = (k) => { setUKatas(k); saveStore("ru-ukatas", k); };
   const persistAug = (a) => { setAug(a); saveStore("ru-aug", a); };
   const persistLore = (l) => { setDeepLore(l); saveStore("ru-lore", l); };
+  const localDeepLore = (c) => {
+    const base = String(c.lore || `${c.name} is part of this Edokai learning path.`).replace(/\s+/g, " ").trim();
+    return `Local deepening fallback — model unavailable. ${c.name} matters because it turns a vague label into a mechanism you can inspect and use. Start by naming the inputs, the transformation, and the output: what information enters, what rule or model changes it, and what evidence would tell you the change helped. A concrete example: if the concept governs a training or retrieval pipeline, compare the behavior before and after applying it on one small case, then ask whether the result became more accurate, cheaper, safer, or easier to debug. The common misconception is treating the term as a definition to memorize; Edokai wants you to use it as a decision tool. Original lore: ${base}`;
+  };
   const deepenLore = async (c) => {
     if (deepLore[c.id] || busy === "lore") return;
     setBusy("lore");
     try {
       const extra = await askModel(`You are a patient ML teacher using this paradigm: ${TEACH_PROMPT}\nA learner read this summary of "${c.name}":\n"""${c.lore}"""\nExpand it with ~150 words of deeper explanation: the intuition behind it, one concrete worked example with small numbers where possible, and the most common misconception. Plain text, no markdown headers.`, cfg);
       if (extra && extra.length > 40) persistLore({ ...deepLore, [c.id]: extra.trim() });
-    } catch (e) { showToast(`Model deepen failed: ${e.message || "check model settings"}.`); }
+    } catch (e) {
+      persistLore({ ...deepLore, [c.id]: localDeepLore(c) });
+      showToast(`Model unavailable; showing local lore fallback. ${e.message || "Check model settings."}`);
+    }
     setBusy("");
   };
   // lore the player should review for the current battle
