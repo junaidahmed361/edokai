@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef, useMemo } from "react";
+import { dkgSyncConfigStatus, subscribeDkgSnapshot, snapshotToEdokaiWorlds, mergeDkgWorlds } from "./dkgLiveSync";
 
 /* ============================================================
    EDOKAI
@@ -2963,6 +2964,8 @@ export default function App() {
   const [todoGuidance, setTodoGuidance] = useState(true);
   const [claudeCodeAuth, setClaudeCodeAuth] = useState(null);
   const [modelTest, setModelTest] = useState(null);
+  const [dkgSync, setDkgSync] = useState({ ...dkgSyncConfigStatus(), status: "booting", updatedAt: null, stats: null });
+  const [dkgWorlds, setDkgWorlds] = useState([]);
 
   Object.assign(T, darkMode ? THEMES.dark : THEMES.light);
 
@@ -2972,6 +2975,7 @@ export default function App() {
       s.sides = s.sides || []; s.katas = s.katas || {}; s.qstats = s.qstats || {}; s.kataHints = s.kataHints || {}; s.kataAttempts = s.kataAttempts || {}; s.learningRecords = s.learningRecords || [];
       setSave(s);
       setWorlds(await loadStore("ru-worlds", []));
+      setDkgWorlds(await loadStore("ru-dkg-worlds", []));
       setUKatas(await loadStore("ru-ukatas", []));
       setAug(await loadStore("ru-aug", {}));
       setDeepLore(await loadStore("ru-lore", {}));
@@ -2983,6 +2987,33 @@ export default function App() {
       setCfg(c); setDarkMode(!!c.darkMode); GLOBAL_KEY = c.anthropicKey || "";
     })();
   }, []);
+
+  useEffect(() => {
+    return subscribeDkgSnapshot(
+      (snapshot) => {
+        const liveWorlds = snapshotToEdokaiWorlds(snapshot.payload);
+        if (liveWorlds.length) {
+          setDkgWorlds(() => {
+            saveStore("ru-dkg-worlds", liveWorlds);
+            return liveWorlds;
+          });
+        }
+        setDkgSync((prev) => ({
+          ...prev,
+          status: snapshot.realtime ? "live" : snapshot.empty ? "empty" : "synced",
+          updatedAt: snapshot.updatedAt || snapshot.payload?.synced_at || null,
+          stats: snapshot.payload?.stats || null,
+          error: null,
+        }));
+      },
+      (status) => {
+        if (status.disabled) setDkgSync((prev) => ({ ...prev, status: "disabled", error: status.message }));
+        else if (status.error) setDkgSync((prev) => ({ ...prev, status: "error", error: status.error }));
+        else if (status.realtimeStatus) setDkgSync((prev) => ({ ...prev, realtimeStatus: status.realtimeStatus }));
+      }
+    );
+  }, []);
+
   const persist = (s) => { setSave(s); saveStore("ru-save", s); };
   const persistWorlds = (w) => { setWorlds(w); saveStore("ru-worlds", w); };
   const persistUKatas = (k) => { setUKatas(k); saveStore("ru-ukatas", k); };
@@ -3012,7 +3043,7 @@ export default function App() {
   const toggleMusic = () => { if (musicOn) { music.stop(); setMusicOn(false); } else { music.start(); setMusicOn(true); } };
   const toggleTheme = () => persistCfg({ ...cfg, darkMode: !darkMode });
 
-  const allWorlds = [...BUILTIN_WORLDS, ...worlds].map(applyTeachingParadigm);
+  const allWorlds = mergeDkgWorlds([...BUILTIN_WORLDS, ...worlds], dkgWorlds).map(applyTeachingParadigm);
   const world = allWorlds.find((w) => w.id === activeWorld) || BUILTIN_WORLDS[0];
   const regions = world.regions;
   const region = regions[regionIdx];
@@ -3644,6 +3675,21 @@ ${QUALITY_RULES}`, cfg));
           <button onClick={() => { setScan(null); setScreen("spawn"); }} style={{ ...S.btn(T.action), padding: "7px 12px", fontSize: 12 }}>+ Bring your own</button>
         </div>
         <TeachingPanel target={world} compact />
+        <div style={{ ...S.card, marginTop: 10, background: dkgSync.status === "error" ? T.penaltySoft : dkgSync.status === "disabled" ? T.card : T.exploreSoft }}>
+          <div style={{ display: "flex", justifyContent: "space-between", gap: 10, alignItems: "center" }}>
+            <span style={S.mono(10, dkgSync.status === "error" ? T.penalty : T.explore)}>LIVE DKG · {dkgSync.status.toUpperCase()}</span>
+            {dkgSync.updatedAt && <span style={S.mono(9, T.inkSoft)}>{new Date(dkgSync.updatedAt).toLocaleString()}</span>}
+          </div>
+          <p style={{ fontSize: 12.5, color: T.inkSoft, lineHeight: 1.5, margin: "6px 0 0" }}>
+            {dkgSync.status === "disabled"
+              ? "Set VITE_SUPABASE_ANON_KEY in Netlify to load live Supabase graph snapshots."
+              : dkgSync.status === "error"
+                ? `Supabase sync error: ${dkgSync.error}`
+                : dkgSync.stats
+                  ? `${dkgSync.stats.node_count || 0} graph nodes · ${dkgSync.stats.edge_count || 0} edges · ${dkgSync.stats.macro_world_count || 0} macro worlds synced from Supabase.`
+                  : "Waiting for the latest Supabase graph snapshot…"}
+          </p>
+        </div>
         {allWorlds.map((w) => {
           const total = w.regions.reduce((n, r) => n + r.concepts.length, 0);
           const got = w.regions.reduce((n, r) => n + r.concepts.filter((c) => capturedSet.has(c.id)).length, 0);

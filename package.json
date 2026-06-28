@@ -2,25 +2,28 @@
   "name": "edokai",
   "productName": "Edokai",
   "version": "3.0.0",
-  "description": "Edokai \u2014 gamified ML learning: concept worlds, TorchLeet dojo with live Python REPL, Wilds RL environments, self-improving coach",
+  "description": "Edokai — gamified ML learning: concept worlds, TorchLeet dojo with live Python REPL, Wilds RL environments, self-improving coach",
   "private": true,
   "main": "electron/main.cjs",
   "scripts": {
     "dev": "vite",
     "build": "vite build",
+    "dkg:sync": "node scripts/sync-dkg-supabase.mjs",
+    "dkg:test": "node scripts/test-dkg-adapter.mjs",
     "start": "npm run build && electron .",
     "dist:mac": "npm run build && electron-builder --mac",
     "dist:win": "npm run build && electron-builder --win"
   },
   "dependencies": {
+    "@supabase/supabase-js": "^2.108.2",
     "react": "^18.3.1",
     "react-dom": "^18.3.1"
   },
   "devDependencies": {
     "@vitejs/plugin-react": "^4.3.4",
-    "vite": "^5.4.11",
     "electron": "^33.2.0",
-    "electron-builder": "^25.1.8"
+    "electron-builder": "^25.1.8",
+    "vite": "^5.4.11"
   },
   "build": {
     "appId": "ai.edokai.app",

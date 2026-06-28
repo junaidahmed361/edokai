@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "updated_at": null,
+  "updated_at": "2026-06-28T02:12:39Z",
   "macro_worlds": {
     "agents": {
       "label": "Agents",
@@ -10,12 +10,179 @@
     "transformer-architecture": {
       "label": "Transformer Architecture",
       "description": "Embeddings, attention, MoE, and modern architecture mechanisms.",
-      "regions": []
+      "regions": [
+        {
+          "id": "token-distribution-losses",
+          "label": "Token Distribution Losses",
+          "summary": "How student and teacher probability distributions are compared at each generated token, including forward/reverse KL and top-k approximations.",
+          "source_ids": [
+            "hf-space-trl-distillation-trainer-2026",
+            "trl-distillation-trainer-docs-2026"
+          ],
+          "concept_ids": [
+            "top-k-kl-approximation",
+            "forward-kl-divergence",
+            "reverse-kl-divergence"
+          ],
+          "critical_concepts": [
+            "forward-kl-divergence",
+            "reverse-kl-divergence",
+            "top-k-kl-approximation"
+          ],
+          "prerequisite_links": [
+            {
+              "from": "forward-kl-divergence",
+              "to": "top-k-kl-approximation",
+              "why": "Full-vocabulary KL establishes the target divergence; top-k is the practical approximation used when full vocabulary logprobs are too large."
+            },
+            {
+              "from": "reverse-kl-divergence",
+              "to": "top-k-kl-approximation",
+              "why": "Reverse KL changes which token IDs are selected under the top-k approximation."
+            }
+          ],
+          "side_retention_duels": [
+            {
+              "id": "forward-vs-reverse-kl-token-choice",
+              "prompt": "In top-k distillation, which model chooses the compared token IDs?",
+              "left": "Forward KL: teacher top-k token IDs",
+              "right": "Reverse KL: student top-k token IDs",
+              "answer": "Both are true for their respective divergence directions; the duel is about remembering which side selects the support."
+            }
+          ],
+          "quiz_questions": [
+            {
+              "question": "Why does TRL's distillation article approximate KL with top-k logprobs?",
+              "choices": [
+                "Because full-vocabulary logprobs can require enormous tensors per sample.",
+                "Because KL cannot be computed for language models.",
+                "Because top-k changes every teacher into a smaller model.",
+                "Because vLLM only supports one token per sequence."
+              ],
+              "answer_index": 0,
+              "source_ids": [
+                "hf-space-trl-distillation-trainer-2026"
+              ]
+            }
+          ]
+        }
+      ]
     },
     "generative-models": {
       "label": "Generative Models",
       "description": "KL divergence, autoencoders, diffusion, likelihood models, and generation objectives.",
-      "regions": []
+      "regions": [
+        {
+          "id": "knowledge-distillation-and-compression",
+          "label": "Knowledge Distillation & Compression",
+          "summary": "Teacher-student methods that transfer behavior or token distributions from large generative models into smaller deployable students.",
+          "source_ids": [
+            "hf-space-trl-distillation-trainer-2026",
+            "trl-distillation-bibliography-2026"
+          ],
+          "concept_ids": [
+            "distilling-100b-models-40x-faster-with-trl",
+            "on-policy-distillation",
+            "off-policy-distillation",
+            "domain-specific-reasoning-distillation",
+            "capacity-gap-in-distillation"
+          ],
+          "critical_concepts": [
+            "off-policy-distillation",
+            "on-policy-distillation",
+            "capacity-gap-in-distillation"
+          ],
+          "prerequisite_links": [
+            {
+              "from": "off-policy-distillation",
+              "to": "on-policy-distillation",
+              "why": "Learners first compare teacher-generated trajectories with student-generated rollouts before seeing why self-generated mistakes matter."
+            },
+            {
+              "from": "on-policy-distillation",
+              "to": "capacity-gap-in-distillation",
+              "why": "After the training loop is clear, capacity gap explains why bigger teachers may not always produce proportionally stronger students."
+            }
+          ],
+          "side_retention_duels": [
+            {
+              "id": "off-policy-vs-on-policy-distillation-source",
+              "prompt": "Where do the training trajectories come from?",
+              "left": "Off-policy: teacher-generated completions",
+              "right": "On-policy: student-generated rollouts scored by teacher",
+              "answer": "On-policy uses the student rollouts; off-policy uses teacher-generated trajectories."
+            },
+            {
+              "id": "teacher-size-vs-student-capacity",
+              "prompt": "Does a much larger teacher always produce a much better student?",
+              "left": "Yes, teacher benchmark gains transfer linearly",
+              "right": "No, student capacity can limit absorption",
+              "answer": "No. The article reports similar 4B student outcomes from 30B and 235B teachers on AIME25, suggesting a capacity gap."
+            }
+          ],
+          "quiz_questions": [
+            {
+              "question": "What is the core on-policy distillation move in the TRL article?",
+              "choices": [
+                "Let the student generate rollouts, then ask the teacher to score those same rollouts.",
+                "Delete the teacher after generating a fixed prompt dataset.",
+                "Train only on human-written completions and avoid model logprobs.",
+                "Use a larger student than the teacher to avoid KL divergence."
+              ],
+              "answer_index": 0,
+              "source_ids": [
+                "hf-space-trl-distillation-trainer-2026"
+              ]
+            }
+          ]
+        },
+        {
+          "id": "specialized-local-students",
+          "label": "Specialized Local Students",
+          "summary": "Practical distillation patterns for moving useful large-model behaviors into smaller local or resource-constrained models.",
+          "source_ids": [
+            "hf-space-trl-distillation-trainer-2026"
+          ],
+          "concept_ids": [
+            "domain-specific-reasoning-distillation",
+            "qwen3-235b-teacher-distillation"
+          ],
+          "critical_concepts": [
+            "domain-specific-reasoning-distillation"
+          ],
+          "prerequisite_links": [
+            {
+              "from": "domain-specific-reasoning-distillation",
+              "to": "qwen3-235b-teacher-distillation",
+              "why": "The Qwen example is a concrete 100B+ teacher case for the broader specialized-student pattern."
+            }
+          ],
+          "side_retention_duels": [
+            {
+              "id": "local-student-vs-cloud-teacher",
+              "prompt": "Why distill instead of always using the largest teacher directly?",
+              "left": "The teacher may require hundreds of GB of memory or many GPUs.",
+              "right": "The student becomes larger than the teacher after training.",
+              "answer": "Distillation targets deployable smaller students when the teacher is too expensive or memory-heavy to use frequently."
+            }
+          ],
+          "quiz_questions": [
+            {
+              "question": "Which benchmark did the Qwen math distillation section use as the main evaluation target?",
+              "choices": [
+                "AIME25",
+                "ImageNet",
+                "MMLU-Pro only",
+                "HumanEval JavaScript"
+              ],
+              "answer_index": 0,
+              "source_ids": [
+                "hf-space-trl-distillation-trainer-2026"
+              ]
+            }
+          ]
+        }
+      ]
     },
     "perception-world-models": {
       "label": "Perception & World Models",
@@ -25,9 +192,163 @@
     "llm-systems-serving": {
       "label": "LLM Systems & Serving",
       "description": "Inference, caching, quantization, speculative decoding, serving systems, and production throughput.",
-      "regions": []
+      "regions": [
+        {
+          "id": "distillation-serving-systems",
+          "label": "Distillation Serving Systems",
+          "summary": "Systems patterns for making teacher-student training loops fast enough when rollout generation and teacher logprob scoring are served through inference engines.",
+          "source_ids": [
+            "hf-space-trl-distillation-trainer-2026",
+            "trl-distillation-trainer-docs-2026"
+          ],
+          "concept_ids": [
+            "trl-distillation-trainer",
+            "generation-buffer",
+            "teacher-server-logprob-serving",
+            "request-batching-for-teacher-logprobs",
+            "binary-logprob-encoding",
+            "vllm-batched-inference-engine",
+            "qwen3-235b-teacher-distillation"
+          ],
+          "critical_concepts": [
+            "generation-buffer",
+            "teacher-server-logprob-serving",
+            "request-batching-for-teacher-logprobs",
+            "binary-logprob-encoding"
+          ],
+          "prerequisite_links": [
+            {
+              "from": "vllm-batched-inference-engine",
+              "to": "generation-buffer",
+              "why": "The buffer exists to expose enough prompts for vLLM batching during student rollout generation."
+            },
+            {
+              "from": "teacher-server-logprob-serving",
+              "to": "request-batching-for-teacher-logprobs",
+              "why": "External teacher serving creates concurrent worker requests that need batching to control tail latency."
+            },
+            {
+              "from": "teacher-server-logprob-serving",
+              "to": "binary-logprob-encoding",
+              "why": "Once server compute is fast enough, logprob payload transfer becomes the bottleneck."
+            }
+          ],
+          "side_retention_duels": [
+            {
+              "id": "generation-buffer-vs-training-microbatch",
+              "prompt": "What does the generation buffer decouple?",
+              "left": "Training microbatch size from rollout generation batch size",
+              "right": "Teacher vocabulary size from tokenizer vocabulary size",
+              "answer": "It decouples training microbatch size from rollout generation batch size."
+            },
+            {
+              "id": "compute-bottleneck-vs-transfer-bottleneck",
+              "prompt": "After request batching improved server latency, what became the next bottleneck?",
+              "left": "Transferring top-k logprob payloads back to clients",
+              "right": "Finding enough prompts in the dataset schema",
+              "answer": "Logprob payload transfer became the bottleneck, motivating binary encoding."
+            }
+          ],
+          "quiz_questions": [
+            {
+              "question": "What format did the article use for faster teacher logprob payloads?",
+              "choices": [
+                "Base64-encoded NumPy arrays containing logprobs and token IDs plus shape metadata.",
+                "Plain English JSON summaries of the teacher's reasoning.",
+                "One CSV file per generated token streamed over FTP.",
+                "A screenshot of the teacher's logits chart."
+              ],
+              "answer_index": 0,
+              "source_ids": [
+                "hf-space-trl-distillation-trainer-2026"
+              ]
+            }
+          ]
+        },
+        {
+          "id": "large-teacher-deployment-constraints",
+          "label": "Large Teacher Deployment Constraints",
+          "summary": "Memory and placement constraints that force 100B+ teacher models into separate serving infrastructure instead of colocating them with student training.",
+          "source_ids": [
+            "hf-space-trl-distillation-trainer-2026"
+          ],
+          "concept_ids": [
+            "teacher-server-logprob-serving",
+            "qwen3-235b-teacher-distillation"
+          ],
+          "critical_concepts": [
+            "teacher-server-logprob-serving"
+          ],
+          "prerequisite_links": [
+            {
+              "from": "qwen3-235b-teacher-distillation",
+              "to": "teacher-server-logprob-serving",
+              "why": "The 235B teacher example motivates external teacher serving because it cannot fit alongside student training."
+            }
+          ],
+          "side_retention_duels": [
+            {
+              "id": "colocated-vs-external-teacher",
+              "prompt": "When should a teacher move to an external server?",
+              "left": "When the teacher is too large to colocate with student training GPUs",
+              "right": "Whenever the student has fewer training examples",
+              "answer": "External serving is motivated by teacher memory/placement constraints."
+            }
+          ],
+          "quiz_questions": [
+            {
+              "question": "Why did the article move 100B+ teachers to an external vLLM server?",
+              "choices": [
+                "Because colocating teacher and student on the same GPUs was not practical at that scale.",
+                "Because the teacher model was a vision-only encoder.",
+                "Because JSON cannot represent text tokens.",
+                "Because on-policy distillation forbids teacher logprobs."
+              ],
+              "answer_index": 0,
+              "source_ids": [
+                "hf-space-trl-distillation-trainer-2026"
+              ]
+            }
+          ]
+        }
+      ]
     }
   },
   "unrouted_concepts": [],
-  "routing_history": []
+  "routing_history": [
+    {
+      "run_id": "manual-telegram-trl-distillation-20260628T021239Z",
+      "source_ids": [
+        "hf-space-trl-distillation-trainer-2026",
+        "trl-distillation-trainer-docs-2026"
+      ],
+      "routed_concepts": [
+        "distilling-100b-models-40x-faster-with-trl",
+        "trl-distillation-trainer",
+        "on-policy-distillation",
+        "off-policy-distillation",
+        "generation-buffer",
+        "teacher-server-logprob-serving",
+        "request-batching-for-teacher-logprobs",
+        "binary-logprob-encoding",
+        "top-k-kl-approximation",
+        "forward-kl-divergence",
+        "reverse-kl-divergence",
+        "capacity-gap-in-distillation",
+        "domain-specific-reasoning-distillation",
+        "vllm-batched-inference-engine",
+        "qwen3-235b-teacher-distillation"
+      ],
+      "worlds_enhanced": [
+        "generative-models",
+        "llm-systems-serving",
+        "transformer-architecture"
+      ],
+      "new_worlds_created": [],
+      "manual_review": [
+        "Capacity gap is currently routed to Generative Models with possible future cross-link to evaluation if Edokai adds a dedicated evaluation world."
+      ],
+      "completed_at": "2026-06-28T02:12:39Z"
+    }
+  ]
 }
