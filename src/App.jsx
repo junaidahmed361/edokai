@@ -182,8 +182,34 @@ function optionTellBad(q) {
 function keepFairQuestions(qs) {
   return (qs || []).filter((q) => q.options && q.options.length === 4 && Number.isInteger(q.a) && q.a >= 0 && q.a < 4 && !optionTellBad(q));
 }
+function balanceQuestion(q, seed = "edokai") {
+  if (!q) return null;
+  const raw = Array.isArray(q.options) ? q.options.map((o) => String(o || "").replace(/\s+/g, " ").replace(/[.…]+$/g, "").trim()).filter(Boolean) : [];
+  const a0 = Number.isInteger(q.a) && q.a >= 0 && q.a < raw.length ? q.a : 0;
+  const correct = raw[a0] || "source-backed mechanism";
+  const fallbacks = ["neighbor mechanism in this region", "nearby but wrong design path", "surface-only evaluation signal", "unrelated runtime detail here"];
+  const unique = [correct, ...raw.filter((_, i) => i !== a0), ...fallbacks].filter((o, i, arr) => o && arr.indexOf(o) === i).slice(0, 4);
+  while (unique.length < 4) unique.push(`nearby distractor ${unique.length}`);
+  const lens = unique.map((o) => o.split(/\s+/).filter(Boolean).length);
+  const target = Math.max(4, ...lens);
+  const options = unique.map((o) => `${o}${o.split(/\s+/).length < target - 2 ? " in this lesson" : ""}`);
+  const idx = Math.abs(Array.from(seed).reduce((h, ch) => ((h * 31 + ch.charCodeAt(0)) | 0), 0)) % 4;
+  [options[0], options[idx]] = [options[idx], options[0]];
+  return { ...q, q: String(q.q || "Choose the best source-grounded answer."), options, a: idx, why: String(q.why || "This advances the source-backed learning path.") };
+}
+function uniqueConceptName(name, section, used) {
+  const base = String(name || "Source Mechanism").replace(/\s+/g, " ").trim();
+  let out = base;
+  let i = 2;
+  while (used.has(out.toLowerCase())) {
+    out = `${base} · ${String(section || `Facet ${i}`).replace(/\s+/g, " ").trim()}`;
+    i += 1;
+  }
+  used.add(out.toLowerCase());
+  return out;
+}
 
-const QUALITY_RULES = `CRITICAL QUALITY RULES for questions: all 4 options must be similar length (within ~3 words and similar punctuation); the correct option must NEVER be the longest or most detailed; do not make the correct answer the only option with examples/numbers; distractors must be technically plausible; vary "a" (0-3) across questions.`;
+const QUALITY_RULES = `CRITICAL QUALITY RULES for questions: every question must have exactly 4 complete, non-truncated options with similar length (within ~3 words and similar punctuation); the correct option must NEVER be the longest or most detailed; do not make the correct answer the only option with examples/numbers; distractors must be technically plausible; vary "a" (0-3) across questions.`;
 
 const TEACH_SOURCE = "mattpocock/skills productivity/teach";
 const TEACHING_PARADIGM = {
@@ -224,16 +250,35 @@ async function findResource(concept, cfg) {
   return parseJSON(await askModel(
     `Find the single best free online resource (article/primer/docs) with optimal coverage for learning: "${concept}". Use web search.\nRespond ONLY raw JSON: {"title":"...","url":"...","sections":["3-6 main learnable sections of that resource"]}`, cfg, { needsWeb: true }));
 }
-const REGION_JSON_SPEC = `{"npcText":"40-word NPC summary of the key principle","referenceHint":"one sentence glossary/reference summary","concepts":[{"name":"...","sprite":"emoji","lore":"dense 60-80 word teaching of intricate details","questions":[{"q":"...","options":["...","...","...","..."],"a":0,"why":"one line"},{...}]}],"side":{"name":"creature name","sprite":"emoji","recLevel":2,"questions":[{"q":"SCENARIO: applied real-world scenario","options":[4 options],"a":0,"why":"..."},{...}]}}
-Exactly 2 concepts (2 questions each) + 1 side (2 scenario questions). Apply this teaching paradigm: ${TEACH_PROMPT} ${QUALITY_RULES}`;
+const REGION_JSON_SPEC = `{"npcText":"40-word NPC summary of the key principle","referenceHint":"one sentence glossary/reference summary","concepts":[{"name":"unique concept name, not reused elsewhere in this generated world","sprite":"emoji","lore":"70-100 word lore: explain this concept as a named Edokai encounter, mechanism, stakes, and evidence","questions":[{"q":"advancement question that proves the learner can use this concept","options":["complete option","complete option","complete option","complete option"],"a":0,"why":"why this answer advances mastery"},{...}]}],"side":{"name":"healing creature name","sprite":"emoji","recLevel":2,"desc":"side duel framed as healing retention practice","questions":[{"q":"HEALING SCENARIO: applied real-world scenario that reinforces prerequisites","options":[4 complete, similar-length options],"a":0,"why":"why this heals/reinforces"},{...}]}}
+Exactly 2 concepts (2 questions each) + 1 side (2 scenario questions). Concept names must be unique across the whole generated world, not generic duplicates. Critical questions are advancement gates; side questions are healing/retention gates that restore HP. No option may be truncated or length-reveal the answer. Apply this teaching paradigm: ${TEACH_PROMPT} ${QUALITY_RULES}`;
 
 async function buildRegionFrom(sourceDesc, section, idx, cfg, pdfB64) {
   const prompt = pdfB64
     ? `From this document's section "${section}", build RPG learning content. Respond ONLY raw JSON:\n${REGION_JSON_SPEC}`
     : `Read ${sourceDesc}, section "${section}"${cfg && cfg.provider !== "builtin" ? "" : " (use web search)"}. Build RPG learning content. Respond ONLY raw JSON:\n${REGION_JSON_SPEC}`;
   const parsed = parseJSON(await askModel(prompt, cfg, { needsWeb: !pdfB64 && (!cfg || cfg.provider === "builtin"), pdfBase64: pdfB64 }));
-  const concepts = (parsed.concepts || []).map((c, i) => ({ ...c, id: `g${idx}c${i}` }));
-  const sides = parsed.side ? [{ ...parsed.side, id: `g${idx}s0`, anchor: 1, prereqs: concepts.map((c) => c.id), recLevel: parsed.side.recLevel || 2, desc: "A generated reinforcement duel." }] : [];
+  const usedConceptNames = new Set();
+  const concepts = (parsed.concepts || []).slice(0, 2).map((c, i) => {
+    const name = uniqueConceptName(c.name, section, usedConceptNames);
+    const lore = String(c.lore || "").trim();
+    return {
+      ...c,
+      id: `g${idx}c${i}`,
+      name,
+      lore: lore.length > 40 ? lore : `The ${name} encounter teaches how ${section} turns from a vague topic into an inspectable mechanism. Capture it by naming the moving parts, tracing the evidence, and deciding when the idea should change an implementation or design choice.`,
+      questions: (c.questions || []).map((q, qi) => balanceQuestion(q, `${section}-${name}-critical-${qi}`)).filter(Boolean).slice(0, 2),
+    };
+  });
+  const sides = parsed.side ? [{
+    ...parsed.side,
+    id: `g${idx}s0`,
+    anchor: 1,
+    prereqs: concepts.map((c) => c.id),
+    recLevel: parsed.side.recLevel || 2,
+    desc: parsed.side.desc || "A generated healing retention duel: answer side questions to recover HP while strengthening prerequisites.",
+    questions: (parsed.side.questions || []).map((q, qi) => balanceQuestion(q, `${section}-side-heal-${qi}`)).filter(Boolean).slice(0, 2),
+  }] : [];
   return {
     id: `gr${idx}`, name: section, emoji: "🌀", intro: `Generated region: ${section}`,
     npc: { name: "The Archivist", text: parsed.npcText || "Study this region's concepts carefully." },
@@ -241,6 +286,29 @@ async function buildRegionFrom(sourceDesc, section, idx, cfg, pdfB64) {
     referenceHint: parsed.referenceHint || `Reference terms: ${concepts.map((c) => c.name).join(", ")}.`,
     concepts, sides,
     gym: { leader: "Region Warden", badge: `${section} Badge`, sprite: "🏛️", taunt: "Prove you absorbed everything in this region!", questions: concepts.flatMap((c) => c.questions || []).slice(0, 4) },
+  };
+}
+function normalizeGeneratedWorld(w) {
+  const used = new Set();
+  return {
+    ...w,
+    regions: (w.regions || []).map((r) => {
+      const concepts = (r.concepts || []).map((c) => {
+        const name = uniqueConceptName(c.name, r.name, used);
+        return {
+          ...c,
+          name,
+          lore: String(c.lore || "").length > 40 ? c.lore : `The ${name} encounter turns ${r.name} into a concrete learner-facing mechanism with stakes, moving parts, and evidence.`,
+          questions: (c.questions || []).map((q, qi) => balanceQuestion(q, `${w.title}-${r.name}-${name}-${qi}`)).filter(Boolean).slice(0, 2),
+        };
+      });
+      const sides = (r.sides || []).map((side, si) => ({
+        ...side,
+        desc: side.desc || "Healing retention duel: answer side questions to recover HP while reinforcing prerequisite lore.",
+        questions: (side.questions || []).map((q, qi) => balanceQuestion(q, `${w.title}-${r.name}-heal-${si}-${qi}`)).filter(Boolean).slice(0, 2),
+      }));
+      return { ...r, concepts, sides, referenceHint: r.referenceHint || `Reference terms: ${concepts.map((c) => c.name).join(", ")}.`, gym: { ...r.gym, questions: concepts.flatMap((c) => c.questions || []).slice(0, 4) } };
+    }),
   };
 }
 async function buildKataFrom(sourceDesc, cfg, pdfB64) {
@@ -2969,6 +3037,7 @@ export default function App() {
   const [dkgSync, setDkgSync] = useState({ ...dkgSyncConfigStatus(), status: "booting", updatedAt: null, stats: null, recentSources: [], recentRuns: [] });
   const [dkgWorlds, setDkgWorlds] = useState([]);
   const [mapFocus, setMapFocus] = useState(null);
+  const [homeView, setHomeView] = useState("list");
   const [sectionOpen, setSectionOpen] = useState({ liveDkg: true, teachPanel: true, studySources: true, teachMission: true, teachResources: true, teachGlossary: true, teachRecords: true });
 
   Object.assign(T, darkMode ? THEMES.dark : THEMES.light);
@@ -3051,7 +3120,7 @@ export default function App() {
   const toggleMusic = () => { if (musicOn) { music.stop(); setMusicOn(false); } else { music.start(); setMusicOn(true); } };
   const toggleTheme = () => persistCfg({ ...cfg, darkMode: !darkMode });
 
-  const allWorlds = mergeDkgWorlds([...BUILTIN_WORLDS, ...worlds], dkgWorlds).map(applyTeachingParadigm);
+  const allWorlds = mergeDkgWorlds([...BUILTIN_WORLDS, ...worlds], dkgWorlds).map((w) => applyTeachingParadigm(w));
   const world = allWorlds.find((w) => w.id === activeWorld) || BUILTIN_WORLDS[0];
   const focusedMapWorld = allWorlds.find((w) => w.id === (mapFocus || activeWorld)) || world;
   const mapStats = (w) => {
@@ -3402,7 +3471,7 @@ ${QUALITY_RULES}`, cfg));
     }
     setBusy("");
     if (!out.length) { setScan({ ...scan, error: "Generation failed — try fewer sections." }); return; }
-    const w = { id: "w" + Date.now(), title: scan.title, emoji: "🌀", blurb: "Custom world", links: scan.src.foundUrl ? [{ label: "Source", url: scan.src.foundUrl }] : [], regions: out };
+    const w = normalizeGeneratedWorld({ id: "w" + Date.now(), title: scan.title, emoji: "🌀", blurb: "Custom world", links: scan.src.foundUrl ? [{ label: "Source", url: scan.src.foundUrl }] : [], regions: out });
     persistWorlds([...worlds, w]);
     setScan(null); setUrl(""); setPasteText(""); setConceptQ(""); setPdfB64(null); setPdfName("");
     setActiveWorld(w.id); setRegionIdx(0); setAtNode("start"); setScreen("regionlist");
@@ -3635,9 +3704,11 @@ ${QUALITY_RULES}`, cfg));
   );
   const Tabs = () => (
     <div style={{ display: "flex", gap: 6, marginTop: 14, flexWrap: "wrap" }}>
-      {[["home", "🌍 Learn"], ["map", "🗺️ Map"], ["dojo", "⌨️ Dojo"], ["wildspick", "🌿 Wilds"], ["coach", "🧪 Coach"], ["teachspace", "📚 Mission"], ["papers", "📡 Papers"]].map(([id, label]) => {
+      {[["home", "🌍 Learn"], ["dojo", "⌨️ Dojo"], ["wildspick", "🌿 Wilds"], ["coach", "🧪 Coach"], ["teachspace", "📚 Mission"], ["papers", "📡 Papers"]].map(([id, label]) => {
         const on = screen === id || (id === "home" && ["home", "regionlist", "region"].includes(screen));
-        return <button key={id} onClick={() => setScreen(id)} style={{ ...S.btn(on ? T.ink : T.card, on ? "#fff" : T.inkSoft), border: `1px solid ${T.line}`, padding: "8px 14px", fontSize: 13 }}>{label}</button>;
+        const activeBg = darkMode ? T.explore : T.ink;
+        const activeFg = darkMode ? "#FFFFFF" : "#FFFFFF";
+        return <button key={id} onClick={() => setScreen(id)} style={{ ...S.btn(on ? activeBg : T.card, on ? activeFg : T.inkSoft), border: `1px solid ${on ? activeBg : T.line}`, padding: "8px 14px", fontSize: 13 }}>{label}</button>;
       })}
     </div>
   );
@@ -3716,6 +3787,10 @@ ${QUALITY_RULES}`, cfg));
           <h2 style={{ fontSize: 20, fontWeight: 800, margin: 0 }}>Concept Worlds</h2>
           <button onClick={() => { setScan(null); setScreen("spawn"); }} style={{ ...S.btn(T.action), padding: "7px 12px", fontSize: 12 }}>+ Bring your own</button>
         </div>
+        <div style={{ display: "flex", gap: 6, marginTop: 10, background: darkMode ? "#101832" : "#F2F4FA", border: `1px solid ${T.line}`, borderRadius: 999, padding: 4 }}>
+          <button onClick={() => setHomeView("list")} style={{ ...S.btn(homeView === "list" ? T.explore : "transparent", homeView === "list" ? "#fff" : T.inkSoft), flex: 1, padding: "7px 10px", fontSize: 12, borderRadius: 999 }}>☰ List view</button>
+          <button onClick={() => setHomeView("atlas")} style={{ ...S.btn(homeView === "atlas" ? T.explore : "transparent", homeView === "atlas" ? "#fff" : T.inkSoft), flex: 1, padding: "7px 10px", fontSize: 12, borderRadius: 999 }}>🗺️ Atlas view</button>
+        </div>
         <TeachingPanel target={world} compact />
         <Collapsible id="liveDkg" title={`LIVE DKG · ${dkgSync.status.toUpperCase()}`} color={dkgSync.status === "error" ? T.penalty : T.explore} style={{ marginTop: 10, background: dkgSync.status === "error" ? T.penaltySoft : dkgSync.status === "disabled" ? T.card : T.exploreSoft }} right={dkgSync.updatedAt ? <span style={S.mono(9, T.inkSoft)}>{new Date(dkgSync.updatedAt).toLocaleString()}</span> : null}>
           <p style={{ fontSize: 12.5, color: T.inkSoft, lineHeight: 1.5, margin: 0 }}>
@@ -3746,7 +3821,33 @@ ${QUALITY_RULES}`, cfg));
             </div>
           </Collapsible>}
         </Collapsible>
-        {allWorlds.map((w) => {
+        {homeView === "atlas" && (
+          <div style={{ marginTop: 12 }}>
+            <React.Suspense fallback={<div style={{ ...S.card, height: 390, display: "grid", placeItems: "center", color: T.inkSoft }}><span style={S.mono(10)}>loading three.js atlas…</span></div>}>
+              <DkgThreeMap
+                worlds={allWorlds}
+                focusedWorld={focusedMapWorld}
+                mapStats={mapStats}
+                capturedSet={capturedSet}
+                darkMode={darkMode}
+                T={T}
+                onFocus={(id) => { setMapFocus(id); setActiveWorld(id); }}
+                onStudy={(id) => { setActiveWorld(id); setRegionIdx(0); setAtNode("start"); setScreen("regionlist"); }}
+              />
+            </React.Suspense>
+            <div style={{ ...S.card, marginTop: 10, background: darkMode ? "#101832" : "#FAFBFF" }}>
+              <span style={S.mono(10, T.action)}>ATLAS FOCUS</span>
+              <div style={{ display: "flex", justifyContent: "space-between", gap: 10, alignItems: "center", marginTop: 6 }}>
+                <div>
+                  <div style={{ fontWeight: 900 }}>{focusedMapWorld.emoji} {focusedMapWorld.title}</div>
+                  <div style={{ fontSize: 12.5, color: T.inkSoft }}>{mapStats(focusedMapWorld).concepts} concepts · {focusedMapWorld.regions.length} regions · switch back to list any time.</div>
+                </div>
+                <button onClick={() => { setActiveWorld(focusedMapWorld.id); setRegionIdx(0); setAtNode("start"); setScreen("regionlist"); }} style={{ ...S.btn(T.explore), padding: "8px 11px", fontSize: 12 }}>Study →</button>
+              </div>
+            </div>
+          </div>
+        )}
+        {homeView === "list" && allWorlds.map((w) => {
           const total = w.regions.reduce((n, r) => n + r.concepts.length, 0);
           const got = w.regions.reduce((n, r) => n + r.concepts.filter((c) => capturedSet.has(c.id)).length, 0);
           const badges = w.regions.filter((r) => save.badges.includes(r.gym.badge)).length;
