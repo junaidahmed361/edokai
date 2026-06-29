@@ -122,17 +122,25 @@ async function askModel(prompt, cfg, opts = {}) {
     };
     if (needsWeb) body.tools = [{ type: "web_search_20250305", name: "web_search" }];
     if (!(cfg && cfg.anthropicKey)) {
-      if (typeof window !== "undefined" && window.edokaiAuth && typeof window.edokaiAuth.completeWithClaudeCode === "function" && !pdfBase64) {
+      if (typeof window !== "undefined" && window.edokaiAuth && typeof window.edokaiAuth.completeWithDefaultProvider === "function" && !pdfBase64) {
         try {
-          return await window.edokaiAuth.completeWithClaudeCode(prompt, { needsWeb });
+          return await window.edokaiAuth.completeWithDefaultProvider(prompt, { needsWeb, preferred: cfg.preferredAuth || "codex" });
         } catch (e) {
-          // Fall through to hosted proxy if present; desktop builds will surface the proxy error below.
-          console.warn("Claude Code auth bridge failed", e);
+          console.warn("Default desktop model auth bridge failed", e);
         }
       }
-      const proxied = await fetch("/.netlify/functions/anthropic", {
-        method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(body),
-      });
+      if (typeof window !== "undefined" && window.edokaiAuth && typeof window.edokaiAuth.completeWithClaudeCode === "function" && !pdfBase64) {
+        try { return await window.edokaiAuth.completeWithClaudeCode(prompt, { needsWeb }); }
+        catch (e) { console.warn("Claude Code auth bridge failed", e); }
+      }
+      let proxied;
+      try {
+        proxied = await fetch("/.netlify/functions/anthropic", {
+          method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(body),
+        });
+      } catch (e) {
+        throw new Error("Hosted model proxy is unreachable from this app session. In local browser dev, run Netlify Dev or use Settings → Custom endpoint; in the desktop app, use the default Codex GPT-5.5 / Claude auth bridge or run `claude auth login`.");
+      }
       const pdata = await proxied.json().catch(() => ({}));
       if (!proxied.ok || pdata.error) throw new Error(pdata.error?.message || pdata.error || `Model proxy error ${proxied.status}`);
       const pout = (pdata.content || []).filter((b) => b.type === "text").map((b) => b.text).join("\n");
@@ -157,10 +165,15 @@ async function askModel(prompt, cfg, opts = {}) {
   if (pdfBase64) throw new Error("PDF_NEEDS_BUILTIN");
   const headers = { "Content-Type": "application/json" };
   if (cfg.apiKey) headers["Authorization"] = `Bearer ${cfg.apiKey}`;
-  const res = await fetch(cfg.baseUrl.replace(/\/$/, "") + "/chat/completions", {
-    method: "POST", headers,
-    body: JSON.stringify({ model: cfg.model, max_tokens: 1200, messages: [{ role: "user", content: prompt }] }),
-  });
+  let res;
+  try {
+    res = await fetch(cfg.baseUrl.replace(/\/$/, "") + "/chat/completions", {
+      method: "POST", headers,
+      body: JSON.stringify({ model: cfg.model, max_tokens: 1200, messages: [{ role: "user", content: prompt }] }),
+    });
+  } catch (e) {
+    throw new Error(`Could not reach custom model endpoint at ${cfg.baseUrl}. Check that the server is running and CORS allows this origin.`);
+  }
   const data = await res.json().catch(() => ({}));
   if (!res.ok || data.error) throw new Error(data.error?.message || `Endpoint error ${res.status}`);
   const out = data.choices?.[0]?.message?.content || "";
@@ -1594,6 +1607,15 @@ function enrichSWEKata(k) {
 }
 function stripGuidance(code) {
   return String(code || "").split("\n").filter((line) => !/TODO|YOUR CODE|Sketch the canonical|write the invariant/i.test(line)).join("\n").replace(/\n{3,}/g, "\n\n").trimEnd() + "\n";
+}
+function starterFromKata(k) {
+  if (!k) return "# Write your solution here\n";
+  if (k.starter) return k.starter;
+  const title = cleanBlindTitle(k.title);
+  const steps = (k.steps || []).map((st, i) => `# TODO ${i + 1}: ${st.prompt || st.lore || "complete this checkpoint"}\n${st.code ? String(st.code).replace(/____/g, "TODO_VALUE") : "# implement this piece"}`).join("\n\n");
+  if (k.family === "ml" || k.family === "torchleet") return `# ${title} skeleton\n# Fill each TODO, then use AI review or local tests where available.\n${steps || "# TODO: implement the core model/training function.\npass"}\n`;
+  if (k.family === "sys") return `# ${title} design skeleton\n# TODO 1: state assumptions and constraints.\n# TODO 2: sketch API/data model.\n# TODO 3: identify bottlenecks and failure modes.\n`;
+  return `# ${title} skeleton\n${steps || "# TODO: solve the exercise.\npass"}\n`;
 }
 
 const LABS = {
@@ -3033,6 +3055,7 @@ export default function App() {
   const [kataAttempts, setKataAttempts] = useState(0);
   const [todoGuidance, setTodoGuidance] = useState(true);
   const [claudeCodeAuth, setClaudeCodeAuth] = useState(null);
+  const [desktopModelStatus, setDesktopModelStatus] = useState(null);
   const [modelTest, setModelTest] = useState(null);
   const [dkgSync, setDkgSync] = useState({ ...dkgSyncConfigStatus(), status: "booting", updatedAt: null, stats: null, recentSources: [], recentRuns: [] });
   const [dkgWorlds, setDkgWorlds] = useState([]);
@@ -3044,9 +3067,13 @@ export default function App() {
 
   useEffect(() => {
     (async () => {
-      const s = await loadStore("ru-save", { xp: 0, hp: 100, badges: [], captured: [], sides: [], katas: {}, qstats: {}, kataHints: {}, kataAttempts: {}, learningRecords: [] });
-      s.sides = s.sides || []; s.katas = s.katas || {}; s.qstats = s.qstats || {}; s.kataHints = s.kataHints || {}; s.kataAttempts = s.kataAttempts || {}; s.learningRecords = s.learningRecords || [];
-      setSave(s);
+      const s = await loadStore("ru-save", { xp: 0, hp: 100, badges: [], captured: [], sides: [], katas: {}, qstats: {}, kataHints: {}, kataAttempts: {}, learningRecords: [], senzu: null, pet: { mood: "idle", msg: "ready" }, player: null });
+      s.sides = s.sides || []; s.katas = s.katas || {}; s.qstats = s.qstats || {}; s.kataHints = s.kataHints || {}; s.kataAttempts = s.kataAttempts || {}; s.learningRecords = s.learningRecords || []; s.senzu = s.senzu || null; s.pet = s.pet || { mood: "idle", msg: "ready" };
+      if (!s.player && typeof window !== "undefined" && window.edokaiDb && window.edokaiDb.auth) {
+        try { s.player = await window.edokaiDb.auth("local-player"); } catch {}
+      }
+      if (!s.player) s.player = { id: (crypto && crypto.randomUUID ? crypto.randomUUID() : `player-${Date.now()}`), name: "local-player", sessionId: (crypto && crypto.randomUUID ? crypto.randomUUID() : `session-${Date.now()}`) };
+      setSave(s); saveStore("ru-save", s);
       setWorlds(await loadStore("ru-worlds", []));
       setDkgWorlds(await loadStore("ru-dkg-worlds", []));
       setUKatas(await loadStore("ru-ukatas", []));
@@ -3056,6 +3083,9 @@ export default function App() {
       if (!c.anthropicKey && typeof window !== "undefined" && window.edokaiAuth && window.edokaiAuth.anthropicKey) c.anthropicKey = window.edokaiAuth.anthropicKey;
       if (typeof window !== "undefined" && window.edokaiAuth && typeof window.edokaiAuth.claudeCodeStatus === "function") {
         window.edokaiAuth.claudeCodeStatus().then(setClaudeCodeAuth).catch((e) => setClaudeCodeAuth({ loggedIn: false, error: e.message || String(e) }));
+      }
+      if (typeof window !== "undefined" && window.edokaiAuth && typeof window.edokaiAuth.desktopModelStatus === "function") {
+        window.edokaiAuth.desktopModelStatus().then(setDesktopModelStatus).catch((e) => setDesktopModelStatus({ error: e.message || String(e) }));
       }
       setCfg(c); setDarkMode(!!c.darkMode); GLOBAL_KEY = c.anthropicKey || "";
     })();
@@ -3090,7 +3120,7 @@ export default function App() {
     );
   }, []);
 
-  const persist = (s) => { setSave(s); saveStore("ru-save", s); };
+  const persist = (s) => { setSave(s); saveStore("ru-save", s); if (window.edokaiDb && window.edokaiDb.saveSession) window.edokaiDb.saveSession({ player: s.player, save: s }).catch(() => {}); };
   const persistWorlds = (w) => { setWorlds(w); saveStore("ru-worlds", w); };
   const persistUKatas = (k) => { setUKatas(k); saveStore("ru-ukatas", k); };
   const persistAug = (a) => { setAug(a); saveStore("ru-aug", a); };
@@ -3101,7 +3131,9 @@ export default function App() {
     try {
       const extra = await askModel(`You are a patient ML teacher using this paradigm: ${TEACH_PROMPT}\nA learner read this summary of "${c.name}":\n"""${c.lore}"""\nExpand it with ~150 words of deeper explanation: the intuition behind it, one concrete worked example with small numbers where possible, and the most common misconception. Plain text, no markdown headers.`, cfg);
       if (extra && extra.length > 40) persistLore({ ...deepLore, [c.id]: extra.trim() });
-    } catch (e) { showToast(`Model deepen failed: ${e.message || "check model settings"}.`); }
+    } catch (e) {
+      showToast(`Deepen lore model call failed: ${e.message || "Check model settings."}`);
+    }
     setBusy("");
   };
   // lore the player should review for the current battle
@@ -3147,6 +3179,17 @@ export default function App() {
   const capturedSet = new Set(save ? save.captured : []);
   const sidesSet = new Set(save ? save.sides : []);
   const allKatas = [...KATAS, ...BLIND75_EXTRA, ...TORCHLEET, ...uKatas].map(enrichSWEKata);
+  const incompleteKatas = (fam) => allKatas.filter((k) => k.family === fam && kProgress(k.id) < (k.steps.length || 1));
+  const pickQuestKata = (fam, salt = 0) => { const ks = incompleteKatas(fam); return ks.length ? ks[(Date.now() + salt) % ks.length] : null; };
+  const ensureSenzuQuest = () => {
+    if (save.senzu && !save.senzu.claimed) return save.senzu;
+    const swe = pickQuestKata("swe", 7), ml = pickQuestKata("ml", 19);
+    if (!swe || !ml) return null;
+    const q = { id: `senzu-${Date.now()}`, required: { swe: swe.id, ml: ml.id }, claimed: false };
+    persist({ ...save, senzu: q, pet: { mood: "quest", msg: "win two dojo trials for a senzu bean" } });
+    return q;
+  };
+  const petReact = (mood, msg) => persist({ ...save, pet: { mood, msg } });
   const conceptName = (id) => {
     for (const w of allWorlds) for (const r of w.regions) {
       const c = r.concepts.find((x) => x.id === id); if (c) return c.name;
@@ -3194,6 +3237,24 @@ export default function App() {
       setModelTest({ ok: false, msg: `${e.message || e}. Ollama: OLLAMA_ORIGINS=* ollama serve → http://localhost:11434/v1. MLX-LM: python -m mlx_lm.server --model <model> --port 8080 → http://localhost:8080/v1.` });
     }
   };
+  const refreshDesktopModelStatus = async () => {
+    if (!window.edokaiAuth || !window.edokaiAuth.desktopModelStatus) return;
+    try { setDesktopModelStatus(await window.edokaiAuth.desktopModelStatus()); }
+    catch (e) { setDesktopModelStatus({ error: e.message || String(e) }); }
+  };
+  const testDefaultModel = async () => {
+    setModelTest({ ok: null, msg: "Testing default desktop provider…" });
+    try {
+      if (!window.edokaiAuth || !window.edokaiAuth.completeWithDefaultProvider) throw new Error("Desktop auth bridge unavailable in this browser session");
+      const out = await window.edokaiAuth.completeWithDefaultProvider("Reply with exactly: EDOKAI_OK", { preferred: cfg.preferredAuth || "codex" });
+      if (!/EDOKAI_OK/i.test(out)) throw new Error(`unexpected response: ${String(out).slice(0, 80)}`);
+      setModelTest({ ok: true, msg: `Default provider ready (${cfg.preferredAuth || "codex"}) · ${String(out).slice(0, 80)}` });
+      refreshDesktopModelStatus();
+    } catch (e) {
+      setModelTest({ ok: false, msg: e.message || String(e) });
+      refreshDesktopModelStatus();
+    }
+  };
 
   /* ---------- battle ---------- */
   const DMG = 40, CRIT = 20;
@@ -3228,7 +3289,7 @@ export default function App() {
       const won = newHp <= 0;
       if (won) {
         if (battle.kind === "critical") { s.xp += 50; if (!capturedSet.has(battle.concept.id)) { s.captured = [...s.captured, battle.concept.id]; recordConceptLearning(s, battle.concept); } }
-        else if (battle.kind === "side") { s.xp += 30; s.hp = Math.min(maxHp, s.hp + 25); if (!sidesSet.has(battle.side.id)) s.sides = [...s.sides, battle.side.id]; }
+        else if (battle.kind === "side") { s.xp += 30; s.hp = Math.min(maxHp, s.hp + 25); s.pet = { mood: "heal", msg: "+25 HP" }; if (!sidesSet.has(battle.side.id)) s.sides = [...s.sides, battle.side.id]; }
         else { s.xp += 150; if (!s.badges.includes(region.gym.badge)) s.badges = [...s.badges, region.gym.badge]; }
       }
       persist(s);
@@ -3238,6 +3299,7 @@ export default function App() {
       const newHp = Math.max(0, s.hp - dmg);
       const fainted = newHp <= 0;
       s.hp = fainted ? maxHp : newHp;
+      s.pet = { mood: fainted ? "faint" : "harm", msg: fainted ? "wake up healed" : `-${dmg} HP` };
       persist(s);
       setBattle({ ...battle, streak: 0, phase: fainted ? "defeat" : "feedback", wrong: true, log: fainted ? `You blacked out! ${q.why} — You wake at the region entrance, healed and wiser.` : `Counterattack for ${dmg}! ${q.why}` });
     }
@@ -3529,15 +3591,26 @@ ${QUALITY_RULES}`, cfg));
     setKataAttempts((save.kataAttempts && save.kataAttempts[k.id]) || 0);
     setMyCode("");   // showSol flag rides in myCode? no — dedicated state below
     const ek = enrichSWEKata(k);
-    const starter = LABS[k.id] ? LABS[k.id].starter : (todoGuidance ? (ek.starter || "# paste or write your attempt here\n") : (ek.unguidedStarter || stripGuidance(ek.starter || "# paste or write your attempt here\n")));
+    const starterBase = starterFromKata(ek);
+    const starter = LABS[k.id] ? LABS[k.id].starter : (todoGuidance ? starterBase : (ek.unguidedStarter || stripGuidance(starterBase)));
     setLabCode(starter);
     setLabOut("");
     setScreen("kata");
   };
+  const applyKataCompletion = (baseSave, k) => {
+    const s = { ...baseSave, xp: baseSave.xp + 60, katas: { ...baseSave.katas, [k.id]: k.steps.length || 1 }, pet: { mood: "heal", msg: "dojo win!" } };
+    const q = s.senzu;
+    if (q && !q.claimed && q.required && [q.required.swe, q.required.ml].every((id) => s.katas[id])) {
+      s.hp = maxHp;
+      s.senzu = { ...q, claimed: true, claimedAt: Date.now() };
+      s.pet = { mood: "senzu", msg: "full recovery!" };
+      showToast("Senzu bean! Two random dojo trials cleared — HP fully recovered.");
+    } else showToast("Kata complete! +60 XP");
+    return s;
+  };
   const markKataComplete = () => {
     if (!kata || kProgress(kata.id) >= (kata.steps.length || 1)) return;
-    const s = { ...save, xp: save.xp + 60, katas: { ...save.katas, [kata.id]: kata.steps.length || 1 } };
-    persist(s); showToast("Kata complete! +60 XP");
+    persist(applyKataCompletion(save, kata));
   };
   const answerKata = (dispIdx) => {
     if (!kata || kFeedback) return;
@@ -3550,8 +3623,8 @@ ${QUALITY_RULES}`, cfg));
       s.xp += 15;
       const next = stepIdx + 1;
       if (next >= kata.steps.length) {
-        s.xp += 60; s.katas = { ...s.katas, [kata.id]: kata.steps.length };
-        persist(s); setKFeedback({ ok: true, msg: st.why + " — ALL HINTS CLEARED! +60 XP bonus." });
+        const rewarded = applyKataCompletion(s, kata);
+        persist(rewarded); setKFeedback({ ok: true, msg: st.why + " — ALL HINTS CLEARED! +60 XP bonus." });
         setTimeout(() => { setKPhase("work"); setKFeedback(null); }, 1800);
       } else {
         s.katas = { ...s.katas, [kata.id]: Math.max(kProgress(kata.id), next) };
@@ -3575,8 +3648,8 @@ ${QUALITY_RULES}`, cfg));
       const out = await runPython(withTests ? labCode + "\n" + LABS[kata.id].test : labCode, LABS[kata.id].needs, (s) => setLabOut(s));
       setLabOut(out);
       if (withTests && out.includes("ALL TESTS PASSED") && kProgress(kata.id) < kata.steps.length) {
-        const s = { ...save, xp: save.xp + 60, katas: { ...save.katas, [kata.id]: kata.steps.length || 1 } };
-        persist(s); showToast("Tests passed — kata complete! +60 XP");
+        const s = applyKataCompletion(save, kata);
+        persist(s);
       }
     }
     catch (e) { setLabOut("⚠️ " + (e.message || e)); }
@@ -3695,6 +3768,10 @@ ${QUALITY_RULES}`, cfg));
             <div style={{ height: "100%", width: `${(save.hp / maxHp) * 100}%`, background: save.hp / maxHp > 0.4 ? T.reward : T.penalty, transition: "width .4s" }} />
           </div>
         </div>
+        <div title={save.pet?.msg || "Edokai pet"} style={{ width: 42, minWidth: 42, textAlign: "center", border: `1px solid ${T.line}`, borderRadius: 12, padding: "3px 4px", background: save.pet?.mood === "harm" ? T.penaltySoft : save.pet?.mood === "heal" || save.pet?.mood === "senzu" ? T.rewardSoft : T.card }}>
+          <div style={{ fontSize: 20, animation: save.pet?.mood === "harm" ? "shake .25s ease" : "bob 1.6s ease-in-out infinite" }}>{save.pet?.mood === "harm" ? "😿" : save.pet?.mood === "senzu" ? "🐉" : save.pet?.mood === "heal" ? "😸" : "🐾"}</div>
+          <div style={S.mono(7, T.inkSoft)}>{save.pet?.mood || "idle"}</div>
+        </div>
         <button onClick={toggleMusic} title="Low-volume background music" style={{ background: "none", border: `1px solid ${T.line}`, color: T.ink, borderRadius: 8, width: 30, height: 30, cursor: "pointer", fontSize: 14 }}>{musicOn ? "🎵" : "🔇"}</button>
         <button onClick={toggleTheme} title={darkMode ? "Switch to light mode" : "Switch to dark mode"} style={{ background: "none", border: `1px solid ${T.line}`, color: T.ink, borderRadius: 8, width: 30, height: 30, cursor: "pointer", fontSize: 14 }}>{darkMode ? "☀️" : "🌙"}</button>
         <button onClick={() => { setDexWorld(activeWorld); setScreen("dex"); }} style={{ ...S.btn(T.explore), padding: "7px 10px", fontSize: 12 }}>📖</button>
@@ -3713,6 +3790,36 @@ ${QUALITY_RULES}`, cfg));
     </div>
   );
   const Toast = () => toast ? <div style={{ position: "fixed", bottom: 24, left: "50%", transform: "translateX(-50%)", zIndex: 60, background: T.ink, color: "#fff", padding: "10px 16px", borderRadius: 12, fontSize: 13.5, fontWeight: 700, animation: "slideUp .3s ease", maxWidth: "85%", textAlign: "center" }}>{toast}</div> : null;
+  const SenzuPanel = ({ compact = false }) => {
+    const q = save.senzu;
+    const active = q && !q.claimed;
+    const required = active ? [q.required.swe, q.required.ml].map((id) => allKatas.find((k) => k.id === id)).filter(Boolean) : [];
+    const hpFull = save.hp >= maxHp;
+    return (
+      <div style={{ ...S.card, marginTop: compact ? 8 : 12, background: hpFull ? T.card : T.rewardSoft, border: `1px solid ${hpFull ? T.line : T.reward}` }}>
+        <div style={{ display: "flex", justifyContent: "space-between", gap: 10, alignItems: "flex-start" }}>
+          <div>
+            <span style={S.mono(10, T.reward)}>🫘 SENZU BEAN RECOVERY</span>
+            <p style={{ fontSize: compact ? 12 : 13, color: T.inkSoft, lineHeight: 1.5, margin: "5px 0 0" }}>
+              Concept-world healing now routes through the Dojo: complete one random uncompleted Blind 75 exercise and one ML Engineering exercise to fully recover HP.
+            </p>
+          </div>
+          <button onClick={ensureSenzuQuest} style={{ ...S.btn(T.reward), padding: "7px 10px", fontSize: 12, whiteSpace: "nowrap" }}>{active ? "Reroll" : hpFull ? "Prep bean" : "Start heal"}</button>
+        </div>
+        {active && (
+          <div style={{ display: "grid", gap: 7, marginTop: 9 }}>
+            {required.map((k) => {
+              const done = !!save.katas[k.id];
+              return <button key={k.id} onClick={() => openKata(k)} style={{ ...S.card, padding: 9, display: "flex", gap: 8, alignItems: "center", textAlign: "left", cursor: "pointer", background: done ? T.rewardSoft : T.card }}>
+                <span>{done ? "✅" : "⌨️"}</span><span style={{ flex: 1, fontSize: 12.5 }}><b>{k.family === "swe" ? "Blind 75" : "ML Engineering"}</b>: {k.title}</span><span style={S.mono(9, done ? T.reward : T.explore)}>{done ? "DONE" : "VISIT DOJO →"}</span>
+              </button>;
+            })}
+          </div>
+        )}
+        {q && q.claimed && <div style={{ marginTop: 7, ...S.mono(10, T.reward) }}>SENZU CLAIMED · HP FULLY RECOVERED</div>}
+      </div>
+    );
+  };
   const QCard = ({ q, ord, onAnswer, label, color }) => (
     <div style={{ ...S.card, animation: "slideUp .25s ease" }}>
       <span style={S.mono(10, color || T.explore)}>{label}</span>
@@ -3972,6 +4079,7 @@ ${QUALITY_RULES}`, cfg));
           </Collapsible>
         )}
         <TeachingPanel target={world} />
+        <SenzuPanel />
         {regions.map((r, i) => {
           const locked = !(i === 0 || save.badges.includes(regions[i - 1].gym.badge));
           const got = r.concepts.filter((c) => capturedSet.has(c.id)).length;
@@ -4300,6 +4408,21 @@ ${QUALITY_RULES}`, cfg));
           <p style={{ fontSize: 11.5, color: T.inkSoft, lineHeight: 1.5, margin: "8px 0 0" }}>If this says not signed in, run <code>claude auth login</code> once. Claude Code opens the browser and stores OAuth locally; Edokai reuses it at launch.</p>
         </div>
         <div style={{ ...S.card, marginTop: 12 }}>
+          <span style={S.mono(10)}>DEFAULT DESKTOP MODEL AUTH</span>
+          <p style={{ fontSize: 12.5, color: T.inkSoft, lineHeight: 1.5, margin: "6px 0 8px" }}>Deepen Lore uses the existing desktop provider before hosted proxy/API-key routes: Codex GPT-5.5 auth first, or Claude Opus auth if selected. No local fallback content is generated.</p>
+          <div style={{ display: "flex", gap: 6, flexWrap: "wrap" }}>
+            <button onClick={() => persistCfg({ ...cfg, preferredAuth: "codex" })} style={S.chip((cfg.preferredAuth || "codex") === "codex")}>Codex GPT-5.5</button>
+            <button onClick={() => persistCfg({ ...cfg, preferredAuth: "claude" })} style={S.chip(cfg.preferredAuth === "claude")}>Claude Opus auth</button>
+            <button onClick={testDefaultModel} style={S.chip(false)}>Test default provider</button>
+            <button onClick={refreshDesktopModelStatus} style={S.chip(false)}>Refresh status</button>
+          </div>
+          {desktopModelStatus && <div style={{ marginTop: 8, display: "grid", gap: 4 }}>
+            <span style={S.mono(9.5, desktopModelStatus.codex?.ok ? T.reward : T.penalty)}>Codex: {desktopModelStatus.codex?.ok ? "ready" : (desktopModelStatus.codex?.error || "not ready")}</span>
+            <span style={S.mono(9.5, desktopModelStatus.claude?.ok ? T.reward : T.penalty)}>Claude: {desktopModelStatus.claude?.ok ? "ready" : (desktopModelStatus.claude?.error || "not ready")}</span>
+          </div>}
+          {modelTest && <p style={{ fontSize: 12, color: modelTest.ok ? T.reward : modelTest.ok === false ? T.penalty : T.inkSoft, lineHeight: 1.4, margin: "8px 0 0" }}>{modelTest.msg}</p>}
+        </div>
+        <div style={{ ...S.card, marginTop: 12 }}>
           <span style={S.mono(10)}>ANTHROPIC API KEY (optional fallback; Netlify can use ANTHROPIC_API_KEY server-side)</span>
           <input value={cfg.anthropicKey || ""} onChange={(e) => persistCfg({ ...cfg, anthropicKey: e.target.value })} type="password" placeholder="sk-ant-… (leave blank to use Claude Code OAuth when available)" style={{ ...S.input, margin: "6px 0 0" }} />
         </div>
@@ -4347,8 +4470,8 @@ ${QUALITY_RULES}`, cfg));
         </div>
         <div style={{ ...S.card, marginTop: 12 }}>
           <span style={S.mono(10)}>SAVE DATA</span>
-          <p style={{ fontSize: 12.5, color: T.inkSoft, margin: "6px 0 10px" }}>XP {save.xp} · {save.captured.length} concepts · {save.badges.length} badges · {Object.keys(save.katas).length} katas · telemetry on {Object.keys(save.qstats).length} topics</p>
-          <button onClick={() => { persist({ xp: 0, hp: 100, badges: [], captured: [], sides: [], katas: {}, qstats: {}, kataHints: {}, kataAttempts: {}, learningRecords: [] }); persistAug({}); showToast("Save reset."); }} style={{ ...S.btn(T.penalty), padding: "8px 14px", fontSize: 12.5 }}>Reset progress</button>
+          <p style={{ fontSize: 12.5, color: T.inkSoft, margin: "6px 0 10px" }}>Player {save.player?.name || "local-player"} · UUID {save.player?.id || "pending"} · Session {save.player?.sessionId || "pending"}<br />XP {save.xp} · {save.captured.length} concepts · {save.badges.length} badges · {Object.keys(save.katas).length} katas · telemetry on {Object.keys(save.qstats).length} topics</p>
+          <button onClick={() => { persist({ xp: 0, hp: 100, badges: [], captured: [], sides: [], katas: {}, qstats: {}, kataHints: {}, kataAttempts: {}, learningRecords: [], senzu: null, pet: { mood: "idle", msg: "ready" }, player: save.player }); persistAug({}); showToast("Save reset."); }} style={{ ...S.btn(T.penalty), padding: "8px 14px", fontSize: 12.5 }}>Reset progress</button>
         </div>
       </div>
     </div>
@@ -4390,6 +4513,16 @@ ${QUALITY_RULES}`, cfg));
           <Tabs />
           <h2 style={{ fontSize: 20, fontWeight: 800, margin: "14px 0 0" }}>⌨️ The Dojo</h2>
           <span style={S.mono(10)}>code-first workthroughs · TorchLeet set · in-browser Python lab · AI review</span>
+          <div style={{ ...S.card, marginTop: 10, background: T.rewardSoft }}>
+            <div style={{ display: "flex", justifyContent: "space-between", gap: 10, alignItems: "center" }}>
+              <div><b>🫘 Senzu bean recovery quest</b><p style={{ fontSize: 12.5, color: T.inkSoft, margin: "4px 0 0" }}>Started from Concept Worlds: clear both exercises here, then return healed.</p></div>
+              <button onClick={() => setScreen("regionlist")} style={S.btn(T.reward)}>Back to worlds</button>
+            </div>
+            {save.senzu && !save.senzu.claimed && <div style={{ display: "flex", gap: 6, flexWrap: "wrap", marginTop: 8 }}>
+              {[save.senzu.required.swe, save.senzu.required.ml].map((id) => { const k = allKatas.find((x) => x.id === id); const done = !!save.katas[id]; return k ? <button key={id} onClick={() => openKata(k)} style={S.chip(done)}>{done ? "✓" : "○"} {k.family === "swe" ? "Blind 75" : "ML"}: {k.title}</button> : null; })}
+            </div>}
+            {save.senzu && save.senzu.claimed && <span style={S.mono(10, T.reward)}>SENZU CLAIMED · HP FULLY RECOVERED</span>}
+          </div>
           {fams.map(([fam, label]) => {
             const ks = allKatas.filter((k) => k.family === fam);
             if (!ks.length) return null;
@@ -4703,7 +4836,8 @@ ${QUALITY_RULES}`, cfg));
             <span style={S.mono(9.5, T.gold)}>🏛 GYM = badge</span>
           </div>
           <TeachingPanel target={world} region={region} compact />
-          <div style={{ position: "relative", width: "100%", aspectRatio: "5/4", background: "linear-gradient(160deg,#A8D8A0 0%,#7BC47F 45%,#69B583 100%)", borderRadius: 16, border: `3px solid ${T.ink}`, overflow: "hidden", boxShadow: "0 8px 28px rgba(27,36,64,0.2)" }}>
+          <SenzuPanel compact />
+          <div style={{ position: "relative", width: "100%", aspectRatio: "5/4", background: "linear-gradient(160deg,#A8D8A0 0%,#7BC47F 45%,#69B583 100%)", borderRadius: 16, border: `3px solid ${T.ink}`, overflow: "hidden", boxShadow: "0 8px 28px rgba(27,36,64,0.2)", marginTop: 10 }}>
             <div style={{ position: "absolute", inset: 0, opacity: 0.35, fontSize: 18, pointerEvents: "none" }}>
               <span style={{ position: "absolute", left: "4%", top: "8%" }}>🌲</span>
               <span style={{ position: "absolute", left: "88%", top: "12%" }}>🌲</span>
