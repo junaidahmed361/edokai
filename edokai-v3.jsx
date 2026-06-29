@@ -195,6 +195,67 @@ function optionTellBad(q) {
 function keepFairQuestions(qs) {
   return (qs || []).filter((q) => q.options && q.options.length === 4 && Number.isInteger(q.a) && q.a >= 0 && q.a < 4 && !optionTellBad(q));
 }
+
+function sentenceCaseOption(text) {
+  let out = String(text || "").replace(/\s+/g, " ").replace(/[.…]+$/g, "").trim();
+  if (!out) return "A nearby but incorrect explanation";
+  out = out.replace(/^(the\s+)/i, "The ");
+  if (/^[a-z]/.test(out)) out = out[0].toUpperCase() + out.slice(1);
+  return out;
+}
+function polishQuestionStem(stem, context = "this concept") {
+  let q = String(stem || "Choose the best answer.").replace(/\s+/g, " ").trim();
+  q = q.replace(/^SCENARIO:\s*/i, "Scenario: ");
+  q = q.replace(/[.…]+$/g, "").trim();
+  q = q.replace(/\s+:$/g, "");
+  q = q.replace(/^A pure-exploitation agent's characteristic failure$/i, "What failure should you expect from an agent that only exploits its current best-known action?");
+  q = q.replace(/^Advantage A\(s,a\) measures$/i, "What does the advantage A(s,a) measure during policy-gradient training?");
+  q = q.replace(/^For a tool-calling LLM agent, the state sₜ is$/i, "For a tool-calling LLM agent, which information should count as the current state sₜ?");
+  q = q.replace(/^The Markov property guarantees that$/i, "What does the Markov property guarantee about the current state?");
+  q = q.replace(/^Raising γ from 0\.5 toward 0\.99 makes the agent$/i, "What behavior changes when γ is raised from 0.5 toward 0.99?");
+  q = q.replace(/^RL differs from supervised learning because$/i, "Why is reinforcement learning different from supervised learning?");
+  q = q.replace(/^Exploration from a randomly-initialized LLM policy fails because$/i, "Why does exploration from a randomly initialized LLM policy usually fail?");
+  q = q.replace(/^An action with negative advantage should become$/i, "What should happen to an action whose advantage estimate is negative?");
+  q = q.replace(/^Rank by credit-assignment difficulty, easiest first$/i, "Which ordering ranks these environments by credit-assignment difficulty, from easiest to hardest?");
+  q = q.replace(/^Multi-turn sequential environments are distinguished by$/i, "What distinguishes multi-turn sequential environments from simpler agent environments?");
+  if (/^Scenario:/.test(q)) {
+    if (!/[?]$/.test(q)) q += " What is the best next conclusion or action?";
+    return q;
+  }
+  if (/^(What|Why|Which|How|When|Where|Who|In what|For which)\b/i.test(q)) return /[?]$/.test(q) ? q : `${q}?`;
+  const lower = q.toLowerCase();
+  if (/^order\b/i.test(q)) return `Which sequence correctly orders this process: ${q.replace(/^order\s+/i, "")}?`;
+  if (/^rank\b/i.test(q)) return `Which option gives the correct ranking for this prompt: ${q.replace(/^rank\s+/i, "")}?`;
+  if (/^not\b/i.test(q)) return `Which option is not part of the mechanism described here: ${q}?`;
+  const inContext = q.match(/^(In .+?, )(.+)$/i);
+  if (/\bteaches$/i.test(q)) return inContext ? `${inContext[1]}what does ${inContext[2].replace(/\s*teaches$/i, "")} teach?` : `What does ${q.replace(/\s*teaches$/i, "")} teach?`;
+  if (/\bhelps\b.*\bby$/i.test(q) || /\bprimarily help by$/i.test(q)) return `How does ${q.replace(/\s*by$/i, "")} help?`;
+  if (/\bshould preserve evidence by$/i.test(q)) return `How should ${q.replace(/\s*by$/i, "")} preserve evidence?`;
+  if (/\bstruggles\b.*\bbecause$/i.test(q) || /\bfails because$/i.test(q) || /\bdiffers\b.*\bbecause$/i.test(q)) return `Why does this happen: ${q.replace(/\s*because$/i, "")}?`;
+  if (/\bworks because$/i.test(q)) return `Why does this pipeline work: ${q.replace(/\s*because$/i, "")}?`;
+  if (/\bsolves$/i.test(q)) return `What problem does ${q.replace(/\s*solves$/i, "")} solve?`;
+  if (/\bmatters downstream because$/i.test(q)) return `Why does ${q.replace(/\s*because$/i, "")} matter downstream?`;
+  if (/\bmeasures$/i.test(q)) return `What does ${q.replace(/\s*measures$/i, "")} measure?`;
+  if (/\bguarantees that$/i.test(q)) return `What does this guarantee in ${context}?`;
+  if (/\bshould become$/i.test(q)) return `What should ${q.replace(/\s*should become$/i, "")} become?`;
+  if (/\b(is|are|becomes|become|means|represents|requires|skips|enables|exists to|depends on)$/i.test(q)) return `Which option correctly completes this idea: ${q}?`;
+  if (lower.includes(" ___ ")) return `Which option correctly fills in the blank for this prompt: ${q}?`;
+  if (!/[?]$/.test(q)) return `Which option best answers this complete prompt: ${q}?`;
+  return q;
+}
+function polishQuestion(q, context = "this concept") {
+  if (!q) return q;
+  const options = Array.isArray(q.options) ? q.options.map(sentenceCaseOption).slice(0, 4) : [];
+  while (options.length < 4) options.push(sentenceCaseOption(`Nearby distractor ${options.length + 1}`));
+  const a = Number.isInteger(q.a) && q.a >= 0 && q.a < 4 ? q.a : 0;
+  let why = String(q.why || "This answer follows the mechanism taught in this concept.").replace(/\s+/g, " ").trim();
+  if (!/[.!?]$/.test(why)) why += ".";
+  if (why.length < 35) why = `${why} It connects the choice to the mechanism instead of a surface clue.`;
+  return { ...q, q: polishQuestionStem(q.q, context), options, a, why };
+}
+function polishQuestions(qs, context = "this concept") {
+  return (qs || []).map((q) => polishQuestion(q, context));
+}
 function balanceQuestion(q, seed = "edokai") {
   if (!q) return null;
   const raw = Array.isArray(q.options) ? q.options.map((o) => String(o || "").replace(/\s+/g, " ").replace(/[.…]+$/g, "").trim()).filter(Boolean) : [];
@@ -208,7 +269,7 @@ function balanceQuestion(q, seed = "edokai") {
   const options = unique.map((o) => `${o}${o.split(/\s+/).length < target - 2 ? " in this lesson" : ""}`);
   const idx = Math.abs(Array.from(seed).reduce((h, ch) => ((h * 31 + ch.charCodeAt(0)) | 0), 0)) % 4;
   [options[0], options[idx]] = [options[idx], options[0]];
-  return { ...q, q: String(q.q || "Choose the best source-grounded answer."), options, a: idx, why: String(q.why || "This advances the source-backed learning path.") };
+  return polishQuestion({ ...q, q: String(q.q || "Choose the best source-grounded answer."), options, a: idx, why: String(q.why || "This advances the source-backed learning path.") }, seed);
 }
 function uniqueConceptName(name, section, used) {
   const base = String(name || "Source Mechanism").replace(/\s+/g, " ").trim();
@@ -239,12 +300,26 @@ const teachMissionFor = (w) => `Master ${w.title} well enough to explain mechani
 const applyTeachingParadigm = (w) => ({
   ...w,
   teaching: { ...TEACHING_PARADIGM, mission: w.mission || teachMissionFor(w), resources: (w.links || []).map((l) => l.label).slice(0, 4) },
-  regions: (w.regions || []).map((r, i) => ({
-    ...r,
-    teachPhase: r.teachPhase || (i === 0 ? "mission + foundations" : "spaced transfer"),
-    concepts: (r.concepts || []).map((c) => ({ ...c, lore: narrativeLore(c.name, c.lore, w.title) })),
-    referenceHint: r.referenceHint || `Reference terms: ${(r.concepts || []).map((c) => c.name).join(", ")}.`,
-  })),
+  regions: (w.regions || []).map((r, i) => {
+    const concepts = (r.concepts || []).map((c) => ({
+      ...c,
+      lore: narrativeLore(c.name, c.lore, w.title),
+      questions: polishQuestions(c.questions, `${w.title} / ${r.name} / ${c.name}`),
+    }));
+    const sides = (r.sides || []).map((side) => ({
+      ...side,
+      questions: polishQuestions(side.questions, `${w.title} / ${r.name} / ${side.name || "side quest"}`),
+    }));
+    const gym = r.gym ? { ...r.gym, questions: polishQuestions(r.gym.questions, `${w.title} / ${r.name} gym`) } : r.gym;
+    return {
+      ...r,
+      concepts,
+      sides,
+      gym,
+      teachPhase: r.teachPhase || (i === 0 ? "mission + foundations" : "spaced transfer"),
+      referenceHint: r.referenceHint || `Reference terms: ${(r.concepts || []).map((c) => c.name).join(", ")}.`,
+    };
+  }),
 });
 const teachRecordId = (worldId, conceptId) => `${worldId}:${conceptId}`;
 
@@ -264,8 +339,8 @@ async function findResource(concept, cfg) {
   return parseJSON(await askModel(
     `Find the single best free online resource (article/primer/docs) with optimal coverage for learning: "${concept}". Use web search.\nRespond ONLY raw JSON: {"title":"...","url":"...","sections":["3-6 main learnable sections of that resource"]}`, cfg, { needsWeb: true }));
 }
-const REGION_JSON_SPEC = `{"npcText":"40-word NPC summary of the key principle","referenceHint":"one sentence glossary/reference summary","concepts":[{"name":"unique concept name, not reused elsewhere in this generated world","sprite":"emoji","lore":"90-130 word cohesive lore paragraph: no bullet fragments, no TERM: clause lists; teach the concept as a memorable mechanism with a concrete scene, state change, stakes, and evidence","questions":[{"q":"advancement question that proves the learner can use this concept","options":["complete option","complete option","complete option","complete option"],"a":0,"why":"why this answer advances mastery"},{...}]}],"side":{"name":"healing creature name","sprite":"emoji","recLevel":2,"desc":"side duel framed as healing retention practice","questions":[{"q":"HEALING SCENARIO: applied real-world scenario that reinforces prerequisites","options":[4 complete, similar-length options],"a":0,"why":"why this heals/reinforces"},{...}]}}
-Exactly 2 concepts (2 questions each) + 1 side (2 scenario questions). Concept names must be unique across the whole generated world, not generic duplicates. Lore must read like a short teaching story, not broken notes or colon-separated bullets. Critical questions are advancement gates; side questions are healing/retention gates that restore HP. No option may be truncated or length-reveal the answer. Apply this teaching paradigm: ${TEACH_PROMPT} ${QUALITY_RULES}`;
+const REGION_JSON_SPEC = `{"npcText":"40-word NPC summary of the key principle","referenceHint":"one sentence glossary/reference summary","concepts":[{"name":"unique concept name, not reused elsewhere in this generated world","sprite":"emoji","lore":"90-130 word cohesive lore paragraph: no bullet fragments, no TERM: clause lists; teach the concept as a memorable mechanism with a concrete scene, state change, stakes, and evidence","questions":[{"q":"clear complete question with enough scenario context to choose an answer without guessing","options":["complete plausible option","complete plausible option","complete plausible option","complete plausible option"],"a":0,"why":"complete explanation that ties the answer to the mechanism"},{...}]}],"side":{"name":"healing creature name","sprite":"emoji","recLevel":2,"desc":"side duel framed as healing retention practice","questions":[{"q":"HEALING SCENARIO: clear applied scenario that reinforces prerequisites and asks for the best conclusion/action","options":[4 complete, similar-length plausible options],"a":0,"why":"complete explanation of why this heals/reinforces"},{...}]}}
+Exactly 2 concepts (2 questions each) + 1 side (2 scenario questions). Concept names must be unique across the whole generated world, not generic duplicates. Lore must read like a short teaching story, not broken notes or colon-separated bullets. Critical questions are advancement gates; side questions are healing/retention gates that restore HP. Every question stem must be a complete sentence or scenario with a clear ask; avoid fragments like “X is...” or “failure:”. No option may be truncated or length-reveal the answer. Apply this teaching paradigm: ${TEACH_PROMPT} ${QUALITY_RULES}`;
 
 async function buildRegionFrom(sourceDesc, section, idx, cfg, pdfB64) {
   const prompt = pdfB64
