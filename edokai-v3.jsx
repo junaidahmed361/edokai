@@ -1,4 +1,7 @@
 import React, { useState, useEffect, useRef, useMemo } from "react";
+import { dkgSyncConfigStatus, subscribeDkgSnapshot, snapshotToEdokaiWorlds, mergeDkgWorlds, summarizeDkgSnapshot } from "./dkgLiveSync";
+
+const DkgThreeMap = React.lazy(() => import("./DkgThreeMap.jsx"));
 
 /* ============================================================
    EDOKAI
@@ -119,17 +122,25 @@ async function askModel(prompt, cfg, opts = {}) {
     };
     if (needsWeb) body.tools = [{ type: "web_search_20250305", name: "web_search" }];
     if (!(cfg && cfg.anthropicKey)) {
-      if (typeof window !== "undefined" && window.edokaiAuth && typeof window.edokaiAuth.completeWithClaudeCode === "function" && !pdfBase64) {
+      if (typeof window !== "undefined" && window.edokaiAuth && typeof window.edokaiAuth.completeWithDefaultProvider === "function" && !pdfBase64) {
         try {
-          return await window.edokaiAuth.completeWithClaudeCode(prompt, { needsWeb });
+          return await window.edokaiAuth.completeWithDefaultProvider(prompt, { needsWeb, preferred: cfg.preferredAuth || "codex" });
         } catch (e) {
-          // Fall through to hosted proxy if present; desktop builds will surface the proxy error below.
-          console.warn("Claude Code auth bridge failed", e);
+          console.warn("Default desktop model auth bridge failed", e);
         }
       }
-      const proxied = await fetch("/.netlify/functions/anthropic", {
-        method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(body),
-      });
+      if (typeof window !== "undefined" && window.edokaiAuth && typeof window.edokaiAuth.completeWithClaudeCode === "function" && !pdfBase64) {
+        try { return await window.edokaiAuth.completeWithClaudeCode(prompt, { needsWeb }); }
+        catch (e) { console.warn("Claude Code auth bridge failed", e); }
+      }
+      let proxied;
+      try {
+        proxied = await fetch("/.netlify/functions/anthropic", {
+          method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(body),
+        });
+      } catch (e) {
+        throw new Error("Hosted model proxy is unreachable from this app session. In local browser dev, run Netlify Dev or use Settings → Custom endpoint; in the desktop app, use the default Codex GPT-5.5 / Claude auth bridge or run `claude auth login`.");
+      }
       const pdata = await proxied.json().catch(() => ({}));
       if (!proxied.ok || pdata.error) throw new Error(pdata.error?.message || pdata.error || `Model proxy error ${proxied.status}`);
       const pout = (pdata.content || []).filter((b) => b.type === "text").map((b) => b.text).join("\n");
@@ -154,10 +165,15 @@ async function askModel(prompt, cfg, opts = {}) {
   if (pdfBase64) throw new Error("PDF_NEEDS_BUILTIN");
   const headers = { "Content-Type": "application/json" };
   if (cfg.apiKey) headers["Authorization"] = `Bearer ${cfg.apiKey}`;
-  const res = await fetch(cfg.baseUrl.replace(/\/$/, "") + "/chat/completions", {
-    method: "POST", headers,
-    body: JSON.stringify({ model: cfg.model, max_tokens: 1200, messages: [{ role: "user", content: prompt }] }),
-  });
+  let res;
+  try {
+    res = await fetch(cfg.baseUrl.replace(/\/$/, "") + "/chat/completions", {
+      method: "POST", headers,
+      body: JSON.stringify({ model: cfg.model, max_tokens: 1200, messages: [{ role: "user", content: prompt }] }),
+    });
+  } catch (e) {
+    throw new Error(`Could not reach custom model endpoint at ${cfg.baseUrl}. Check that the server is running and CORS allows this origin.`);
+  }
   const data = await res.json().catch(() => ({}));
   if (!res.ok || data.error) throw new Error(data.error?.message || `Endpoint error ${res.status}`);
   const out = data.choices?.[0]?.message?.content || "";
@@ -179,8 +195,34 @@ function optionTellBad(q) {
 function keepFairQuestions(qs) {
   return (qs || []).filter((q) => q.options && q.options.length === 4 && Number.isInteger(q.a) && q.a >= 0 && q.a < 4 && !optionTellBad(q));
 }
+function balanceQuestion(q, seed = "edokai") {
+  if (!q) return null;
+  const raw = Array.isArray(q.options) ? q.options.map((o) => String(o || "").replace(/\s+/g, " ").replace(/[.…]+$/g, "").trim()).filter(Boolean) : [];
+  const a0 = Number.isInteger(q.a) && q.a >= 0 && q.a < raw.length ? q.a : 0;
+  const correct = raw[a0] || "source-backed mechanism";
+  const fallbacks = ["neighbor mechanism in this region", "nearby but wrong design path", "surface-only evaluation signal", "unrelated runtime detail here"];
+  const unique = [correct, ...raw.filter((_, i) => i !== a0), ...fallbacks].filter((o, i, arr) => o && arr.indexOf(o) === i).slice(0, 4);
+  while (unique.length < 4) unique.push(`nearby distractor ${unique.length}`);
+  const lens = unique.map((o) => o.split(/\s+/).filter(Boolean).length);
+  const target = Math.max(4, ...lens);
+  const options = unique.map((o) => `${o}${o.split(/\s+/).length < target - 2 ? " in this lesson" : ""}`);
+  const idx = Math.abs(Array.from(seed).reduce((h, ch) => ((h * 31 + ch.charCodeAt(0)) | 0), 0)) % 4;
+  [options[0], options[idx]] = [options[idx], options[0]];
+  return { ...q, q: String(q.q || "Choose the best source-grounded answer."), options, a: idx, why: String(q.why || "This advances the source-backed learning path.") };
+}
+function uniqueConceptName(name, section, used) {
+  const base = String(name || "Source Mechanism").replace(/\s+/g, " ").trim();
+  let out = base;
+  let i = 2;
+  while (used.has(out.toLowerCase())) {
+    out = `${base} · ${String(section || `Facet ${i}`).replace(/\s+/g, " ").trim()}`;
+    i += 1;
+  }
+  used.add(out.toLowerCase());
+  return out;
+}
 
-const QUALITY_RULES = `CRITICAL QUALITY RULES for questions: all 4 options must be similar length (within ~3 words and similar punctuation); the correct option must NEVER be the longest or most detailed; do not make the correct answer the only option with examples/numbers; distractors must be technically plausible; vary "a" (0-3) across questions.`;
+const QUALITY_RULES = `CRITICAL QUALITY RULES for questions: every question must have exactly 4 complete, non-truncated options with similar length (within ~3 words and similar punctuation); the correct option must NEVER be the longest or most detailed; do not make the correct answer the only option with examples/numbers; distractors must be technically plausible; vary "a" (0-3) across questions.`;
 
 const TEACH_SOURCE = "mattpocock/skills productivity/teach";
 const TEACHING_PARADIGM = {
@@ -200,6 +242,7 @@ const applyTeachingParadigm = (w) => ({
   regions: (w.regions || []).map((r, i) => ({
     ...r,
     teachPhase: r.teachPhase || (i === 0 ? "mission + foundations" : "spaced transfer"),
+    concepts: (r.concepts || []).map((c) => ({ ...c, lore: narrativeLore(c.name, c.lore, w.title) })),
     referenceHint: r.referenceHint || `Reference terms: ${(r.concepts || []).map((c) => c.name).join(", ")}.`,
   })),
 });
@@ -221,16 +264,35 @@ async function findResource(concept, cfg) {
   return parseJSON(await askModel(
     `Find the single best free online resource (article/primer/docs) with optimal coverage for learning: "${concept}". Use web search.\nRespond ONLY raw JSON: {"title":"...","url":"...","sections":["3-6 main learnable sections of that resource"]}`, cfg, { needsWeb: true }));
 }
-const REGION_JSON_SPEC = `{"npcText":"40-word NPC summary of the key principle","referenceHint":"one sentence glossary/reference summary","concepts":[{"name":"...","sprite":"emoji","lore":"dense 60-80 word teaching of intricate details","questions":[{"q":"...","options":["...","...","...","..."],"a":0,"why":"one line"},{...}]}],"side":{"name":"creature name","sprite":"emoji","recLevel":2,"questions":[{"q":"SCENARIO: applied real-world scenario","options":[4 options],"a":0,"why":"..."},{...}]}}
-Exactly 2 concepts (2 questions each) + 1 side (2 scenario questions). Apply this teaching paradigm: ${TEACH_PROMPT} ${QUALITY_RULES}`;
+const REGION_JSON_SPEC = `{"npcText":"40-word NPC summary of the key principle","referenceHint":"one sentence glossary/reference summary","concepts":[{"name":"unique concept name, not reused elsewhere in this generated world","sprite":"emoji","lore":"90-130 word cohesive lore paragraph: no bullet fragments, no TERM: clause lists; teach the concept as a memorable mechanism with a concrete scene, state change, stakes, and evidence","questions":[{"q":"advancement question that proves the learner can use this concept","options":["complete option","complete option","complete option","complete option"],"a":0,"why":"why this answer advances mastery"},{...}]}],"side":{"name":"healing creature name","sprite":"emoji","recLevel":2,"desc":"side duel framed as healing retention practice","questions":[{"q":"HEALING SCENARIO: applied real-world scenario that reinforces prerequisites","options":[4 complete, similar-length options],"a":0,"why":"why this heals/reinforces"},{...}]}}
+Exactly 2 concepts (2 questions each) + 1 side (2 scenario questions). Concept names must be unique across the whole generated world, not generic duplicates. Lore must read like a short teaching story, not broken notes or colon-separated bullets. Critical questions are advancement gates; side questions are healing/retention gates that restore HP. No option may be truncated or length-reveal the answer. Apply this teaching paradigm: ${TEACH_PROMPT} ${QUALITY_RULES}`;
 
 async function buildRegionFrom(sourceDesc, section, idx, cfg, pdfB64) {
   const prompt = pdfB64
     ? `From this document's section "${section}", build RPG learning content. Respond ONLY raw JSON:\n${REGION_JSON_SPEC}`
     : `Read ${sourceDesc}, section "${section}"${cfg && cfg.provider !== "builtin" ? "" : " (use web search)"}. Build RPG learning content. Respond ONLY raw JSON:\n${REGION_JSON_SPEC}`;
   const parsed = parseJSON(await askModel(prompt, cfg, { needsWeb: !pdfB64 && (!cfg || cfg.provider === "builtin"), pdfBase64: pdfB64 }));
-  const concepts = (parsed.concepts || []).map((c, i) => ({ ...c, id: `g${idx}c${i}` }));
-  const sides = parsed.side ? [{ ...parsed.side, id: `g${idx}s0`, anchor: 1, prereqs: concepts.map((c) => c.id), recLevel: parsed.side.recLevel || 2, desc: "A generated reinforcement duel." }] : [];
+  const usedConceptNames = new Set();
+  const concepts = (parsed.concepts || []).slice(0, 2).map((c, i) => {
+    const name = uniqueConceptName(c.name, section, usedConceptNames);
+    const lore = String(c.lore || "").trim();
+    return {
+      ...c,
+      id: `g${idx}c${i}`,
+      name,
+      lore: lore.length > 40 ? lore : `${name} begins as a concrete problem inside ${section}: the learner must notice which part of the system changes state, which evidence shows the change worked, and which design choice would fail without it. Capture the encounter by telling that causal story back in your own words before answering the advancement question.`,
+      questions: (c.questions || []).map((q, qi) => balanceQuestion(q, `${section}-${name}-critical-${qi}`)).filter(Boolean).slice(0, 2),
+    };
+  });
+  const sides = parsed.side ? [{
+    ...parsed.side,
+    id: `g${idx}s0`,
+    anchor: 1,
+    prereqs: concepts.map((c) => c.id),
+    recLevel: parsed.side.recLevel || 2,
+    desc: parsed.side.desc || "A generated healing retention duel: answer side questions to recover HP while strengthening prerequisites.",
+    questions: (parsed.side.questions || []).map((q, qi) => balanceQuestion(q, `${section}-side-heal-${qi}`)).filter(Boolean).slice(0, 2),
+  }] : [];
   return {
     id: `gr${idx}`, name: section, emoji: "🌀", intro: `Generated region: ${section}`,
     npc: { name: "The Archivist", text: parsed.npcText || "Study this region's concepts carefully." },
@@ -238,6 +300,29 @@ async function buildRegionFrom(sourceDesc, section, idx, cfg, pdfB64) {
     referenceHint: parsed.referenceHint || `Reference terms: ${concepts.map((c) => c.name).join(", ")}.`,
     concepts, sides,
     gym: { leader: "Region Warden", badge: `${section} Badge`, sprite: "🏛️", taunt: "Prove you absorbed everything in this region!", questions: concepts.flatMap((c) => c.questions || []).slice(0, 4) },
+  };
+}
+function normalizeGeneratedWorld(w) {
+  const used = new Set();
+  return {
+    ...w,
+    regions: (w.regions || []).map((r) => {
+      const concepts = (r.concepts || []).map((c) => {
+        const name = uniqueConceptName(c.name, r.name, used);
+        return {
+          ...c,
+          name,
+          lore: String(c.lore || "").length > 40 ? c.lore : `${name} is the key mechanism in ${r.name}: it changes what the learner can predict, debug, or design. The encounter is captured when you can name the state before and after the mechanism acts, then point to evidence that the change mattered.`,
+          questions: (c.questions || []).map((q, qi) => balanceQuestion(q, `${w.title}-${r.name}-${name}-${qi}`)).filter(Boolean).slice(0, 2),
+        };
+      });
+      const sides = (r.sides || []).map((side, si) => ({
+        ...side,
+        desc: side.desc || "Healing retention duel: answer side questions to recover HP while reinforcing prerequisite lore.",
+        questions: (side.questions || []).map((q, qi) => balanceQuestion(q, `${w.title}-${r.name}-heal-${si}-${qi}`)).filter(Boolean).slice(0, 2),
+      }));
+      return { ...r, concepts, sides, referenceHint: r.referenceHint || `Reference terms: ${concepts.map((c) => c.name).join(", ")}.`, gym: { ...r.gym, questions: concepts.flatMap((c) => c.questions || []).slice(0, 4) } };
+    }),
   };
 }
 async function buildKataFrom(sourceDesc, cfg, pdfB64) {
@@ -1486,6 +1571,95 @@ const SWE_IO_EXAMPLES = {
   "Climbing Stairs": "n=2 → 2; n=3 → 3; n=5 → 8",
   "Coin Change": "coins=[1,2,5], amount=11 → 3; coins=[2], amount=3 → -1",
 };
+const SWE_SOLUTIONS = {
+  "Two Sum": `def two_sum(nums, target):
+    seen = {}
+    for i, x in enumerate(nums):
+        if target - x in seen:
+            return [seen[target - x], i]
+        seen[x] = i
+    return []
+`,
+  "Best Time to Buy and Sell Stock": `def best_time_to_buy_and_sell_stock(prices):
+    best = 0; low = float('inf')
+    for p in prices:
+        low = min(low, p); best = max(best, p - low)
+    return best
+`,
+  "Contains Duplicate": `def contains_duplicate(nums):
+    return len(set(nums)) != len(nums)
+`,
+  "Valid Parentheses": `def valid_parentheses(s):
+    stack = []
+    pairs = {')': '(', ']': '[', '}': '{'}
+    for ch in s:
+        if ch in pairs.values():
+            stack.append(ch)
+        elif ch in pairs:
+            if not stack or stack.pop() != pairs[ch]:
+                return False
+    return not stack
+`,
+  "Valid Anagram": `from collections import Counter
+def valid_anagram(s, t):
+    return Counter(s) == Counter(t)
+`,
+  "Maximum Subarray": `def maximum_subarray(nums):
+    best = cur = nums[0]
+    for x in nums[1:]:
+        cur = max(x, cur + x); best = max(best, cur)
+    return best
+`,
+  "Climbing Stairs": `def climbing_stairs(n):
+    a, b = 1, 1
+    for _ in range(n):
+        a, b = b, a + b
+    return a
+`,
+};
+const SWE_TESTS = {
+  "Two Sum": `
+assert two_sum([2,7,11,15], 9) == [0,1]
+assert two_sum([3,2,4], 6) == [1,2]
+assert two_sum([3,3], 6) == [0,1]
+print("ALL TESTS PASSED ✓")
+`,
+  "Best Time to Buy and Sell Stock": `
+assert best_time_to_buy_and_sell_stock([7,1,5,3,6,4]) == 5
+assert best_time_to_buy_and_sell_stock([7,6,4,3,1]) == 0
+print("ALL TESTS PASSED ✓")
+`,
+  "Contains Duplicate": `
+assert contains_duplicate([1,2,3,1]) is True
+assert contains_duplicate([1,2,3,4]) is False
+print("ALL TESTS PASSED ✓")
+`,
+  "Valid Parentheses": `
+assert valid_parentheses('()[]{}') is True
+assert valid_parentheses('(]') is False
+assert valid_parentheses('([)]') is False
+assert valid_parentheses('') is True
+print("ALL TESTS PASSED ✓")
+`,
+  "Valid Anagram": `
+assert valid_anagram('anagram','nagaram') is True
+assert valid_anagram('rat','car') is False
+print("ALL TESTS PASSED ✓")
+`,
+  "Maximum Subarray": `
+assert maximum_subarray([-2,1,-3,4,-1,2,1,-5,4]) == 6
+assert maximum_subarray([1]) == 1
+print("ALL TESTS PASSED ✓")
+`,
+  "Climbing Stairs": `
+assert climbing_stairs(2) == 2
+assert climbing_stairs(3) == 3
+assert climbing_stairs(5) == 8
+print("ALL TESTS PASSED ✓")
+`,
+};
+function sweReference(k) { return SWE_SOLUTIONS[cleanBlindTitle(k.title)] || null; }
+function sweTest(k) { return SWE_TESTS[cleanBlindTitle(k.title)] || null; }
 function sweCategory(k) {
   const text = `${k.title || ""} ${k.blurb || ""}`.toLowerCase();
   for (const cat of ["arrays", "strings", "linked lists", "trees", "graphs", "intervals/matrices", "dp", "binary"]) if (text.includes(cat)) return cat;
@@ -1499,6 +1673,41 @@ function sweCategory(k) {
   return "arrays";
 }
 function cleanBlindTitle(title) { return String(title || "Kata").replace(/\s*\(Blind 75 #\d+\)\s*/g, "").trim(); }
+function narrativeLore(name, lore, worldTitle = "this world") {
+  let text = String(lore || "").replace(/\s+/g, " ").trim();
+  if (!text) return text;
+  const wrapped = text.match(/^In ([^,]+), (.+?) is not a glossary flashcard; it is a scene you can replay\. (.+?) Read it as a mechanism with stakes:.*$/);
+  if (wrapped) text = wrapped[3].trim();
+  const sentenceCount = (text.match(/[.!?](\s|$)/g) || []).length;
+  const labelCount = (text.match(/\b[A-Z][A-Z0-9+/@-]{2,}:\s/g) || []).length;
+  const hasChoppySignals = labelCount >= 2 || /;\s*[A-Z][A-Z0-9+/@-]{2,}:/.test(text) || /trivial credit assignment|moderate horizon|credit crueler/i.test(text);
+
+  if (/^Environment Types$/i.test(name)) {
+    return "Agent environments are training arenas with different kinds of memory. In a single-turn arena, the agent answers once and the reward lands immediately, so blame and credit are easy to assign. In a tool-use arena, the agent must decide when to call tools, read observations, and recover from intermediate mistakes; rewards can now attach to the quality of each step. In a multi-turn sequential arena, early choices change the future state, and the consequence of a bad click may not appear until many turns later. This progression matters because the environment chooses how sparse the reward is, how hard exploration becomes, and whether the agent can learn from a clear signal or only from delayed fallout.";
+  }
+
+  const cleaned = text
+    .replace(/\bSINGLE-TURN:\s*/g, "In the single-turn case, ")
+    .replace(/\bTOOL-USE:\s*/g, "With tool use, ")
+    .replace(/\bMULTI-TURN SEQUENTIAL:\s*/g, "In multi-turn sequential work, ")
+    .replace(/\b([A-Z][A-Z0-9+/@-]{2,}):\s*/g, (_, label) => `${label.replace(/[-_]/g, " ")} means `)
+    .replace(/;\s*/g, ". ")
+    .replace(/\s+—\s+/g, " — ")
+    .replace(/\.\s*\./g, ".")
+    .trim();
+
+  if (!hasChoppySignals && text.length >= 150 && sentenceCount >= 3) return cleaned;
+
+  const variants = [
+    `${name} is the moment in ${worldTitle} where an abstract term turns into a decision you can test. ${cleaned} As you read, track the moving part: what information changes, what evidence would confirm it, and which failure appears when the mechanism is missing.`,
+    `Think of ${name} as a small machine inside ${worldTitle}. ${cleaned} The useful question is not “can I recite the definition?” but “can I predict how the system behaves when this part is present, absent, or tuned badly?”`,
+    `${name} should feel like a cause-and-effect story. ${cleaned} Start from the situation, follow the state change, then name the consequence. That path is what makes the idea reusable in a design review, debugging session, or interview answer.`,
+    `When ${worldTitle} introduces ${name}, the learner is being asked to notice a mechanism, not memorize a label. ${cleaned} Anchor the lore in one concrete contrast: what gets easier, what gets harder, and what signal tells you the concept is doing real work.`
+  ];
+  let h = 0; for (const ch of String(name)) h = (h * 31 + ch.charCodeAt(0)) >>> 0;
+  return variants[h % variants.length];
+}
+
 function sweIo(k) {
   const base = cleanBlindTitle(k.title);
   return SWE_IO_EXAMPLES[base] || "Use the canonical Blind 75 examples: include a normal case, an edge case, and a minimal input; write the expected output before coding so the invariant has something concrete to satisfy.";
@@ -1507,22 +1716,31 @@ function sweStarter(k, guided = true) {
   const title = cleanBlindTitle(k.title);
   const fn = title.toLowerCase().replace(/[^a-z0-9]+/g, "_").replace(/^_|_$/g, "") || "solve";
   if (!guided) return `def ${fn}(*args):\n    pass\n`;
-  return `def ${fn}(*args):\n    # TODO 1: parse/name the inputs for ${title}; write down the return shape before coding.\n    # TODO 2: choose the core pattern (hash map, two pointers, stack, BFS/DFS, heap, binary search, or DP).\n    # TODO 3: maintain the invariant each loop/recursive call; update only the minimal state needed.\n    # TODO 4: handle edge cases from the test I/O card, then return the expected value.\n    pass\n`;
+  return `def ${fn}(*args):\n    # TODO 1: replace *args with the real parameters for ${title}; copy one test case below as a comment.\n    # TODO 2: choose the invariant: what compact fact must still be true after each step?\n    # TODO 3: update that state inside the loop/recursion; do not skip edge cases.\n    # TODO 4: return the value promised by the test I/O card, then run tests before marking complete.\n    pass\n`;
 }
 function enrichSWEKata(k) {
   if (!k || k.family !== "swe") return k;
   const cat = sweCategory(k), title = cleanBlindTitle(k.title), io = k.testIo || sweIo(k);
-  const lore = k.lore || `${title} should turn the problem statement into a precise input→output contract, then use the ${cat} pattern to preserve one invariant until the answer is forced. ${SWE_PATTERN_HINTS[cat] || SWE_PATTERN_HINTS.arrays} The point is not to memorize the final code; it is to recognize what state must stay true after every step.`;
-  const testLore = `Test I/O to satisfy: ${io}`;
+  const lore = k.lore || `Imagine ${title} as a tiny interview dungeon: the examples are lanterns, and the invariant is the rope that keeps you from wandering. First translate the prompt into an input→output contract; then use the ${cat} pattern to keep one fact true after every step. ${SWE_PATTERN_HINTS[cat] || SWE_PATTERN_HINTS.arrays} Retention comes from naming the state before coding, watching it change on a small example, and only then compressing the solution into code.`;
+  const testLore = `The test card is your oracle: ${io}. Before writing code, say what your function receives, what it returns, and which edge case would break a fake solution.`;
   const steps = (k.steps && k.steps.length ? k.steps : [
-    { prompt: `Define the input/output contract for ${title}.`, lore: testLore, hint: "Start by writing one concrete example and the exact return value before touching the algorithm.", code: "# TODO: write the function signature and expected return type" },
-    { prompt: `Choose the core ${cat} invariant.`, lore: SWE_PATTERN_HINTS[cat] || SWE_PATTERN_HINTS.arrays, hint: "Name the state that makes each new element/node/cell locally checkable.", code: "# TODO: name the state variables that will stay true after every step" },
-    { prompt: `Implement and verify ${title}.`, lore: `Run against: ${io}`, hint: "Handle the smallest input, the ordinary example, and the awkward edge case before optimizing.", code: "# TODO: fill the loop/recursion and return the checked result" },
+    { prompt: `Define the input/output contract for ${title}.`, lore: testLore, hint: "Write the signature with real parameter names. Then copy the smallest example and expected output as a comment.", code: "# TODO: replace *args with real parameters and state the return type" },
+    { prompt: `Choose the core ${cat} invariant.`, lore: `${SWE_PATTERN_HINTS[cat] || SWE_PATTERN_HINTS.arrays} Your invariant should be short enough to check after every iteration.`, hint: "Ask: after processing item i, what do I know that lets item i+1 be handled without rereading the past?", code: "# TODO: name and initialize the state variables that preserve the invariant" },
+    { prompt: `Implement and verify ${title}.`, lore: `Run against: ${io}. Treat failed tests as feedback about the invariant, not as punishment.`, hint: "Trace the normal example by hand for two iterations, then add the edge case that would fool a memorized answer.", code: "# TODO: update state, return the promised value, and run tests" },
   ]).map((s, i) => ({ ...s, lore: s.lore || (i === 0 ? testLore : (SWE_PATTERN_HINTS[cat] || SWE_PATTERN_HINTS.arrays)), hint: s.hint || s.why || "Use the test I/O card to decide what state must change on this line." }));
-  return { ...k, lore, testIo: io, steps, starter: k.starter && k.starter.includes("TODO") ? k.starter : sweStarter(k, true), unguidedStarter: k.unguidedStarter || sweStarter(k, false) };
+  return { ...k, lore, testIo: io, steps, solution: k.solution || sweReference(k) || `# Reference solution not authored yet for ${title}. Use AI review plus your tests to verify.`, test: k.test || sweTest(k), starter: k.starter && k.starter.includes("TODO") ? k.starter : sweStarter(k, true), unguidedStarter: k.unguidedStarter || sweStarter(k, false) };
 }
 function stripGuidance(code) {
   return String(code || "").split("\n").filter((line) => !/TODO|YOUR CODE|Sketch the canonical|write the invariant/i.test(line)).join("\n").replace(/\n{3,}/g, "\n\n").trimEnd() + "\n";
+}
+function starterFromKata(k) {
+  if (!k) return "# Write your solution here\n";
+  if (k.starter) return k.starter;
+  const title = cleanBlindTitle(k.title);
+  const steps = (k.steps || []).map((st, i) => `# TODO ${i + 1}: ${st.prompt || st.lore || "complete this checkpoint"}\n${st.code ? String(st.code).replace(/____/g, "TODO_VALUE") : "# implement this piece"}`).join("\n\n");
+  if (k.family === "ml" || k.family === "torchleet") return `# ${title} skeleton\n# Fill each TODO, then use AI review or local tests where available.\n${steps || "# TODO: implement the core model/training function.\npass"}\n`;
+  if (k.family === "sys") return `# ${title} design skeleton\n# TODO 1: state assumptions and constraints.\n# TODO 2: sketch API/data model.\n# TODO 3: identify bottlenecks and failure modes.\n`;
+  return `# ${title} skeleton\n${steps || "# TODO: solve the exercise.\npass"}\n`;
 }
 
 const LABS = {
@@ -2951,7 +3169,7 @@ export default function App() {
   const [fw, setFw] = useState("pytorch"); const [kPhase, setKPhase] = useState("step");
   const [kFeedback, setKFeedback] = useState(null); const [kOrd, setKOrd] = useState(shuf4());
   const [myCode, setMyCode] = useState(""); const [review, setReview] = useState("");
-  const [labCode, setLabCode] = useState(""); const [labOut, setLabOut] = useState("");
+  const [labCode, setLabCode] = useState(""); const [labOut, setLabOut] = useState(""); const [kataValidated, setKataValidated] = useState({});
   const [paperQ, setPaperQ] = useState(""); const [papers, setPapers] = useState(null);
   const [gaunt, setGaunt] = useState(null);            // {pool, idx, lives, score, ord}
   const [deepLore, setDeepLore] = useState({});        // conceptId -> model-expanded lore
@@ -2962,16 +3180,27 @@ export default function App() {
   const [kataAttempts, setKataAttempts] = useState(0);
   const [todoGuidance, setTodoGuidance] = useState(true);
   const [claudeCodeAuth, setClaudeCodeAuth] = useState(null);
+  const [desktopModelStatus, setDesktopModelStatus] = useState(null);
   const [modelTest, setModelTest] = useState(null);
+  const [dkgSync, setDkgSync] = useState({ ...dkgSyncConfigStatus(), status: "booting", updatedAt: null, stats: null, recentSources: [], recentRuns: [] });
+  const [dkgWorlds, setDkgWorlds] = useState([]);
+  const [mapFocus, setMapFocus] = useState(null);
+  const [homeView, setHomeView] = useState("list");
+  const [sectionOpen, setSectionOpen] = useState({ liveDkg: true, teachPanel: true, studySources: true, teachMission: true, teachResources: true, teachGlossary: true, teachRecords: true });
 
   Object.assign(T, darkMode ? THEMES.dark : THEMES.light);
 
   useEffect(() => {
     (async () => {
-      const s = await loadStore("ru-save", { xp: 0, hp: 100, badges: [], captured: [], sides: [], katas: {}, qstats: {}, kataHints: {}, kataAttempts: {}, learningRecords: [] });
-      s.sides = s.sides || []; s.katas = s.katas || {}; s.qstats = s.qstats || {}; s.kataHints = s.kataHints || {}; s.kataAttempts = s.kataAttempts || {}; s.learningRecords = s.learningRecords || [];
-      setSave(s);
+      const s = await loadStore("ru-save", { xp: 0, hp: 100, badges: [], captured: [], sides: [], katas: {}, qstats: {}, kataHints: {}, kataAttempts: {}, learningRecords: [], senzu: null, pet: { mood: "idle", msg: "ready" }, player: null });
+      s.sides = s.sides || []; s.katas = s.katas || {}; s.qstats = s.qstats || {}; s.kataHints = s.kataHints || {}; s.kataAttempts = s.kataAttempts || {}; s.learningRecords = s.learningRecords || []; s.senzu = s.senzu || null; s.pet = s.pet || { mood: "idle", msg: "ready" };
+      if (!s.player && typeof window !== "undefined" && window.edokaiDb && window.edokaiDb.auth) {
+        try { s.player = await window.edokaiDb.auth("local-player"); } catch {}
+      }
+      if (!s.player) s.player = { id: (crypto && crypto.randomUUID ? crypto.randomUUID() : `player-${Date.now()}`), name: "local-player", sessionId: (crypto && crypto.randomUUID ? crypto.randomUUID() : `session-${Date.now()}`) };
+      setSave(s); saveStore("ru-save", s);
       setWorlds(await loadStore("ru-worlds", []));
+      setDkgWorlds(await loadStore("ru-dkg-worlds", []));
       setUKatas(await loadStore("ru-ukatas", []));
       setAug(await loadStore("ru-aug", {}));
       setDeepLore(await loadStore("ru-lore", {}));
@@ -2980,10 +3209,43 @@ export default function App() {
       if (typeof window !== "undefined" && window.edokaiAuth && typeof window.edokaiAuth.claudeCodeStatus === "function") {
         window.edokaiAuth.claudeCodeStatus().then(setClaudeCodeAuth).catch((e) => setClaudeCodeAuth({ loggedIn: false, error: e.message || String(e) }));
       }
+      if (typeof window !== "undefined" && window.edokaiAuth && typeof window.edokaiAuth.desktopModelStatus === "function") {
+        window.edokaiAuth.desktopModelStatus().then(setDesktopModelStatus).catch((e) => setDesktopModelStatus({ error: e.message || String(e) }));
+      }
       setCfg(c); setDarkMode(!!c.darkMode); GLOBAL_KEY = c.anthropicKey || "";
     })();
   }, []);
-  const persist = (s) => { setSave(s); saveStore("ru-save", s); };
+
+  useEffect(() => {
+    return subscribeDkgSnapshot(
+      (snapshot) => {
+        const liveWorlds = snapshotToEdokaiWorlds(snapshot.payload);
+        if (liveWorlds.length) {
+          setDkgWorlds(() => {
+            saveStore("ru-dkg-worlds", liveWorlds);
+            return liveWorlds;
+          });
+        }
+        const dkgSummary = summarizeDkgSnapshot(snapshot.payload);
+        setDkgSync((prev) => ({
+          ...prev,
+          status: snapshot.realtime ? "live" : snapshot.empty ? "empty" : "synced",
+          updatedAt: snapshot.updatedAt || snapshot.payload?.synced_at || null,
+          stats: snapshot.payload?.stats || null,
+          recentSources: dkgSummary.recentSources,
+          recentRuns: dkgSummary.recentRuns,
+          error: null,
+        }));
+      },
+      (status) => {
+        if (status.disabled) setDkgSync((prev) => ({ ...prev, status: "disabled", error: status.message }));
+        else if (status.error) setDkgSync((prev) => ({ ...prev, status: "error", error: status.error }));
+        else if (status.realtimeStatus) setDkgSync((prev) => ({ ...prev, realtimeStatus: status.realtimeStatus }));
+      }
+    );
+  }, []);
+
+  const persist = (s) => { setSave(s); saveStore("ru-save", s); if (window.edokaiDb && window.edokaiDb.saveSession) window.edokaiDb.saveSession({ player: s.player, save: s }).catch(() => {}); };
   const persistWorlds = (w) => { setWorlds(w); saveStore("ru-worlds", w); };
   const persistUKatas = (k) => { setUKatas(k); saveStore("ru-ukatas", k); };
   const persistAug = (a) => { setAug(a); saveStore("ru-aug", a); };
@@ -2994,7 +3256,9 @@ export default function App() {
     try {
       const extra = await askModel(`You are a patient ML teacher using this paradigm: ${TEACH_PROMPT}\nA learner read this summary of "${c.name}":\n"""${c.lore}"""\nExpand it with ~150 words of deeper explanation: the intuition behind it, one concrete worked example with small numbers where possible, and the most common misconception. Plain text, no markdown headers.`, cfg);
       if (extra && extra.length > 40) persistLore({ ...deepLore, [c.id]: extra.trim() });
-    } catch (e) { showToast(`Model deepen failed: ${e.message || "check model settings"}.`); }
+    } catch (e) {
+      showToast(`Deepen lore model call failed: ${e.message || "Check model settings."}`);
+    }
     setBusy("");
   };
   // lore the player should review for the current battle
@@ -3009,11 +3273,30 @@ export default function App() {
   };
   const persistCfg = (c) => { setCfg(c); setDarkMode(!!c.darkMode); GLOBAL_KEY = c.anthropicKey || ""; saveStore("ru-cfg", c); };
   const showToast = (m) => { setToast(m); setTimeout(() => setToast(null), 2600); };
+  const toggleSection = (id) => setSectionOpen((s) => ({ ...s, [id]: !s[id] }));
   const toggleMusic = () => { if (musicOn) { music.stop(); setMusicOn(false); } else { music.start(); setMusicOn(true); } };
   const toggleTheme = () => persistCfg({ ...cfg, darkMode: !darkMode });
 
-  const allWorlds = [...BUILTIN_WORLDS, ...worlds].map(applyTeachingParadigm);
+  const allWorlds = mergeDkgWorlds([...BUILTIN_WORLDS, ...worlds], dkgWorlds).map((w) => applyTeachingParadigm(w));
   const world = allWorlds.find((w) => w.id === activeWorld) || BUILTIN_WORLDS[0];
+  const focusedMapWorld = allWorlds.find((w) => w.id === (mapFocus || activeWorld)) || world;
+  const mapStats = (w) => {
+    const concepts = w.regions.reduce((n, r) => n + r.concepts.length, 0);
+    const sides = w.regions.reduce((n, r) => n + (r.sides || []).length, 0);
+    const sources = (w.links || []).length;
+    const capturedIds = new Set(save?.captured || []);
+    const captured = w.regions.reduce((n, r) => n + r.concepts.filter((c) => capturedIds.has(c.id)).length, 0);
+    return { concepts, sides, sources, captured };
+  };
+  const worldSourceOverlap = (a, b) => {
+    const au = new Set((a.links || []).map((l) => l.url));
+    return (b.links || []).filter((l) => au.has(l.url)).length;
+  };
+  const mapNeighbors = allWorlds
+    .filter((w) => w.id !== focusedMapWorld.id)
+    .map((w) => ({ world: w, overlap: worldSourceOverlap(focusedMapWorld, w), stats: mapStats(w) }))
+    .sort((a, b) => b.overlap - a.overlap || b.stats.concepts - a.stats.concepts)
+    .slice(0, 5);
   const regions = world.regions;
   const region = regions[regionIdx];
   const level = save ? Math.floor(save.xp / 150) + 1 : 1;
@@ -3021,6 +3304,17 @@ export default function App() {
   const capturedSet = new Set(save ? save.captured : []);
   const sidesSet = new Set(save ? save.sides : []);
   const allKatas = [...KATAS, ...BLIND75_EXTRA, ...TORCHLEET, ...uKatas].map(enrichSWEKata);
+  const incompleteKatas = (fam) => allKatas.filter((k) => k.family === fam && kProgress(k.id) < (k.steps.length || 1));
+  const pickQuestKata = (fam, salt = 0) => { const ks = incompleteKatas(fam); return ks.length ? ks[(Date.now() + salt) % ks.length] : null; };
+  const ensureSenzuQuest = () => {
+    if (save.senzu && !save.senzu.claimed) return save.senzu;
+    const swe = pickQuestKata("swe", 7), ml = pickQuestKata("ml", 19);
+    if (!swe || !ml) return null;
+    const q = { id: `senzu-${Date.now()}`, required: { swe: swe.id, ml: ml.id }, claimed: false };
+    persist({ ...save, senzu: q, pet: { mood: "quest", msg: "win two dojo trials for a senzu bean" } });
+    return q;
+  };
+  const petReact = (mood, msg) => persist({ ...save, pet: { mood, msg } });
   const conceptName = (id) => {
     for (const w of allWorlds) for (const r of w.regions) {
       const c = r.concepts.find((x) => x.id === id); if (c) return c.name;
@@ -3068,6 +3362,33 @@ export default function App() {
       setModelTest({ ok: false, msg: `${e.message || e}. Ollama: OLLAMA_ORIGINS=* ollama serve → http://localhost:11434/v1. MLX-LM: python -m mlx_lm.server --model <model> --port 8080 → http://localhost:8080/v1.` });
     }
   };
+  const refreshDesktopModelStatus = async () => {
+    if (!window.edokaiAuth || !window.edokaiAuth.desktopModelStatus) { setDesktopModelStatus({ error: "Desktop auth bridge unavailable in this browser session. Open the Electron desktop app to connect Codex/Claude Code subscriptions." }); return; }
+    try { setDesktopModelStatus(await window.edokaiAuth.desktopModelStatus()); }
+    catch (e) { setDesktopModelStatus({ error: e.message || String(e) }); }
+  };
+  const startDesktopLogin = async (provider) => {
+    setModelTest({ ok: null, msg: `Opening ${provider} subscription login…` });
+    try {
+      if (!window.edokaiAuth || !window.edokaiAuth.startDesktopModelLogin) throw new Error("Desktop auth bridge unavailable in this browser session. Launch Edokai as the Electron desktop app, not a plain Vite browser tab, to connect subscriptions.");
+      const res = await window.edokaiAuth.startDesktopModelLogin(provider);
+      setModelTest({ ok: true, msg: res.message || `Started ${provider} login. Finish in the Terminal window, then refresh status.` });
+      setTimeout(refreshDesktopModelStatus, 1000);
+    } catch (e) { setModelTest({ ok: false, msg: e.message || String(e) }); }
+  };
+  const testDefaultModel = async () => {
+    setModelTest({ ok: null, msg: "Testing default desktop provider…" });
+    try {
+      if (!window.edokaiAuth || !window.edokaiAuth.completeWithDefaultProvider) throw new Error("Desktop auth bridge unavailable in this browser session");
+      const out = await window.edokaiAuth.completeWithDefaultProvider("Reply with exactly: EDOKAI_OK", { preferred: cfg.preferredAuth || "codex" });
+      if (!/EDOKAI_OK/i.test(out)) throw new Error(`unexpected response: ${String(out).slice(0, 80)}`);
+      setModelTest({ ok: true, msg: `Default provider ready (${cfg.preferredAuth || "codex"}) · ${String(out).slice(0, 80)}` });
+      refreshDesktopModelStatus();
+    } catch (e) {
+      setModelTest({ ok: false, msg: e.message || String(e) });
+      refreshDesktopModelStatus();
+    }
+  };
 
   /* ---------- battle ---------- */
   const DMG = 40, CRIT = 20;
@@ -3092,6 +3413,7 @@ export default function App() {
     if (!battle || battle.phase !== "question") return;
     const q = bQuestions[battle.qIdx % bQuestions.length];
     const idx = battle.ord[dispIdx];
+    const selectedText = q.options[idx];
     const correct = idx === q.a;
     const s = { ...save };
     recStat(s, battleSrc, correct);
@@ -3102,18 +3424,19 @@ export default function App() {
       const won = newHp <= 0;
       if (won) {
         if (battle.kind === "critical") { s.xp += 50; if (!capturedSet.has(battle.concept.id)) { s.captured = [...s.captured, battle.concept.id]; recordConceptLearning(s, battle.concept); } }
-        else if (battle.kind === "side") { s.xp += 30; s.hp = Math.min(maxHp, s.hp + 25); if (!sidesSet.has(battle.side.id)) s.sides = [...s.sides, battle.side.id]; }
+        else if (battle.kind === "side") { s.xp += 30; s.hp = Math.min(maxHp, s.hp + 25); s.pet = { mood: "heal", msg: "+25 HP" }; if (!sidesSet.has(battle.side.id)) s.sides = [...s.sides, battle.side.id]; }
         else { s.xp += 150; if (!s.badges.includes(region.gym.badge)) s.badges = [...s.badges, region.gym.badge]; }
       }
       persist(s);
-      setBattle({ ...battle, enemyHp: newHp, streak: battle.streak + 1, phase: won ? "victory" : "feedback", wrong: false, log: `${crit ? "CRITICAL HIT! " : ""}Strike for ${dmg}! ${q.why}` });
+      setBattle({ ...battle, enemyHp: newHp, streak: battle.streak + 1, phase: won ? "victory" : "feedback", wrong: false, selectedText, log: `${crit ? "CRITICAL HIT! " : ""}You chose: “${selectedText}”. Strike for ${dmg}! ${q.why}` });
     } else {
       const dmg = battle.kind === "gym" ? 22 : 16;
       const newHp = Math.max(0, s.hp - dmg);
       const fainted = newHp <= 0;
       s.hp = fainted ? maxHp : newHp;
+      s.pet = { mood: fainted ? "faint" : "harm", msg: fainted ? "wake up healed" : `-${dmg} HP` };
       persist(s);
-      setBattle({ ...battle, streak: 0, phase: fainted ? "defeat" : "feedback", wrong: true, log: fainted ? `You blacked out! ${q.why} — You wake at the region entrance, healed and wiser.` : `Counterattack for ${dmg}! ${q.why}` });
+      setBattle({ ...battle, streak: 0, phase: fainted ? "defeat" : "feedback", wrong: true, selectedText, log: fainted ? `You chose: “${selectedText}”. You blacked out! ${q.why} — You wake at the region entrance, healed and wiser.` : `You chose: “${selectedText}”. Counterattack for ${dmg}! ${q.why}` });
     }
   };
   const continueBattle = () => {
@@ -3345,7 +3668,7 @@ ${QUALITY_RULES}`, cfg));
     }
     setBusy("");
     if (!out.length) { setScan({ ...scan, error: "Generation failed — try fewer sections." }); return; }
-    const w = { id: "w" + Date.now(), title: scan.title, emoji: "🌀", blurb: "Custom world", links: scan.src.foundUrl ? [{ label: "Source", url: scan.src.foundUrl }] : [], regions: out };
+    const w = normalizeGeneratedWorld({ id: "w" + Date.now(), title: scan.title, emoji: "🌀", blurb: "Custom world", links: scan.src.foundUrl ? [{ label: "Source", url: scan.src.foundUrl }] : [], regions: out });
     persistWorlds([...worlds, w]);
     setScan(null); setUrl(""); setPasteText(""); setConceptQ(""); setPdfB64(null); setPdfName("");
     setActiveWorld(w.id); setRegionIdx(0); setAtNode("start"); setScreen("regionlist");
@@ -3403,15 +3726,34 @@ ${QUALITY_RULES}`, cfg));
     setKataAttempts((save.kataAttempts && save.kataAttempts[k.id]) || 0);
     setMyCode("");   // showSol flag rides in myCode? no — dedicated state below
     const ek = enrichSWEKata(k);
-    const starter = LABS[k.id] ? LABS[k.id].starter : (todoGuidance ? (ek.starter || "# paste or write your attempt here\n") : (ek.unguidedStarter || stripGuidance(ek.starter || "# paste or write your attempt here\n")));
+    const starterBase = starterFromKata(ek);
+    const starter = LABS[k.id] ? LABS[k.id].starter : (todoGuidance ? starterBase : (ek.unguidedStarter || stripGuidance(starterBase)));
     setLabCode(starter);
     setLabOut("");
     setScreen("kata");
   };
+  const applyKataCompletion = (baseSave, k) => {
+    const s = { ...baseSave, xp: baseSave.xp + 60, katas: { ...baseSave.katas, [k.id]: k.steps.length || 1 }, pet: { mood: "heal", msg: "dojo win!" } };
+    const q = s.senzu;
+    if (q && !q.claimed && q.required && [q.required.swe, q.required.ml].every((id) => s.katas[id])) {
+      s.hp = maxHp;
+      s.senzu = { ...q, claimed: true, claimedAt: Date.now() };
+      s.pet = { mood: "senzu", msg: "full recovery!" };
+      showToast("Senzu bean! Two random dojo trials cleared — HP fully recovered.");
+    } else showToast("Kata complete! +60 XP");
+    return s;
+  };
+  const codeLooksFilled = (code) => {
+    const body = String(code || "").replace(/#.*$/gm, "").trim();
+    return body.length > 20 && !/\bpass\b|TODO|YOUR CODE|____/i.test(body);
+  };
   const markKataComplete = () => {
     if (!kata || kProgress(kata.id) >= (kata.steps.length || 1)) return;
-    const s = { ...save, xp: save.xp + 60, katas: { ...save.katas, [kata.id]: kata.steps.length || 1 } };
-    persist(s); showToast("Kata complete! +60 XP");
+    const ek = enrichSWEKata(kata);
+    const hasRunnableTest = !!(LABS[kata.id]?.test || ek.test);
+    if (!codeLooksFilled(labCode)) { showToast("Fill the code first — TODO/pass placeholders cannot be marked complete."); return; }
+    if (hasRunnableTest && !kataValidated[kata.id]) { showToast("Run tests and pass them before marking this kata complete."); return; }
+    persist(applyKataCompletion(save, kata));
   };
   const answerKata = (dispIdx) => {
     if (!kata || kFeedback) return;
@@ -3424,8 +3766,8 @@ ${QUALITY_RULES}`, cfg));
       s.xp += 15;
       const next = stepIdx + 1;
       if (next >= kata.steps.length) {
-        s.xp += 60; s.katas = { ...s.katas, [kata.id]: kata.steps.length };
-        persist(s); setKFeedback({ ok: true, msg: st.why + " — ALL HINTS CLEARED! +60 XP bonus." });
+        const rewarded = applyKataCompletion(s, kata);
+        persist(rewarded); setKFeedback({ ok: true, msg: st.why + " — ALL HINTS CLEARED! +60 XP bonus." });
         setTimeout(() => { setKPhase("work"); setKFeedback(null); }, 1800);
       } else {
         s.katas = { ...s.katas, [kata.id]: Math.max(kProgress(kata.id), next) };
@@ -3438,22 +3780,26 @@ ${QUALITY_RULES}`, cfg));
     if (!labCode.trim() || !kata) return;
     recordKataAttempt("review");
     setBusy("review"); setReview("");
-    try { setReview(await reviewCode(kata.title, fw, labCode, cfg)); } catch (e) { setReview("Review failed — check model settings (custom endpoints need CORS enabled)."); }
+    try { setReview(await reviewCode(kata.title, fw, labCode, cfg)); } catch (e) { setReview(`Review failed — ${e.message || "check Settings → Default desktop model auth. In browser dev, desktop Codex/Claude subscriptions are unavailable; launch the Electron app and connect them there."}`); }
     setBusy("");
   };
   const runLab = async (withTests) => {
-    if (!kata || !LABS[kata.id]) return;
+    if (!kata) return;
+    const ek = enrichSWEKata(kata);
+    const test = LABS[kata.id]?.test || ek.test || "";
+    const needs = LABS[kata.id]?.needs || null;
+    if (withTests && !test) { showToast("No runnable tests authored yet — use AI review, then add tests before completion."); return; }
     recordKataAttempt(withTests ? "tests" : "run");
     setBusy("lab"); setLabOut("⏳ starting Python… (first run downloads the runtime, ~10-20s)");
     try {
-      const out = await runPython(withTests ? labCode + "\n" + LABS[kata.id].test : labCode, LABS[kata.id].needs, (s) => setLabOut(s));
+      const out = await runPython(withTests ? labCode + "\n" + test : labCode, needs, (s) => setLabOut(s));
       setLabOut(out);
-      if (withTests && out.includes("ALL TESTS PASSED") && kProgress(kata.id) < kata.steps.length) {
-        const s = { ...save, xp: save.xp + 60, katas: { ...save.katas, [kata.id]: kata.steps.length || 1 } };
-        persist(s); showToast("Tests passed — kata complete! +60 XP");
+      if (withTests && out.includes("ALL TESTS PASSED")) {
+        setKataValidated((v) => ({ ...v, [kata.id]: true }));
+        showToast("Tests passed — completion unlocked.");
       }
     }
-    catch (e) { setLabOut("⚠️ " + (e.message || e)); }
+    catch (e) { setLabOut("⚠️ " + (e.message || e)); setKataValidated((v) => ({ ...v, [kata.id]: false })); }
     setBusy("");
   };
   const doPapers = async () => {
@@ -3569,6 +3915,10 @@ ${QUALITY_RULES}`, cfg));
             <div style={{ height: "100%", width: `${(save.hp / maxHp) * 100}%`, background: save.hp / maxHp > 0.4 ? T.reward : T.penalty, transition: "width .4s" }} />
           </div>
         </div>
+        <div title={save.pet?.msg || "Edokai pet"} style={{ width: 42, minWidth: 42, textAlign: "center", border: `1px solid ${T.line}`, borderRadius: 12, padding: "3px 4px", background: save.pet?.mood === "harm" ? T.penaltySoft : save.pet?.mood === "heal" || save.pet?.mood === "senzu" ? T.rewardSoft : T.card }}>
+          <div style={{ fontSize: 20, animation: save.pet?.mood === "harm" ? "shake .25s ease" : "bob 1.6s ease-in-out infinite" }}>{save.pet?.mood === "harm" ? "😿" : save.pet?.mood === "senzu" ? "🐉" : save.pet?.mood === "heal" ? "😸" : "🐾"}</div>
+          <div style={S.mono(7, T.inkSoft)}>{save.pet?.mood || "idle"}</div>
+        </div>
         <button onClick={toggleMusic} title="Low-volume background music" style={{ background: "none", border: `1px solid ${T.line}`, color: T.ink, borderRadius: 8, width: 30, height: 30, cursor: "pointer", fontSize: 14 }}>{musicOn ? "🎵" : "🔇"}</button>
         <button onClick={toggleTheme} title={darkMode ? "Switch to light mode" : "Switch to dark mode"} style={{ background: "none", border: `1px solid ${T.line}`, color: T.ink, borderRadius: 8, width: 30, height: 30, cursor: "pointer", fontSize: 14 }}>{darkMode ? "☀️" : "🌙"}</button>
         <button onClick={() => { setDexWorld(activeWorld); setScreen("dex"); }} style={{ ...S.btn(T.explore), padding: "7px 10px", fontSize: 12 }}>📖</button>
@@ -3580,11 +3930,43 @@ ${QUALITY_RULES}`, cfg));
     <div style={{ display: "flex", gap: 6, marginTop: 14, flexWrap: "wrap" }}>
       {[["home", "🌍 Learn"], ["dojo", "⌨️ Dojo"], ["wildspick", "🌿 Wilds"], ["coach", "🧪 Coach"], ["teachspace", "📚 Mission"], ["papers", "📡 Papers"]].map(([id, label]) => {
         const on = screen === id || (id === "home" && ["home", "regionlist", "region"].includes(screen));
-        return <button key={id} onClick={() => setScreen(id)} style={{ ...S.btn(on ? T.ink : T.card, on ? "#fff" : T.inkSoft), border: `1px solid ${T.line}`, padding: "8px 14px", fontSize: 13 }}>{label}</button>;
+        const activeBg = darkMode ? T.explore : T.ink;
+        const activeFg = darkMode ? "#FFFFFF" : "#FFFFFF";
+        return <button key={id} onClick={() => setScreen(id)} style={{ ...S.btn(on ? activeBg : T.card, on ? activeFg : T.inkSoft), border: `1px solid ${on ? activeBg : T.line}`, padding: "8px 14px", fontSize: 13 }}>{label}</button>;
       })}
     </div>
   );
   const Toast = () => toast ? <div style={{ position: "fixed", bottom: 24, left: "50%", transform: "translateX(-50%)", zIndex: 60, background: T.ink, color: "#fff", padding: "10px 16px", borderRadius: 12, fontSize: 13.5, fontWeight: 700, animation: "slideUp .3s ease", maxWidth: "85%", textAlign: "center" }}>{toast}</div> : null;
+  const SenzuPanel = ({ compact = false }) => {
+    const q = save.senzu;
+    const active = q && !q.claimed;
+    const required = active ? [q.required.swe, q.required.ml].map((id) => allKatas.find((k) => k.id === id)).filter(Boolean) : [];
+    const hpFull = save.hp >= maxHp;
+    return (
+      <div style={{ ...S.card, marginTop: compact ? 8 : 12, background: hpFull ? T.card : T.rewardSoft, border: `1px solid ${hpFull ? T.line : T.reward}` }}>
+        <div style={{ display: "flex", justifyContent: "space-between", gap: 10, alignItems: "flex-start" }}>
+          <div>
+            <span style={S.mono(10, T.reward)}>🫘 SENZU BEAN RECOVERY</span>
+            <p style={{ fontSize: compact ? 12 : 13, color: T.inkSoft, lineHeight: 1.5, margin: "5px 0 0" }}>
+              Concept-world healing now routes through the Dojo: complete one random uncompleted Blind 75 exercise and one ML Engineering exercise to fully recover HP.
+            </p>
+          </div>
+          <button onClick={ensureSenzuQuest} style={{ ...S.btn(T.reward), padding: "7px 10px", fontSize: 12, whiteSpace: "nowrap" }}>{active ? "Reroll" : hpFull ? "Prep bean" : "Start heal"}</button>
+        </div>
+        {active && (
+          <div style={{ display: "grid", gap: 7, marginTop: 9 }}>
+            {required.map((k) => {
+              const done = !!save.katas[k.id];
+              return <button key={k.id} onClick={() => openKata(k)} style={{ ...S.card, padding: 9, display: "flex", gap: 8, alignItems: "center", textAlign: "left", cursor: "pointer", background: done ? T.rewardSoft : T.card }}>
+                <span>{done ? "✅" : "⌨️"}</span><span style={{ flex: 1, fontSize: 12.5 }}><b>{k.family === "swe" ? "Blind 75" : "ML Engineering"}</b>: {k.title}</span><span style={S.mono(9, done ? T.reward : T.explore)}>{done ? "DONE" : "VISIT DOJO →"}</span>
+              </button>;
+            })}
+          </div>
+        )}
+        {q && q.claimed && <div style={{ marginTop: 7, ...S.mono(10, T.reward) }}>SENZU CLAIMED · HP FULLY RECOVERED</div>}
+      </div>
+    );
+  };
   const QCard = ({ q, ord, onAnswer, label, color }) => (
     <div style={{ ...S.card, animation: "slideUp .25s ease" }}>
       <span style={S.mono(10, color || T.explore)}>{label}</span>
@@ -3596,6 +3978,20 @@ ${QUALITY_RULES}`, cfg));
       ))}
     </div>
   );
+  const Collapsible = ({ id, title, children, color = T.explore, right = null, style = {} }) => {
+    const open = sectionOpen[id] !== false;
+    return (
+      <div style={{ ...S.card, ...style }}>
+        <div style={{ width: "100%", display: "flex", justifyContent: "space-between", alignItems: "center", gap: 10 }}>
+          <button onClick={() => toggleSection(id)} style={{ flex: 1, background: "none", border: "none", color: T.ink, cursor: "pointer", padding: 0, fontFamily: "inherit", textAlign: "left" }}>
+            <span style={S.mono(10, color)}>{open ? "⌄" : "›"} {title}</span>
+          </button>
+          {right || <button onClick={() => toggleSection(id)} style={{ background: "none", border: "none", padding: 0, cursor: "pointer", fontFamily: "inherit" }}><span style={S.mono(9, T.inkSoft)}>{open ? "collapse" : "expand"}</span></button>}
+        </div>
+        {open && <div style={{ marginTop: 8 }}>{children}</div>}
+      </div>
+    );
+  };
   const TeachingPanel = ({ target = world, region: teachRegion = null, compact = false }) => {
     const tp = target.teaching || TEACHING_PARADIGM;
     const records = worldLearningRecords(target).length;
@@ -3607,16 +4003,18 @@ ${QUALITY_RULES}`, cfg));
       ["📚", compact ? `${glossary} glossary · ${records} records` : (teachRegion?.referenceHint || tp.reference)],
     ];
     return (
-      <div style={{ ...S.card, marginTop: 10, background: darkMode ? "#101832" : "#F7F8FD" }}>
-        <div style={{ display: "flex", justifyContent: "space-between", gap: 8, alignItems: "center" }}>
-          <span style={S.mono(10, T.explore)}>TEACH WORKSPACE · {TEACH_SOURCE}</span>
-          <button onClick={(e) => { e.stopPropagation(); setDexWorld(target.id); setScreen("teachspace"); }} style={{ ...S.chip(false), fontSize: 11, padding: "5px 9px" }}>Open mission log →</button>
-        </div>
-        {!compact && <p style={{ fontSize: 12.5, color: T.inkSoft, lineHeight: 1.55, margin: "6px 0 8px" }}>This is now stateful, not just a banner: captured concepts become glossary terms, critical wins create learning records, resources stay attached to each world, and Coach/Wilds generate retrieval practice from your misses.</p>}
+      <Collapsible
+        id="teachPanel"
+        title={`TEACH WORKSPACE · ${TEACH_SOURCE}`}
+        color={T.explore}
+        style={{ marginTop: 10, background: darkMode ? "#101832" : "#F7F8FD" }}
+        right={<button onClick={(e) => { e.stopPropagation(); setDexWorld(target.id); setScreen("teachspace"); }} style={{ ...S.chip(false), fontSize: 11, padding: "5px 9px" }}>Open mission log →</button>}
+      >
+        {!compact && <p style={{ fontSize: 12.5, color: T.inkSoft, lineHeight: 1.55, margin: "0 0 8px" }}>This is now stateful, not just a banner: captured concepts become glossary terms, critical wins create learning records, resources stay attached to each world, and Coach/Wilds generate retrieval practice from your misses.</p>}
         <div style={{ display: "flex", flexWrap: "wrap", gap: 6 }}>
           {chips.map(([icon, text], i) => <span key={i} style={{ ...S.mono(9.5, i === 0 ? T.action : i === 1 ? T.explore : i === 2 ? T.reward : T.gold), background: T.card, border: `1px solid ${T.line}`, borderRadius: 999, padding: "5px 9px" }}>{icon} {text}</span>)}
         </div>
-      </div>
+      </Collapsible>
     );
   };
 
@@ -3643,8 +4041,67 @@ ${QUALITY_RULES}`, cfg));
           <h2 style={{ fontSize: 20, fontWeight: 800, margin: 0 }}>Concept Worlds</h2>
           <button onClick={() => { setScan(null); setScreen("spawn"); }} style={{ ...S.btn(T.action), padding: "7px 12px", fontSize: 12 }}>+ Bring your own</button>
         </div>
+        <div style={{ display: "flex", gap: 6, marginTop: 10, background: darkMode ? "#101832" : "#F2F4FA", border: `1px solid ${T.line}`, borderRadius: 999, padding: 4 }}>
+          <button onClick={() => setHomeView("list")} style={{ ...S.btn(homeView === "list" ? T.explore : "transparent", homeView === "list" ? "#fff" : T.inkSoft), flex: 1, padding: "7px 10px", fontSize: 12, borderRadius: 999 }}>☰ List view</button>
+          <button onClick={() => setHomeView("atlas")} style={{ ...S.btn(homeView === "atlas" ? T.explore : "transparent", homeView === "atlas" ? "#fff" : T.inkSoft), flex: 1, padding: "7px 10px", fontSize: 12, borderRadius: 999 }}>🗺️ Atlas view</button>
+        </div>
         <TeachingPanel target={world} compact />
-        {allWorlds.map((w) => {
+        <Collapsible id="liveDkg" title={`LIVE DKG · ${dkgSync.status.toUpperCase()}`} color={dkgSync.status === "error" ? T.penalty : T.explore} style={{ marginTop: 10, background: dkgSync.status === "error" ? T.penaltySoft : dkgSync.status === "disabled" ? T.card : T.exploreSoft }} right={dkgSync.updatedAt ? <span style={S.mono(9, T.inkSoft)}>{new Date(dkgSync.updatedAt).toLocaleString()}</span> : null}>
+          <p style={{ fontSize: 12.5, color: T.inkSoft, lineHeight: 1.5, margin: 0 }}>
+            {dkgSync.status === "disabled"
+              ? "Set VITE_SUPABASE_ANON_KEY in Netlify to load live Supabase graph snapshots."
+              : dkgSync.status === "error"
+                ? `Supabase sync error: ${dkgSync.error}`
+                : dkgSync.stats
+                  ? `${dkgSync.stats.node_count || 0} graph nodes · ${dkgSync.stats.edge_count || 0} edges · ${dkgSync.stats.macro_world_count || 0} macro worlds synced from Supabase.`
+                  : "Waiting for the latest Supabase graph snapshot…"}
+          </p>
+          {!!(dkgSync.recentSources || []).length && <Collapsible id="liveDkgSources" title="RECENT LIVE INGESTS / SOURCES" color={T.inkSoft} style={{ marginTop: 10, padding: 10, background: T.card }}>
+            <div style={{ display: "grid", gap: 6 }}>
+              {(dkgSync.recentSources || []).slice(0, 3).map((src) => (
+                <a key={src.id} href={src.url || undefined} target="_blank" rel="noreferrer" style={{ display: "block", textDecoration: "none", color: T.ink, background: darkMode ? "#101832" : "#FAFBFF", border: `1px solid ${T.line}`, borderRadius: 12, padding: "8px 10px" }}>
+                  <div style={{ display: "flex", justifyContent: "space-between", gap: 8 }}>
+                    <b style={{ fontSize: 12.5 }}>{src.title}</b>
+                    {src.lastReadAt && <span style={S.mono(8.5, T.inkSoft)}>{new Date(src.lastReadAt).toLocaleString()}</span>}
+                  </div>
+                  <div style={{ fontSize: 11.5, color: T.inkSoft, marginTop: 3 }}>{src.url || src.id}</div>
+                </a>
+              ))}
+              {!!(dkgSync.recentRuns || []).length && <div style={{ fontSize: 11.5, color: T.inkSoft, lineHeight: 1.45 }}>
+                Latest run: {(dkgSync.recentRuns[0].nodesAdded || 0) > 0
+                  ? `${dkgSync.recentRuns[0].nodesAdded} new nodes, ${dkgSync.recentRuns[0].edgesAdded || 0} new edges`
+                  : `${dkgSync.recentRuns[0].nodesUpdated || 0} existing nodes refreshed · no new nodes`}
+              </div>}
+            </div>
+          </Collapsible>}
+        </Collapsible>
+        {homeView === "atlas" && (
+          <div style={{ marginTop: 12 }}>
+            <React.Suspense fallback={<div style={{ ...S.card, height: 390, display: "grid", placeItems: "center", color: T.inkSoft }}><span style={S.mono(10)}>loading three.js atlas…</span></div>}>
+              <DkgThreeMap
+                worlds={allWorlds}
+                focusedWorld={focusedMapWorld}
+                mapStats={mapStats}
+                capturedSet={capturedSet}
+                darkMode={darkMode}
+                T={T}
+                onFocus={(id) => { setMapFocus(id); setActiveWorld(id); }}
+                onStudy={(id) => { setActiveWorld(id); setRegionIdx(0); setAtNode("start"); setScreen("regionlist"); }}
+              />
+            </React.Suspense>
+            <div style={{ ...S.card, marginTop: 10, background: darkMode ? "#101832" : "#FAFBFF" }}>
+              <span style={S.mono(10, T.action)}>ATLAS FOCUS</span>
+              <div style={{ display: "flex", justifyContent: "space-between", gap: 10, alignItems: "center", marginTop: 6 }}>
+                <div>
+                  <div style={{ fontWeight: 900 }}>{focusedMapWorld.emoji} {focusedMapWorld.title}</div>
+                  <div style={{ fontSize: 12.5, color: T.inkSoft }}>{mapStats(focusedMapWorld).concepts} concepts · {focusedMapWorld.regions.length} regions · switch back to list any time.</div>
+                </div>
+                <button onClick={() => { setActiveWorld(focusedMapWorld.id); setRegionIdx(0); setAtNode("start"); setScreen("regionlist"); }} style={{ ...S.btn(T.explore), padding: "8px 11px", fontSize: 12 }}>Study →</button>
+              </div>
+            </div>
+          </div>
+        )}
+        {homeView === "list" && allWorlds.map((w) => {
           const total = w.regions.reduce((n, r) => n + r.concepts.length, 0);
           const got = w.regions.reduce((n, r) => n + r.concepts.filter((c) => capturedSet.has(c.id)).length, 0);
           const badges = w.regions.filter((r) => save.badges.includes(r.gym.badge)).length;
@@ -3667,6 +4124,92 @@ ${QUALITY_RULES}`, cfg));
     </div>
   );
 
+  /* ============ WORLDS MAP ============ */
+  if (screen === "map") {
+    const focusStats = mapStats(focusedMapWorld);
+    return (
+      <div style={S.app}><style>{CSS}</style><Toast /><HUD back={() => setScreen("home")} />
+        <div style={{ ...S.wrap }}>
+          <Tabs />
+          <div style={{ ...S.card, marginTop: 14, background: darkMode ? "linear-gradient(135deg,#101832,#17203f)" : "linear-gradient(135deg,#F5F8FF,#FFFFFF)" }}>
+            <span style={S.mono(10, T.explore)}>EDOKAI ATLAS · THREE.JS TERRITORY MAP</span>
+            <h2 style={{ fontSize: 21, fontWeight: 800, margin: "6px 0 4px" }}>A spatial DKG map you can read at a glance.</h2>
+            <p style={{ fontSize: 13, color: T.inkSoft, lineHeight: 1.55, margin: 0 }}>Each island is a macro-world, orbiting dots are its regions, green arcs show capture progress, and source-overlap lines show nearby territories. Click an island to focus it; use Study to jump into the learner path.</p>
+          </div>
+
+          <div style={{ marginTop: 10 }}>
+            <React.Suspense fallback={<div style={{ ...S.card, height: 390, display: "grid", placeItems: "center", color: T.inkSoft }}><span style={S.mono(10)}>loading three.js atlas…</span></div>}>
+              <DkgThreeMap
+                worlds={allWorlds}
+                focusedWorld={focusedMapWorld}
+                mapStats={mapStats}
+                capturedSet={capturedSet}
+                darkMode={darkMode}
+                T={T}
+                onFocus={(id) => { setMapFocus(id); setActiveWorld(id); }}
+                onStudy={(id) => { setActiveWorld(id); setRegionIdx(0); setAtNode("start"); setScreen("regionlist"); }}
+              />
+            </React.Suspense>
+          </div>
+
+          <div style={{ ...S.card, marginTop: 12 }}>
+            <div style={{ display: "flex", justifyContent: "space-between", gap: 10, alignItems: "flex-start" }}>
+              <div>
+                <span style={S.mono(10, T.action)}>FOCUSED WORLD · {focusStats.concepts} CONCEPTS</span>
+                <h2 style={{ fontSize: 22, fontWeight: 800, margin: "4px 0" }}>{focusedMapWorld.emoji} {focusedMapWorld.title}</h2>
+                <p style={{ fontSize: 13, color: T.inkSoft, lineHeight: 1.55, margin: 0 }}>{focusedMapWorld.blurb}</p>
+              </div>
+              <button onClick={() => { setActiveWorld(focusedMapWorld.id); setRegionIdx(0); setAtNode("start"); setScreen("regionlist"); }} style={{ ...S.btn(T.explore), padding: "8px 11px", fontSize: 12, whiteSpace: "nowrap" }}>Study →</button>
+            </div>
+
+            <div style={{ display: "grid", gap: 10, marginTop: 12 }}>
+              {focusedMapWorld.regions.map((r, i) => {
+                const done = r.concepts.filter((c) => capturedSet.has(c.id)).length;
+                return (
+                  <div key={r.id} style={{ border: `1px solid ${T.line}`, borderRadius: 16, padding: 12, background: darkMode ? "#0D142A" : "#FAFBFF" }}>
+                    <div style={{ display: "flex", gap: 10, alignItems: "flex-start" }}>
+                      <div style={{ width: 34, height: 34, borderRadius: 12, background: T.exploreSoft, display: "grid", placeItems: "center", flexShrink: 0 }}>{r.emoji}</div>
+                      <div style={{ flex: 1, minWidth: 0 }}>
+                        <div style={{ display: "flex", justifyContent: "space-between", gap: 8 }}>
+                          <div style={{ fontWeight: 800, fontSize: 14.5 }}>{i + 1}. {r.name}</div>
+                          <span style={S.mono(9, done === r.concepts.length ? T.reward : T.inkSoft)}>{done}/{r.concepts.length}</span>
+                        </div>
+                        <p style={{ fontSize: 12.5, color: T.inkSoft, lineHeight: 1.45, margin: "5px 0 8px" }}>{r.intro}</p>
+                        <div style={{ display: "flex", flexWrap: "wrap", gap: 6 }}>
+                          {r.concepts.map((c) => (
+                            <span key={c.id} title={c.lore} style={{ ...S.chip(capturedSet.has(c.id)), fontSize: 11, padding: "5px 8px", maxWidth: "100%" }}>{capturedSet.has(c.id) ? "✓ " : "○ "}{c.name}</span>
+                          ))}
+                        </div>
+                        {(r.sides || []).length > 0 && <div style={{ marginTop: 7, ...S.mono(9.5, T.gold) }}>⚔ {r.sides.length} contrast duel{r.sides.length === 1 ? "" : "s"}: {(r.sides || []).map((s) => s.name).slice(0, 2).join(" · ")}{r.sides.length > 2 ? " · …" : ""}</div>}
+                      </div>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+
+          <div style={{ ...S.card, marginTop: 12 }}>
+            <span style={S.mono(10, T.explore)}>NEARBY TERRITORIES</span>
+            <p style={{ fontSize: 12.5, color: T.inkSoft, lineHeight: 1.5, margin: "5px 0 10px" }}>Compressed neighbors keep the full DKG visible without turning the UI into an unreadable graph. Shared-source overlap is highlighted when present.</p>
+            <div style={{ display: "grid", gap: 8 }}>
+              {mapNeighbors.map(({ world: w, overlap, stats }) => (
+                <button key={w.id} onClick={() => { setMapFocus(w.id); setActiveWorld(w.id); }} style={{ ...S.card, padding: 10, display: "flex", gap: 10, alignItems: "center", textAlign: "left", cursor: "pointer" }}>
+                  <div style={{ fontSize: 22 }}>{w.emoji}</div>
+                  <div style={{ flex: 1 }}>
+                    <div style={{ fontWeight: 800, fontSize: 13.5 }}>{w.title}</div>
+                    <div style={S.mono(9, T.inkSoft)}>{stats.concepts} concepts · {w.regions.length} regions{overlap ? ` · ${overlap} shared source${overlap === 1 ? "" : "s"}` : ""}</div>
+                  </div>
+                  <span style={{ color: T.explore, fontWeight: 800 }}>focus</span>
+                </button>
+              ))}
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   /* ============ REGION LIST ============ */
   if (screen === "regionlist") return (
     <div style={S.app}><style>{CSS}</style><Toast /><HUD back={() => setScreen("home")} />
@@ -3676,12 +4219,14 @@ ${QUALITY_RULES}`, cfg));
           <button onClick={() => startGauntlet()} style={{ ...S.btn(T.gold), padding: "8px 12px", fontSize: 12 }}>⚔️ Trial Gauntlet</button>
         </div>
         {(world.links || []).length > 0 && (
-          <div style={{ display: "flex", flexWrap: "wrap", gap: 6, margin: "10px 0" }}>
-            <span style={{ ...S.mono(9.5), alignSelf: "center" }}>STUDY HALL:</span>
-            {world.links.map((l) => <a key={l.url} href={l.url} target="_blank" rel="noreferrer" style={{ ...S.chip(false), textDecoration: "none", fontSize: 11.5, padding: "5px 10px" }}>🔗 {l.label}</a>)}
-          </div>
+          <Collapsible id="studySources" title="STUDY HALL / SOURCES" color={T.explore} style={{ marginTop: 10, padding: 12 }}>
+            <div style={{ display: "flex", flexWrap: "wrap", gap: 6 }}>
+              {world.links.map((l) => <a key={l.url} href={l.url} target="_blank" rel="noreferrer" style={{ ...S.chip(false), textDecoration: "none", fontSize: 11.5, padding: "5px 10px" }}>🔗 {l.label}</a>)}
+            </div>
+          </Collapsible>
         )}
         <TeachingPanel target={world} />
+        <SenzuPanel />
         {regions.map((r, i) => {
           const locked = !(i === 0 || save.badges.includes(regions[i - 1].gym.badge));
           const got = r.concepts.filter((c) => capturedSet.has(c.id)).length;
@@ -3930,23 +4475,19 @@ ${QUALITY_RULES}`, cfg));
           <div style={{ display: "flex", gap: 6, flexWrap: "wrap" }}>
             {allWorlds.map((w) => <button key={w.id} onClick={() => { setDexWorld(w.id); setActiveWorld(w.id); }} style={S.chip(dexWorld === w.id)}>{w.emoji} {w.title}</button>)}
           </div>
-          <div style={{ ...S.card, marginTop: 12 }}>
-            <span style={S.mono(10, T.action)}>MISSION.md</span>
-            <p style={{ fontSize: 13.5, lineHeight: 1.6, margin: "7px 0 0" }}>{tp.mission}</p>
+          <Collapsible id="teachMission" title="MISSION.md" color={T.action} style={{ marginTop: 12 }}>
+            <p style={{ fontSize: 13.5, lineHeight: 1.6, margin: 0 }}>{tp.mission}</p>
             <div style={{ marginTop: 8 }}><span style={S.mono(9.5, T.inkSoft)}>Success: explain mechanisms · answer applied scenarios · transfer ideas into code/design decisions.</span></div>
-          </div>
-          <div style={{ ...S.card, marginTop: 10 }}>
-            <span style={S.mono(10, T.explore)}>RESOURCES.md</span>
+          </Collapsible>
+          <Collapsible id="teachResources" title="RESOURCES.md / SOURCES" color={T.explore} style={{ marginTop: 10 }}>
             {(teachW.links || []).length ? teachW.links.map((l) => <div key={l.url} style={{ marginTop: 7 }}><a href={l.url} target="_blank" rel="noreferrer" style={{ color: T.explore, fontWeight: 800, fontSize: 13 }}>{l.label}</a><div style={{ fontSize: 12, color: T.inkSoft }}>Use for source-grounded lore, examples, and follow-up reading.</div></div>) : <p style={{ fontSize: 12.5, color: T.inkSoft }}>Custom worlds built from pasted text/PDFs use that source as their resource.</p>}
-          </div>
-          <div style={{ ...S.card, marginTop: 10 }}>
-            <span style={S.mono(10, T.gold)}>GLOSSARY.md · captured concepts only</span>
+          </Collapsible>
+          <Collapsible id="teachGlossary" title="GLOSSARY.md · captured concepts only" color={T.gold} style={{ marginTop: 10 }}>
             {glossary.length ? glossary.map((c) => <div key={c.id} style={{ marginTop: 9, borderTop: `1px solid ${T.line}`, paddingTop: 8 }}><b style={{ fontSize: 13.5 }}>{c.sprite} {c.name}</b><p style={{ fontSize: 12.5, color: T.inkSoft, lineHeight: 1.55, margin: "4px 0 0" }}>{c.lore.slice(0, 230)}{c.lore.length > 230 ? "…" : ""}</p></div>) : <p style={{ fontSize: 12.5, color: T.inkSoft }}>Defeat critical encounters to promote terms into the glossary. This keeps the reference layer honest: it only contains concepts you have demonstrated.</p>}
-          </div>
-          <div style={{ ...S.card, marginTop: 10 }}>
-            <span style={S.mono(10, T.reward)}>LEARNING RECORDS</span>
+          </Collapsible>
+          <Collapsible id="teachRecords" title="LEARNING RECORDS" color={T.reward} style={{ marginTop: 10 }}>
             {records.length ? records.map((r) => <div key={r.id} style={{ marginTop: 9, borderTop: `1px solid ${T.line}`, paddingTop: 8 }}><b style={{ fontSize: 13.5 }}>{r.title}</b><p style={{ fontSize: 12.5, color: T.inkSoft, lineHeight: 1.55, margin: "4px 0 0" }}>{r.summary}</p><span style={S.mono(9, T.reward)}>{r.evidence}</span></div>) : <p style={{ fontSize: 12.5, color: T.inkSoft }}>Learning records appear when a critical is won. They are evidence of understanding, not a session log.</p>}
-          </div>
+          </Collapsible>
         </div>
       </div>
     );
@@ -4014,6 +4555,24 @@ ${QUALITY_RULES}`, cfg));
           <p style={{ fontSize: 11.5, color: T.inkSoft, lineHeight: 1.5, margin: "8px 0 0" }}>If this says not signed in, run <code>claude auth login</code> once. Claude Code opens the browser and stores OAuth locally; Edokai reuses it at launch.</p>
         </div>
         <div style={{ ...S.card, marginTop: 12 }}>
+          <span style={S.mono(10)}>DEFAULT DESKTOP MODEL AUTH</span>
+          <p style={{ fontSize: 12.5, color: T.inkSoft, lineHeight: 1.5, margin: "6px 0 8px" }}>Deepen Lore uses the existing desktop provider before hosted proxy/API-key routes: Codex GPT-5.5 auth first, or Claude Opus auth if selected. No local fallback content is generated.</p>
+          <div style={{ display: "flex", gap: 6, flexWrap: "wrap" }}>
+            <button onClick={() => persistCfg({ ...cfg, preferredAuth: "codex" })} style={S.chip((cfg.preferredAuth || "codex") === "codex")}>Codex GPT-5.5</button>
+            <button onClick={() => persistCfg({ ...cfg, preferredAuth: "claude" })} style={S.chip(cfg.preferredAuth === "claude")}>Claude Opus auth</button>
+            <button onClick={() => startDesktopLogin("codex")} style={S.chip(false)}>Connect Codex subscription</button>
+            <button onClick={() => startDesktopLogin("claude")} style={S.chip(false)}>Connect Claude Code subscription</button>
+            <button onClick={testDefaultModel} style={S.chip(false)}>Test default provider</button>
+            <button onClick={refreshDesktopModelStatus} style={S.chip(false)}>Refresh status</button>
+          </div>
+          {desktopModelStatus && <div style={{ marginTop: 8, display: "grid", gap: 4 }}>
+            {desktopModelStatus.error && <span style={S.mono(9.5, T.penalty)}>{desktopModelStatus.error}</span>}
+            <span style={S.mono(9.5, desktopModelStatus.codex?.ok ? T.reward : T.penalty)}>Codex: {desktopModelStatus.codex?.ok ? "ready" : (desktopModelStatus.codex?.error || "not ready")}</span>
+            <span style={S.mono(9.5, desktopModelStatus.claude?.ok ? T.reward : T.penalty)}>Claude: {desktopModelStatus.claude?.ok ? "ready" : (desktopModelStatus.claude?.error || "not ready")}</span>
+          </div>}
+          {modelTest && <p style={{ fontSize: 12, color: modelTest.ok ? T.reward : modelTest.ok === false ? T.penalty : T.inkSoft, lineHeight: 1.4, margin: "8px 0 0" }}>{modelTest.msg}</p>}
+        </div>
+        <div style={{ ...S.card, marginTop: 12 }}>
           <span style={S.mono(10)}>ANTHROPIC API KEY (optional fallback; Netlify can use ANTHROPIC_API_KEY server-side)</span>
           <input value={cfg.anthropicKey || ""} onChange={(e) => persistCfg({ ...cfg, anthropicKey: e.target.value })} type="password" placeholder="sk-ant-… (leave blank to use Claude Code OAuth when available)" style={{ ...S.input, margin: "6px 0 0" }} />
         </div>
@@ -4061,8 +4620,8 @@ ${QUALITY_RULES}`, cfg));
         </div>
         <div style={{ ...S.card, marginTop: 12 }}>
           <span style={S.mono(10)}>SAVE DATA</span>
-          <p style={{ fontSize: 12.5, color: T.inkSoft, margin: "6px 0 10px" }}>XP {save.xp} · {save.captured.length} concepts · {save.badges.length} badges · {Object.keys(save.katas).length} katas · telemetry on {Object.keys(save.qstats).length} topics</p>
-          <button onClick={() => { persist({ xp: 0, hp: 100, badges: [], captured: [], sides: [], katas: {}, qstats: {}, kataHints: {}, kataAttempts: {}, learningRecords: [] }); persistAug({}); showToast("Save reset."); }} style={{ ...S.btn(T.penalty), padding: "8px 14px", fontSize: 12.5 }}>Reset progress</button>
+          <p style={{ fontSize: 12.5, color: T.inkSoft, margin: "6px 0 10px" }}>Player {save.player?.name || "local-player"} · UUID {save.player?.id || "pending"} · Session {save.player?.sessionId || "pending"}<br />XP {save.xp} · {save.captured.length} concepts · {save.badges.length} badges · {Object.keys(save.katas).length} katas · telemetry on {Object.keys(save.qstats).length} topics</p>
+          <button onClick={() => { persist({ xp: 0, hp: 100, badges: [], captured: [], sides: [], katas: {}, qstats: {}, kataHints: {}, kataAttempts: {}, learningRecords: [], senzu: null, pet: { mood: "idle", msg: "ready" }, player: save.player }); persistAug({}); showToast("Save reset."); }} style={{ ...S.btn(T.penalty), padding: "8px 14px", fontSize: 12.5 }}>Reset progress</button>
         </div>
       </div>
     </div>
@@ -4104,6 +4663,16 @@ ${QUALITY_RULES}`, cfg));
           <Tabs />
           <h2 style={{ fontSize: 20, fontWeight: 800, margin: "14px 0 0" }}>⌨️ The Dojo</h2>
           <span style={S.mono(10)}>code-first workthroughs · TorchLeet set · in-browser Python lab · AI review</span>
+          <div style={{ ...S.card, marginTop: 10, background: T.rewardSoft }}>
+            <div style={{ display: "flex", justifyContent: "space-between", gap: 10, alignItems: "center" }}>
+              <div><b>🫘 Senzu bean recovery quest</b><p style={{ fontSize: 12.5, color: T.inkSoft, margin: "4px 0 0" }}>Started from Concept Worlds: clear both exercises here, then return healed.</p></div>
+              <button onClick={() => setScreen("regionlist")} style={S.btn(T.reward)}>Back to worlds</button>
+            </div>
+            {save.senzu && !save.senzu.claimed && <div style={{ display: "flex", gap: 6, flexWrap: "wrap", marginTop: 8 }}>
+              {[save.senzu.required.swe, save.senzu.required.ml].map((id) => { const k = allKatas.find((x) => x.id === id); const done = !!save.katas[id]; return k ? <button key={id} onClick={() => openKata(k)} style={S.chip(done)}>{done ? "✓" : "○"} {k.family === "swe" ? "Blind 75" : "ML"}: {k.title}</button> : null; })}
+            </div>}
+            {save.senzu && save.senzu.claimed && <span style={S.mono(10, T.reward)}>SENZU CLAIMED · HP FULLY RECOVERED</span>}
+          </div>
           {fams.map(([fam, label]) => {
             const ks = allKatas.filter((k) => k.family === fam);
             if (!ks.length) return null;
@@ -4162,7 +4731,7 @@ ${QUALITY_RULES}`, cfg));
           <div style={S.card}>
             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: 8 }}>
               <span style={S.mono(10, T.action)}>⌨️ WORKSPACE — {todoGuidance ? "fill the TODOs" : "less-guided blank slate"}</span>
-              <span style={S.mono(9)}>{lab ? "runs in-browser (Pyodide)" : "PyTorch — run locally, review here"}</span>
+              <span style={S.mono(9)}>{(lab || kata.family === "swe") ? "runs in-browser (Pyodide)" : "PyTorch — run locally, review here"}</span>
             </div>
             {kata.family === "swe" && <div style={{ display: "flex", gap: 8, marginTop: 8, alignItems: "center", flexWrap: "wrap" }}>
               <button onClick={() => { const next = !todoGuidance; setTodoGuidance(next); const ek = enrichSWEKata(kata); setLabCode(next ? (LABS[kata.id]?.starter || ek.starter || labCode) : (ek.unguidedStarter || stripGuidance(labCode))); }} style={S.chip(todoGuidance)}>{todoGuidance ? "🧭 TODO guidance on" : "🧭 TODO guidance off"}</button>
@@ -4171,8 +4740,8 @@ ${QUALITY_RULES}`, cfg));
             <CodeEditor value={labCode} onChange={setLabCode} onRun={lab ? () => runLab(false) : null} rows={16} />
             <span style={S.mono(8.5)}>syntax-highlighted Python · TAB completes/indents · SHIFT+TAB dedents · ENTER auto-indents · {navigator.platform && navigator.platform.includes("Mac") ? "⌘" : "CTRL"}+ENTER runs</span>
             <div style={{ display: "flex", gap: 8, marginTop: 8, flexWrap: "wrap" }}>
-              {lab && <button onClick={() => runLab(false)} disabled={busy === "lab"} style={{ ...S.btn(T.ink), flex: 1, minWidth: 90 }}>{busy === "lab" ? "Running…" : "▶ Run"}</button>}
-              {lab && <button onClick={() => runLab(true)} disabled={busy === "lab"} style={{ ...S.btn(T.reward), flex: 1, minWidth: 110 }}>{busy === "lab" ? "Running…" : "✓ Run tests"}</button>}
+              {(lab || kata.family === "swe") && <button onClick={() => runLab(false)} disabled={busy === "lab"} style={{ ...S.btn(T.ink), flex: 1, minWidth: 90 }}>{busy === "lab" ? "Running…" : "▶ Run"}</button>}
+              {(LABS[kata.id]?.test || enrichSWEKata(kata).test) && <button onClick={() => runLab(true)} disabled={busy === "lab"} style={{ ...S.btn(kataValidated[kata.id] ? T.reward : T.card, kataValidated[kata.id] ? "#fff" : T.reward), border: `1px solid ${T.reward}`, flex: 1, minWidth: 110 }}>{busy === "lab" ? "Running…" : kataValidated[kata.id] ? "✓ Tests passed" : "✓ Run tests"}</button>}
               <button onClick={doReview} disabled={busy === "review"} style={{ ...S.btn(T.explore), flex: 1, minWidth: 120 }}>{busy === "review" ? "Reviewing…" : "🔍 AI review"}</button>
             </div>
             {labOut && <pre style={{ ...S.pre, marginTop: 8, maxHeight: 220, overflowY: "auto", background: "#0B0F1E" }}>{labOut}</pre>}
@@ -4213,7 +4782,7 @@ ${QUALITY_RULES}`, cfg));
           <div style={{ display: "flex", gap: 8, marginTop: 10, flexWrap: "wrap" }}>
             {todoSteps.length > 0 && <button onClick={() => setKPhase(showHints ? "work" : "hints")} style={{ ...S.btn(showHints ? T.ink : T.card, showHints ? "#fff" : T.inkSoft), border: `1px solid ${T.line}`, flex: 1 }}>🧭 TODO lore & hints ({Object.keys(save.kataHints || {}).filter((h) => h.startsWith(kata.id + ":")).length}/{todoSteps.length})</button>}
             <button onClick={() => setKPhase(showSol ? "work" : "sol")} style={{ ...S.btn(showSol ? T.ink : T.card, showSol ? "#fff" : T.inkSoft), border: `1px solid ${T.line}`, flex: 1 }}>{showSol ? "Hide solution" : "📖 Reveal final solution"}</button>
-            {!done && <button onClick={markKataComplete} style={{ ...S.btn(T.gold), flex: 1 }}>🏁 Mark complete (+60 XP)</button>}
+            {!done && <button onClick={markKataComplete} style={{ ...S.btn(kataValidated[kata.id] ? T.gold : T.card, kataValidated[kata.id] ? "#1B2440" : T.inkSoft), border: `1px solid ${kataValidated[kata.id] ? T.gold : T.line}`, flex: 1 }}>🏁 Mark complete {kataValidated[kata.id] ? "(+60 XP)" : "(locked)"}</button>}
           </div>
 
           {showHints && todoSteps.length > 0 && (
@@ -4245,7 +4814,7 @@ ${QUALITY_RULES}`, cfg));
           {showSol && (
             <div style={{ ...S.card, marginTop: 10 }}>
               <span style={S.mono(10, T.gold)}>FINAL REFERENCE SOLUTION — reveal after you have wrestled with the TODOs</span>
-              <pre style={{ ...S.pre, marginTop: 10 }}>{(kata.solutions && (kata.solutions[fw] || kata.solutions[Object.keys(kata.solutions)[0]])) || kata.solution || "// reference not available"}</pre>
+              <pre style={{ ...S.pre, marginTop: 10 }}>{(kata.solutions && (kata.solutions[fw] || kata.solutions[Object.keys(kata.solutions)[0]])) || enrichSWEKata(kata).solution || kata.solution || "// reference not available"}</pre>
             </div>
           )}
         </div>
@@ -4417,7 +4986,8 @@ ${QUALITY_RULES}`, cfg));
             <span style={S.mono(9.5, T.gold)}>🏛 GYM = badge</span>
           </div>
           <TeachingPanel target={world} region={region} compact />
-          <div style={{ position: "relative", width: "100%", aspectRatio: "5/4", background: "linear-gradient(160deg,#A8D8A0 0%,#7BC47F 45%,#69B583 100%)", borderRadius: 16, border: `3px solid ${T.ink}`, overflow: "hidden", boxShadow: "0 8px 28px rgba(27,36,64,0.2)" }}>
+          <SenzuPanel compact />
+          <div style={{ position: "relative", width: "100%", aspectRatio: "5/4", background: "linear-gradient(160deg,#A8D8A0 0%,#7BC47F 45%,#69B583 100%)", borderRadius: 16, border: `3px solid ${T.ink}`, overflow: "hidden", boxShadow: "0 8px 28px rgba(27,36,64,0.2)", marginTop: 10 }}>
             <div style={{ position: "absolute", inset: 0, opacity: 0.35, fontSize: 18, pointerEvents: "none" }}>
               <span style={{ position: "absolute", left: "4%", top: "8%" }}>🌲</span>
               <span style={{ position: "absolute", left: "88%", top: "12%" }}>🌲</span>
@@ -4461,8 +5031,12 @@ ${QUALITY_RULES}`, cfg));
           <div style={{ display: "flex", flexWrap: "wrap", gap: 6, marginTop: 10, alignItems: "center" }}>
             <button onClick={() => startGauntlet()} style={{ ...S.btn(T.gold), padding: "6px 12px", fontSize: 12 }}>⚔️ Trial Gauntlet</button>
             <button onClick={() => setScreen("coach")} style={{ ...S.btn(T.explore), padding: "6px 12px", fontSize: 12 }}>🧪 Coach</button>
-            {(world.links || []).map((l) => <a key={l.url} href={l.url} target="_blank" rel="noreferrer" style={{ ...S.chip(false), textDecoration: "none", fontSize: 11.5, padding: "5px 10px" }}>🔗 {l.label}</a>)}
           </div>
+          {(world.links || []).length > 0 && <Collapsible id={`sources-${world.id}-${region.id}`} title="SOURCES / STUDY HALL" color={T.explore} style={{ marginTop: 10, padding: 12 }}>
+            <div style={{ display: "flex", flexWrap: "wrap", gap: 6 }}>
+              {(world.links || []).map((l) => <a key={l.url} href={l.url} target="_blank" rel="noreferrer" style={{ ...S.chip(false), textDecoration: "none", fontSize: 11.5, padding: "5px 10px" }}>🔗 {l.label}</a>)}
+            </div>
+          </Collapsible>}
 
           <div style={{ marginTop: 12 }}>
             {region.concepts.map((c) => (

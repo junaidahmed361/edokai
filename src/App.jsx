@@ -264,8 +264,8 @@ async function findResource(concept, cfg) {
   return parseJSON(await askModel(
     `Find the single best free online resource (article/primer/docs) with optimal coverage for learning: "${concept}". Use web search.\nRespond ONLY raw JSON: {"title":"...","url":"...","sections":["3-6 main learnable sections of that resource"]}`, cfg, { needsWeb: true }));
 }
-const REGION_JSON_SPEC = `{"npcText":"40-word NPC summary of the key principle","referenceHint":"one sentence glossary/reference summary","concepts":[{"name":"unique concept name, not reused elsewhere in this generated world","sprite":"emoji","lore":"70-100 word lore: explain this concept as a named Edokai encounter, mechanism, stakes, and evidence","questions":[{"q":"advancement question that proves the learner can use this concept","options":["complete option","complete option","complete option","complete option"],"a":0,"why":"why this answer advances mastery"},{...}]}],"side":{"name":"healing creature name","sprite":"emoji","recLevel":2,"desc":"side duel framed as healing retention practice","questions":[{"q":"HEALING SCENARIO: applied real-world scenario that reinforces prerequisites","options":[4 complete, similar-length options],"a":0,"why":"why this heals/reinforces"},{...}]}}
-Exactly 2 concepts (2 questions each) + 1 side (2 scenario questions). Concept names must be unique across the whole generated world, not generic duplicates. Critical questions are advancement gates; side questions are healing/retention gates that restore HP. No option may be truncated or length-reveal the answer. Apply this teaching paradigm: ${TEACH_PROMPT} ${QUALITY_RULES}`;
+const REGION_JSON_SPEC = `{"npcText":"40-word NPC summary of the key principle","referenceHint":"one sentence glossary/reference summary","concepts":[{"name":"unique concept name, not reused elsewhere in this generated world","sprite":"emoji","lore":"90-130 word cohesive lore paragraph: no bullet fragments, no TERM: clause lists; teach the concept as a memorable mechanism with a concrete scene, state change, stakes, and evidence","questions":[{"q":"advancement question that proves the learner can use this concept","options":["complete option","complete option","complete option","complete option"],"a":0,"why":"why this answer advances mastery"},{...}]}],"side":{"name":"healing creature name","sprite":"emoji","recLevel":2,"desc":"side duel framed as healing retention practice","questions":[{"q":"HEALING SCENARIO: applied real-world scenario that reinforces prerequisites","options":[4 complete, similar-length options],"a":0,"why":"why this heals/reinforces"},{...}]}}
+Exactly 2 concepts (2 questions each) + 1 side (2 scenario questions). Concept names must be unique across the whole generated world, not generic duplicates. Lore must read like a short teaching story, not broken notes or colon-separated bullets. Critical questions are advancement gates; side questions are healing/retention gates that restore HP. No option may be truncated or length-reveal the answer. Apply this teaching paradigm: ${TEACH_PROMPT} ${QUALITY_RULES}`;
 
 async function buildRegionFrom(sourceDesc, section, idx, cfg, pdfB64) {
   const prompt = pdfB64
@@ -280,7 +280,7 @@ async function buildRegionFrom(sourceDesc, section, idx, cfg, pdfB64) {
       ...c,
       id: `g${idx}c${i}`,
       name,
-      lore: lore.length > 40 ? lore : `The ${name} encounter teaches how ${section} turns from a vague topic into an inspectable mechanism. Capture it by naming the moving parts, tracing the evidence, and deciding when the idea should change an implementation or design choice.`,
+      lore: lore.length > 40 ? lore : `${name} begins as a concrete problem inside ${section}: the learner must notice which part of the system changes state, which evidence shows the change worked, and which design choice would fail without it. Capture the encounter by telling that causal story back in your own words before answering the advancement question.`,
       questions: (c.questions || []).map((q, qi) => balanceQuestion(q, `${section}-${name}-critical-${qi}`)).filter(Boolean).slice(0, 2),
     };
   });
@@ -312,7 +312,7 @@ function normalizeGeneratedWorld(w) {
         return {
           ...c,
           name,
-          lore: String(c.lore || "").length > 40 ? c.lore : `The ${name} encounter turns ${r.name} into a concrete learner-facing mechanism with stakes, moving parts, and evidence.`,
+          lore: String(c.lore || "").length > 40 ? c.lore : `${name} is the key mechanism in ${r.name}: it changes what the learner can predict, debug, or design. The encounter is captured when you can name the state before and after the mechanism acts, then point to evidence that the change mattered.`,
           questions: (c.questions || []).map((q, qi) => balanceQuestion(q, `${w.title}-${r.name}-${name}-${qi}`)).filter(Boolean).slice(0, 2),
         };
       });
@@ -1674,16 +1674,40 @@ function sweCategory(k) {
 }
 function cleanBlindTitle(title) { return String(title || "Kata").replace(/\s*\(Blind 75 #\d+\)\s*/g, "").trim(); }
 function narrativeLore(name, lore, worldTitle = "this world") {
-  const text = String(lore || "").replace(/\s+/g, " ").trim();
+  let text = String(lore || "").replace(/\s+/g, " ").trim();
   if (!text) return text;
-  if (/^(In|At|When|Imagine|Picture|Inside)\b/.test(text) && text.length > 180) return text;
-  const softened = text
-    .replace(/\bSINGLE-TURN:/g, "single-turn episodes begin as")
-    .replace(/\bTOOL-USE:/g, "tool-use episodes become")
-    .replace(/\bMULTI-TURN SEQUENTIAL:/g, "multi-turn sequential work stretches into")
-    .replace(/;\s*/g, "; ");
-  return `In ${worldTitle}, ${name} is not a glossary flashcard; it is a scene you can replay. ${softened} Read it as a mechanism with stakes: what state changes, what signal gets easier or harder to assign, and what failure you would notice if the idea were missing.`;
+  const wrapped = text.match(/^In ([^,]+), (.+?) is not a glossary flashcard; it is a scene you can replay\. (.+?) Read it as a mechanism with stakes:.*$/);
+  if (wrapped) text = wrapped[3].trim();
+  const sentenceCount = (text.match(/[.!?](\s|$)/g) || []).length;
+  const labelCount = (text.match(/\b[A-Z][A-Z0-9+/@-]{2,}:\s/g) || []).length;
+  const hasChoppySignals = labelCount >= 2 || /;\s*[A-Z][A-Z0-9+/@-]{2,}:/.test(text) || /trivial credit assignment|moderate horizon|credit crueler/i.test(text);
+
+  if (/^Environment Types$/i.test(name)) {
+    return "Agent environments are training arenas with different kinds of memory. In a single-turn arena, the agent answers once and the reward lands immediately, so blame and credit are easy to assign. In a tool-use arena, the agent must decide when to call tools, read observations, and recover from intermediate mistakes; rewards can now attach to the quality of each step. In a multi-turn sequential arena, early choices change the future state, and the consequence of a bad click may not appear until many turns later. This progression matters because the environment chooses how sparse the reward is, how hard exploration becomes, and whether the agent can learn from a clear signal or only from delayed fallout.";
+  }
+
+  const cleaned = text
+    .replace(/\bSINGLE-TURN:\s*/g, "In the single-turn case, ")
+    .replace(/\bTOOL-USE:\s*/g, "With tool use, ")
+    .replace(/\bMULTI-TURN SEQUENTIAL:\s*/g, "In multi-turn sequential work, ")
+    .replace(/\b([A-Z][A-Z0-9+/@-]{2,}):\s*/g, (_, label) => `${label.replace(/[-_]/g, " ")} means `)
+    .replace(/;\s*/g, ". ")
+    .replace(/\s+—\s+/g, " — ")
+    .replace(/\.\s*\./g, ".")
+    .trim();
+
+  if (!hasChoppySignals && text.length >= 150 && sentenceCount >= 3) return cleaned;
+
+  const variants = [
+    `${name} is the moment in ${worldTitle} where an abstract term turns into a decision you can test. ${cleaned} As you read, track the moving part: what information changes, what evidence would confirm it, and which failure appears when the mechanism is missing.`,
+    `Think of ${name} as a small machine inside ${worldTitle}. ${cleaned} The useful question is not “can I recite the definition?” but “can I predict how the system behaves when this part is present, absent, or tuned badly?”`,
+    `${name} should feel like a cause-and-effect story. ${cleaned} Start from the situation, follow the state change, then name the consequence. That path is what makes the idea reusable in a design review, debugging session, or interview answer.`,
+    `When ${worldTitle} introduces ${name}, the learner is being asked to notice a mechanism, not memorize a label. ${cleaned} Anchor the lore in one concrete contrast: what gets easier, what gets harder, and what signal tells you the concept is doing real work.`
+  ];
+  let h = 0; for (const ch of String(name)) h = (h * 31 + ch.charCodeAt(0)) >>> 0;
+  return variants[h % variants.length];
 }
+
 function sweIo(k) {
   const base = cleanBlindTitle(k.title);
   return SWE_IO_EXAMPLES[base] || "Use the canonical Blind 75 examples: include a normal case, an edge case, and a minimal input; write the expected output before coding so the invariant has something concrete to satisfy.";
