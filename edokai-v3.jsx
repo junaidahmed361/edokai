@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef, useMemo } from "react";
-import { dkgSyncConfigStatus, subscribeDkgSnapshot, snapshotToEdokaiWorlds, mergeDkgWorlds, summarizeDkgSnapshot } from "./dkgLiveSync";
+import { dkgSyncConfigStatus, loadDkgSnapshot, subscribeDkgSnapshot, snapshotToEdokaiWorlds, mergeDkgWorlds, summarizeDkgSnapshot } from "./dkgLiveSync";
 
 const DkgThreeMap = React.lazy(() => import("./DkgThreeMap.jsx"));
 
@@ -3313,28 +3313,10 @@ export default function App() {
 
   useEffect(() => {
     return subscribeDkgSnapshot(
-      (snapshot) => {
-        const liveWorlds = snapshotToEdokaiWorlds(snapshot.payload);
-        if (liveWorlds.length) {
-          setDkgWorlds(() => {
-            saveStore("ru-dkg-worlds", liveWorlds);
-            return liveWorlds;
-          });
-        }
-        const dkgSummary = summarizeDkgSnapshot(snapshot.payload);
-        setDkgSync((prev) => ({
-          ...prev,
-          status: snapshot.realtime ? "live" : snapshot.empty ? "empty" : "synced",
-          updatedAt: snapshot.updatedAt || snapshot.payload?.synced_at || null,
-          stats: snapshot.payload?.stats || null,
-          recentSources: dkgSummary.recentSources,
-          recentRuns: dkgSummary.recentRuns,
-          error: null,
-        }));
-      },
+      applyDkgSnapshot,
       (status) => {
-        if (status.disabled) setDkgSync((prev) => ({ ...prev, status: "disabled", error: status.message }));
-        else if (status.error) setDkgSync((prev) => ({ ...prev, status: "error", error: status.error }));
+        if (status.disabled) setDkgSync((prev) => ({ ...prev, status: "disabled", error: status.message, source: status.source || prev.source }));
+        else if (status.error) setDkgSync((prev) => ({ ...prev, status: "error", error: status.error, source: status.source || prev.source }));
         else if (status.realtimeStatus) setDkgSync((prev) => ({ ...prev, realtimeStatus: status.realtimeStatus }));
       }
     );
@@ -3345,6 +3327,43 @@ export default function App() {
   const persistUKatas = (k) => { setUKatas(k); saveStore("ru-ukatas", k); };
   const persistAug = (a) => { setAug(a); saveStore("ru-aug", a); };
   const persistLore = (l) => { setDeepLore(l); saveStore("ru-lore", l); };
+  const applyDkgSnapshot = (snapshot) => {
+    const liveWorlds = snapshotToEdokaiWorlds(snapshot.payload);
+    if (liveWorlds.length) {
+      setDkgWorlds(() => {
+        saveStore("ru-dkg-worlds", liveWorlds);
+        return liveWorlds;
+      });
+    }
+    const dkgSummary = summarizeDkgSnapshot(snapshot.payload);
+    setDkgSync((prev) => ({
+      ...prev,
+      status: snapshot.realtime ? "live" : snapshot.empty ? "empty" : "synced",
+      source: snapshot.source || prev.source,
+      updatedAt: snapshot.updatedAt || snapshot.payload?.synced_at || null,
+      stats: snapshot.payload?.stats || null,
+      recentSources: dkgSummary.recentSources,
+      recentRuns: dkgSummary.recentRuns,
+      error: null,
+    }));
+    return liveWorlds.length;
+  };
+  const refreshDkgNow = async () => {
+    setDkgSync((prev) => ({ ...prev, status: "refreshing", error: null }));
+    try {
+      const snapshot = await loadDkgSnapshot({ force: true });
+      if (snapshot.ok) {
+        const count = applyDkgSnapshot(snapshot);
+        showToast(`Live DKG updated from ${snapshot.source || "source"}: ${count} worlds`);
+      } else {
+        setDkgSync((prev) => ({ ...prev, status: snapshot.disabled ? "disabled" : "error", error: snapshot.error || snapshot.message }));
+        showToast(snapshot.error || snapshot.message || "Live DKG refresh failed.");
+      }
+    } catch (e) {
+      setDkgSync((prev) => ({ ...prev, status: "error", error: e.message || String(e) }));
+      showToast(`Live DKG refresh failed: ${e.message || e}`);
+    }
+  };
   const deepenLore = async (c) => {
     if (deepLore[c.id] || busy === "lore") return;
     setBusy("lore");
@@ -4153,16 +4172,22 @@ ${QUALITY_RULES}`, cfg));
           <button onClick={() => setHomeView("atlas")} style={{ ...S.btn(homeView === "atlas" ? T.explore : "transparent", homeView === "atlas" ? "#fff" : T.inkSoft), flex: 1, padding: "7px 10px", fontSize: 12, borderRadius: 999 }}>🗺️ Atlas view</button>
         </div>
         <TeachingPanel target={world} compact />
-        <Collapsible id="liveDkg" title={`LIVE DKG · ${dkgSync.status.toUpperCase()}`} color={dkgSync.status === "error" ? T.penalty : T.explore} style={{ marginTop: 10, background: dkgSync.status === "error" ? T.penaltySoft : dkgSync.status === "disabled" ? T.card : T.exploreSoft }} right={dkgSync.updatedAt ? <span style={S.mono(9, T.inkSoft)}>{new Date(dkgSync.updatedAt).toLocaleString()}</span> : null}>
+        <Collapsible id="liveDkg" title={`LIVE DKG · ${dkgSync.status.toUpperCase()}`} color={dkgSync.status === "error" ? T.penalty : T.explore} style={{ marginTop: 10, background: dkgSync.status === "error" ? T.penaltySoft : dkgSync.status === "disabled" ? T.card : T.exploreSoft }} right={<button onClick={(e) => { e.stopPropagation(); refreshDkgNow(); }} style={{ ...S.chip(false), fontSize: 11, padding: "5px 9px" }}>{dkgSync.status === "refreshing" ? "Pulling…" : "Pull latest"}</button>}>
           <p style={{ fontSize: 12.5, color: T.inkSoft, lineHeight: 1.5, margin: 0 }}>
             {dkgSync.status === "disabled"
-              ? "Set VITE_SUPABASE_ANON_KEY in Netlify to load live Supabase graph snapshots."
+              ? "No live DKG source is available yet. The app now tries browser Supabase, the Netlify DKG proxy, then GitHub raw knowledge files; configure Netlify server env or click Pull latest after GitHub deploys."
               : dkgSync.status === "error"
-                ? `Supabase sync error: ${dkgSync.error}`
+                ? `Live DKG sync error: ${dkgSync.error}`
                 : dkgSync.stats
-                  ? `${dkgSync.stats.node_count || 0} graph nodes · ${dkgSync.stats.edge_count || 0} edges · ${dkgSync.stats.macro_world_count || 0} macro worlds synced from Supabase.`
-                  : "Waiting for the latest Supabase graph snapshot…"}
+                  ? `${dkgSync.stats.node_count || 0} graph nodes · ${dkgSync.stats.edge_count || 0} edges · ${dkgSync.stats.macro_world_count || 0} macro worlds synced from ${dkgSync.source || "live DKG"}.`
+                  : "Waiting for the latest live DKG snapshot from Supabase, Netlify proxy, or GitHub raw…"}
           </p>
+          <div style={{ display: "flex", flexWrap: "wrap", gap: 6, marginTop: 8 }}>
+            <span style={S.mono(9, T.inkSoft)}>source: {dkgSync.source || "auto"}</span>
+            {dkgSync.updatedAt && <span style={S.mono(9, T.inkSoft)}>updated: {new Date(dkgSync.updatedAt).toLocaleString()}</span>}
+            {dkgSync.realtimeStatus && <span style={S.mono(9, T.inkSoft)}>realtime: {dkgSync.realtimeStatus}</span>}
+            {!dkgSync.browserSupabaseConfigured && <span style={S.mono(9, T.gold)}>browser anon key absent; using server proxy/GitHub fallback</span>}
+          </div>
           {!!(dkgSync.recentSources || []).length && <Collapsible id="liveDkgSources" title="RECENT LIVE INGESTS / SOURCES" color={T.inkSoft} style={{ marginTop: 10, padding: 10, background: T.card }}>
             <div style={{ display: "grid", gap: 6 }}>
               {(dkgSync.recentSources || []).slice(0, 3).map((src) => (

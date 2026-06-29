@@ -6,6 +6,11 @@ export const SUPABASE_URL = viteEnv.VITE_SUPABASE_URL || "https://lfnpcgcxezyjcg
 export const SUPABASE_ANON_KEY = viteEnv.VITE_SUPABASE_ANON_KEY || "";
 export const DKG_TABLE = viteEnv.VITE_EDOKAI_DKG_TABLE || "edokai_dkg_snapshots";
 export const DKG_ROW_ID = viteEnv.VITE_EDOKAI_DKG_ROW_ID || "latest";
+export const DKG_NETLIFY_FUNCTION = viteEnv.VITE_EDOKAI_DKG_FUNCTION || "/.netlify/functions/dkg-snapshot";
+export const DKG_GITHUB_OWNER = viteEnv.VITE_EDOKAI_DKG_GITHUB_OWNER || "junaidahmed361";
+export const DKG_GITHUB_REPO = viteEnv.VITE_EDOKAI_DKG_GITHUB_REPO || "edokai";
+export const DKG_GITHUB_REF = viteEnv.VITE_EDOKAI_DKG_GITHUB_REF || "fix-lore-model-fallback";
+export const DKG_GITHUB_RAW_BASE = (viteEnv.VITE_EDOKAI_DKG_GITHUB_RAW_BASE || `https://raw.githubusercontent.com/${DKG_GITHUB_OWNER}/${DKG_GITHUB_REPO}/${DKG_GITHUB_REF}/knowledge`).replace(/\/$/, "");
 
 let client = null;
 
@@ -16,34 +21,98 @@ export function getDkgClient() {
 }
 
 export function dkgSyncConfigStatus() {
+  const hasBrowserSupabase = Boolean(SUPABASE_URL && SUPABASE_ANON_KEY);
   return {
-    configured: Boolean(SUPABASE_URL && SUPABASE_ANON_KEY),
+    configured: hasBrowserSupabase || Boolean(DKG_NETLIFY_FUNCTION) || Boolean(DKG_GITHUB_RAW_BASE),
+    browserSupabaseConfigured: hasBrowserSupabase,
     url: SUPABASE_URL,
     table: DKG_TABLE,
     rowId: DKG_ROW_ID,
+    netlifyFunction: DKG_NETLIFY_FUNCTION,
+    githubRawBase: DKG_GITHUB_RAW_BASE,
+    githubRef: DKG_GITHUB_REF,
   };
 }
 
-export async function loadDkgSnapshot() {
+async function loadSupabaseDkgSnapshot() {
   const supabase = getDkgClient();
-  if (!supabase) {
-    return { ok: false, disabled: true, message: "Set VITE_SUPABASE_ANON_KEY to enable live DKG sync." };
-  }
+  if (!supabase) return { ok: false, disabled: true, source: "supabase-browser", message: "Browser Supabase anon key not configured." };
   const { data, error } = await supabase
     .from(DKG_TABLE)
     .select("id,payload,updated_at")
     .eq("id", DKG_ROW_ID)
     .maybeSingle();
-  if (error) return { ok: false, error: error.message };
-  if (!data) return { ok: true, empty: true, payload: null, updatedAt: null };
-  return { ok: true, payload: data.payload, updatedAt: data.updated_at };
+  if (error) return { ok: false, source: "supabase-browser", error: error.message };
+  if (!data) return { ok: true, empty: true, payload: null, updatedAt: null, source: "supabase-browser" };
+  return { ok: true, payload: data.payload, updatedAt: data.updated_at, source: "supabase-browser" };
+}
+
+async function loadNetlifyDkgSnapshot() {
+  if (!DKG_NETLIFY_FUNCTION || typeof fetch !== "function") return { ok: false, disabled: true, source: "netlify-function", message: "No DKG function configured." };
+  try {
+    const res = await fetch(`${DKG_NETLIFY_FUNCTION}?row=${encodeURIComponent(DKG_ROW_ID)}&table=${encodeURIComponent(DKG_TABLE)}`, { headers: { accept: "application/json" } });
+    const text = await res.text();
+    let json = null;
+    try { json = text ? JSON.parse(text) : null; } catch {}
+    if (!res.ok) return { ok: false, source: "netlify-function", error: (json && (json.error || json.message)) || `HTTP ${res.status}` };
+    if (!json || !json.payload) return { ok: true, empty: true, payload: null, updatedAt: json?.updated_at || null, source: "netlify-function" };
+    return { ok: true, payload: json.payload, updatedAt: json.updated_at || json.payload.synced_at || null, source: "netlify-function" };
+  } catch (e) {
+    return { ok: false, source: "netlify-function", error: e.message || String(e) };
+  }
+}
+
+async function loadGithubDkgSnapshot() {
+  if (!DKG_GITHUB_RAW_BASE || typeof fetch !== "function") return { ok: false, disabled: true, source: "github-raw", message: "No GitHub raw DKG base configured." };
+  try {
+    const [dkgRes, idxRes] = await Promise.all([
+      fetch(`${DKG_GITHUB_RAW_BASE}/edokai-dkg.json`, { cache: "no-store", headers: { accept: "application/json" } }),
+      fetch(`${DKG_GITHUB_RAW_BASE}/concept-world-index.json`, { cache: "no-store", headers: { accept: "application/json" } }),
+    ]);
+    if (!dkgRes.ok || !idxRes.ok) return { ok: false, source: "github-raw", error: `GitHub raw fetch failed: graph HTTP ${dkgRes.status}, index HTTP ${idxRes.status}` };
+    const [dkg, conceptWorldIndex] = await Promise.all([dkgRes.json(), idxRes.json()]);
+    const payload = {
+      synced_at: new Date().toISOString(),
+      dkg,
+      conceptWorldIndex,
+      stats: {
+        source_count: Object.keys(dkg.sources || {}).length,
+        node_count: Object.keys(dkg.nodes || {}).length,
+        edge_count: Array.isArray(dkg.edges) ? dkg.edges.length : 0,
+        macro_world_count: Object.keys(conceptWorldIndex.macro_worlds || {}).length,
+      },
+    };
+    return { ok: true, payload, updatedAt: payload.synced_at, source: "github-raw" };
+  } catch (e) {
+    return { ok: false, source: "github-raw", error: e.message || String(e) };
+  }
+}
+
+export async function loadDkgSnapshot({ force = false } = {}) {
+  const attempts = [];
+  const sources = force ? [loadSupabaseDkgSnapshot, loadNetlifyDkgSnapshot, loadGithubDkgSnapshot] : [loadSupabaseDkgSnapshot, loadNetlifyDkgSnapshot, loadGithubDkgSnapshot];
+  for (const loader of sources) {
+    const result = await loader();
+    if (result.ok) return result;
+    attempts.push(`${result.source || "source"}: ${result.error || result.message || "unavailable"}`);
+  }
+  return { ok: false, disabled: true, source: "all", message: `No live DKG source available. ${attempts.join(" | ")}` };
 }
 
 export function subscribeDkgSnapshot(onSnapshot, onStatus = () => {}) {
   const supabase = getDkgClient();
   if (!supabase) {
-    onStatus({ ok: false, disabled: true, message: "Supabase anon key missing." });
-    return () => {};
+    let cancelledNoRealtime = false;
+    const refreshWithoutRealtime = async () => {
+      const result = await loadDkgSnapshot();
+      if (cancelledNoRealtime) return;
+      if (result.ok) onSnapshot(result);
+      else onStatus(result);
+    };
+    refreshWithoutRealtime();
+    const pollTimerNoRealtime = window.setInterval(refreshWithoutRealtime, 60000);
+    onStatus({ ok: true, realtimeStatus: "polling-fallback" });
+    return () => { cancelledNoRealtime = true; window.clearInterval(pollTimerNoRealtime); };
   }
 
   let cancelled = false;
