@@ -20,11 +20,18 @@ CREATE TABLE IF NOT EXISTS kv (key TEXT PRIMARY KEY, value TEXT NOT NULL, update
 }
 function uuid() { return crypto.randomUUID(); }
 
+function commandPath(command) {
+  const home = app.getPath("home");
+  const candidates = command === "claude"
+    ? [path.join(home, ".hermes/node/bin/claude"), "/opt/homebrew/bin/claude", "/usr/local/bin/claude", "claude"]
+    : ["/opt/homebrew/bin/codex", "/usr/local/bin/codex", path.join(home, ".hermes/node/bin/codex"), "codex"];
+  return candidates.find((c) => c === command || require("fs").existsSync(c)) || command;
+}
 function runProcess(command, args, input = "", timeoutMs = CLAUDE_TIMEOUT_MS) {
   return new Promise((resolve, reject) => {
-    const child = spawn(command, args, {
+    const child = spawn(commandPath(command), args, {
       cwd: app.getPath("home"),
-      env: { ...process.env, CLAUDE_CODE_ENTRYPOINT: "edokai-desktop", CODEX_ENTRYPOINT: "edokai-desktop" },
+      env: { ...process.env, PATH: `${app.getPath("home")}/.hermes/node/bin:/opt/homebrew/bin:/usr/local/bin:${process.env.PATH || ""}`, CLAUDE_CODE_ENTRYPOINT: "edokai-desktop", CODEX_ENTRYPOINT: "edokai-desktop" },
       stdio: ["pipe", "pipe", "pipe"],
     });
     let stdout = "";
@@ -56,6 +63,26 @@ function runCodex(prompt) {
 
 ${prompt}`], "", CODEX_TIMEOUT_MS);
 }
+async function providerStatus() {
+  const codex = { command: commandPath("codex"), ok: false };
+  const claude = { command: commandPath("claude"), ok: false };
+  try {
+    const out = await runProcess("codex", ["login", "status"], "", 15000);
+    codex.ok = /logged in/i.test(out) && !/not logged in/i.test(out);
+    codex.detail = out;
+    if (!codex.ok) codex.error = out || "not logged in";
+  } catch (e) { codex.error = e.message || String(e); }
+  try {
+    const out = await runClaude(["auth", "status"]);
+    const parsed = JSON.parse(out);
+    claude.ok = !!parsed.loggedIn;
+    claude.detail = parsed;
+    if (!claude.ok) claude.error = parsed.error || parsed.authMethod === "none" ? "not logged in" : JSON.stringify(parsed);
+  } catch (e) { claude.error = e.message || String(e); }
+  return { codex, claude };
+}
+
+ipcMain.handle("desktop-model-status", async () => providerStatus());
 
 ipcMain.handle("claude-code-status", async () => {
   try {

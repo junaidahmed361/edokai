@@ -11,6 +11,7 @@ contextBridge.exposeInMainWorld('edokaiAuth', {
   claudeCodeStatus: () => ipcRenderer.invoke('claude-code-status'),
   completeWithClaudeCode: (prompt, opts = {}) => ipcRenderer.invoke('claude-code-complete', { prompt, needsWeb: !!opts.needsWeb }),
   completeWithDefaultProvider: (prompt, opts = {}) => ipcRenderer.invoke('default-model-complete', { prompt, needsWeb: !!opts.needsWeb, preferred: opts.preferred || 'codex' }),
+  desktopModelStatus: () => ipcRenderer.invoke('desktop-model-status'),
 });
 
 contextBridge.exposeInMainWorld('edokaiDb', {

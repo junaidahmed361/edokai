@@ -3055,6 +3055,7 @@ export default function App() {
   const [kataAttempts, setKataAttempts] = useState(0);
   const [todoGuidance, setTodoGuidance] = useState(true);
   const [claudeCodeAuth, setClaudeCodeAuth] = useState(null);
+  const [desktopModelStatus, setDesktopModelStatus] = useState(null);
   const [modelTest, setModelTest] = useState(null);
   const [dkgSync, setDkgSync] = useState({ ...dkgSyncConfigStatus(), status: "booting", updatedAt: null, stats: null, recentSources: [], recentRuns: [] });
   const [dkgWorlds, setDkgWorlds] = useState([]);
@@ -3082,6 +3083,9 @@ export default function App() {
       if (!c.anthropicKey && typeof window !== "undefined" && window.edokaiAuth && window.edokaiAuth.anthropicKey) c.anthropicKey = window.edokaiAuth.anthropicKey;
       if (typeof window !== "undefined" && window.edokaiAuth && typeof window.edokaiAuth.claudeCodeStatus === "function") {
         window.edokaiAuth.claudeCodeStatus().then(setClaudeCodeAuth).catch((e) => setClaudeCodeAuth({ loggedIn: false, error: e.message || String(e) }));
+      }
+      if (typeof window !== "undefined" && window.edokaiAuth && typeof window.edokaiAuth.desktopModelStatus === "function") {
+        window.edokaiAuth.desktopModelStatus().then(setDesktopModelStatus).catch((e) => setDesktopModelStatus({ error: e.message || String(e) }));
       }
       setCfg(c); setDarkMode(!!c.darkMode); GLOBAL_KEY = c.anthropicKey || "";
     })();
@@ -3233,6 +3237,11 @@ export default function App() {
       setModelTest({ ok: false, msg: `${e.message || e}. Ollama: OLLAMA_ORIGINS=* ollama serve → http://localhost:11434/v1. MLX-LM: python -m mlx_lm.server --model <model> --port 8080 → http://localhost:8080/v1.` });
     }
   };
+  const refreshDesktopModelStatus = async () => {
+    if (!window.edokaiAuth || !window.edokaiAuth.desktopModelStatus) return;
+    try { setDesktopModelStatus(await window.edokaiAuth.desktopModelStatus()); }
+    catch (e) { setDesktopModelStatus({ error: e.message || String(e) }); }
+  };
   const testDefaultModel = async () => {
     setModelTest({ ok: null, msg: "Testing default desktop provider…" });
     try {
@@ -3240,8 +3249,10 @@ export default function App() {
       const out = await window.edokaiAuth.completeWithDefaultProvider("Reply with exactly: EDOKAI_OK", { preferred: cfg.preferredAuth || "codex" });
       if (!/EDOKAI_OK/i.test(out)) throw new Error(`unexpected response: ${String(out).slice(0, 80)}`);
       setModelTest({ ok: true, msg: `Default provider ready (${cfg.preferredAuth || "codex"}) · ${String(out).slice(0, 80)}` });
+      refreshDesktopModelStatus();
     } catch (e) {
       setModelTest({ ok: false, msg: e.message || String(e) });
+      refreshDesktopModelStatus();
     }
   };
 
@@ -3779,6 +3790,36 @@ ${QUALITY_RULES}`, cfg));
     </div>
   );
   const Toast = () => toast ? <div style={{ position: "fixed", bottom: 24, left: "50%", transform: "translateX(-50%)", zIndex: 60, background: T.ink, color: "#fff", padding: "10px 16px", borderRadius: 12, fontSize: 13.5, fontWeight: 700, animation: "slideUp .3s ease", maxWidth: "85%", textAlign: "center" }}>{toast}</div> : null;
+  const SenzuPanel = ({ compact = false }) => {
+    const q = save.senzu;
+    const active = q && !q.claimed;
+    const required = active ? [q.required.swe, q.required.ml].map((id) => allKatas.find((k) => k.id === id)).filter(Boolean) : [];
+    const hpFull = save.hp >= maxHp;
+    return (
+      <div style={{ ...S.card, marginTop: compact ? 8 : 12, background: hpFull ? T.card : T.rewardSoft, border: `1px solid ${hpFull ? T.line : T.reward}` }}>
+        <div style={{ display: "flex", justifyContent: "space-between", gap: 10, alignItems: "flex-start" }}>
+          <div>
+            <span style={S.mono(10, T.reward)}>🫘 SENZU BEAN RECOVERY</span>
+            <p style={{ fontSize: compact ? 12 : 13, color: T.inkSoft, lineHeight: 1.5, margin: "5px 0 0" }}>
+              Concept-world healing now routes through the Dojo: complete one random uncompleted Blind 75 exercise and one ML Engineering exercise to fully recover HP.
+            </p>
+          </div>
+          <button onClick={ensureSenzuQuest} style={{ ...S.btn(T.reward), padding: "7px 10px", fontSize: 12, whiteSpace: "nowrap" }}>{active ? "Reroll" : hpFull ? "Prep bean" : "Start heal"}</button>
+        </div>
+        {active && (
+          <div style={{ display: "grid", gap: 7, marginTop: 9 }}>
+            {required.map((k) => {
+              const done = !!save.katas[k.id];
+              return <button key={k.id} onClick={() => openKata(k)} style={{ ...S.card, padding: 9, display: "flex", gap: 8, alignItems: "center", textAlign: "left", cursor: "pointer", background: done ? T.rewardSoft : T.card }}>
+                <span>{done ? "✅" : "⌨️"}</span><span style={{ flex: 1, fontSize: 12.5 }}><b>{k.family === "swe" ? "Blind 75" : "ML Engineering"}</b>: {k.title}</span><span style={S.mono(9, done ? T.reward : T.explore)}>{done ? "DONE" : "VISIT DOJO →"}</span>
+              </button>;
+            })}
+          </div>
+        )}
+        {q && q.claimed && <div style={{ marginTop: 7, ...S.mono(10, T.reward) }}>SENZU CLAIMED · HP FULLY RECOVERED</div>}
+      </div>
+    );
+  };
   const QCard = ({ q, ord, onAnswer, label, color }) => (
     <div style={{ ...S.card, animation: "slideUp .25s ease" }}>
       <span style={S.mono(10, color || T.explore)}>{label}</span>
@@ -4038,6 +4079,7 @@ ${QUALITY_RULES}`, cfg));
           </Collapsible>
         )}
         <TeachingPanel target={world} />
+        <SenzuPanel />
         {regions.map((r, i) => {
           const locked = !(i === 0 || save.badges.includes(regions[i - 1].gym.badge));
           const got = r.concepts.filter((c) => capturedSet.has(c.id)).length;
@@ -4372,7 +4414,12 @@ ${QUALITY_RULES}`, cfg));
             <button onClick={() => persistCfg({ ...cfg, preferredAuth: "codex" })} style={S.chip((cfg.preferredAuth || "codex") === "codex")}>Codex GPT-5.5</button>
             <button onClick={() => persistCfg({ ...cfg, preferredAuth: "claude" })} style={S.chip(cfg.preferredAuth === "claude")}>Claude Opus auth</button>
             <button onClick={testDefaultModel} style={S.chip(false)}>Test default provider</button>
+            <button onClick={refreshDesktopModelStatus} style={S.chip(false)}>Refresh status</button>
           </div>
+          {desktopModelStatus && <div style={{ marginTop: 8, display: "grid", gap: 4 }}>
+            <span style={S.mono(9.5, desktopModelStatus.codex?.ok ? T.reward : T.penalty)}>Codex: {desktopModelStatus.codex?.ok ? "ready" : (desktopModelStatus.codex?.error || "not ready")}</span>
+            <span style={S.mono(9.5, desktopModelStatus.claude?.ok ? T.reward : T.penalty)}>Claude: {desktopModelStatus.claude?.ok ? "ready" : (desktopModelStatus.claude?.error || "not ready")}</span>
+          </div>}
           {modelTest && <p style={{ fontSize: 12, color: modelTest.ok ? T.reward : modelTest.ok === false ? T.penalty : T.inkSoft, lineHeight: 1.4, margin: "8px 0 0" }}>{modelTest.msg}</p>}
         </div>
         <div style={{ ...S.card, marginTop: 12 }}>
@@ -4424,7 +4471,7 @@ ${QUALITY_RULES}`, cfg));
         <div style={{ ...S.card, marginTop: 12 }}>
           <span style={S.mono(10)}>SAVE DATA</span>
           <p style={{ fontSize: 12.5, color: T.inkSoft, margin: "6px 0 10px" }}>Player {save.player?.name || "local-player"} · UUID {save.player?.id || "pending"} · Session {save.player?.sessionId || "pending"}<br />XP {save.xp} · {save.captured.length} concepts · {save.badges.length} badges · {Object.keys(save.katas).length} katas · telemetry on {Object.keys(save.qstats).length} topics</p>
-          <button onClick={() => { persist({ xp: 0, hp: 100, badges: [], captured: [], sides: [], katas: {}, qstats: {}, kataHints: {}, kataAttempts: {}, learningRecords: [], senzu: null, pet: { mood: "idle", msg: "ready" }, player: null }); persistAug({}); showToast("Save reset."); }} style={{ ...S.btn(T.penalty), padding: "8px 14px", fontSize: 12.5 }}>Reset progress</button>
+          <button onClick={() => { persist({ xp: 0, hp: 100, badges: [], captured: [], sides: [], katas: {}, qstats: {}, kataHints: {}, kataAttempts: {}, learningRecords: [], senzu: null, pet: { mood: "idle", msg: "ready" }, player: save.player }); persistAug({}); showToast("Save reset."); }} style={{ ...S.btn(T.penalty), padding: "8px 14px", fontSize: 12.5 }}>Reset progress</button>
         </div>
       </div>
     </div>
@@ -4468,8 +4515,8 @@ ${QUALITY_RULES}`, cfg));
           <span style={S.mono(10)}>code-first workthroughs · TorchLeet set · in-browser Python lab · AI review</span>
           <div style={{ ...S.card, marginTop: 10, background: T.rewardSoft }}>
             <div style={{ display: "flex", justifyContent: "space-between", gap: 10, alignItems: "center" }}>
-              <div><b>🫘 Senzu bean recovery quest</b><p style={{ fontSize: 12.5, color: T.inkSoft, margin: "4px 0 0" }}>Complete one random uncompleted Blind 75 kata and one random uncompleted ML Engineering kata to fully recover HP.</p></div>
-              <button onClick={ensureSenzuQuest} style={S.btn(T.reward)}>{save.senzu && !save.senzu.claimed ? "Refresh quest" : "Start quest"}</button>
+              <div><b>🫘 Senzu bean recovery quest</b><p style={{ fontSize: 12.5, color: T.inkSoft, margin: "4px 0 0" }}>Started from Concept Worlds: clear both exercises here, then return healed.</p></div>
+              <button onClick={() => setScreen("regionlist")} style={S.btn(T.reward)}>Back to worlds</button>
             </div>
             {save.senzu && !save.senzu.claimed && <div style={{ display: "flex", gap: 6, flexWrap: "wrap", marginTop: 8 }}>
               {[save.senzu.required.swe, save.senzu.required.ml].map((id) => { const k = allKatas.find((x) => x.id === id); const done = !!save.katas[id]; return k ? <button key={id} onClick={() => openKata(k)} style={S.chip(done)}>{done ? "✓" : "○"} {k.family === "swe" ? "Blind 75" : "ML"}: {k.title}</button> : null; })}
@@ -4789,7 +4836,8 @@ ${QUALITY_RULES}`, cfg));
             <span style={S.mono(9.5, T.gold)}>🏛 GYM = badge</span>
           </div>
           <TeachingPanel target={world} region={region} compact />
-          <div style={{ position: "relative", width: "100%", aspectRatio: "5/4", background: "linear-gradient(160deg,#A8D8A0 0%,#7BC47F 45%,#69B583 100%)", borderRadius: 16, border: `3px solid ${T.ink}`, overflow: "hidden", boxShadow: "0 8px 28px rgba(27,36,64,0.2)" }}>
+          <SenzuPanel compact />
+          <div style={{ position: "relative", width: "100%", aspectRatio: "5/4", background: "linear-gradient(160deg,#A8D8A0 0%,#7BC47F 45%,#69B583 100%)", borderRadius: 16, border: `3px solid ${T.ink}`, overflow: "hidden", boxShadow: "0 8px 28px rgba(27,36,64,0.2)", marginTop: 10 }}>
             <div style={{ position: "absolute", inset: 0, opacity: 0.35, fontSize: 18, pointerEvents: "none" }}>
               <span style={{ position: "absolute", left: "4%", top: "8%" }}>🌲</span>
               <span style={{ position: "absolute", left: "88%", top: "12%" }}>🌲</span>
