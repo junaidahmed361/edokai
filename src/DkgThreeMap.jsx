@@ -33,7 +33,9 @@ function makeTinyPlanet(world, radius, color, progress) {
 
 export default function DkgThreeMap({ worlds, focusedWorld, mapStats, capturedSet, onFocus, onStudy, T, darkMode }) {
   const mountRef = useRef(null);
+  const labelLayerRef = useRef(null);
   const [hovered, setHovered] = useState(null);
+  const [viewHint, setViewHint] = useState("drag empty space to pan · wheel/pinch to zoom · click planet to focus");
   const visibleWorlds = useMemo(() => (worlds || []).filter((w) => (w.regions || []).length), [worlds]);
   const worldKey = visibleWorlds.map((w) => `${w.id}:${(w.regions || []).length}`).join("|");
   const capturedKey = Array.from(capturedSet || []).sort().join("|");
@@ -69,7 +71,8 @@ export default function DkgThreeMap({ worlds, focusedWorld, mapStats, capturedSe
     const pointer = new THREE.Vector2();
     const pickables = [];
     const focusPos = focus ? layout.get(focus.id) : null;
-    if (focusPos) camera.position.set(focusPos.x * 0.18, focusPos.y * 0.18, 10);
+    const view = { x: focusPos ? focusPos.x * 0.18 : 0, y: focusPos ? focusPos.y * 0.18 : 0, zoom: 1 };
+    camera.position.set(view.x, view.y, 10);
     const ambient = new THREE.AmbientLight(0xffffff, darkMode ? 0.72 : 0.9);
     scene.add(ambient);
     const sun = new THREE.DirectionalLight(0xffffff, 1.25);
@@ -171,6 +174,20 @@ export default function DkgThreeMap({ worlds, focusedWorld, mapStats, capturedSe
       });
     }
 
+    const projectLabels = () => {
+      const layer = labelLayerRef.current;
+      if (!layer) return;
+      visibleWorlds.forEach((w) => {
+        const el = layer.querySelector(`[data-world-label="${CSS.escape(w.id)}"]`);
+        const p = layout.get(w.id);
+        if (!el || !p) return;
+        const v = new THREE.Vector3(p.x, p.y, 0.1).project(camera);
+        el.style.left = `${(v.x * 0.5 + 0.5) * 100}%`;
+        el.style.top = `${(-v.y * 0.5 + 0.5) * 100}%`;
+        el.style.opacity = v.z > 1 ? "0" : "1";
+      });
+    };
+    const render = () => { renderer.render(scene, camera); projectLabels(); };
     const setPointer = (event) => {
       const rect = renderer.domElement.getBoundingClientRect();
       pointer.x = ((event.clientX - rect.left) / rect.width) * 2 - 1;
@@ -179,16 +196,50 @@ export default function DkgThreeMap({ worlds, focusedWorld, mapStats, capturedSe
       const hit = raycaster.intersectObjects(pickables)[0];
       setHovered(hit?.object?.userData?.worldId || null);
       renderer.domElement.style.cursor = hit ? "pointer" : "grab";
+      return hit;
     };
-    const click = (event) => {
-      setPointer(event);
-      raycaster.setFromCamera(pointer, camera);
-      const hit = raycaster.intersectObjects(pickables)[0];
-      if (hit?.object?.userData?.worldId) onFocus(hit.object.userData.worldId);
+    let dragging = false, moved = false, last = { x: 0, y: 0 };
+    const pointerDown = (event) => {
+      dragging = true; moved = false; last = { x: event.clientX, y: event.clientY };
+      renderer.domElement.setPointerCapture?.(event.pointerId);
+      renderer.domElement.style.cursor = "grabbing";
     };
-    renderer.domElement.addEventListener("pointermove", setPointer);
-    renderer.domElement.addEventListener("click", click);
-    renderer.render(scene, camera);
+    const pointerMove = (event) => {
+      const hit = setPointer(event);
+      if (!dragging) return;
+      const dx = event.clientX - last.x, dy = event.clientY - last.y;
+      if (Math.abs(dx) + Math.abs(dy) > 2) moved = true;
+      last = { x: event.clientX, y: event.clientY };
+      const spanX = (camera.right - camera.left) / camera.zoom;
+      const spanY = (camera.top - camera.bottom) / camera.zoom;
+      view.x -= dx / renderer.domElement.clientWidth * spanX;
+      view.y += dy / renderer.domElement.clientHeight * spanY;
+      camera.position.set(view.x, view.y, 10);
+      setViewHint(hit ? "release without dragging to focus" : "panning atlas…");
+      render();
+    };
+    const pointerUp = (event) => {
+      const hit = setPointer(event);
+      dragging = false;
+      renderer.domElement.releasePointerCapture?.(event.pointerId);
+      if (!moved && hit?.object?.userData?.worldId) onFocus(hit.object.userData.worldId);
+      setViewHint("drag empty space to pan · wheel/pinch to zoom · click planet to focus");
+      render();
+    };
+    const wheel = (event) => {
+      event.preventDefault();
+      const next = Math.max(0.72, Math.min(2.4, camera.zoom * (event.deltaY > 0 ? 0.9 : 1.1)));
+      camera.zoom = next;
+      camera.updateProjectionMatrix();
+      setViewHint(`zoom ${(next * 100).toFixed(0)}% · drag to pan`);
+      render();
+    };
+    renderer.domElement.addEventListener("pointerdown", pointerDown);
+    renderer.domElement.addEventListener("pointermove", pointerMove);
+    renderer.domElement.addEventListener("pointerup", pointerUp);
+    renderer.domElement.addEventListener("pointercancel", pointerUp);
+    renderer.domElement.addEventListener("wheel", wheel, { passive: false });
+    render();
 
     const resize = () => {
       const w = mount.clientWidth || width;
@@ -196,37 +247,42 @@ export default function DkgThreeMap({ worlds, focusedWorld, mapStats, capturedSe
       const a = w / h;
       camera.left = -4.6 * a; camera.right = 4.6 * a; camera.top = 3.2; camera.bottom = -3.2; camera.updateProjectionMatrix();
       renderer.setSize(w, h);
-      renderer.render(scene, camera);
+      render();
     };
     const ro = new ResizeObserver(resize);
     ro.observe(mount);
     return () => {
       ro.disconnect();
-      renderer.domElement.removeEventListener("pointermove", setPointer);
-      renderer.domElement.removeEventListener("click", click);
+      renderer.domElement.removeEventListener("pointerdown", pointerDown);
+      renderer.domElement.removeEventListener("pointermove", pointerMove);
+      renderer.domElement.removeEventListener("pointerup", pointerUp);
+      renderer.domElement.removeEventListener("pointercancel", pointerUp);
+      renderer.domElement.removeEventListener("wheel", wheel);
       renderer.dispose();
       mount.innerHTML = "";
     };
   }, [darkMode, focus?.id, worldKey, capturedKey]);
 
   const labels = visibleWorlds.map((w) => {
-    const p = layout.get(w.id) || { x: 0, y: 0, color: T.explore };
     const st = mapStats(w);
-    return { w, p, st, left: `${50 + (p.x / 4.6) * 42}%`, top: `${50 - (p.y / 3.1) * 42}%` };
+    return { w, st };
   });
 
   return (
     <div style={{ position: "relative", height: 430, borderRadius: 22, overflow: "hidden", border: `1px solid ${T.line}`, background: darkMode ? "radial-gradient(circle at 50% 40%, #17203F 0%, #070B16 65%)" : "radial-gradient(circle at 50% 40%, #FFFFFF 0%, #EEF4FF 68%)", boxShadow: darkMode ? "0 18px 55px rgba(0,0,0,0.32)" : "0 18px 48px rgba(91,79,214,0.16)" }}>
-      <div ref={mountRef} style={{ position: "absolute", inset: 0 }} />
-      {labels.map(({ w, st, left, top }) => {
+      <div ref={mountRef} style={{ position: "absolute", inset: 0, touchAction: "none" }} />
+      <div ref={labelLayerRef} style={{ position: "absolute", inset: 0, pointerEvents: "none" }}>
+      {labels.map(({ w, st }) => {
         const active = focus && w.id === focus.id;
         return (
-          <button key={w.id} onClick={() => onFocus(w.id)} title="Focus this territory" style={{ position: "absolute", left, top, transform: "translate(-50%, -50%)", maxWidth: 154, textAlign: "center", border: `1px solid ${active ? T.action : T.line}`, background: active ? T.hud : (darkMode ? "rgba(20,27,49,0.78)" : "rgba(255,255,255,0.82)"), color: T.ink, borderRadius: 14, padding: "6px 8px", cursor: "pointer", boxShadow: active ? `0 10px 28px ${T.shadow}` : "none", backdropFilter: "blur(6px)", fontFamily: "inherit" }}>
+          <button data-world-label={w.id} key={w.id} onClick={() => onFocus(w.id)} title="Focus this territory" style={{ pointerEvents: "auto", position: "absolute", left: "50%", top: "50%", transform: "translate(-50%, -50%)", maxWidth: 154, textAlign: "center", border: `1px solid ${active ? T.action : T.line}`, background: active ? T.hud : (darkMode ? "rgba(20,27,49,0.78)" : "rgba(255,255,255,0.82)"), color: T.ink, borderRadius: 14, padding: "6px 8px", cursor: "pointer", boxShadow: active ? `0 10px 28px ${T.shadow}` : "none", backdropFilter: "blur(6px)", fontFamily: "inherit" }}>
             <div style={{ fontWeight: 900, fontSize: 12, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{w.emoji} {w.title}</div>
             <div style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 8.5, color: active ? T.action : T.inkSoft }}>{st.concepts} concepts · {w.regions.length} regions</div>
           </button>
         );
       })}
+      </div>
+      <div style={{ position: "absolute", left: 12, top: 12, fontFamily: "'JetBrains Mono', monospace", fontSize: 9.5, letterSpacing: "0.04em", color: T.inkSoft, background: T.hud, border: `1px solid ${T.line}`, borderRadius: 999, padding: "6px 9px", backdropFilter: "blur(8px)" }}>{viewHint}</div>
       {focus && (
         <div style={{ position: "absolute", left: 12, right: 12, bottom: 12, display: "flex", gap: 8, alignItems: "center", justifyContent: "space-between", background: T.hud, border: `1px solid ${T.line}`, borderRadius: 14, padding: 10, backdropFilter: "blur(8px)" }}>
           <div style={{ minWidth: 0 }}>

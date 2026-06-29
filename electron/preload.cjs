@@ -12,6 +12,7 @@ contextBridge.exposeInMainWorld('edokaiAuth', {
   completeWithClaudeCode: (prompt, opts = {}) => ipcRenderer.invoke('claude-code-complete', { prompt, needsWeb: !!opts.needsWeb }),
   completeWithDefaultProvider: (prompt, opts = {}) => ipcRenderer.invoke('default-model-complete', { prompt, needsWeb: !!opts.needsWeb, preferred: opts.preferred || 'codex' }),
   desktopModelStatus: () => ipcRenderer.invoke('desktop-model-status'),
+  startDesktopModelLogin: (provider) => ipcRenderer.invoke('desktop-model-login', provider),
 });
 
 contextBridge.exposeInMainWorld('edokaiDb', {

@@ -56,3 +56,15 @@ Append-only operational log for automatic EmergentMind ingestion, Telegram manua
 - Graph/world actions: added 0 sources, 0 nodes, 0 edges, and 0 new macro worlds; appended run-history/routing-history entries for this builder pass.
 - Verification: JSON parse/provenance/reference checks passed (17 sources / 42 nodes / 34 edges / 6 macro worlds / 16 regions); `npm run dkg:test` passed with 5 live non-empty worlds; `npm run build` passed with the existing Vite CJS API deprecation and chunk-size warnings; `npm run dkg:sync` passed and live Supabase readback adapted to 5 rendered worlds.
 - Escalations/manual review: none for this pass. Continue to keep misalignment-probe claims source-qualified; do not infer deployment safety guarantees.
+
+
+## manual-telegram-hitchhikers-guide-agentic-ai-20260629T032238Z
+
+- Trigger: manual Telegram link ingest / loop-engineered run.
+- Source read: `https://arxiv.org/pdf/2606.24937` plus arXiv abstract metadata for `2606.24937` — "The Hitchhiker's Guide to Agentic AI: From Foundations to Systems" (Haggai Roitman; arXiv 2026-06-22; PDF Version 1.2.2). Primary PDF downloaded and read locally with `pdftotext`.
+- Extracted signal: full-stack agentic AI as layered production system; foundations through RL/reasoning; RAG/Agentic RAG; memory systems; agent harness/context management; MCP tool integration; A2A communication; multi-agent topologies; agentic environments/benchmarks; agentic UI supervision; explicit scope exclusions for multimodal/domain-specific/personalization systems.
+- Graph actions: added 1 primary arXiv source, 10 new concept/system nodes, updated the existing `agentic-ai-full-stack-reference` node, and added 11 source-backed edges to `knowledge/edokai-dkg.json` without duplicating the prior EmergentMind stub.
+- Concept-world builder: enhanced existing `Agents` with full-stack systems, harness/context/tools, and multi-agent protocol/supervision regions; enhanced `Retrieval-Augmented Generation` with an Agentic RAG and Memory region. No new macro world created because the source is a broad survey whose clusters fit existing umbrellas with a RAG cross-route.
+- Verification: JSON parse/provenance validation and app adapter/build checks run after state update. No fake papers/links/citations introduced.
+- Router learning: broad agentic-stack surveys should strengthen Agents as layered regions, while RAG/Agentic RAG belongs in Retrieval-Augmented Generation when the mechanism is retrieval/indexing/memory rather than low-level serving.
+- Escalations/manual review: none; no app refactor, publishing, commit, secrets, auth, or infra touched.

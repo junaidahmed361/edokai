@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "updated_at": "2026-06-28T14:31:01Z",
+  "updated_at": "2026-06-29T03:22:38Z",
   "sources": {
     "hf-space-trl-distillation-trainer-2026": {
       "id": "hf-space-trl-distillation-trainer-2026",
@@ -234,7 +234,7 @@
       "authors": [],
       "published": "2026-06-22",
       "discovered_at": "2026-06-28T14:01:50Z",
-      "last_read_at": "2026-06-28T14:01:50Z",
+      "last_read_at": "2026-06-29T03:22:38Z",
       "provenance": [
         "Discovered from https://www.emergentmind.com/ bootstrapped trending papers on 2026-06-28.",
         "EmergentMind paper page and homepage abstract metadata identify arXiv 2606.24937: The Hitchhiker's Guide to Agentic AI is a comprehensive practitioner's reference for building autonomous AI systems. The book covers the full stack from first principles to production deployment, organized around a central thesis: building great agentic systems requires understanding every layer of the pipeline, not just one. The book opens with the LLM substrate -- transformer architecture, GPU systems, training and fine-tuning (SFT,LoRA, MoE), model compression, and inference optimization -- t"
@@ -288,6 +288,26 @@
         "EmergentMind paper page and homepage abstract metadata identify arXiv 2606.24251: Large language models exhibit a growing range of misaligned behaviors such as strategic deception, sandbagging, and self-preservation. As they are increasingly deployed in high-stakes settings, it is critical to reliably detect such behaviors to ensure safe and responsible use. In this work, we propose to monitor misalignment by decomposing it into fine-grained cognitive processes -- misalignment indicators -- and detecting their presence in a model's internal activations via linear probes. We d"
       ],
       "confidence": 0.88
+    },
+    "arxiv-2606-24937-hitchhikers-guide-agentic-ai-2026": {
+      "id": "arxiv-2606-24937-hitchhikers-guide-agentic-ai-2026",
+      "url": "https://arxiv.org/abs/2606.24937",
+      "pdf_url": "https://arxiv.org/pdf/2606.24937",
+      "title": "The Hitchhiker's Guide to Agentic AI: From Foundations to Systems",
+      "source_type": "arxiv-paper-pdf",
+      "authors": [
+        "Haggai Roitman"
+      ],
+      "published": "2026-06-22",
+      "discovered_at": "2026-06-29T03:22:38Z",
+      "last_read_at": "2026-06-29T03:22:38Z",
+      "provenance": [
+        "Verified arXiv metadata reports arXiv:2606.24937, title The Hitchhiker's Guide to Agentic AI: From Foundations to Systems, author Haggai Roitman, date 2026-06-22.",
+        "Primary PDF downloaded from https://arxiv.org/pdf/2606.24937 (9,255,598 bytes) and read locally with pdftotext; title page identifies Version 1.2.2.",
+        "Abstract frames the work as a practitioner reference for autonomous AI systems spanning transformer/GPU/training foundations, RLHF/PPO/DPO/GRPO/reasoning, RAG and Agentic RAG, memory systems, harness/context management, MCP, A2A, multi-agent architectures, frameworks, agentic UI, evaluation, and production deployment.",
+        "Preface scope explicitly focuses on text-in/text-out language models and excludes multimodal systems, domain-specific regulated deployments, and personalization/recommender systems."
+      ],
+      "confidence": 0.97
     }
   },
   "nodes": {
@@ -915,16 +935,17 @@
       "id": "agentic-ai-full-stack-reference",
       "label": "Agentic AI full-stack reference",
       "type": "paper",
-      "summary": "Practitioner reference covering autonomous AI systems from foundations to production deployment, emphasizing that robust agentic systems require understanding each layer of the stack.",
+      "summary": "Practitioner reference/book covering autonomous AI systems from LLM foundations through RL/reasoning, RAG, memory, orchestration, MCP/A2A, multi-agent systems, agentic UI, evaluation, and production deployment.",
       "aliases": [
         "Hitchhiker’s Guide to Agentic AI"
       ],
       "source_ids": [
-        "emergentmind-2606-24937-hitchhikers-guide-agentic-ai-2026"
+        "emergentmind-2606-24937-hitchhikers-guide-agentic-ai-2026",
+        "arxiv-2606-24937-hitchhikers-guide-agentic-ai-2026"
       ],
-      "confidence": 0.86,
+      "confidence": 0.94,
       "first_seen": "2026-06-28T14:01:50Z",
-      "last_seen": "2026-06-28T14:01:50Z",
+      "last_seen": "2026-06-29T03:22:38Z",
       "world_hint": "agents"
     },
     "agent-native-memory-system": {
@@ -1008,6 +1029,176 @@
       "confidence": 0.86,
       "first_seen": "2026-06-28T14:01:50Z",
       "last_seen": "2026-06-28T14:01:50Z",
+      "world_hint": "agents"
+    },
+    "agentic-ai-layered-stack": {
+      "id": "agentic-ai-layered-stack",
+      "label": "Agentic AI layered stack",
+      "type": "concept",
+      "summary": "A learner mental model where autonomous AI systems are built as tightly integrated layers: model substrate, RL/reasoning, retrieval/memory, harness/orchestration, tool protocols, coordination, UI, evaluation, and deployment.",
+      "aliases": [
+        "full-stack agentic AI",
+        "agentic systems stack"
+      ],
+      "source_ids": [
+        "arxiv-2606-24937-hitchhikers-guide-agentic-ai-2026"
+      ],
+      "confidence": 0.92,
+      "first_seen": "2026-06-29T03:22:38Z",
+      "last_seen": "2026-06-29T03:22:38Z",
+      "world_hint": "agents"
+    },
+    "agent-harness-orchestration": {
+      "id": "agent-harness-orchestration",
+      "label": "Agent harness and orchestration",
+      "type": "system",
+      "summary": "Runtime layer that manages the agent loop, context budget, tool dispatch, error recovery, state persistence, observability, guardrails, and human-in-the-loop execution patterns.",
+      "aliases": [
+        "agent harness",
+        "orchestration harness"
+      ],
+      "source_ids": [
+        "arxiv-2606-24937-hitchhikers-guide-agentic-ai-2026"
+      ],
+      "confidence": 0.91,
+      "first_seen": "2026-06-29T03:22:38Z",
+      "last_seen": "2026-06-29T03:22:38Z",
+      "world_hint": "agents"
+    },
+    "context-window-management-strategies": {
+      "id": "context-window-management-strategies",
+      "label": "Context window management strategies",
+      "type": "method",
+      "summary": "Techniques such as summarization, sliding windows, hierarchical context decomposition, token counting, and budget monitoring for keeping long-running agents inside finite context.",
+      "aliases": [
+        "context compression",
+        "context budget management"
+      ],
+      "source_ids": [
+        "arxiv-2606-24937-hitchhikers-guide-agentic-ai-2026"
+      ],
+      "confidence": 0.9,
+      "first_seen": "2026-06-29T03:22:38Z",
+      "last_seen": "2026-06-29T03:22:38Z",
+      "world_hint": "agents"
+    },
+    "agentic-memory-systems": {
+      "id": "agentic-memory-systems",
+      "label": "Agentic memory systems",
+      "type": "concept",
+      "summary": "Memory layer for agents covering working/in-context memory, external retrieval-backed memory, episodic experience memory, semantic world knowledge, procedural skills, shared memory pools, and memory evaluation.",
+      "aliases": [
+        "agent memory",
+        "episodic and semantic memory for agents"
+      ],
+      "source_ids": [
+        "arxiv-2606-24937-hitchhikers-guide-agentic-ai-2026"
+      ],
+      "confidence": 0.9,
+      "first_seen": "2026-06-29T03:22:38Z",
+      "last_seen": "2026-06-29T03:22:38Z",
+      "world_hint": "agents"
+    },
+    "agentic-rag": {
+      "id": "agentic-rag",
+      "label": "Agentic RAG",
+      "type": "method",
+      "summary": "Retrieval pattern where RAG is part of an agentic loop, connecting non-parametric knowledge, retrieval methods, chunking, reranking, contextual compression, and tool-mediated generation decisions.",
+      "aliases": [
+        "RAG for agents",
+        "retrieval-augmented agents"
+      ],
+      "source_ids": [
+        "arxiv-2606-24937-hitchhikers-guide-agentic-ai-2026"
+      ],
+      "confidence": 0.9,
+      "first_seen": "2026-06-29T03:22:38Z",
+      "last_seen": "2026-06-29T03:22:38Z",
+      "world_hint": "retrieval-augmented-generation"
+    },
+    "model-context-protocol-tool-integration": {
+      "id": "model-context-protocol-tool-integration",
+      "label": "Model Context Protocol tool integration",
+      "type": "system",
+      "summary": "MCP standardizes tool/resource/prompt exposure between model clients and external servers, including JSON-RPC messaging, capability negotiation, tool discovery, and security considerations.",
+      "aliases": [
+        "MCP",
+        "Model Context Protocol"
+      ],
+      "source_ids": [
+        "arxiv-2606-24937-hitchhikers-guide-agentic-ai-2026"
+      ],
+      "confidence": 0.9,
+      "first_seen": "2026-06-29T03:22:38Z",
+      "last_seen": "2026-06-29T03:22:38Z",
+      "world_hint": "agents"
+    },
+    "agent-to-agent-communication-protocol": {
+      "id": "agent-to-agent-communication-protocol",
+      "label": "Agent-to-Agent communication protocol",
+      "type": "system",
+      "summary": "A2A communication gives agents structured ways to advertise capabilities and coordinate tasks through Agent Cards, task lifecycle, streaming, authentication scopes, and audit trails.",
+      "aliases": [
+        "A2A",
+        "Agent-to-Agent protocol"
+      ],
+      "source_ids": [
+        "arxiv-2606-24937-hitchhikers-guide-agentic-ai-2026"
+      ],
+      "confidence": 0.89,
+      "first_seen": "2026-06-29T03:22:38Z",
+      "last_seen": "2026-06-29T03:22:38Z",
+      "world_hint": "agents"
+    },
+    "multi-agent-architecture-topologies": {
+      "id": "multi-agent-architecture-topologies",
+      "label": "Multi-agent architecture topologies",
+      "type": "concept",
+      "summary": "Coordination patterns for multiple agents, including centralized supervisor, decentralized peer-to-peer, hierarchical, swarm, debate, reflection, division-of-labor, pipeline, ensemble, teacher-student, and red-team designs.",
+      "aliases": [
+        "multi-agent systems",
+        "agent collectives"
+      ],
+      "source_ids": [
+        "arxiv-2606-24937-hitchhikers-guide-agentic-ai-2026"
+      ],
+      "confidence": 0.9,
+      "first_seen": "2026-06-29T03:22:38Z",
+      "last_seen": "2026-06-29T03:22:38Z",
+      "world_hint": "agents"
+    },
+    "agentic-environments-and-benchmarks": {
+      "id": "agentic-environments-and-benchmarks",
+      "label": "Agentic environments and benchmarks",
+      "type": "concept",
+      "summary": "Evaluation layer for autonomous agents using environment interfaces, observation/action/reward design, web/coding/research/game/multi-agent benchmarks, trajectory scoring, and reproducible environment versioning.",
+      "aliases": [
+        "agent benchmarks",
+        "agentic evaluation environments"
+      ],
+      "source_ids": [
+        "arxiv-2606-24937-hitchhikers-guide-agentic-ai-2026"
+      ],
+      "confidence": 0.9,
+      "first_seen": "2026-06-29T03:22:38Z",
+      "last_seen": "2026-06-29T03:22:38Z",
+      "world_hint": "agents"
+    },
+    "agentic-ui-supervision-patterns": {
+      "id": "agentic-ui-supervision-patterns",
+      "label": "Agentic UI supervision patterns",
+      "type": "concept",
+      "summary": "Interface patterns for supervising autonomous agents: streaming reasoning/status, tool-use visualization, progress indicators, approval gates, context display, recovery UI, confidence indicators, and audit trails.",
+      "aliases": [
+        "agentic UI",
+        "human-in-the-loop UI"
+      ],
+      "source_ids": [
+        "arxiv-2606-24937-hitchhikers-guide-agentic-ai-2026"
+      ],
+      "confidence": 0.88,
+      "first_seen": "2026-06-29T03:22:38Z",
+      "last_seen": "2026-06-29T03:22:38Z",
       "world_hint": "agents"
     }
   },
@@ -1362,6 +1553,116 @@
         "emergentmind-2606-24937-hitchhikers-guide-agentic-ai-2026"
       ],
       "evidence": "Safety instrumentation for misaligned thinking is part of the production agentic-systems stack learners need to understand."
+    },
+    {
+      "source": "agentic-ai-full-stack-reference",
+      "target": "agentic-ai-layered-stack",
+      "relation": "paper_introduces",
+      "confidence": 0.91,
+      "source_ids": [
+        "arxiv-2606-24937-hitchhikers-guide-agentic-ai-2026"
+      ],
+      "evidence": "The arXiv abstract says the book covers the full stack from first principles to production deployment and argues builders must understand every layer, not just one."
+    },
+    {
+      "source": "agentic-ai-layered-stack",
+      "target": "agent-harness-orchestration",
+      "relation": "depends_on",
+      "confidence": 0.9,
+      "source_ids": [
+        "arxiv-2606-24937-hitchhikers-guide-agentic-ai-2026"
+      ],
+      "evidence": "The guide places harness/orchestration as the runtime layer that manages the agent loop, context, tool dispatch, error recovery, state, and observability."
+    },
+    {
+      "source": "agent-harness-orchestration",
+      "target": "context-window-management-strategies",
+      "relation": "depends_on",
+      "confidence": 0.89,
+      "source_ids": [
+        "arxiv-2606-24937-hitchhikers-guide-agentic-ai-2026"
+      ],
+      "evidence": "Chapter 18 contents cover context budget, allocation, compression, sliding windows, recursive decomposition, and token/budget monitoring inside the harness."
+    },
+    {
+      "source": "agentic-ai-layered-stack",
+      "target": "agentic-memory-systems",
+      "relation": "depends_on",
+      "confidence": 0.88,
+      "source_ids": [
+        "arxiv-2606-24937-hitchhikers-guide-agentic-ai-2026"
+      ],
+      "evidence": "The agentic stack includes a dedicated memory-systems chapter covering working, episodic, semantic, procedural, shared, and evaluated memory."
+    },
+    {
+      "source": "agentic-memory-systems",
+      "target": "agentic-rag",
+      "relation": "depends_on",
+      "confidence": 0.87,
+      "source_ids": [
+        "arxiv-2606-24937-hitchhikers-guide-agentic-ai-2026"
+      ],
+      "evidence": "The memory chapter and RAG chapter connect external/retrieval-backed memory with non-parametric knowledge for agents."
+    },
+    {
+      "source": "agentic-rag",
+      "target": "agentic-ai-layered-stack",
+      "relation": "supports_world",
+      "confidence": 0.86,
+      "source_ids": [
+        "arxiv-2606-24937-hitchhikers-guide-agentic-ai-2026"
+      ],
+      "evidence": "The abstract includes RAG and Agentic RAG as part of the agentic AI stack, alongside memory and orchestration."
+    },
+    {
+      "source": "agent-harness-orchestration",
+      "target": "model-context-protocol-tool-integration",
+      "relation": "implements",
+      "confidence": 0.89,
+      "source_ids": [
+        "arxiv-2606-24937-hitchhikers-guide-agentic-ai-2026"
+      ],
+      "evidence": "The guide treats MCP as the tool integration layer with tools, resources, prompts, protocol lifecycle, discovery, and security model."
+    },
+    {
+      "source": "model-context-protocol-tool-integration",
+      "target": "agent-to-agent-communication-protocol",
+      "relation": "contrasts_with",
+      "confidence": 0.86,
+      "source_ids": [
+        "arxiv-2606-24937-hitchhikers-guide-agentic-ai-2026"
+      ],
+      "evidence": "MCP handles model-to-tool/server integration, while A2A handles inter-agent capability advertisement and task coordination."
+    },
+    {
+      "source": "agent-to-agent-communication-protocol",
+      "target": "multi-agent-architecture-topologies",
+      "relation": "supports_world",
+      "confidence": 0.88,
+      "source_ids": [
+        "arxiv-2606-24937-hitchhikers-guide-agentic-ai-2026"
+      ],
+      "evidence": "The A2A and multi-agent chapters describe communication protocols and topologies for collaboration across agents."
+    },
+    {
+      "source": "multi-agent-architecture-topologies",
+      "target": "agentic-environments-and-benchmarks",
+      "relation": "evaluates_on",
+      "confidence": 0.87,
+      "source_ids": [
+        "arxiv-2606-24937-hitchhikers-guide-agentic-ai-2026"
+      ],
+      "evidence": "The guide frames agentic environments and benchmarks as the evaluation layer for multi-step, multi-agent, and tool-using behavior."
+    },
+    {
+      "source": "agentic-ui-supervision-patterns",
+      "target": "agent-harness-orchestration",
+      "relation": "supports_world",
+      "confidence": 0.86,
+      "source_ids": [
+        "arxiv-2606-24937-hitchhikers-guide-agentic-ai-2026"
+      ],
+      "evidence": "The UI chapter covers streaming, approval gates, tool visualization, recovery UI, and audit trails that expose and supervise harness execution."
     }
   ],
   "open_questions": [
@@ -1499,6 +1800,22 @@
       ],
       "escalations": [],
       "completed_at": "2026-06-28T14:31:01Z"
+    },
+    {
+      "run_id": "manual-telegram-hitchhikers-guide-agentic-ai-20260629T032238Z",
+      "trigger": "manual-loop-engineered-run",
+      "source_ids": [
+        "arxiv-2606-24937-hitchhikers-guide-agentic-ai-2026"
+      ],
+      "completed_at": "2026-06-29T03:22:38Z",
+      "nodes_added": 10,
+      "edges_added": 11,
+      "nodes_updated": 1,
+      "worlds_enhanced": [
+        "agents",
+        "retrieval-augmented-generation"
+      ],
+      "notes": "Primary arXiv PDF promoted the prior EmergentMind stub into a source-grounded full-stack agentic AI learning cluster; no new macro world required."
     }
   ]
 }
