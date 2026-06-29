@@ -1,6 +1,6 @@
 const { app, BrowserWindow, shell, ipcMain } = require("electron");
 const path = require("path");
-const { spawn } = require("child_process");
+const { spawn, spawnSync } = require("child_process");
 const crypto = require("crypto");
 const Database = require("better-sqlite3");
 
@@ -82,7 +82,21 @@ async function providerStatus() {
   return { codex, claude };
 }
 
+function runLoginInTerminal(provider) {
+  const cmd = provider === "claude" ? `${commandPath("claude")} auth login` : `${commandPath("codex")} login`;
+  if (process.platform === "darwin") {
+    const script = `tell application "Terminal"\n  activate\n  do script ${JSON.stringify(cmd)}\nend tell`;
+    const r = spawnSync("osascript", ["-e", script], { encoding: "utf8" });
+    if (r.status !== 0) throw new Error(r.stderr || r.stdout || `Could not open Terminal for ${provider} login`);
+    return { ok: true, message: `Opened Terminal to run: ${cmd}` };
+  }
+  const child = spawn(commandPath(provider === "claude" ? "claude" : "codex"), provider === "claude" ? ["auth", "login"] : ["login"], { detached: true, stdio: "ignore" });
+  child.unref();
+  return { ok: true, message: `Started ${provider} login in a detached process.` };
+}
+
 ipcMain.handle("desktop-model-status", async () => providerStatus());
+ipcMain.handle("desktop-model-login", async (_event, provider) => runLoginInTerminal(provider === "claude" ? "claude" : "codex"));
 
 ipcMain.handle("claude-code-status", async () => {
   try {

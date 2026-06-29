@@ -130,6 +130,28 @@ const compactSentence = (s, fallback = "source-backed mechanism") => {
   const first = clean.split(/(?<=[.!?])\s+/)[0] || clean;
   return first.replace(/[.…]+$/g, "").trim() || fallback;
 };
+const titleCase = (s) => String(s || "").replace(/[-_]+/g, " ").replace(/\w/g, (m) => m.toUpperCase()).trim();
+function friendlyName(raw, fallback = "Source Realm") {
+  let text = String(raw || fallback).replace(/^https?:\/\//, "").replace(/^www\./, "");
+  text = text.split(/[?#]/)[0].replace(/\/$/, "");
+  const parts = text.split("/").filter(Boolean);
+  text = parts.length > 1 ? parts.slice(-2).join(" ") : parts[0] || text;
+  text = text.replace(/\.(com|org|net|ai|io|dev|edu)$/i, "").replace(/\.(pdf|html|md)$/i, "");
+  return titleCase(text).replace(/Llm/g, "LLM").replace(/Rag/g, "RAG").replace(/Ai/g, "AI") || fallback;
+}
+function regionRelevanceRank(region) {
+  const t = `${region.label || ""} ${region.summary || ""} ${(region.concept_ids || []).join(" ")}`.toLowerCase();
+  const rules = [
+    [/foundation|overview|full-stack|architecture|system|stack|harness|orchestrat/, 0],
+    [/context|memory|tool|mcp|protocol|state|handoff/, 1],
+    [/environment|benchmark|evaluation|supervision|safety|reliab/, 2],
+    [/data|self-improvement|synthetic|continual|plasticity/, 3],
+    [/world model|language world model|simulation|agentworld/, 4],
+    [/serving|deployment|compression|distillation/, 5],
+  ];
+  for (const [re, rank] of rules) if (re.test(t)) return rank;
+  return 9;
+}
 
 const optionWords = (o) => String(o || "").trim().split(/\s+/).filter(Boolean).length;
 
@@ -165,7 +187,7 @@ function hashCode(str) {
 }
 
 function nodeLabel(node, fallback = "Imported Concept") {
-  return node.label || node.name || node.title || node.id || fallback;
+  return friendlyName(node.label || node.name || node.title || node.id || fallback, fallback);
 }
 
 // Convert an authored quiz_question (real answer_index) to the app's question shape.
@@ -244,7 +266,7 @@ function duelToSide(duel, idx, regionSlug, conceptIds, fallbackQuestions) {
 
 function buildRegion(region, idx, nodesById, worldLabel) {
   const regionSlug = `dkg-${slug(region.id || region.label || `region-${idx}`)}`;
-  const name = region.label || region.name || region.title || `Imported Region ${idx + 1}`;
+  const name = friendlyName(region.label || region.name || region.title || `Imported Region ${idx + 1}`, `Imported Region ${idx + 1}`);
 
   // Resolve concept_ids -> DKG nodes (skip refs that have no matching node).
   const conceptIds = Array.isArray(region.concept_ids) ? region.concept_ids : [];
@@ -299,7 +321,7 @@ function linksFromSources(sources, sourceIds) {
     const src = sources[sid];
     if (!src || !src.url || seen.has(src.url)) continue;
     seen.add(src.url);
-    out.push({ label: `Source · ${truncate(src.title || sid, 48)}`, url: src.url });
+    out.push({ label: friendlyName(src.title || src.label || src.url || sid, "Source"), url: src.url });
     if (out.length >= 6) break;
   }
   return out;
@@ -314,9 +336,11 @@ export function snapshotToEdokaiWorlds(payload) {
   const sources = dkg.sources || {};
 
   return Object.entries(macroWorlds).flatMap(([worldId, world]) => {
-    const rawRegions = Array.isArray(world.regions) ? world.regions : [];
+    const rawRegions = (Array.isArray(world.regions) ? world.regions : [])
+      .slice()
+      .sort((a, b) => regionRelevanceRank(a) - regionRelevanceRank(b));
     const regions = rawRegions
-      .map((region, idx) => buildRegion(region, idx, nodesById, world.label || worldId))
+      .map((region, idx) => buildRegion(region, idx, nodesById, friendlyName(world.label || worldId, worldId)))
       .filter(Boolean);
     if (!regions.length) return []; // empty umbrellas (e.g. seeded but unrouted) add nothing.
 
@@ -325,10 +349,10 @@ export function snapshotToEdokaiWorlds(payload) {
     return [{
       id: `dkg-${slug(worldId)}`,
       macroId: worldId,
-      title: world.label || world.title || worldId,
+      title: friendlyName(world.label || world.title || worldId, worldId),
       emoji: world.emoji || "🧬",
       blurb: world.description || "Live concept world synced from the Edokai DKG.",
-      mission: world.mission || `Master ${world.label || worldId} through source-grounded DKG concepts.`,
+      mission: world.mission || `Master ${friendlyName(world.label || worldId, worldId)} through source-grounded DKG concepts.`,
       links: linksFromSources(sources, sourceIds),
       regions,
     }];

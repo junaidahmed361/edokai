@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "updated_at": "2026-06-28T14:31:01Z",
+  "updated_at": "2026-06-29T03:22:38Z",
   "macro_worlds": {
     "agents": {
       "label": "Agents",
@@ -102,10 +102,13 @@
           "label": "Agent Systems Foundations",
           "summary": "Practitioner mental models for autonomous AI systems across foundations, orchestration, deployment, and production reliability.",
           "source_ids": [
-            "emergentmind-2606-24937-hitchhikers-guide-agentic-ai-2026"
+            "emergentmind-2606-24937-hitchhikers-guide-agentic-ai-2026",
+            "arxiv-2606-24937-hitchhikers-guide-agentic-ai-2026"
           ],
           "concept_ids": [
-            "agentic-ai-full-stack-reference"
+            "agentic-ai-full-stack-reference",
+            "agentic-ai-layered-stack",
+            "agent-harness-orchestration"
           ],
           "critical_concepts": [
             "agentic-ai-full-stack-reference"
@@ -131,7 +134,8 @@
               ],
               "answer_index": 3,
               "source_ids": [
-                "emergentmind-2606-24937-hitchhikers-guide-agentic-ai-2026"
+                "emergentmind-2606-24937-hitchhikers-guide-agentic-ai-2026",
+                "arxiv-2606-24937-hitchhikers-guide-agentic-ai-2026"
               ]
             }
           ]
@@ -211,6 +215,172 @@
               "answer_index": 1,
               "source_ids": [
                 "emergentmind-2606-24251-misalignment-thinking-probes-2026"
+              ]
+            }
+          ]
+        },
+        {
+          "id": "full-stack-agentic-ai-systems",
+          "label": "Full-Stack Agentic AI Systems",
+          "summary": "A source-backed roadmap for seeing agents as a layered production system rather than a prompt trick: substrate models, RL/reasoning, retrieval/memory, harnesses, protocols, coordination, interfaces, evaluation, and deployment.",
+          "source_ids": [
+            "arxiv-2606-24937-hitchhikers-guide-agentic-ai-2026",
+            "emergentmind-2606-24937-hitchhikers-guide-agentic-ai-2026"
+          ],
+          "concept_ids": [
+            "agentic-ai-full-stack-reference",
+            "agentic-ai-layered-stack",
+            "agent-harness-orchestration",
+            "agentic-environments-and-benchmarks"
+          ],
+          "critical_concepts": [
+            "agentic-ai-layered-stack",
+            "agent-harness-orchestration",
+            "agentic-environments-and-benchmarks"
+          ],
+          "prerequisite_links": [
+            {
+              "from": "agentic-ai-full-stack-reference",
+              "to": "agentic-ai-layered-stack",
+              "why": "The paper/book is the source that motivates the layered mental model."
+            },
+            {
+              "from": "agentic-ai-layered-stack",
+              "to": "agent-harness-orchestration",
+              "why": "The harness is the runtime layer that turns model capability into repeatable agent behavior."
+            }
+          ],
+          "side_retention_duels": [
+            {
+              "id": "prompt-trick-vs-layered-system",
+              "prompt": "What is the main Edokai framing for agentic AI after this source?",
+              "left": "A prompt-only recipe collection",
+              "right": "A layered production system from foundations through deployment",
+              "answer": "The guide argues for the layered production-system view."
+            }
+          ],
+          "quiz_questions": [
+            {
+              "question": "Why does the guide treat LLM architecture, RL, RAG, memory, orchestration, protocols, UI, evaluation, and deployment together?",
+              "choices": [
+                "Because agentic systems are strongest when every stack layer is understood and integrated.",
+                "Because RAG replaces all RL and evaluation layers.",
+                "Because multi-agent coordination removes the need for memory.",
+                "Because production deployment is unrelated to agent design."
+              ],
+              "answer_index": 0,
+              "source_ids": [
+                "arxiv-2606-24937-hitchhikers-guide-agentic-ai-2026"
+              ]
+            }
+          ]
+        },
+        {
+          "id": "agent-harness-context-and-tools",
+          "label": "Agent Harness, Context and Tools",
+          "summary": "The agent runtime layer manages context budgets, prompt assembly, tool schemas and routing, MCP integration, state, error recovery, observability, and human checkpoints.",
+          "source_ids": [
+            "arxiv-2606-24937-hitchhikers-guide-agentic-ai-2026"
+          ],
+          "concept_ids": [
+            "agent-harness-orchestration",
+            "context-window-management-strategies",
+            "model-context-protocol-tool-integration",
+            "agentic-ui-supervision-patterns"
+          ],
+          "critical_concepts": [
+            "agent-harness-orchestration",
+            "context-window-management-strategies",
+            "model-context-protocol-tool-integration"
+          ],
+          "prerequisite_links": [
+            {
+              "from": "context-window-management-strategies",
+              "to": "agent-harness-orchestration",
+              "why": "Harness design must allocate, compress, and monitor context before it can run reliable multi-step loops."
+            },
+            {
+              "from": "model-context-protocol-tool-integration",
+              "to": "agent-harness-orchestration",
+              "why": "MCP-style tool/resource discovery is one implementation path for the harness tool layer."
+            }
+          ],
+          "side_retention_duels": [
+            {
+              "id": "context-budget-vs-more-tools",
+              "prompt": "What fails first in many long-running agents?",
+              "left": "Context budget and state discipline",
+              "right": "The number of available tool names alone",
+              "answer": "The guide emphasizes context management, state, and orchestration, not simply adding more tools."
+            }
+          ],
+          "quiz_questions": [
+            {
+              "question": "What does an agent harness primarily coordinate?",
+              "choices": [
+                "Only final answer formatting.",
+                "The runtime loop: context, prompt assembly, tools, state, errors, observability, and human checkpoints.",
+                "A vector index with no model calls.",
+                "A static benchmark leaderboard."
+              ],
+              "answer_index": 1,
+              "source_ids": [
+                "arxiv-2606-24937-hitchhikers-guide-agentic-ai-2026"
+              ]
+            }
+          ]
+        },
+        {
+          "id": "multi-agent-protocols-and-supervision",
+          "label": "Multi-Agent Protocols and Supervision",
+          "summary": "How agents coordinate with each other and with humans through A2A communication, multi-agent topologies, debate/reflection/division-of-labor patterns, agentic UI, approvals, audit trails, and benchmarked environments.",
+          "source_ids": [
+            "arxiv-2606-24937-hitchhikers-guide-agentic-ai-2026"
+          ],
+          "concept_ids": [
+            "agent-to-agent-communication-protocol",
+            "multi-agent-architecture-topologies",
+            "agentic-ui-supervision-patterns",
+            "agentic-environments-and-benchmarks"
+          ],
+          "critical_concepts": [
+            "agent-to-agent-communication-protocol",
+            "multi-agent-architecture-topologies",
+            "agentic-ui-supervision-patterns"
+          ],
+          "prerequisite_links": [
+            {
+              "from": "agent-to-agent-communication-protocol",
+              "to": "multi-agent-architecture-topologies",
+              "why": "Agents need capability advertisement and task-lifecycle coordination before complex multi-agent topologies are reliable."
+            },
+            {
+              "from": "agentic-environments-and-benchmarks",
+              "to": "multi-agent-architecture-topologies",
+              "why": "Coordination patterns should be tested in environments that expose multi-step and multi-agent failures."
+            }
+          ],
+          "side_retention_duels": [
+            {
+              "id": "single-vs-multi-agent-boundary",
+              "prompt": "When does multi-agent design become useful?",
+              "left": "When decomposition, redundancy, debate, or parallelism matter",
+              "right": "Whenever one prompt can be made longer",
+              "answer": "The guide frames multi-agent systems around coordination needs such as decomposition, redundancy, debate, and parallelism."
+            }
+          ],
+          "quiz_questions": [
+            {
+              "question": "Which pair best matches the guide’s protocol boundary?",
+              "choices": [
+                "MCP for inter-agent task lifecycle; A2A for GPU kernels.",
+                "MCP for model/tool integration; A2A for agent-to-agent communication.",
+                "A2A for tokenizer merges; MCP for pretraining data dedupe.",
+                "Both protocols are only UI frameworks."
+              ],
+              "answer_index": 1,
+              "source_ids": [
+                "arxiv-2606-24937-hitchhikers-guide-agentic-ai-2026"
               ]
             }
           ]
@@ -854,6 +1024,54 @@
               ]
             }
           ]
+        },
+        {
+          "id": "agentic-rag-and-memory",
+          "label": "Agentic RAG and Memory",
+          "summary": "How retrieval becomes an agent subsystem: non-parametric knowledge, indexing/retrieval/reranking/compression, and memory stores that support multi-step agent behavior.",
+          "source_ids": [
+            "arxiv-2606-24937-hitchhikers-guide-agentic-ai-2026"
+          ],
+          "concept_ids": [
+            "agentic-rag",
+            "agentic-memory-systems",
+            "context-window-management-strategies"
+          ],
+          "critical_concepts": [
+            "agentic-rag",
+            "agentic-memory-systems"
+          ],
+          "prerequisite_links": [
+            {
+              "from": "agentic-rag",
+              "to": "agentic-memory-systems",
+              "why": "Agent memory often uses retrieval-backed external stores as non-parametric knowledge."
+            }
+          ],
+          "side_retention_duels": [
+            {
+              "id": "parametric-vs-nonparametric-agent-knowledge",
+              "prompt": "What does Agentic RAG add to an agent?",
+              "left": "External/non-parametric knowledge retrieved at runtime",
+              "right": "Only another copy of the model weights",
+              "answer": "RAG adds retrieval-time non-parametric knowledge that can feed the agent loop."
+            }
+          ],
+          "quiz_questions": [
+            {
+              "question": "Why does this source route Agentic RAG to Retrieval-Augmented Generation instead of generic serving?",
+              "choices": [
+                "It is about low-level GPU kernel scheduling only.",
+                "It centers retrieval, indexing, reranking/compression, and non-parametric knowledge inside agent loops.",
+                "It removes retrieval from agents entirely.",
+                "It is only a UI approval pattern."
+              ],
+              "answer_index": 1,
+              "source_ids": [
+                "arxiv-2606-24937-hitchhikers-guide-agentic-ai-2026"
+              ]
+            }
+          ]
         }
       ]
     }
@@ -1037,6 +1255,33 @@
         "rotated_answer_positions_for_14_of_18_authored_quizzes"
       ],
       "completed_at": "2026-06-28T14:31:01Z"
+    },
+    {
+      "run_id": "manual-telegram-hitchhikers-guide-agentic-ai-20260629T032238Z",
+      "source_ids": [
+        "arxiv-2606-24937-hitchhikers-guide-agentic-ai-2026"
+      ],
+      "routed_concepts": [
+        "agentic-ai-full-stack-reference",
+        "agentic-ai-layered-stack",
+        "agent-harness-orchestration",
+        "context-window-management-strategies",
+        "agentic-memory-systems",
+        "agentic-rag",
+        "model-context-protocol-tool-integration",
+        "agent-to-agent-communication-protocol",
+        "multi-agent-architecture-topologies",
+        "agentic-environments-and-benchmarks",
+        "agentic-ui-supervision-patterns"
+      ],
+      "worlds_enhanced": [
+        "agents",
+        "retrieval-augmented-generation"
+      ],
+      "new_worlds_created": [],
+      "router_learning": "Broad agentic-stack survey sources should enhance the Agents macro world as layered regions, while RAG/Agentic RAG concepts should cross-route to Retrieval-Augmented Generation when the mechanism is retrieval/indexing/memory rather than low-level serving.",
+      "manual_review": [],
+      "completed_at": "2026-06-29T03:22:38Z"
     }
   ]
 }

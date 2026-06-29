@@ -242,6 +242,7 @@ const applyTeachingParadigm = (w) => ({
   regions: (w.regions || []).map((r, i) => ({
     ...r,
     teachPhase: r.teachPhase || (i === 0 ? "mission + foundations" : "spaced transfer"),
+    concepts: (r.concepts || []).map((c) => ({ ...c, lore: narrativeLore(c.name, c.lore, w.title) })),
     referenceHint: r.referenceHint || `Reference terms: ${(r.concepts || []).map((c) => c.name).join(", ")}.`,
   })),
 });
@@ -1570,6 +1571,95 @@ const SWE_IO_EXAMPLES = {
   "Climbing Stairs": "n=2 → 2; n=3 → 3; n=5 → 8",
   "Coin Change": "coins=[1,2,5], amount=11 → 3; coins=[2], amount=3 → -1",
 };
+const SWE_SOLUTIONS = {
+  "Two Sum": `def two_sum(nums, target):
+    seen = {}
+    for i, x in enumerate(nums):
+        if target - x in seen:
+            return [seen[target - x], i]
+        seen[x] = i
+    return []
+`,
+  "Best Time to Buy and Sell Stock": `def best_time_to_buy_and_sell_stock(prices):
+    best = 0; low = float('inf')
+    for p in prices:
+        low = min(low, p); best = max(best, p - low)
+    return best
+`,
+  "Contains Duplicate": `def contains_duplicate(nums):
+    return len(set(nums)) != len(nums)
+`,
+  "Valid Parentheses": `def valid_parentheses(s):
+    stack = []
+    pairs = {')': '(', ']': '[', '}': '{'}
+    for ch in s:
+        if ch in pairs.values():
+            stack.append(ch)
+        elif ch in pairs:
+            if not stack or stack.pop() != pairs[ch]:
+                return False
+    return not stack
+`,
+  "Valid Anagram": `from collections import Counter
+def valid_anagram(s, t):
+    return Counter(s) == Counter(t)
+`,
+  "Maximum Subarray": `def maximum_subarray(nums):
+    best = cur = nums[0]
+    for x in nums[1:]:
+        cur = max(x, cur + x); best = max(best, cur)
+    return best
+`,
+  "Climbing Stairs": `def climbing_stairs(n):
+    a, b = 1, 1
+    for _ in range(n):
+        a, b = b, a + b
+    return a
+`,
+};
+const SWE_TESTS = {
+  "Two Sum": `
+assert two_sum([2,7,11,15], 9) == [0,1]
+assert two_sum([3,2,4], 6) == [1,2]
+assert two_sum([3,3], 6) == [0,1]
+print("ALL TESTS PASSED ✓")
+`,
+  "Best Time to Buy and Sell Stock": `
+assert best_time_to_buy_and_sell_stock([7,1,5,3,6,4]) == 5
+assert best_time_to_buy_and_sell_stock([7,6,4,3,1]) == 0
+print("ALL TESTS PASSED ✓")
+`,
+  "Contains Duplicate": `
+assert contains_duplicate([1,2,3,1]) is True
+assert contains_duplicate([1,2,3,4]) is False
+print("ALL TESTS PASSED ✓")
+`,
+  "Valid Parentheses": `
+assert valid_parentheses('()[]{}') is True
+assert valid_parentheses('(]') is False
+assert valid_parentheses('([)]') is False
+assert valid_parentheses('') is True
+print("ALL TESTS PASSED ✓")
+`,
+  "Valid Anagram": `
+assert valid_anagram('anagram','nagaram') is True
+assert valid_anagram('rat','car') is False
+print("ALL TESTS PASSED ✓")
+`,
+  "Maximum Subarray": `
+assert maximum_subarray([-2,1,-3,4,-1,2,1,-5,4]) == 6
+assert maximum_subarray([1]) == 1
+print("ALL TESTS PASSED ✓")
+`,
+  "Climbing Stairs": `
+assert climbing_stairs(2) == 2
+assert climbing_stairs(3) == 3
+assert climbing_stairs(5) == 8
+print("ALL TESTS PASSED ✓")
+`,
+};
+function sweReference(k) { return SWE_SOLUTIONS[cleanBlindTitle(k.title)] || null; }
+function sweTest(k) { return SWE_TESTS[cleanBlindTitle(k.title)] || null; }
 function sweCategory(k) {
   const text = `${k.title || ""} ${k.blurb || ""}`.toLowerCase();
   for (const cat of ["arrays", "strings", "linked lists", "trees", "graphs", "intervals/matrices", "dp", "binary"]) if (text.includes(cat)) return cat;
@@ -1583,6 +1673,17 @@ function sweCategory(k) {
   return "arrays";
 }
 function cleanBlindTitle(title) { return String(title || "Kata").replace(/\s*\(Blind 75 #\d+\)\s*/g, "").trim(); }
+function narrativeLore(name, lore, worldTitle = "this world") {
+  const text = String(lore || "").replace(/\s+/g, " ").trim();
+  if (!text) return text;
+  if (/^(In|At|When|Imagine|Picture|Inside)\b/.test(text) && text.length > 180) return text;
+  const softened = text
+    .replace(/\bSINGLE-TURN:/g, "single-turn episodes begin as")
+    .replace(/\bTOOL-USE:/g, "tool-use episodes become")
+    .replace(/\bMULTI-TURN SEQUENTIAL:/g, "multi-turn sequential work stretches into")
+    .replace(/;\s*/g, "; ");
+  return `In ${worldTitle}, ${name} is not a glossary flashcard; it is a scene you can replay. ${softened} Read it as a mechanism with stakes: what state changes, what signal gets easier or harder to assign, and what failure you would notice if the idea were missing.`;
+}
 function sweIo(k) {
   const base = cleanBlindTitle(k.title);
   return SWE_IO_EXAMPLES[base] || "Use the canonical Blind 75 examples: include a normal case, an edge case, and a minimal input; write the expected output before coding so the invariant has something concrete to satisfy.";
@@ -1591,19 +1692,19 @@ function sweStarter(k, guided = true) {
   const title = cleanBlindTitle(k.title);
   const fn = title.toLowerCase().replace(/[^a-z0-9]+/g, "_").replace(/^_|_$/g, "") || "solve";
   if (!guided) return `def ${fn}(*args):\n    pass\n`;
-  return `def ${fn}(*args):\n    # TODO 1: parse/name the inputs for ${title}; write down the return shape before coding.\n    # TODO 2: choose the core pattern (hash map, two pointers, stack, BFS/DFS, heap, binary search, or DP).\n    # TODO 3: maintain the invariant each loop/recursive call; update only the minimal state needed.\n    # TODO 4: handle edge cases from the test I/O card, then return the expected value.\n    pass\n`;
+  return `def ${fn}(*args):\n    # TODO 1: replace *args with the real parameters for ${title}; copy one test case below as a comment.\n    # TODO 2: choose the invariant: what compact fact must still be true after each step?\n    # TODO 3: update that state inside the loop/recursion; do not skip edge cases.\n    # TODO 4: return the value promised by the test I/O card, then run tests before marking complete.\n    pass\n`;
 }
 function enrichSWEKata(k) {
   if (!k || k.family !== "swe") return k;
   const cat = sweCategory(k), title = cleanBlindTitle(k.title), io = k.testIo || sweIo(k);
-  const lore = k.lore || `${title} should turn the problem statement into a precise input→output contract, then use the ${cat} pattern to preserve one invariant until the answer is forced. ${SWE_PATTERN_HINTS[cat] || SWE_PATTERN_HINTS.arrays} The point is not to memorize the final code; it is to recognize what state must stay true after every step.`;
-  const testLore = `Test I/O to satisfy: ${io}`;
+  const lore = k.lore || `Imagine ${title} as a tiny interview dungeon: the examples are lanterns, and the invariant is the rope that keeps you from wandering. First translate the prompt into an input→output contract; then use the ${cat} pattern to keep one fact true after every step. ${SWE_PATTERN_HINTS[cat] || SWE_PATTERN_HINTS.arrays} Retention comes from naming the state before coding, watching it change on a small example, and only then compressing the solution into code.`;
+  const testLore = `The test card is your oracle: ${io}. Before writing code, say what your function receives, what it returns, and which edge case would break a fake solution.`;
   const steps = (k.steps && k.steps.length ? k.steps : [
-    { prompt: `Define the input/output contract for ${title}.`, lore: testLore, hint: "Start by writing one concrete example and the exact return value before touching the algorithm.", code: "# TODO: write the function signature and expected return type" },
-    { prompt: `Choose the core ${cat} invariant.`, lore: SWE_PATTERN_HINTS[cat] || SWE_PATTERN_HINTS.arrays, hint: "Name the state that makes each new element/node/cell locally checkable.", code: "# TODO: name the state variables that will stay true after every step" },
-    { prompt: `Implement and verify ${title}.`, lore: `Run against: ${io}`, hint: "Handle the smallest input, the ordinary example, and the awkward edge case before optimizing.", code: "# TODO: fill the loop/recursion and return the checked result" },
+    { prompt: `Define the input/output contract for ${title}.`, lore: testLore, hint: "Write the signature with real parameter names. Then copy the smallest example and expected output as a comment.", code: "# TODO: replace *args with real parameters and state the return type" },
+    { prompt: `Choose the core ${cat} invariant.`, lore: `${SWE_PATTERN_HINTS[cat] || SWE_PATTERN_HINTS.arrays} Your invariant should be short enough to check after every iteration.`, hint: "Ask: after processing item i, what do I know that lets item i+1 be handled without rereading the past?", code: "# TODO: name and initialize the state variables that preserve the invariant" },
+    { prompt: `Implement and verify ${title}.`, lore: `Run against: ${io}. Treat failed tests as feedback about the invariant, not as punishment.`, hint: "Trace the normal example by hand for two iterations, then add the edge case that would fool a memorized answer.", code: "# TODO: update state, return the promised value, and run tests" },
   ]).map((s, i) => ({ ...s, lore: s.lore || (i === 0 ? testLore : (SWE_PATTERN_HINTS[cat] || SWE_PATTERN_HINTS.arrays)), hint: s.hint || s.why || "Use the test I/O card to decide what state must change on this line." }));
-  return { ...k, lore, testIo: io, steps, starter: k.starter && k.starter.includes("TODO") ? k.starter : sweStarter(k, true), unguidedStarter: k.unguidedStarter || sweStarter(k, false) };
+  return { ...k, lore, testIo: io, steps, solution: k.solution || sweReference(k) || `# Reference solution not authored yet for ${title}. Use AI review plus your tests to verify.`, test: k.test || sweTest(k), starter: k.starter && k.starter.includes("TODO") ? k.starter : sweStarter(k, true), unguidedStarter: k.unguidedStarter || sweStarter(k, false) };
 }
 function stripGuidance(code) {
   return String(code || "").split("\n").filter((line) => !/TODO|YOUR CODE|Sketch the canonical|write the invariant/i.test(line)).join("\n").replace(/\n{3,}/g, "\n\n").trimEnd() + "\n";
@@ -3044,7 +3145,7 @@ export default function App() {
   const [fw, setFw] = useState("pytorch"); const [kPhase, setKPhase] = useState("step");
   const [kFeedback, setKFeedback] = useState(null); const [kOrd, setKOrd] = useState(shuf4());
   const [myCode, setMyCode] = useState(""); const [review, setReview] = useState("");
-  const [labCode, setLabCode] = useState(""); const [labOut, setLabOut] = useState("");
+  const [labCode, setLabCode] = useState(""); const [labOut, setLabOut] = useState(""); const [kataValidated, setKataValidated] = useState({});
   const [paperQ, setPaperQ] = useState(""); const [papers, setPapers] = useState(null);
   const [gaunt, setGaunt] = useState(null);            // {pool, idx, lives, score, ord}
   const [deepLore, setDeepLore] = useState({});        // conceptId -> model-expanded lore
@@ -3238,9 +3339,18 @@ export default function App() {
     }
   };
   const refreshDesktopModelStatus = async () => {
-    if (!window.edokaiAuth || !window.edokaiAuth.desktopModelStatus) return;
+    if (!window.edokaiAuth || !window.edokaiAuth.desktopModelStatus) { setDesktopModelStatus({ error: "Desktop auth bridge unavailable in this browser session. Open the Electron desktop app to connect Codex/Claude Code subscriptions." }); return; }
     try { setDesktopModelStatus(await window.edokaiAuth.desktopModelStatus()); }
     catch (e) { setDesktopModelStatus({ error: e.message || String(e) }); }
+  };
+  const startDesktopLogin = async (provider) => {
+    setModelTest({ ok: null, msg: `Opening ${provider} subscription login…` });
+    try {
+      if (!window.edokaiAuth || !window.edokaiAuth.startDesktopModelLogin) throw new Error("Desktop auth bridge unavailable in this browser session. Launch Edokai as the Electron desktop app, not a plain Vite browser tab, to connect subscriptions.");
+      const res = await window.edokaiAuth.startDesktopModelLogin(provider);
+      setModelTest({ ok: true, msg: res.message || `Started ${provider} login. Finish in the Terminal window, then refresh status.` });
+      setTimeout(refreshDesktopModelStatus, 1000);
+    } catch (e) { setModelTest({ ok: false, msg: e.message || String(e) }); }
   };
   const testDefaultModel = async () => {
     setModelTest({ ok: null, msg: "Testing default desktop provider…" });
@@ -3279,6 +3389,7 @@ export default function App() {
     if (!battle || battle.phase !== "question") return;
     const q = bQuestions[battle.qIdx % bQuestions.length];
     const idx = battle.ord[dispIdx];
+    const selectedText = q.options[idx];
     const correct = idx === q.a;
     const s = { ...save };
     recStat(s, battleSrc, correct);
@@ -3293,7 +3404,7 @@ export default function App() {
         else { s.xp += 150; if (!s.badges.includes(region.gym.badge)) s.badges = [...s.badges, region.gym.badge]; }
       }
       persist(s);
-      setBattle({ ...battle, enemyHp: newHp, streak: battle.streak + 1, phase: won ? "victory" : "feedback", wrong: false, log: `${crit ? "CRITICAL HIT! " : ""}Strike for ${dmg}! ${q.why}` });
+      setBattle({ ...battle, enemyHp: newHp, streak: battle.streak + 1, phase: won ? "victory" : "feedback", wrong: false, selectedText, log: `${crit ? "CRITICAL HIT! " : ""}You chose: “${selectedText}”. Strike for ${dmg}! ${q.why}` });
     } else {
       const dmg = battle.kind === "gym" ? 22 : 16;
       const newHp = Math.max(0, s.hp - dmg);
@@ -3301,7 +3412,7 @@ export default function App() {
       s.hp = fainted ? maxHp : newHp;
       s.pet = { mood: fainted ? "faint" : "harm", msg: fainted ? "wake up healed" : `-${dmg} HP` };
       persist(s);
-      setBattle({ ...battle, streak: 0, phase: fainted ? "defeat" : "feedback", wrong: true, log: fainted ? `You blacked out! ${q.why} — You wake at the region entrance, healed and wiser.` : `Counterattack for ${dmg}! ${q.why}` });
+      setBattle({ ...battle, streak: 0, phase: fainted ? "defeat" : "feedback", wrong: true, selectedText, log: fainted ? `You chose: “${selectedText}”. You blacked out! ${q.why} — You wake at the region entrance, healed and wiser.` : `You chose: “${selectedText}”. Counterattack for ${dmg}! ${q.why}` });
     }
   };
   const continueBattle = () => {
@@ -3608,8 +3719,16 @@ ${QUALITY_RULES}`, cfg));
     } else showToast("Kata complete! +60 XP");
     return s;
   };
+  const codeLooksFilled = (code) => {
+    const body = String(code || "").replace(/#.*$/gm, "").trim();
+    return body.length > 20 && !/\bpass\b|TODO|YOUR CODE|____/i.test(body);
+  };
   const markKataComplete = () => {
     if (!kata || kProgress(kata.id) >= (kata.steps.length || 1)) return;
+    const ek = enrichSWEKata(kata);
+    const hasRunnableTest = !!(LABS[kata.id]?.test || ek.test);
+    if (!codeLooksFilled(labCode)) { showToast("Fill the code first — TODO/pass placeholders cannot be marked complete."); return; }
+    if (hasRunnableTest && !kataValidated[kata.id]) { showToast("Run tests and pass them before marking this kata complete."); return; }
     persist(applyKataCompletion(save, kata));
   };
   const answerKata = (dispIdx) => {
@@ -3637,22 +3756,26 @@ ${QUALITY_RULES}`, cfg));
     if (!labCode.trim() || !kata) return;
     recordKataAttempt("review");
     setBusy("review"); setReview("");
-    try { setReview(await reviewCode(kata.title, fw, labCode, cfg)); } catch (e) { setReview("Review failed — check model settings (custom endpoints need CORS enabled)."); }
+    try { setReview(await reviewCode(kata.title, fw, labCode, cfg)); } catch (e) { setReview(`Review failed — ${e.message || "check Settings → Default desktop model auth. In browser dev, desktop Codex/Claude subscriptions are unavailable; launch the Electron app and connect them there."}`); }
     setBusy("");
   };
   const runLab = async (withTests) => {
-    if (!kata || !LABS[kata.id]) return;
+    if (!kata) return;
+    const ek = enrichSWEKata(kata);
+    const test = LABS[kata.id]?.test || ek.test || "";
+    const needs = LABS[kata.id]?.needs || null;
+    if (withTests && !test) { showToast("No runnable tests authored yet — use AI review, then add tests before completion."); return; }
     recordKataAttempt(withTests ? "tests" : "run");
     setBusy("lab"); setLabOut("⏳ starting Python… (first run downloads the runtime, ~10-20s)");
     try {
-      const out = await runPython(withTests ? labCode + "\n" + LABS[kata.id].test : labCode, LABS[kata.id].needs, (s) => setLabOut(s));
+      const out = await runPython(withTests ? labCode + "\n" + test : labCode, needs, (s) => setLabOut(s));
       setLabOut(out);
-      if (withTests && out.includes("ALL TESTS PASSED") && kProgress(kata.id) < kata.steps.length) {
-        const s = applyKataCompletion(save, kata);
-        persist(s);
+      if (withTests && out.includes("ALL TESTS PASSED")) {
+        setKataValidated((v) => ({ ...v, [kata.id]: true }));
+        showToast("Tests passed — completion unlocked.");
       }
     }
-    catch (e) { setLabOut("⚠️ " + (e.message || e)); }
+    catch (e) { setLabOut("⚠️ " + (e.message || e)); setKataValidated((v) => ({ ...v, [kata.id]: false })); }
     setBusy("");
   };
   const doPapers = async () => {
@@ -4413,10 +4536,13 @@ ${QUALITY_RULES}`, cfg));
           <div style={{ display: "flex", gap: 6, flexWrap: "wrap" }}>
             <button onClick={() => persistCfg({ ...cfg, preferredAuth: "codex" })} style={S.chip((cfg.preferredAuth || "codex") === "codex")}>Codex GPT-5.5</button>
             <button onClick={() => persistCfg({ ...cfg, preferredAuth: "claude" })} style={S.chip(cfg.preferredAuth === "claude")}>Claude Opus auth</button>
+            <button onClick={() => startDesktopLogin("codex")} style={S.chip(false)}>Connect Codex subscription</button>
+            <button onClick={() => startDesktopLogin("claude")} style={S.chip(false)}>Connect Claude Code subscription</button>
             <button onClick={testDefaultModel} style={S.chip(false)}>Test default provider</button>
             <button onClick={refreshDesktopModelStatus} style={S.chip(false)}>Refresh status</button>
           </div>
           {desktopModelStatus && <div style={{ marginTop: 8, display: "grid", gap: 4 }}>
+            {desktopModelStatus.error && <span style={S.mono(9.5, T.penalty)}>{desktopModelStatus.error}</span>}
             <span style={S.mono(9.5, desktopModelStatus.codex?.ok ? T.reward : T.penalty)}>Codex: {desktopModelStatus.codex?.ok ? "ready" : (desktopModelStatus.codex?.error || "not ready")}</span>
             <span style={S.mono(9.5, desktopModelStatus.claude?.ok ? T.reward : T.penalty)}>Claude: {desktopModelStatus.claude?.ok ? "ready" : (desktopModelStatus.claude?.error || "not ready")}</span>
           </div>}
@@ -4581,7 +4707,7 @@ ${QUALITY_RULES}`, cfg));
           <div style={S.card}>
             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: 8 }}>
               <span style={S.mono(10, T.action)}>⌨️ WORKSPACE — {todoGuidance ? "fill the TODOs" : "less-guided blank slate"}</span>
-              <span style={S.mono(9)}>{lab ? "runs in-browser (Pyodide)" : "PyTorch — run locally, review here"}</span>
+              <span style={S.mono(9)}>{(lab || kata.family === "swe") ? "runs in-browser (Pyodide)" : "PyTorch — run locally, review here"}</span>
             </div>
             {kata.family === "swe" && <div style={{ display: "flex", gap: 8, marginTop: 8, alignItems: "center", flexWrap: "wrap" }}>
               <button onClick={() => { const next = !todoGuidance; setTodoGuidance(next); const ek = enrichSWEKata(kata); setLabCode(next ? (LABS[kata.id]?.starter || ek.starter || labCode) : (ek.unguidedStarter || stripGuidance(labCode))); }} style={S.chip(todoGuidance)}>{todoGuidance ? "🧭 TODO guidance on" : "🧭 TODO guidance off"}</button>
@@ -4590,8 +4716,8 @@ ${QUALITY_RULES}`, cfg));
             <CodeEditor value={labCode} onChange={setLabCode} onRun={lab ? () => runLab(false) : null} rows={16} />
             <span style={S.mono(8.5)}>syntax-highlighted Python · TAB completes/indents · SHIFT+TAB dedents · ENTER auto-indents · {navigator.platform && navigator.platform.includes("Mac") ? "⌘" : "CTRL"}+ENTER runs</span>
             <div style={{ display: "flex", gap: 8, marginTop: 8, flexWrap: "wrap" }}>
-              {lab && <button onClick={() => runLab(false)} disabled={busy === "lab"} style={{ ...S.btn(T.ink), flex: 1, minWidth: 90 }}>{busy === "lab" ? "Running…" : "▶ Run"}</button>}
-              {lab && <button onClick={() => runLab(true)} disabled={busy === "lab"} style={{ ...S.btn(T.reward), flex: 1, minWidth: 110 }}>{busy === "lab" ? "Running…" : "✓ Run tests"}</button>}
+              {(lab || kata.family === "swe") && <button onClick={() => runLab(false)} disabled={busy === "lab"} style={{ ...S.btn(T.ink), flex: 1, minWidth: 90 }}>{busy === "lab" ? "Running…" : "▶ Run"}</button>}
+              {(LABS[kata.id]?.test || enrichSWEKata(kata).test) && <button onClick={() => runLab(true)} disabled={busy === "lab"} style={{ ...S.btn(kataValidated[kata.id] ? T.reward : T.card, kataValidated[kata.id] ? "#fff" : T.reward), border: `1px solid ${T.reward}`, flex: 1, minWidth: 110 }}>{busy === "lab" ? "Running…" : kataValidated[kata.id] ? "✓ Tests passed" : "✓ Run tests"}</button>}
               <button onClick={doReview} disabled={busy === "review"} style={{ ...S.btn(T.explore), flex: 1, minWidth: 120 }}>{busy === "review" ? "Reviewing…" : "🔍 AI review"}</button>
             </div>
             {labOut && <pre style={{ ...S.pre, marginTop: 8, maxHeight: 220, overflowY: "auto", background: "#0B0F1E" }}>{labOut}</pre>}
@@ -4632,7 +4758,7 @@ ${QUALITY_RULES}`, cfg));
           <div style={{ display: "flex", gap: 8, marginTop: 10, flexWrap: "wrap" }}>
             {todoSteps.length > 0 && <button onClick={() => setKPhase(showHints ? "work" : "hints")} style={{ ...S.btn(showHints ? T.ink : T.card, showHints ? "#fff" : T.inkSoft), border: `1px solid ${T.line}`, flex: 1 }}>🧭 TODO lore & hints ({Object.keys(save.kataHints || {}).filter((h) => h.startsWith(kata.id + ":")).length}/{todoSteps.length})</button>}
             <button onClick={() => setKPhase(showSol ? "work" : "sol")} style={{ ...S.btn(showSol ? T.ink : T.card, showSol ? "#fff" : T.inkSoft), border: `1px solid ${T.line}`, flex: 1 }}>{showSol ? "Hide solution" : "📖 Reveal final solution"}</button>
-            {!done && <button onClick={markKataComplete} style={{ ...S.btn(T.gold), flex: 1 }}>🏁 Mark complete (+60 XP)</button>}
+            {!done && <button onClick={markKataComplete} style={{ ...S.btn(kataValidated[kata.id] ? T.gold : T.card, kataValidated[kata.id] ? "#1B2440" : T.inkSoft), border: `1px solid ${kataValidated[kata.id] ? T.gold : T.line}`, flex: 1 }}>🏁 Mark complete {kataValidated[kata.id] ? "(+60 XP)" : "(locked)"}</button>}
           </div>
 
           {showHints && todoSteps.length > 0 && (
@@ -4664,7 +4790,7 @@ ${QUALITY_RULES}`, cfg));
           {showSol && (
             <div style={{ ...S.card, marginTop: 10 }}>
               <span style={S.mono(10, T.gold)}>FINAL REFERENCE SOLUTION — reveal after you have wrestled with the TODOs</span>
-              <pre style={{ ...S.pre, marginTop: 10 }}>{(kata.solutions && (kata.solutions[fw] || kata.solutions[Object.keys(kata.solutions)[0]])) || kata.solution || "// reference not available"}</pre>
+              <pre style={{ ...S.pre, marginTop: 10 }}>{(kata.solutions && (kata.solutions[fw] || kata.solutions[Object.keys(kata.solutions)[0]])) || enrichSWEKata(kata).solution || kata.solution || "// reference not available"}</pre>
             </div>
           )}
         </div>
@@ -4881,8 +5007,12 @@ ${QUALITY_RULES}`, cfg));
           <div style={{ display: "flex", flexWrap: "wrap", gap: 6, marginTop: 10, alignItems: "center" }}>
             <button onClick={() => startGauntlet()} style={{ ...S.btn(T.gold), padding: "6px 12px", fontSize: 12 }}>⚔️ Trial Gauntlet</button>
             <button onClick={() => setScreen("coach")} style={{ ...S.btn(T.explore), padding: "6px 12px", fontSize: 12 }}>🧪 Coach</button>
-            {(world.links || []).map((l) => <a key={l.url} href={l.url} target="_blank" rel="noreferrer" style={{ ...S.chip(false), textDecoration: "none", fontSize: 11.5, padding: "5px 10px" }}>🔗 {l.label}</a>)}
           </div>
+          {(world.links || []).length > 0 && <Collapsible id={`sources-${world.id}-${region.id}`} title="SOURCES / STUDY HALL" color={T.explore} style={{ marginTop: 10, padding: 12 }}>
+            <div style={{ display: "flex", flexWrap: "wrap", gap: 6 }}>
+              {(world.links || []).map((l) => <a key={l.url} href={l.url} target="_blank" rel="noreferrer" style={{ ...S.chip(false), textDecoration: "none", fontSize: 11.5, padding: "5px 10px" }}>🔗 {l.label}</a>)}
+            </div>
+          </Collapsible>}
 
           <div style={{ marginTop: 12 }}>
             {region.concepts.map((c) => (
