@@ -223,6 +223,40 @@ function regionRelevanceRank(region) {
 }
 
 const optionWords = (o) => String(o || "").trim().split(/\s+/).filter(Boolean).length;
+const optionWordList = (o) => String(o || "").trim().split(/\s+/).filter(Boolean);
+const cleanRepeatedWords = (text) => String(text || "").replace(/\b([A-Za-z][A-Za-z0-9'-]*)\b(?:\s+\1\b)+/gi, "$1").replace(/\s+/g, " ").trim();
+function compactOptionText(text) {
+  let out = String(text || "")
+    .replace(/\s+/g, " ")
+    .replace(/[.…]+$/g, "")
+    .replace(/\s*[-–—:]\s+.*$/g, "")
+    .replace(/\s*\([^)]{18,}\)\s*/g, " ")
+    .replace(/\b(?:primarily|mainly|exactly|actually|simply|just|always|never)\b/gi, "")
+    .trim();
+  if (!out) out = "nearby but wrong mechanism";
+  out = out[0].toUpperCase() + out.slice(1);
+  const ws = optionWordList(out);
+  if (ws.length > 8) out = ws.slice(0, 8).join(" ");
+  return cleanRepeatedWords(out).replace(/[.;:]+$/g, "");
+}
+function balanceOptions(options, seed = "question") {
+  const pads = ["for this case", "in this setting", "under the same signal", "for the learner"];
+  const base = (options || []).slice(0, 4).map(compactOptionText);
+  while (base.length < 4) base.push(compactOptionText(`nearby distractor ${base.length}`));
+  const lens = base.map(optionWords);
+  const target = Math.max(5, Math.min(8, Math.round(lens.reduce((a, b) => a + b, 0) / lens.length)));
+  return base.map((o, i) => {
+    let words = optionWordList(o);
+    if (words.length > target + 1) words = words.slice(0, target + 1);
+    let out = words.join(" ");
+    let guard = 0;
+    while (optionWords(out) < target - 1 && guard < 2) {
+      out = `${out} ${pads[(i + guard + String(seed).length) % pads.length]}`;
+      guard += 1;
+    }
+    return cleanRepeatedWords(out);
+  });
+}
 
 function normalizeOptions(options, answerIndex, seed = "question") {
   const raw = Array.isArray(options) ? options.map((o) => String(o || "").replace(/\s+/g, " ").trim()).filter(Boolean) : [];
@@ -231,16 +265,14 @@ function normalizeOptions(options, answerIndex, seed = "question") {
   const fallbacks = [
     "neighboring mechanism in the region",
     "unrelated implementation detail",
-    "evaluation-only surface signal",
-    "low-level runtime constraint",
+    "evaluation only surface signal",
+    "low level runtime constraint",
   ];
   const unique = [correct, ...raw.filter((_, i) => i !== a), ...fallbacks]
     .map((o) => o.replace(/[.…]+$/g, ""))
     .filter((o, i, arr) => o && arr.indexOf(o) === i)
     .slice(0, 4);
-  while (unique.length < 4) unique.push(`nearby distractor ${unique.length}`);
-  const target = Math.max(...unique.map(optionWords), 4);
-  const balanced = unique.map((o) => `${o}${optionWords(o) < target - 2 ? " in this lesson" : ""}`);
+  const balanced = balanceOptions(unique, seed);
   const idx = hashCode(seed) % 4;
   [balanced[0], balanced[idx]] = [balanced[idx], balanced[0]];
   return { options: balanced, a: idx };
@@ -264,7 +296,7 @@ function quizToQuestion(quiz) {
   if (!quiz || !Array.isArray(quiz.choices) || !quiz.choices.length) return null;
   const normalized = normalizeOptions(quiz.choices, Number.isInteger(quiz.answer_index) ? quiz.answer_index : 0, quiz.question || quiz.choices.join("|"));
   return {
-    q: quiz.question || "Recall the source-grounded fact:",
+    q: cleanRepeatedWords(quiz.question || "Which source-grounded fact matters most here?"),
     options: normalized.options,
     a: normalized.a,
     why: quiz.explanation || quiz.why || "Source-grounded from the ingested DKG entry.",
@@ -281,7 +313,7 @@ function nodeRecallQuestion(node, siblingSummaries) {
     .filter((s, i, arr) => s !== correct && arr.indexOf(s) === i);
   const normalized = normalizeOptions([correct, ...distractors], 0, node.id || label);
   return {
-    q: `Which source-backed mechanism advances mastery of "${label}"?`,
+    q: cleanRepeatedWords(`Which source-backed mechanism advances mastery of "${label}"?`),
     options: normalized.options,
     a: normalized.a,
     why: compactSentence(node.summary || node.description || `Source-grounded summary for ${label}.`, `Source-grounded summary for ${label}`),

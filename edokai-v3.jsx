@@ -37,7 +37,7 @@ const T = { ...THEMES.light };
    MUSIC ENGINE — bundled low-volume lo-fi background track
    ============================================================ */
 class MusicEngine {
-  constructor() { this.ctx = null; this.playing = false; this.timer = null; this.step = 0; this.defaultUrl = "/audio/dbz_songs.mp3"; this.customUrl = null; this.audioEl = null; this.volume = 0.05; }
+  constructor() { this.ctx = null; this.playing = false; this.timer = null; this.step = 0; this.defaultUrl = null; this.customUrl = null; this.audioEl = null; this.volume = 0.05; }
   setCustom(url) { this.customUrl = url; if (this.playing) { this.stop(); this.start(); } }
   start() {
     const track = this.customUrl || this.defaultUrl;
@@ -203,8 +203,45 @@ function sentenceCaseOption(text) {
   if (/^[a-z]/.test(out)) out = out[0].toUpperCase() + out.slice(1);
   return out;
 }
+function wordsOf(text) { return String(text || "").trim().split(/\s+/).filter(Boolean); }
+function cleanRepeatedWords(text) {
+  let out = String(text || "").replace(/\s+/g, " ").trim();
+  for (let i = 0; i < 3; i += 1) out = out.replace(/\b([A-Za-z][A-Za-z0-9'-]*)\b(?:\s+\1\b)+/gi, "$1");
+  out = out.replace(/\b(the|a|an|this|that)\s+\1\b/gi, "$1");
+  out = out.replace(/\boption option\b/gi, "option");
+  return out;
+}
+function compactOption(text) {
+  let out = sentenceCaseOption(text)
+    .replace(/\s*[-–—:]\s+.*$/g, "")
+    .replace(/\s*\([^)]{18,}\)\s*/g, " ")
+    .replace(/\b(?:primarily|mainly|exactly|actually|simply|just|always|never)\b/gi, "")
+    .replace(/\s+/g, " ")
+    .trim();
+  const ws = wordsOf(out);
+  if (ws.length > 8) out = ws.slice(0, 8).join(" ");
+  return cleanRepeatedWords(out).replace(/[.;:]+$/g, "") || "Nearby but wrong mechanism";
+}
+function balanceOptionLengths(options, seed = "edokai") {
+  const base = (options || []).slice(0, 4).map(compactOption);
+  while (base.length < 4) base.push(compactOption(`Nearby wrong mechanism ${base.length + 1}`));
+  const neutralPads = ["for this case", "in this setting", "under the same signal", "for the learner"];
+  const lens = base.map((o) => wordsOf(o).length);
+  const target = Math.max(5, Math.min(8, Math.round(lens.reduce((a, b) => a + b, 0) / lens.length)));
+  return base.map((o, i) => {
+    let ws = wordsOf(o);
+    if (ws.length > target + 1) ws = ws.slice(0, target + 1);
+    let out = ws.join(" ");
+    let guard = 0;
+    while (wordsOf(out).length < target - 1 && guard < 2) {
+      out = `${out} ${neutralPads[(i + guard + String(seed).length) % neutralPads.length]}`;
+      guard += 1;
+    }
+    return cleanRepeatedWords(out).replace(/\s+/g, " ").trim();
+  });
+}
 function polishQuestionStem(stem, context = "this concept") {
-  let q = String(stem || "Choose the best answer.").replace(/\s+/g, " ").trim();
+  let q = cleanRepeatedWords(String(stem || "Choose the best answer.").replace(/\s+/g, " ").trim());
   q = q.replace(/^SCENARIO:\s*/i, "Scenario: ");
   q = q.replace(/[.…]+$/g, "").trim();
   q = q.replace(/\s+:$/g, "");
@@ -220,33 +257,32 @@ function polishQuestionStem(stem, context = "this concept") {
   q = q.replace(/^Multi-turn sequential environments are distinguished by$/i, "What distinguishes multi-turn sequential environments from simpler agent environments?");
   if (/^Scenario:/.test(q)) {
     if (!/[?]$/.test(q)) q += " What is the best next conclusion or action?";
-    return q;
+    return cleanRepeatedWords(q);
   }
-  if (/^(What|Why|Which|How|When|Where|Who|In what|For which)\b/i.test(q)) return /[?]$/.test(q) ? q : `${q}?`;
+  if (/^(What|Why|Which|How|When|Where|Who|In what|For which)\b/i.test(q)) return cleanRepeatedWords(/[?]$/.test(q) ? q : `${q}?`);
   const lower = q.toLowerCase();
-  if (/^order\b/i.test(q)) return `Which sequence correctly orders this process: ${q.replace(/^order\s+/i, "")}?`;
-  if (/^rank\b/i.test(q)) return `Which option gives the correct ranking for this prompt: ${q.replace(/^rank\s+/i, "")}?`;
-  if (/^not\b/i.test(q)) return `Which option is not part of the mechanism described here: ${q}?`;
+  if (/^order\b/i.test(q)) return cleanRepeatedWords(`Which sequence correctly orders this process: ${q.replace(/^order\s+/i, "")}?`);
+  if (/^rank\b/i.test(q)) return cleanRepeatedWords(`Which option gives the correct ranking for this prompt: ${q.replace(/^rank\s+/i, "")}?`);
+  if (/^not\b/i.test(q)) return cleanRepeatedWords(`Which option is not part of the mechanism described here: ${q}?`);
   const inContext = q.match(/^(In .+?, )(.+)$/i);
-  if (/\bteaches$/i.test(q)) return inContext ? `${inContext[1]}what does ${inContext[2].replace(/\s*teaches$/i, "")} teach?` : `What does ${q.replace(/\s*teaches$/i, "")} teach?`;
-  if (/\bhelps\b.*\bby$/i.test(q) || /\bprimarily help by$/i.test(q)) return `How does ${q.replace(/\s*by$/i, "")} help?`;
-  if (/\bshould preserve evidence by$/i.test(q)) return `How should ${q.replace(/\s*by$/i, "")} preserve evidence?`;
-  if (/\bstruggles\b.*\bbecause$/i.test(q) || /\bfails because$/i.test(q) || /\bdiffers\b.*\bbecause$/i.test(q)) return `Why does this happen: ${q.replace(/\s*because$/i, "")}?`;
-  if (/\bworks because$/i.test(q)) return `Why does this pipeline work: ${q.replace(/\s*because$/i, "")}?`;
-  if (/\bsolves$/i.test(q)) return `What problem does ${q.replace(/\s*solves$/i, "")} solve?`;
-  if (/\bmatters downstream because$/i.test(q)) return `Why does ${q.replace(/\s*because$/i, "")} matter downstream?`;
-  if (/\bmeasures$/i.test(q)) return `What does ${q.replace(/\s*measures$/i, "")} measure?`;
-  if (/\bguarantees that$/i.test(q)) return `What does this guarantee in ${context}?`;
-  if (/\bshould become$/i.test(q)) return `What should ${q.replace(/\s*should become$/i, "")} become?`;
-  if (/\b(is|are|becomes|become|means|represents|requires|skips|enables|exists to|depends on)$/i.test(q)) return `Which option correctly completes this idea: ${q}?`;
-  if (lower.includes(" ___ ")) return `Which option correctly fills in the blank for this prompt: ${q}?`;
-  if (!/[?]$/.test(q)) return `Which option best answers this complete prompt: ${q}?`;
+  if (/\bteaches$/i.test(q)) return cleanRepeatedWords(inContext ? `${inContext[1]}what does ${inContext[2].replace(/\s*teaches$/i, "")} teach?` : `What does ${q.replace(/\s*teaches$/i, "")} teach?`);
+  if (/\bhelps\b.*\bby$/i.test(q) || /\bprimarily help by$/i.test(q)) return cleanRepeatedWords(`How does ${q.replace(/\s*by$/i, "")} help?`);
+  if (/\bshould preserve evidence by$/i.test(q)) return cleanRepeatedWords(`How should ${q.replace(/\s*by$/i, "")} preserve evidence?`);
+  if (/\bstruggles\b.*\bbecause$/i.test(q) || /\bfails because$/i.test(q) || /\bdiffers\b.*\bbecause$/i.test(q)) return cleanRepeatedWords(`Why does this happen: ${q.replace(/\s*because$/i, "")}?`);
+  if (/\bworks because$/i.test(q)) return cleanRepeatedWords(`Why does this pipeline work: ${q.replace(/\s*because$/i, "")}?`);
+  if (/\bsolves$/i.test(q)) return cleanRepeatedWords(`What problem does ${q.replace(/\s*solves$/i, "")} solve?`);
+  if (/\bmatters downstream because$/i.test(q)) return cleanRepeatedWords(`Why does ${q.replace(/\s*because$/i, "")} matter downstream?`);
+  if (/\bmeasures$/i.test(q)) return cleanRepeatedWords(`What does ${q.replace(/\s*measures$/i, "")} measure?`);
+  if (/\bguarantees that$/i.test(q)) return cleanRepeatedWords(`What does this guarantee in ${context}?`);
+  if (/\bshould become$/i.test(q)) return cleanRepeatedWords(`What should ${q.replace(/\s*should become$/i, "")} become?`);
+  if (/\b(is|are|becomes|become|means|represents|requires|skips|enables|exists to|depends on)$/i.test(q)) return cleanRepeatedWords(`Which option correctly completes this idea: ${q}?`);
+  if (lower.includes(" ___ ")) return cleanRepeatedWords(`Which option correctly fills in the blank for this prompt: ${q}?`);
+  if (!/[?]$/.test(q)) return cleanRepeatedWords(`Which option best answers this prompt: ${q}?`);
   return q;
 }
 function polishQuestion(q, context = "this concept") {
   if (!q) return q;
-  const options = Array.isArray(q.options) ? q.options.map(sentenceCaseOption).slice(0, 4) : [];
-  while (options.length < 4) options.push(sentenceCaseOption(`Nearby distractor ${options.length + 1}`));
+  const options = balanceOptionLengths(Array.isArray(q.options) ? q.options : [], `${context}-${q.q || "question"}`);
   const a = Number.isInteger(q.a) && q.a >= 0 && q.a < 4 ? q.a : 0;
   let why = String(q.why || "This answer follows the mechanism taught in this concept.").replace(/\s+/g, " ").trim();
   if (!/[.!?]$/.test(why)) why += ".";
@@ -264,9 +300,7 @@ function balanceQuestion(q, seed = "edokai") {
   const fallbacks = ["neighbor mechanism in this region", "nearby but wrong design path", "surface-only evaluation signal", "unrelated runtime detail here"];
   const unique = [correct, ...raw.filter((_, i) => i !== a0), ...fallbacks].filter((o, i, arr) => o && arr.indexOf(o) === i).slice(0, 4);
   while (unique.length < 4) unique.push(`nearby distractor ${unique.length}`);
-  const lens = unique.map((o) => o.split(/\s+/).filter(Boolean).length);
-  const target = Math.max(4, ...lens);
-  const options = unique.map((o) => `${o}${o.split(/\s+/).length < target - 2 ? " in this lesson" : ""}`);
+  const options = balanceOptionLengths(unique, seed);
   const idx = Math.abs(Array.from(seed).reduce((h, ch) => ((h * 31 + ch.charCodeAt(0)) | 0), 0)) % 4;
   [options[0], options[idx]] = [options[idx], options[0]];
   return polishQuestion({ ...q, q: String(q.q || "Choose the best source-grounded answer."), options, a: idx, why: String(q.why || "This advances the source-backed learning path.") }, seed);
@@ -4023,6 +4057,16 @@ ${QUALITY_RULES}`, cfg));
     qbtn: { display: "block", width: "100%", textAlign: "left", marginBottom: 8, background: T.card, border: `1.5px solid ${T.line}`, color: T.ink, borderRadius: 10, padding: "11px 13px", fontSize: 13.5, fontWeight: 600, cursor: "pointer", fontFamily: "inherit", lineHeight: 1.45 },
   };
 
+  const NarutoPet = ({ pet = {} }) => {
+    const mood = pet.mood || "idle";
+    const msg = pet.msg || "Believe it — keep training.";
+    const frame = mood === "harm" ? 2 : mood === "heal" || mood === "senzu" ? 3 : mood === "quest" ? 4 : mood === "done" ? 5 : 0;
+    return <div title={`Naruto pet · ${msg}`} style={{ width: 54, minWidth: 54, textAlign: "center", border: `1px solid ${T.line}`, borderRadius: 14, padding: "3px 4px", background: mood === "harm" ? T.penaltySoft : mood === "heal" || mood === "senzu" ? T.rewardSoft : T.card }}>
+      <div style={{ width: 40, height: 43, margin: "0 auto", backgroundImage: "url('/pets/naruto-spritesheet.webp')", backgroundSize: "320px 387px", backgroundPosition: `-${(frame % 8) * 40}px -${Math.floor(frame / 8) * 43}px`, imageRendering: "auto", animation: mood === "harm" ? "shake .25s ease" : "bob 1.6s ease-in-out infinite" }} />
+      <div style={S.mono(7, T.inkSoft)}>{mood}</div>
+    </div>;
+  };
+
   if (!save) return <div style={{ ...S.app, display: "flex", alignItems: "center", justifyContent: "center" }}><span style={S.mono()}>loading save file…</span></div>;
 
   const HUD = ({ back }) => (
@@ -4038,10 +4082,7 @@ ${QUALITY_RULES}`, cfg));
             <div style={{ height: "100%", width: `${(save.hp / maxHp) * 100}%`, background: save.hp / maxHp > 0.4 ? T.reward : T.penalty, transition: "width .4s" }} />
           </div>
         </div>
-        <div title={save.pet?.msg || "Edokai pet"} style={{ width: 42, minWidth: 42, textAlign: "center", border: `1px solid ${T.line}`, borderRadius: 12, padding: "3px 4px", background: save.pet?.mood === "harm" ? T.penaltySoft : save.pet?.mood === "heal" || save.pet?.mood === "senzu" ? T.rewardSoft : T.card }}>
-          <div style={{ fontSize: 20, animation: save.pet?.mood === "harm" ? "shake .25s ease" : "bob 1.6s ease-in-out infinite" }}>{save.pet?.mood === "harm" ? "😿" : save.pet?.mood === "senzu" ? "🐉" : save.pet?.mood === "heal" ? "😸" : "🐾"}</div>
-          <div style={S.mono(7, T.inkSoft)}>{save.pet?.mood || "idle"}</div>
-        </div>
+        <NarutoPet pet={save.pet} />
         <button onClick={toggleMusic} title="Low-volume background music" style={{ background: "none", border: `1px solid ${T.line}`, color: T.ink, borderRadius: 8, width: 30, height: 30, cursor: "pointer", fontSize: 14 }}>{musicOn ? "🎵" : "🔇"}</button>
         <button onClick={toggleTheme} title={darkMode ? "Switch to light mode" : "Switch to dark mode"} style={{ background: "none", border: `1px solid ${T.line}`, color: T.ink, borderRadius: 8, width: 30, height: 30, cursor: "pointer", fontSize: 14 }}>{darkMode ? "☀️" : "🌙"}</button>
         <button onClick={() => { setDexWorld(activeWorld); setScreen("dex"); }} style={{ ...S.btn(T.explore), padding: "7px 10px", fontSize: 12 }}>📖</button>
@@ -4752,7 +4793,7 @@ ${QUALITY_RULES}`, cfg));
         </div>
         <div style={{ ...S.card, marginTop: 12 }}>
           <span style={S.mono(10)}>SOUNDTRACK</span>
-          <p style={{ fontSize: 12.5, color: T.inkSoft, lineHeight: 1.5, margin: "6px 0 8px" }}>The app ships with a DBZ-inspired background track from <code>public/audio/dbz_songs.mp3</code>, played at low lo-fi volume by default so it sits under the study loop instead of overpowering it. You can still load your own file for this session.</p>
+          <p style={{ fontSize: 12.5, color: T.inkSoft, lineHeight: 1.5, margin: "6px 0 8px" }}>The app now uses a tiny generated lo-fi synth loop by default instead of bundling a large audio file. You can still load your own audio file for this session.</p>
           <label style={{ ...S.chip(false), display: "inline-block", cursor: "pointer" }}>
             🎵 Choose audio file…
             <input type="file" accept="audio/*" style={{ display: "none" }} onChange={(e) => {
