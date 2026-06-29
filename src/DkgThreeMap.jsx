@@ -2,6 +2,34 @@ import React, { useEffect, useMemo, useRef, useState } from "react";
 import * as THREE from "three";
 
 const worldColor = (hex) => new THREE.Color(hex);
+const hash = (str) => Array.from(String(str || "edokai")).reduce((h, ch) => ((h * 33 + ch.charCodeAt(0)) >>> 0), 5381);
+const terrainNoise = (seed, i) => {
+  const x = Math.sin(seed * 0.013 + i * 12.9898) * 43758.5453;
+  return x - Math.floor(x);
+};
+function makeTinyPlanet(world, radius, color, progress) {
+  // Inspired by https://github.com/flo-bit/tiny-planets: low-poly procedural globe with deterministic random terrain per world.
+  const seed = hash(world.id || world.title);
+  const geo = new THREE.IcosahedronGeometry(radius, 3);
+  const pos = geo.attributes.position;
+  const c = new THREE.Color(color);
+  const colors = [];
+  for (let i = 0; i < pos.count; i += 1) {
+    const v = new THREE.Vector3(pos.getX(i), pos.getY(i), pos.getZ(i)).normalize();
+    const n = terrainNoise(seed, i);
+    const mountain = n > 0.72 ? 0.12 : n > 0.42 ? 0.045 : -0.018;
+    pos.setXYZ(i, v.x * radius * (1 + mountain), v.y * radius * (1 + mountain), v.z * radius * (1 + mountain));
+    const vc = c.clone().offsetHSL(0, n > 0.72 ? -0.08 : 0.02, n > 0.72 ? 0.2 : n * 0.18);
+    if (progress > 0.75 && n > 0.55) vc.lerp(new THREE.Color(0x5be0a2), 0.45);
+    colors.push(vc.r, vc.g, vc.b);
+  }
+  geo.setAttribute("color", new THREE.Float32BufferAttribute(colors, 3));
+  geo.computeVertexNormals();
+  const mat = new THREE.MeshStandardMaterial({ vertexColors: true, roughness: 0.85, metalness: 0.02, flatShading: true });
+  const planet = new THREE.Mesh(geo, mat);
+  planet.rotation.set((seed % 31) / 40, (seed % 73) / 30, 0);
+  return planet;
+}
 
 export default function DkgThreeMap({ worlds, focusedWorld, mapStats, capturedSet, onFocus, onStudy, T, darkMode }) {
   const mountRef = useRef(null);
@@ -41,6 +69,12 @@ export default function DkgThreeMap({ worlds, focusedWorld, mapStats, capturedSe
     const pointer = new THREE.Vector2();
     const pickables = [];
     const focusPos = focus ? layout.get(focus.id) : null;
+    if (focusPos) camera.position.set(focusPos.x * 0.18, focusPos.y * 0.18, 10);
+    const ambient = new THREE.AmbientLight(0xffffff, darkMode ? 0.72 : 0.9);
+    scene.add(ambient);
+    const sun = new THREE.DirectionalLight(0xffffff, 1.25);
+    sun.position.set(3.5, 5, 8);
+    scene.add(sun);
 
     const stars = new THREE.Group();
     const starGeo = new THREE.CircleGeometry(0.012, 8);
@@ -94,23 +128,20 @@ export default function DkgThreeMap({ worlds, focusedWorld, mapStats, capturedSe
       );
       ring.position.set(p.x, p.y, 0.01);
       scene.add(ring);
-      const island = new THREE.Mesh(
-        new THREE.CircleGeometry(radius, 64),
-        new THREE.MeshBasicMaterial({ color: new THREE.Color(p.color), transparent: true, opacity: isFocus ? 0.94 : 0.72 })
-      );
-      island.position.set(p.x, p.y, 0.02);
+      const progress = st.concepts ? st.captured / st.concepts : 0;
+      const island = makeTinyPlanet(w, radius, p.color, progress);
+      island.position.set(p.x, p.y, 0.1);
       island.userData = { worldId: w.id };
       scene.add(island);
       pickables.push(island);
 
-      const core = new THREE.Mesh(
-        new THREE.CircleGeometry(radius * 0.48, 40),
-        new THREE.MeshBasicMaterial({ color: darkMode ? 0xffffff : 0xf8fafc, transparent: true, opacity: isFocus ? 0.23 : 0.16 })
+      const ocean = new THREE.Mesh(
+        new THREE.SphereGeometry(radius * 0.94, 24, 16),
+        new THREE.MeshStandardMaterial({ color: darkMode ? 0x172554 : 0x93c5fd, transparent: true, opacity: 0.22, roughness: 0.9 })
       );
-      core.position.set(p.x - radius * 0.08, p.y + radius * 0.1, 0.03);
-      scene.add(core);
+      ocean.position.set(p.x, p.y, 0.09);
+      scene.add(ocean);
 
-      const progress = st.concepts ? st.captured / st.concepts : 0;
       const arc = new THREE.Mesh(
         new THREE.RingGeometry(radius + 0.14, radius + 0.18, 64, 1, Math.PI / 2, Math.max(0.001, progress * Math.PI * 2)),
         new THREE.MeshBasicMaterial({ color: 0x5be0a2, transparent: true, opacity: 0.92, side: THREE.DoubleSide })
@@ -200,7 +231,7 @@ export default function DkgThreeMap({ worlds, focusedWorld, mapStats, capturedSe
         <div style={{ position: "absolute", left: 12, right: 12, bottom: 12, display: "flex", gap: 8, alignItems: "center", justifyContent: "space-between", background: T.hud, border: `1px solid ${T.line}`, borderRadius: 14, padding: 10, backdropFilter: "blur(8px)" }}>
           <div style={{ minWidth: 0 }}>
             <div style={{ fontWeight: 900, fontSize: 13 }}>{focus.emoji} {focus.title}</div>
-            <div style={{ fontSize: 11.5, color: T.inkSoft, lineHeight: 1.35 }}>Island = macro world · orbiting dots = regions · green arc = captured progress · constellation lines = shared-source proximity.</div>
+            <div style={{ fontSize: 11.5, color: T.inkSoft, lineHeight: 1.35 }}>Tiny planet = macro world · randomized terrain = world identity · orbiting dots = regions · green arc = captured progress · click/pan focus selects the world.</div>
           </div>
           <button onClick={() => onStudy(focus.id)} style={{ background: T.explore, color: "#fff", border: "none", borderRadius: 10, padding: "8px 11px", fontWeight: 800, cursor: "pointer", whiteSpace: "nowrap", fontFamily: "inherit" }}>Study →</button>
         </div>

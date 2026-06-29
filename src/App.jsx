@@ -122,13 +122,16 @@ async function askModel(prompt, cfg, opts = {}) {
     };
     if (needsWeb) body.tools = [{ type: "web_search_20250305", name: "web_search" }];
     if (!(cfg && cfg.anthropicKey)) {
-      if (typeof window !== "undefined" && window.edokaiAuth && typeof window.edokaiAuth.completeWithClaudeCode === "function" && !pdfBase64) {
+      if (typeof window !== "undefined" && window.edokaiAuth && typeof window.edokaiAuth.completeWithDefaultProvider === "function" && !pdfBase64) {
         try {
-          return await window.edokaiAuth.completeWithClaudeCode(prompt, { needsWeb });
+          return await window.edokaiAuth.completeWithDefaultProvider(prompt, { needsWeb, preferred: cfg.preferredAuth || "codex" });
         } catch (e) {
-          // Fall through to hosted proxy if present; desktop builds will surface the proxy error below.
-          console.warn("Claude Code auth bridge failed", e);
+          console.warn("Default desktop model auth bridge failed", e);
         }
+      }
+      if (typeof window !== "undefined" && window.edokaiAuth && typeof window.edokaiAuth.completeWithClaudeCode === "function" && !pdfBase64) {
+        try { return await window.edokaiAuth.completeWithClaudeCode(prompt, { needsWeb }); }
+        catch (e) { console.warn("Claude Code auth bridge failed", e); }
       }
       let proxied;
       try {
@@ -136,7 +139,7 @@ async function askModel(prompt, cfg, opts = {}) {
           method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(body),
         });
       } catch (e) {
-        throw new Error("Hosted model proxy is unreachable from this app session. In local browser dev, run Netlify Dev or use Settings → Custom endpoint; in the desktop app, run `claude auth login` so the Claude Code bridge can answer.");
+        throw new Error("Hosted model proxy is unreachable from this app session. In local browser dev, run Netlify Dev or use Settings → Custom endpoint; in the desktop app, use the default Codex GPT-5.5 / Claude auth bridge or run `claude auth login`.");
       }
       const pdata = await proxied.json().catch(() => ({}));
       if (!proxied.ok || pdata.error) throw new Error(pdata.error?.message || pdata.error || `Model proxy error ${proxied.status}`);
@@ -1605,6 +1608,15 @@ function enrichSWEKata(k) {
 function stripGuidance(code) {
   return String(code || "").split("\n").filter((line) => !/TODO|YOUR CODE|Sketch the canonical|write the invariant/i.test(line)).join("\n").replace(/\n{3,}/g, "\n\n").trimEnd() + "\n";
 }
+function starterFromKata(k) {
+  if (!k) return "# Write your solution here\n";
+  if (k.starter) return k.starter;
+  const title = cleanBlindTitle(k.title);
+  const steps = (k.steps || []).map((st, i) => `# TODO ${i + 1}: ${st.prompt || st.lore || "complete this checkpoint"}\n${st.code ? String(st.code).replace(/____/g, "TODO_VALUE") : "# implement this piece"}`).join("\n\n");
+  if (k.family === "ml" || k.family === "torchleet") return `# ${title} skeleton\n# Fill each TODO, then use AI review or local tests where available.\n${steps || "# TODO: implement the core model/training function.\npass"}\n`;
+  if (k.family === "sys") return `# ${title} design skeleton\n# TODO 1: state assumptions and constraints.\n# TODO 2: sketch API/data model.\n# TODO 3: identify bottlenecks and failure modes.\n`;
+  return `# ${title} skeleton\n${steps || "# TODO: solve the exercise.\npass"}\n`;
+}
 
 const LABS = {
   "k-selfattn": { needs: "numpy",
@@ -3054,9 +3066,13 @@ export default function App() {
 
   useEffect(() => {
     (async () => {
-      const s = await loadStore("ru-save", { xp: 0, hp: 100, badges: [], captured: [], sides: [], katas: {}, qstats: {}, kataHints: {}, kataAttempts: {}, learningRecords: [] });
-      s.sides = s.sides || []; s.katas = s.katas || {}; s.qstats = s.qstats || {}; s.kataHints = s.kataHints || {}; s.kataAttempts = s.kataAttempts || {}; s.learningRecords = s.learningRecords || [];
-      setSave(s);
+      const s = await loadStore("ru-save", { xp: 0, hp: 100, badges: [], captured: [], sides: [], katas: {}, qstats: {}, kataHints: {}, kataAttempts: {}, learningRecords: [], senzu: null, pet: { mood: "idle", msg: "ready" }, player: null });
+      s.sides = s.sides || []; s.katas = s.katas || {}; s.qstats = s.qstats || {}; s.kataHints = s.kataHints || {}; s.kataAttempts = s.kataAttempts || {}; s.learningRecords = s.learningRecords || []; s.senzu = s.senzu || null; s.pet = s.pet || { mood: "idle", msg: "ready" };
+      if (!s.player && typeof window !== "undefined" && window.edokaiDb && window.edokaiDb.auth) {
+        try { s.player = await window.edokaiDb.auth("local-player"); } catch {}
+      }
+      if (!s.player) s.player = { id: (crypto && crypto.randomUUID ? crypto.randomUUID() : `player-${Date.now()}`), name: "local-player", sessionId: (crypto && crypto.randomUUID ? crypto.randomUUID() : `session-${Date.now()}`) };
+      setSave(s); saveStore("ru-save", s);
       setWorlds(await loadStore("ru-worlds", []));
       setDkgWorlds(await loadStore("ru-dkg-worlds", []));
       setUKatas(await loadStore("ru-ukatas", []));
@@ -3100,15 +3116,11 @@ export default function App() {
     );
   }, []);
 
-  const persist = (s) => { setSave(s); saveStore("ru-save", s); };
+  const persist = (s) => { setSave(s); saveStore("ru-save", s); if (window.edokaiDb && window.edokaiDb.saveSession) window.edokaiDb.saveSession({ player: s.player, save: s }).catch(() => {}); };
   const persistWorlds = (w) => { setWorlds(w); saveStore("ru-worlds", w); };
   const persistUKatas = (k) => { setUKatas(k); saveStore("ru-ukatas", k); };
   const persistAug = (a) => { setAug(a); saveStore("ru-aug", a); };
   const persistLore = (l) => { setDeepLore(l); saveStore("ru-lore", l); };
-  const localDeepLore = (c) => {
-    const base = String(c.lore || `${c.name} is part of this Edokai learning path.`).replace(/\s+/g, " ").trim();
-    return `Local deepening fallback — model unavailable. ${c.name} matters because it turns a vague label into a mechanism you can inspect and use. Start by naming the inputs, the transformation, and the output: what information enters, what rule or model changes it, and what evidence would tell you the change helped. A concrete example: if the concept governs a training or retrieval pipeline, compare the behavior before and after applying it on one small case, then ask whether the result became more accurate, cheaper, safer, or easier to debug. The common misconception is treating the term as a definition to memorize; Edokai wants you to use it as a decision tool. Original lore: ${base}`;
-  };
   const deepenLore = async (c) => {
     if (deepLore[c.id] || busy === "lore") return;
     setBusy("lore");
@@ -3116,8 +3128,7 @@ export default function App() {
       const extra = await askModel(`You are a patient ML teacher using this paradigm: ${TEACH_PROMPT}\nA learner read this summary of "${c.name}":\n"""${c.lore}"""\nExpand it with ~150 words of deeper explanation: the intuition behind it, one concrete worked example with small numbers where possible, and the most common misconception. Plain text, no markdown headers.`, cfg);
       if (extra && extra.length > 40) persistLore({ ...deepLore, [c.id]: extra.trim() });
     } catch (e) {
-      persistLore({ ...deepLore, [c.id]: localDeepLore(c) });
-      showToast(`Model unavailable; showing local lore fallback. ${e.message || "Check model settings."}`);
+      showToast(`Deepen lore model call failed: ${e.message || "Check model settings."}`);
     }
     setBusy("");
   };
@@ -3164,6 +3175,17 @@ export default function App() {
   const capturedSet = new Set(save ? save.captured : []);
   const sidesSet = new Set(save ? save.sides : []);
   const allKatas = [...KATAS, ...BLIND75_EXTRA, ...TORCHLEET, ...uKatas].map(enrichSWEKata);
+  const incompleteKatas = (fam) => allKatas.filter((k) => k.family === fam && kProgress(k.id) < (k.steps.length || 1));
+  const pickQuestKata = (fam, salt = 0) => { const ks = incompleteKatas(fam); return ks.length ? ks[(Date.now() + salt) % ks.length] : null; };
+  const ensureSenzuQuest = () => {
+    if (save.senzu && !save.senzu.claimed) return save.senzu;
+    const swe = pickQuestKata("swe", 7), ml = pickQuestKata("ml", 19);
+    if (!swe || !ml) return null;
+    const q = { id: `senzu-${Date.now()}`, required: { swe: swe.id, ml: ml.id }, claimed: false };
+    persist({ ...save, senzu: q, pet: { mood: "quest", msg: "win two dojo trials for a senzu bean" } });
+    return q;
+  };
+  const petReact = (mood, msg) => persist({ ...save, pet: { mood, msg } });
   const conceptName = (id) => {
     for (const w of allWorlds) for (const r of w.regions) {
       const c = r.concepts.find((x) => x.id === id); if (c) return c.name;
@@ -3211,6 +3233,17 @@ export default function App() {
       setModelTest({ ok: false, msg: `${e.message || e}. Ollama: OLLAMA_ORIGINS=* ollama serve → http://localhost:11434/v1. MLX-LM: python -m mlx_lm.server --model <model> --port 8080 → http://localhost:8080/v1.` });
     }
   };
+  const testDefaultModel = async () => {
+    setModelTest({ ok: null, msg: "Testing default desktop provider…" });
+    try {
+      if (!window.edokaiAuth || !window.edokaiAuth.completeWithDefaultProvider) throw new Error("Desktop auth bridge unavailable in this browser session");
+      const out = await window.edokaiAuth.completeWithDefaultProvider("Reply with exactly: EDOKAI_OK", { preferred: cfg.preferredAuth || "codex" });
+      if (!/EDOKAI_OK/i.test(out)) throw new Error(`unexpected response: ${String(out).slice(0, 80)}`);
+      setModelTest({ ok: true, msg: `Default provider ready (${cfg.preferredAuth || "codex"}) · ${String(out).slice(0, 80)}` });
+    } catch (e) {
+      setModelTest({ ok: false, msg: e.message || String(e) });
+    }
+  };
 
   /* ---------- battle ---------- */
   const DMG = 40, CRIT = 20;
@@ -3245,7 +3278,7 @@ export default function App() {
       const won = newHp <= 0;
       if (won) {
         if (battle.kind === "critical") { s.xp += 50; if (!capturedSet.has(battle.concept.id)) { s.captured = [...s.captured, battle.concept.id]; recordConceptLearning(s, battle.concept); } }
-        else if (battle.kind === "side") { s.xp += 30; s.hp = Math.min(maxHp, s.hp + 25); if (!sidesSet.has(battle.side.id)) s.sides = [...s.sides, battle.side.id]; }
+        else if (battle.kind === "side") { s.xp += 30; s.hp = Math.min(maxHp, s.hp + 25); s.pet = { mood: "heal", msg: "+25 HP" }; if (!sidesSet.has(battle.side.id)) s.sides = [...s.sides, battle.side.id]; }
         else { s.xp += 150; if (!s.badges.includes(region.gym.badge)) s.badges = [...s.badges, region.gym.badge]; }
       }
       persist(s);
@@ -3255,6 +3288,7 @@ export default function App() {
       const newHp = Math.max(0, s.hp - dmg);
       const fainted = newHp <= 0;
       s.hp = fainted ? maxHp : newHp;
+      s.pet = { mood: fainted ? "faint" : "harm", msg: fainted ? "wake up healed" : `-${dmg} HP` };
       persist(s);
       setBattle({ ...battle, streak: 0, phase: fainted ? "defeat" : "feedback", wrong: true, log: fainted ? `You blacked out! ${q.why} — You wake at the region entrance, healed and wiser.` : `Counterattack for ${dmg}! ${q.why}` });
     }
@@ -3546,15 +3580,26 @@ ${QUALITY_RULES}`, cfg));
     setKataAttempts((save.kataAttempts && save.kataAttempts[k.id]) || 0);
     setMyCode("");   // showSol flag rides in myCode? no — dedicated state below
     const ek = enrichSWEKata(k);
-    const starter = LABS[k.id] ? LABS[k.id].starter : (todoGuidance ? (ek.starter || "# paste or write your attempt here\n") : (ek.unguidedStarter || stripGuidance(ek.starter || "# paste or write your attempt here\n")));
+    const starterBase = starterFromKata(ek);
+    const starter = LABS[k.id] ? LABS[k.id].starter : (todoGuidance ? starterBase : (ek.unguidedStarter || stripGuidance(starterBase)));
     setLabCode(starter);
     setLabOut("");
     setScreen("kata");
   };
+  const applyKataCompletion = (baseSave, k) => {
+    const s = { ...baseSave, xp: baseSave.xp + 60, katas: { ...baseSave.katas, [k.id]: k.steps.length || 1 }, pet: { mood: "heal", msg: "dojo win!" } };
+    const q = s.senzu;
+    if (q && !q.claimed && q.required && [q.required.swe, q.required.ml].every((id) => s.katas[id])) {
+      s.hp = maxHp;
+      s.senzu = { ...q, claimed: true, claimedAt: Date.now() };
+      s.pet = { mood: "senzu", msg: "full recovery!" };
+      showToast("Senzu bean! Two random dojo trials cleared — HP fully recovered.");
+    } else showToast("Kata complete! +60 XP");
+    return s;
+  };
   const markKataComplete = () => {
     if (!kata || kProgress(kata.id) >= (kata.steps.length || 1)) return;
-    const s = { ...save, xp: save.xp + 60, katas: { ...save.katas, [kata.id]: kata.steps.length || 1 } };
-    persist(s); showToast("Kata complete! +60 XP");
+    persist(applyKataCompletion(save, kata));
   };
   const answerKata = (dispIdx) => {
     if (!kata || kFeedback) return;
@@ -3567,8 +3612,8 @@ ${QUALITY_RULES}`, cfg));
       s.xp += 15;
       const next = stepIdx + 1;
       if (next >= kata.steps.length) {
-        s.xp += 60; s.katas = { ...s.katas, [kata.id]: kata.steps.length };
-        persist(s); setKFeedback({ ok: true, msg: st.why + " — ALL HINTS CLEARED! +60 XP bonus." });
+        const rewarded = applyKataCompletion(s, kata);
+        persist(rewarded); setKFeedback({ ok: true, msg: st.why + " — ALL HINTS CLEARED! +60 XP bonus." });
         setTimeout(() => { setKPhase("work"); setKFeedback(null); }, 1800);
       } else {
         s.katas = { ...s.katas, [kata.id]: Math.max(kProgress(kata.id), next) };
@@ -3592,8 +3637,8 @@ ${QUALITY_RULES}`, cfg));
       const out = await runPython(withTests ? labCode + "\n" + LABS[kata.id].test : labCode, LABS[kata.id].needs, (s) => setLabOut(s));
       setLabOut(out);
       if (withTests && out.includes("ALL TESTS PASSED") && kProgress(kata.id) < kata.steps.length) {
-        const s = { ...save, xp: save.xp + 60, katas: { ...save.katas, [kata.id]: kata.steps.length || 1 } };
-        persist(s); showToast("Tests passed — kata complete! +60 XP");
+        const s = applyKataCompletion(save, kata);
+        persist(s);
       }
     }
     catch (e) { setLabOut("⚠️ " + (e.message || e)); }
@@ -3711,6 +3756,10 @@ ${QUALITY_RULES}`, cfg));
           <div style={{ height: 7, background: T.line, borderRadius: 4, marginTop: 4, overflow: "hidden" }}>
             <div style={{ height: "100%", width: `${(save.hp / maxHp) * 100}%`, background: save.hp / maxHp > 0.4 ? T.reward : T.penalty, transition: "width .4s" }} />
           </div>
+        </div>
+        <div title={save.pet?.msg || "Edokai pet"} style={{ width: 42, minWidth: 42, textAlign: "center", border: `1px solid ${T.line}`, borderRadius: 12, padding: "3px 4px", background: save.pet?.mood === "harm" ? T.penaltySoft : save.pet?.mood === "heal" || save.pet?.mood === "senzu" ? T.rewardSoft : T.card }}>
+          <div style={{ fontSize: 20, animation: save.pet?.mood === "harm" ? "shake .25s ease" : "bob 1.6s ease-in-out infinite" }}>{save.pet?.mood === "harm" ? "😿" : save.pet?.mood === "senzu" ? "🐉" : save.pet?.mood === "heal" ? "😸" : "🐾"}</div>
+          <div style={S.mono(7, T.inkSoft)}>{save.pet?.mood || "idle"}</div>
         </div>
         <button onClick={toggleMusic} title="Low-volume background music" style={{ background: "none", border: `1px solid ${T.line}`, color: T.ink, borderRadius: 8, width: 30, height: 30, cursor: "pointer", fontSize: 14 }}>{musicOn ? "🎵" : "🔇"}</button>
         <button onClick={toggleTheme} title={darkMode ? "Switch to light mode" : "Switch to dark mode"} style={{ background: "none", border: `1px solid ${T.line}`, color: T.ink, borderRadius: 8, width: 30, height: 30, cursor: "pointer", fontSize: 14 }}>{darkMode ? "☀️" : "🌙"}</button>
@@ -4317,6 +4366,16 @@ ${QUALITY_RULES}`, cfg));
           <p style={{ fontSize: 11.5, color: T.inkSoft, lineHeight: 1.5, margin: "8px 0 0" }}>If this says not signed in, run <code>claude auth login</code> once. Claude Code opens the browser and stores OAuth locally; Edokai reuses it at launch.</p>
         </div>
         <div style={{ ...S.card, marginTop: 12 }}>
+          <span style={S.mono(10)}>DEFAULT DESKTOP MODEL AUTH</span>
+          <p style={{ fontSize: 12.5, color: T.inkSoft, lineHeight: 1.5, margin: "6px 0 8px" }}>Deepen Lore uses the existing desktop provider before hosted proxy/API-key routes: Codex GPT-5.5 auth first, or Claude Opus auth if selected. No local fallback content is generated.</p>
+          <div style={{ display: "flex", gap: 6, flexWrap: "wrap" }}>
+            <button onClick={() => persistCfg({ ...cfg, preferredAuth: "codex" })} style={S.chip((cfg.preferredAuth || "codex") === "codex")}>Codex GPT-5.5</button>
+            <button onClick={() => persistCfg({ ...cfg, preferredAuth: "claude" })} style={S.chip(cfg.preferredAuth === "claude")}>Claude Opus auth</button>
+            <button onClick={testDefaultModel} style={S.chip(false)}>Test default provider</button>
+          </div>
+          {modelTest && <p style={{ fontSize: 12, color: modelTest.ok ? T.reward : modelTest.ok === false ? T.penalty : T.inkSoft, lineHeight: 1.4, margin: "8px 0 0" }}>{modelTest.msg}</p>}
+        </div>
+        <div style={{ ...S.card, marginTop: 12 }}>
           <span style={S.mono(10)}>ANTHROPIC API KEY (optional fallback; Netlify can use ANTHROPIC_API_KEY server-side)</span>
           <input value={cfg.anthropicKey || ""} onChange={(e) => persistCfg({ ...cfg, anthropicKey: e.target.value })} type="password" placeholder="sk-ant-… (leave blank to use Claude Code OAuth when available)" style={{ ...S.input, margin: "6px 0 0" }} />
         </div>
@@ -4364,8 +4423,8 @@ ${QUALITY_RULES}`, cfg));
         </div>
         <div style={{ ...S.card, marginTop: 12 }}>
           <span style={S.mono(10)}>SAVE DATA</span>
-          <p style={{ fontSize: 12.5, color: T.inkSoft, margin: "6px 0 10px" }}>XP {save.xp} · {save.captured.length} concepts · {save.badges.length} badges · {Object.keys(save.katas).length} katas · telemetry on {Object.keys(save.qstats).length} topics</p>
-          <button onClick={() => { persist({ xp: 0, hp: 100, badges: [], captured: [], sides: [], katas: {}, qstats: {}, kataHints: {}, kataAttempts: {}, learningRecords: [] }); persistAug({}); showToast("Save reset."); }} style={{ ...S.btn(T.penalty), padding: "8px 14px", fontSize: 12.5 }}>Reset progress</button>
+          <p style={{ fontSize: 12.5, color: T.inkSoft, margin: "6px 0 10px" }}>Player {save.player?.name || "local-player"} · UUID {save.player?.id || "pending"} · Session {save.player?.sessionId || "pending"}<br />XP {save.xp} · {save.captured.length} concepts · {save.badges.length} badges · {Object.keys(save.katas).length} katas · telemetry on {Object.keys(save.qstats).length} topics</p>
+          <button onClick={() => { persist({ xp: 0, hp: 100, badges: [], captured: [], sides: [], katas: {}, qstats: {}, kataHints: {}, kataAttempts: {}, learningRecords: [], senzu: null, pet: { mood: "idle", msg: "ready" }, player: null }); persistAug({}); showToast("Save reset."); }} style={{ ...S.btn(T.penalty), padding: "8px 14px", fontSize: 12.5 }}>Reset progress</button>
         </div>
       </div>
     </div>
@@ -4407,6 +4466,16 @@ ${QUALITY_RULES}`, cfg));
           <Tabs />
           <h2 style={{ fontSize: 20, fontWeight: 800, margin: "14px 0 0" }}>⌨️ The Dojo</h2>
           <span style={S.mono(10)}>code-first workthroughs · TorchLeet set · in-browser Python lab · AI review</span>
+          <div style={{ ...S.card, marginTop: 10, background: T.rewardSoft }}>
+            <div style={{ display: "flex", justifyContent: "space-between", gap: 10, alignItems: "center" }}>
+              <div><b>🫘 Senzu bean recovery quest</b><p style={{ fontSize: 12.5, color: T.inkSoft, margin: "4px 0 0" }}>Complete one random uncompleted Blind 75 kata and one random uncompleted ML Engineering kata to fully recover HP.</p></div>
+              <button onClick={ensureSenzuQuest} style={S.btn(T.reward)}>{save.senzu && !save.senzu.claimed ? "Refresh quest" : "Start quest"}</button>
+            </div>
+            {save.senzu && !save.senzu.claimed && <div style={{ display: "flex", gap: 6, flexWrap: "wrap", marginTop: 8 }}>
+              {[save.senzu.required.swe, save.senzu.required.ml].map((id) => { const k = allKatas.find((x) => x.id === id); const done = !!save.katas[id]; return k ? <button key={id} onClick={() => openKata(k)} style={S.chip(done)}>{done ? "✓" : "○"} {k.family === "swe" ? "Blind 75" : "ML"}: {k.title}</button> : null; })}
+            </div>}
+            {save.senzu && save.senzu.claimed && <span style={S.mono(10, T.reward)}>SENZU CLAIMED · HP FULLY RECOVERED</span>}
+          </div>
           {fams.map(([fam, label]) => {
             const ks = allKatas.filter((k) => k.family === fam);
             if (!ks.length) return null;

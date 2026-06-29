@@ -10,4 +10,15 @@ contextBridge.exposeInMainWorld('edokaiAuth', {
   codexAvailable: !!(process.env.CODEX_AUTH_TOKEN || process.env.OPENAI_API_KEY),
   claudeCodeStatus: () => ipcRenderer.invoke('claude-code-status'),
   completeWithClaudeCode: (prompt, opts = {}) => ipcRenderer.invoke('claude-code-complete', { prompt, needsWeb: !!opts.needsWeb }),
+  completeWithDefaultProvider: (prompt, opts = {}) => ipcRenderer.invoke('default-model-complete', { prompt, needsWeb: !!opts.needsWeb, preferred: opts.preferred || 'codex' }),
+});
+
+contextBridge.exposeInMainWorld('edokaiDb', {
+  auth: (name) => ipcRenderer.invoke('edokai-auth', name),
+  saveSession: (payload) => ipcRenderer.invoke('edokai-save-session', payload),
+});
+contextBridge.exposeInMainWorld('storage', {
+  get: (key) => ipcRenderer.invoke('storage-get', key),
+  set: (key, value) => ipcRenderer.invoke('storage-set', key, value),
+  delete: (key) => ipcRenderer.invoke('storage-delete', key),
 });
