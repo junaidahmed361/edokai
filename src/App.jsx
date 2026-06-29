@@ -1783,6 +1783,26 @@ function narrativeLore(name, lore, worldTitle = "this world") {
   return variants[h % variants.length];
 }
 
+function splitSentences(text) {
+  return String(text || "").replace(/\s+/g, " ").trim().match(/[^.!?]+[.!?]+|[^.!?]+$/g) || [];
+}
+function conceptNote(c, deep = "") {
+  const lore = narrativeLore(c.name, c.lore || "");
+  const parts = splitSentences(lore).map((x) => x.trim()).filter(Boolean);
+  const mechanism = parts[0] || `${c.name} is a mechanism worth testing in context.`;
+  const consequence = parts.slice(1, 3).join(" ") || "Use the question to connect the definition to a concrete state change.";
+  const deepText = String(deep || "").replace(/\s+/g, " ").trim();
+  return {
+    mechanism,
+    consequence,
+    checkpoint: `Before answering, ask: what changes when ${c.name} is present, and what evidence would rule out a distractor?`,
+    deep: deepText ? splitSentences(deepText).slice(0, 2).join(" ") : "",
+  };
+}
+function compactLore(c) {
+  const n = conceptNote(c);
+  return `${n.mechanism} ${n.consequence}`.trim();
+}
 function sweIo(k) {
   const base = cleanBlindTitle(k.title);
   return SWE_IO_EXAMPLES[base] || "Use the canonical Blind 75 examples: include a normal case, an edge case, and a minimal input; write the expected output before coding so the invariant has something concrete to satisfy.";
@@ -3267,8 +3287,8 @@ export default function App() {
 
   useEffect(() => {
     (async () => {
-      const s = await loadStore("ru-save", { xp: 0, hp: 100, badges: [], captured: [], sides: [], katas: {}, qstats: {}, kataHints: {}, kataAttempts: {}, learningRecords: [], senzu: null, pet: { mood: "idle", msg: "ready" }, player: null });
-      s.sides = s.sides || []; s.katas = s.katas || {}; s.qstats = s.qstats || {}; s.kataHints = s.kataHints || {}; s.kataAttempts = s.kataAttempts || {}; s.learningRecords = s.learningRecords || []; s.senzu = s.senzu || null; s.pet = s.pet || { mood: "idle", msg: "ready" };
+      const s = await loadStore("ru-save", { xp: 0, hp: 100, badges: [], captured: [], sides: [], katas: {}, qstats: {}, kataHints: {}, kataAttempts: {}, learningRecords: [], dexQuestions: [], senzu: null, pet: { mood: "idle", msg: "ready" }, player: null });
+      s.sides = s.sides || []; s.katas = s.katas || {}; s.qstats = s.qstats || {}; s.kataHints = s.kataHints || {}; s.kataAttempts = s.kataAttempts || {}; s.learningRecords = s.learningRecords || []; s.dexQuestions = s.dexQuestions || []; s.senzu = s.senzu || null; s.pet = s.pet || { mood: "idle", msg: "ready" };
       if (!s.player && typeof window !== "undefined" && window.edokaiDb && window.edokaiDb.auth) {
         try { s.player = await window.edokaiDb.auth("local-player"); } catch {}
       }
@@ -3407,13 +3427,22 @@ export default function App() {
       id,
       worldId: world.id,
       title: c.name,
-      summary: `Captured ${c.name}: ${c.lore.slice(0, 180)}${c.lore.length > 180 ? "…" : ""}`,
+      summary: compactLore(c),
       evidence: `Won the critical encounter in ${region.name}.`,
       ts: Date.now(),
     }];
   };
   const worldLearningRecords = (w = world) => (save.learningRecords || []).filter((r) => r.worldId === w.id);
   const capturedConceptsFor = (w = world) => w.regions.flatMap((r) => r.concepts.map((c) => ({ ...c, regionName: r.name }))).filter((c) => capturedSet.has(c.id));
+  const dexQuestionsFor = (w = world) => (save.dexQuestions || []).filter((q) => q.worldId === w.id);
+  const addDexQuestion = (q, srcId = battleSrc, srcName = conceptName(srcId)) => {
+    if (!q) return;
+    const qid = `${world.id}:${srcId}:${String(q.q || "").slice(0, 80)}`;
+    if ((save.dexQuestions || []).some((x) => x.id === qid)) { showToast("Already saved to Conceptdex."); return; }
+    persist({ ...save, dexQuestions: [...(save.dexQuestions || []), { id: qid, worldId: world.id, src: srcId, sourceName: srcName, q: q.q, options: q.options, a: q.a, why: q.why, ts: Date.now() }] });
+    showToast("Question saved to Conceptdex.");
+  };
+  const removeDexQuestion = (id) => persist({ ...save, dexQuestions: (save.dexQuestions || []).filter((q) => q.id !== id) });
   const testCustomModel = async () => {
     if (!cfg.baseUrl || !cfg.model) { setModelTest({ ok: false, msg: "Set a base URL and model first." }); return; }
     setModelTest({ ok: null, msg: "Testing model connection…" });
@@ -4042,9 +4071,12 @@ ${QUALITY_RULES}`, cfg));
       </div>
     );
   };
-  const QCard = ({ q, ord, onAnswer, label, color }) => (
+  const QCard = ({ q, ord, onAnswer, label, color, onSave = null }) => (
     <div style={{ ...S.card, animation: "slideUp .25s ease" }}>
-      <span style={S.mono(10, color || T.explore)}>{label}</span>
+      <div style={{ display: "flex", justifyContent: "space-between", gap: 8, alignItems: "center" }}>
+        <span style={S.mono(10, color || T.explore)}>{label}</span>
+        {onSave && <button onClick={(e) => { e.stopPropagation(); onSave(q); }} style={{ ...S.chip(false), padding: "4px 8px", fontSize: 11 }}>＋ Conceptdex</button>}
+      </div>
       <div style={{ fontWeight: 700, fontSize: 15, lineHeight: 1.55, margin: "8px 0 12px" }}>{q.q}</div>
       {ord.map((optIdx, i) => (
         <button key={i} onClick={() => onAnswer(i)} style={S.qbtn}>
@@ -4356,7 +4388,7 @@ ${QUALITY_RULES}`, cfg));
             <span style={S.mono(10, "#9FA8CC")}>Q{gaunt.idx + 1}/{gaunt.pool.length} · {"❤️".repeat(gaunt.lives)}{"🖤".repeat(3 - gaunt.lives)} · {gaunt.score} ✓</span>
           </div>
           <div style={{ marginTop: 10 }}>
-            <QCard q={q} ord={gaunt.ord} onAnswer={answerGauntlet} label={`FROM: ${q.name} · +8 XP`} color={T.gold} />
+            <QCard q={q} ord={gaunt.ord} onAnswer={answerGauntlet} label={`FROM: ${q.name} · +8 XP`} color={T.gold} onSave={(qq) => addDexQuestion(qq, q.src || "gauntlet", q.name || "Gauntlet")} />
           </div>
           {gaunt.fb && (
             <div style={{ background: gaunt.fb.ok ? T.rewardSoft : T.penaltySoft, borderRadius: 14, padding: 14, marginTop: 12, animation: "slideUp .25s ease" }}>
@@ -4557,10 +4589,10 @@ ${QUALITY_RULES}`, cfg));
           <Collapsible id="teachResources" title="RESOURCES.md / SOURCES" color={T.explore} style={{ marginTop: 10 }}>
             {(teachW.links || []).length ? teachW.links.map((l) => <div key={l.url} style={{ marginTop: 7 }}><a href={l.url} target="_blank" rel="noreferrer" style={{ color: T.explore, fontWeight: 800, fontSize: 13 }}>{l.label}</a><div style={{ fontSize: 12, color: T.inkSoft }}>Use for source-grounded lore, examples, and follow-up reading.</div></div>) : <p style={{ fontSize: 12.5, color: T.inkSoft }}>Custom worlds built from pasted text/PDFs use that source as their resource.</p>}
           </Collapsible>
-          <Collapsible id="teachGlossary" title="GLOSSARY.md · captured concepts only" color={T.gold} style={{ marginTop: 10 }}>
-            {glossary.length ? glossary.map((c) => <div key={c.id} style={{ marginTop: 9, borderTop: `1px solid ${T.line}`, paddingTop: 8 }}><b style={{ fontSize: 13.5 }}>{c.sprite} {c.name}</b><p style={{ fontSize: 12.5, color: T.inkSoft, lineHeight: 1.55, margin: "4px 0 0" }}>{c.lore.slice(0, 230)}{c.lore.length > 230 ? "…" : ""}</p></div>) : <p style={{ fontSize: 12.5, color: T.inkSoft }}>Defeat critical encounters to promote terms into the glossary. This keeps the reference layer honest: it only contains concepts you have demonstrated.</p>}
+          <Collapsible id="teachGlossary" title={`GLOSSARY.md · ${glossary.length} captured concepts`} color={T.gold} style={{ marginTop: 10 }}>
+            {glossary.length ? glossary.map((c) => { const n = conceptNote(c, deepLore[c.id]); return <div key={c.id} style={{ marginTop: 9, borderTop: `1px solid ${T.line}`, paddingTop: 8 }}><b style={{ fontSize: 13.5 }}>{c.sprite} {c.name}</b><p style={{ fontSize: 12.5, color: T.inkSoft, lineHeight: 1.55, margin: "4px 0" }}>{n.mechanism}</p><span style={S.mono(9, T.explore)}>check: {n.checkpoint}</span></div>; }) : <p style={{ fontSize: 12.5, color: T.inkSoft }}>Defeat critical encounters to promote terms into the glossary. This keeps the reference layer honest: it only contains concepts you have demonstrated.</p>}
           </Collapsible>
-          <Collapsible id="teachRecords" title="LEARNING RECORDS" color={T.reward} style={{ marginTop: 10 }}>
+          <Collapsible id="teachRecords" title={`LEARNING RECORDS · ${records.length}`} color={T.reward} style={{ marginTop: 10 }}>
             {records.length ? records.map((r) => <div key={r.id} style={{ marginTop: 9, borderTop: `1px solid ${T.line}`, paddingTop: 8 }}><b style={{ fontSize: 13.5 }}>{r.title}</b><p style={{ fontSize: 12.5, color: T.inkSoft, lineHeight: 1.55, margin: "4px 0 0" }}>{r.summary}</p><span style={S.mono(9, T.reward)}>{r.evidence}</span></div>) : <p style={{ fontSize: 12.5, color: T.inkSoft }}>Learning records appear when a critical is won. They are evidence of understanding, not a session log.</p>}
           </Collapsible>
         </div>
@@ -4573,39 +4605,52 @@ ${QUALITY_RULES}`, cfg));
     const dexW = allWorlds.find((w) => w.id === dexWorld) || world;
     const dTotal = dexW.regions.reduce((n, r) => n + r.concepts.length, 0);
     const dGot = dexW.regions.reduce((n, r) => n + r.concepts.filter((c) => capturedSet.has(c.id)).length, 0);
+    const savedQs = dexQuestionsFor(dexW);
+    const capturedByRegion = dexW.regions.map((r) => ({ ...r, capturedConcepts: r.concepts.filter((c) => capturedSet.has(c.id)) })).filter((r) => r.capturedConcepts.length || r.concepts.length);
     return (
       <div style={S.app}><style>{CSS}</style><Toast /><HUD back={() => setScreen("home")} />
         <div style={{ ...S.wrap, paddingTop: 16 }}>
           <h2 style={{ fontSize: 20, fontWeight: 800, margin: "0 0 6px" }}>Conceptdex</h2>
+          <p style={{ fontSize: 12.5, color: T.inkSoft, lineHeight: 1.55, margin: "0 0 10px" }}>A compact field guide: captured concepts are summarized as decision notes, and saved questions live in a separate review deck. Use the + dex button during battles or gauntlets to save questions that are worth drilling again.</p>
           <div style={{ display: "flex", gap: 6, flexWrap: "wrap" }}>
             {allWorlds.map((w) => <button key={w.id} onClick={() => setDexWorld(w.id)} style={S.chip(dexWorld === w.id)}>{w.emoji} {w.title}</button>)}
           </div>
-          <div style={{ marginTop: 10 }}><span style={S.mono(10.5, dGot === dTotal && dTotal > 0 ? T.reward : T.inkSoft)}>{dexW.title}: {dGot}/{dTotal} CAPTURED · lore unlocks on capture</span></div>
-          {dexW.regions.map((r) => (
-            <div key={r.id} style={{ marginTop: 14 }}>
-              <div style={{ fontWeight: 800, fontSize: 15 }}>{r.emoji} {r.name}</div>
-              {r.concepts.map((c) => {
-                const got = capturedSet.has(c.id);
-                return (
-                  <div key={c.id} style={{ ...S.card, marginTop: 8, padding: 13, opacity: got ? 1 : 0.6 }}>
-                    <div style={{ display: "flex", gap: 10, alignItems: "center" }}>
-                      <span style={{ fontSize: 24, filter: got ? "none" : "grayscale(1) brightness(0.4)" }}>{c.sprite}</span>
-                      <span style={{ fontWeight: 800, fontSize: 15 }}>{got ? c.name : "???"}</span>
-                      {got && <span style={{ ...S.mono(9, T.reward), marginLeft: "auto" }}>CAPTURED</span>}
-                    </div>
-                    {got ? (
-                      <>
-                        <p style={{ fontSize: 13, lineHeight: 1.6, margin: "8px 0 0" }}>{c.lore}</p>
-                        {deepLore[c.id]
-                          ? <p style={{ fontSize: 12.5, lineHeight: 1.6, margin: "8px 0 0", padding: "8px 10px", background: T.exploreSoft, borderRadius: 8 }}>🔍 {deepLore[c.id]}</p>
-                          : <button onClick={() => deepenLore(c)} disabled={busy === "lore"} style={{ ...S.chip(false), marginTop: 8, fontSize: 11.5 }}>{busy === "lore" ? "…" : "🔍 Deepen"}</button>}
-                      </>
-                    ) : <p style={{ fontSize: 12.5, color: T.inkSoft, margin: "6px 0 0" }}>A critical encounter in {r.name}. Defeat it to unlock its lore.</p>}
-                  </div>
-                );
-              })}
-            </div>
-          ))}
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 8, marginTop: 10 }}>
+            <div style={{ ...S.card, padding: 10 }}><span style={S.mono(9, T.gold)}>CAPTURED</span><div style={{ fontWeight: 900 }}>{dGot}/{dTotal}</div></div>
+            <div style={{ ...S.card, padding: 10 }}><span style={S.mono(9, T.explore)}>SAVED Q</span><div style={{ fontWeight: 900 }}>{savedQs.length}</div></div>
+            <div style={{ ...S.card, padding: 10 }}><span style={S.mono(9, T.reward)}>REGIONS</span><div style={{ fontWeight: 900 }}>{dexW.regions.length}</div></div>
+          </div>
+
+          <Collapsible id={`dex-q-${dexW.id}`} title={`SAVED QUESTION DECK · ${savedQs.length}`} color={T.explore} style={{ marginTop: 12 }}>
+            {savedQs.length ? savedQs.map((sq) => (
+              <div key={sq.id} style={{ borderTop: `1px solid ${T.line}`, paddingTop: 9, marginTop: 9 }}>
+                <div style={{ display: "flex", justifyContent: "space-between", gap: 8, alignItems: "baseline" }}>
+                  <span style={S.mono(9, T.explore)}>{sq.sourceName || conceptName(sq.src)}</span>
+                  <button onClick={() => removeDexQuestion(sq.id)} style={{ ...S.chip(false), padding: "3px 8px", fontSize: 10 }}>remove</button>
+                </div>
+                <p style={{ fontSize: 13, fontWeight: 800, lineHeight: 1.45, margin: "6px 0" }}>{sq.q}</p>
+                <div style={{ display: "grid", gap: 4 }}>
+                  {(sq.options || []).map((o, i) => <div key={i} style={{ fontSize: 12.5, color: i === sq.a ? T.reward : T.inkSoft }}><b>{String.fromCharCode(65 + i)}.</b> {o}{i === sq.a ? " ✓" : ""}</div>)}
+                </div>
+                <p style={{ fontSize: 12.5, color: T.inkSoft, lineHeight: 1.5, margin: "6px 0 0" }}>{sq.why}</p>
+              </div>
+            )) : <p style={{ fontSize: 12.5, color: T.inkSoft, lineHeight: 1.5 }}>No saved questions yet. During any battle, tap <b>＋ dex</b>; during gauntlets, tap <b>＋ Conceptdex</b>.</p>}
+          </Collapsible>
+
+          {capturedByRegion.map((r) => {
+            const got = r.capturedConcepts.length;
+            return <Collapsible key={r.id} id={`dex-r-${dexW.id}-${r.id}`} title={`${r.emoji} ${r.name} · ${got}/${r.concepts.length} captured`} color={got ? T.gold : T.inkSoft} style={{ marginTop: 10 }}>
+              {got ? r.capturedConcepts.map((c) => { const n = conceptNote(c, deepLore[c.id]); return (
+                <div key={c.id} style={{ borderTop: `1px solid ${T.line}`, paddingTop: 9, marginTop: 9 }}>
+                  <div style={{ display: "flex", gap: 8, alignItems: "center" }}><span style={{ fontSize: 20 }}>{c.sprite}</span><b style={{ fontSize: 14 }}>{c.name}</b><span style={{ ...S.mono(9, T.reward), marginLeft: "auto" }}>CAPTURED</span></div>
+                  <p style={{ fontSize: 12.8, lineHeight: 1.55, margin: "6px 0 0" }}>{n.mechanism}</p>
+                  <p style={{ fontSize: 12.5, color: T.inkSoft, lineHeight: 1.5, margin: "5px 0 0" }}><b>Decision note:</b> {n.consequence}</p>
+                  <p style={{ fontSize: 12, color: T.explore, lineHeight: 1.5, margin: "5px 0 0" }}>{n.checkpoint}</p>
+                  {deepLore[c.id] ? <p style={{ fontSize: 12, color: T.inkSoft, lineHeight: 1.5, margin: "5px 0 0" }}>🔍 {n.deep}</p> : <button onClick={() => deepenLore(c)} disabled={busy === "lore"} style={{ ...S.chip(false), marginTop: 7, fontSize: 11 }}>🔍 Deepen</button>}
+                </div>
+              ); }) : <p style={{ fontSize: 12.5, color: T.inkSoft, lineHeight: 1.5 }}>No captures in this region yet. Locked concepts stay off the page so the dex remains short and useful.</p>}
+            </Collapsible>;
+          })}
         </div>
       </div>
     );
@@ -4696,7 +4741,7 @@ ${QUALITY_RULES}`, cfg));
         <div style={{ ...S.card, marginTop: 12 }}>
           <span style={S.mono(10)}>SAVE DATA</span>
           <p style={{ fontSize: 12.5, color: T.inkSoft, margin: "6px 0 10px" }}>Player {save.player?.name || "local-player"} · UUID {save.player?.id || "pending"} · Session {save.player?.sessionId || "pending"}<br />XP {save.xp} · {save.captured.length} concepts · {save.badges.length} badges · {Object.keys(save.katas).length} katas · telemetry on {Object.keys(save.qstats).length} topics</p>
-          <button onClick={() => { persist({ xp: 0, hp: 100, badges: [], captured: [], sides: [], katas: {}, qstats: {}, kataHints: {}, kataAttempts: {}, learningRecords: [], senzu: null, pet: { mood: "idle", msg: "ready" }, player: save.player }); persistAug({}); showToast("Save reset."); }} style={{ ...S.btn(T.penalty), padding: "8px 14px", fontSize: 12.5 }}>Reset progress</button>
+          <button onClick={() => { persist({ xp: 0, hp: 100, badges: [], captured: [], sides: [], katas: {}, qstats: {}, kataHints: {}, kataAttempts: {}, learningRecords: [], dexQuestions: [], senzu: null, pet: { mood: "idle", msg: "ready" }, player: save.player }); persistAug({}); showToast("Save reset."); }} style={{ ...S.btn(T.penalty), padding: "8px 14px", fontSize: 12.5 }}>Reset progress</button>
         </div>
       </div>
     </div>
@@ -5002,19 +5047,24 @@ ${QUALITY_RULES}`, cfg));
               <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: 6 }}>
                 <span style={S.mono(10, kindColor)}>{battle.kind === "side" ? "APPLIED SCENARIO" : "CHOOSE YOUR MOVE"} · wrong = −{battle.kind === "gym" ? 22 : 16} HP</span>
                 <span style={{ display: "flex", gap: 6 }}>
+                  <button onClick={() => addDexQuestion(q)} style={{ ...S.chip(false), padding: "4px 10px", fontSize: 11 }}>＋ dex</button>
                   <button onClick={() => setBattle({ ...battle, showNotes: !battle.showNotes })} style={{ ...S.chip(battle.showNotes), padding: "4px 10px", fontSize: 11 }}>📜 notes</button>
                   {side && side.code && <button onClick={() => setBattle({ ...battle, showCode: !battle.showCode })} style={{ ...S.chip(battle.showCode), padding: "4px 10px", fontSize: 11 }}>{"</>"}</button>}
                 </span>
               </div>
               {battle.showNotes && (
-                <div style={{ maxHeight: 220, overflowY: "auto", marginTop: 8, padding: "10px 12px", background: T.paper, borderRadius: 10 }}>
-                  {battleNotes().map((c) => (
-                    <div key={c.id} style={{ marginBottom: 8 }}>
-                      <b style={{ fontSize: 12.5 }}>{c.sprite} {c.name}:</b>
-                      <span style={{ fontSize: 12.5, lineHeight: 1.55 }}> {c.lore}{deepLore[c.id] ? " 🔍 " + deepLore[c.id] : ""}</span>
-                    </div>
-                  ))}
-                  <span style={S.mono(9)}>consulting notes is studying, not cheating — retention comes from use</span>
+                <div style={{ maxHeight: 260, overflowY: "auto", marginTop: 8, padding: "10px 12px", background: T.paper, borderRadius: 10 }}>
+                  {battleNotes().map((c) => {
+                    const n = conceptNote(c, deepLore[c.id]);
+                    return <div key={c.id} style={{ marginBottom: 10, borderBottom: `1px solid ${T.line}`, paddingBottom: 8 }}>
+                      <b style={{ fontSize: 12.5 }}>{c.sprite} {c.name}</b>
+                      <p style={{ fontSize: 12.5, lineHeight: 1.55, margin: "4px 0 0" }}>{n.mechanism}</p>
+                      <p style={{ fontSize: 12.5, lineHeight: 1.55, margin: "4px 0 0", color: T.inkSoft }}><b>Use it:</b> {n.consequence}</p>
+                      <p style={{ fontSize: 12, lineHeight: 1.5, margin: "4px 0 0", color: T.explore }}>{n.checkpoint}</p>
+                      {n.deep && <p style={{ fontSize: 12, lineHeight: 1.5, margin: "4px 0 0", color: T.inkSoft }}>🔍 {n.deep}</p>}
+                    </div>;
+                  })}
+                  <span style={S.mono(9)}>notes are compact decision aids: mechanism → consequence → answer check</span>
                 </div>
               )}
               {side && side.code && battle.showCode && <pre style={{ ...S.pre, marginTop: 8, maxHeight: 180, overflowY: "auto" }}>{side.code}</pre>}
