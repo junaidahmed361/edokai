@@ -5,3 +5,9 @@ release/mac*/
 *.log
 release/*installer.dmg
 .worktrees/
+
+# Generated release artifacts are published via GitHub Releases, not git blobs
+release/*.dmg
+release/*.dmg.blockmap
+release/latest-mac.yml
+release/builder-debug.yml
