@@ -1,8 +1,0 @@
-version: 3.0.0
-files:
-  - url: Edokai-3.0.0-arm64.dmg
-    sha512: bwICOfroKKZDltBsB/UGu8vqsvsxv0o69Y1/+0xfiGKp+wmWK8aJn+8Oe8foJd+fZ5Pp3mfwHRN0F8j9BosUHg==
-    size: 98805246
-path: Edokai-3.0.0-arm64.dmg
-sha512: bwICOfroKKZDltBsB/UGu8vqsvsxv0o69Y1/+0xfiGKp+wmWK8aJn+8Oe8foJd+fZ5Pp3mfwHRN0F8j9BosUHg==
-releaseDate: '2026-06-11T19:45:21.565Z'

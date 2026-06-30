@@ -156,7 +156,9 @@ ipcMain.handle("edokai-save-session", async (_event, payload) => {
 });
 ipcMain.handle("storage-get", async (_event, key) => {
   const row = edokaiDb().prepare("SELECT value FROM kv WHERE key=?").get(key);
-  if (!row) throw new Error("not found");
+  // Missing keys are normal on first launch; return null instead of logging
+  // noisy IPC handler errors during app boot.
+  if (!row) return null;
   return { key, value: row.value };
 });
 ipcMain.handle("storage-set", async (_event, key, value) => {

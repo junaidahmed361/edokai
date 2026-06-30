@@ -31,7 +31,13 @@
     "appId": "ai.edokai.app",
     "files": [
       "dist/**/*",
-      "electron/**/*"
+      "electron/**/*",
+      "!**/node_modules/better-sqlite3/deps/**",
+      "!**/*.map"
+    ],
+    "compression": "maximum",
+    "electronLanguages": [
+      "en-US"
     ],
     "directories": {
       "output": "release"

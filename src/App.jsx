@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef, useMemo } from "react";
-import { dkgSyncConfigStatus, subscribeDkgSnapshot, snapshotToEdokaiWorlds, mergeDkgWorlds, summarizeDkgSnapshot } from "./dkgLiveSync";
+import { dkgSyncConfigStatus, loadDkgSnapshot, subscribeDkgSnapshot, snapshotToEdokaiWorlds, mergeDkgWorlds, summarizeDkgSnapshot } from "./dkgLiveSync";
 
 const DkgThreeMap = React.lazy(() => import("./DkgThreeMap.jsx"));
 
@@ -37,7 +37,7 @@ const T = { ...THEMES.light };
    MUSIC ENGINE — bundled low-volume lo-fi background track
    ============================================================ */
 class MusicEngine {
-  constructor() { this.ctx = null; this.playing = false; this.timer = null; this.step = 0; this.defaultUrl = "/audio/dbz_songs.mp3"; this.customUrl = null; this.audioEl = null; this.volume = 0.05; }
+  constructor() { this.ctx = null; this.playing = false; this.timer = null; this.step = 0; this.defaultUrl = null; this.customUrl = null; this.audioEl = null; this.volume = 0.05; }
   setCustom(url) { this.customUrl = url; if (this.playing) { this.stop(); this.start(); } }
   start() {
     const track = this.customUrl || this.defaultUrl;
@@ -195,6 +195,103 @@ function optionTellBad(q) {
 function keepFairQuestions(qs) {
   return (qs || []).filter((q) => q.options && q.options.length === 4 && Number.isInteger(q.a) && q.a >= 0 && q.a < 4 && !optionTellBad(q));
 }
+
+function sentenceCaseOption(text) {
+  let out = String(text || "").replace(/\s+/g, " ").replace(/[.…]+$/g, "").trim();
+  if (!out) return "A nearby but incorrect explanation";
+  out = out.replace(/^(the\s+)/i, "The ");
+  if (/^[a-z]/.test(out)) out = out[0].toUpperCase() + out.slice(1);
+  return out;
+}
+function wordsOf(text) { return String(text || "").trim().split(/\s+/).filter(Boolean); }
+function cleanRepeatedWords(text) {
+  let out = String(text || "").replace(/\s+/g, " ").trim();
+  for (let i = 0; i < 3; i += 1) out = out.replace(/\b([A-Za-z][A-Za-z0-9'-]*)\b(?:\s+\1\b)+/gi, "$1");
+  out = out.replace(/\b(the|a|an|this|that)\s+\1\b/gi, "$1");
+  out = out.replace(/\boption option\b/gi, "option");
+  return out;
+}
+function compactOption(text) {
+  let out = sentenceCaseOption(text)
+    .replace(/\s*[-–—:]\s+.*$/g, "")
+    .replace(/\s*\([^)]{18,}\)\s*/g, " ")
+    .replace(/\b(?:primarily|mainly|exactly|actually|simply|just|always|never)\b/gi, "")
+    .replace(/\s+/g, " ")
+    .trim();
+  const ws = wordsOf(out);
+  if (ws.length > 8) out = ws.slice(0, 8).join(" ");
+  return cleanRepeatedWords(out).replace(/[.;:]+$/g, "") || "Nearby but wrong mechanism";
+}
+function balanceOptionLengths(options, seed = "edokai") {
+  const base = (options || []).slice(0, 4).map(compactOption);
+  while (base.length < 4) base.push(compactOption(`Nearby wrong mechanism ${base.length + 1}`));
+  const neutralPads = ["for this case", "in this setting", "under the same signal", "for the learner"];
+  const lens = base.map((o) => wordsOf(o).length);
+  const target = Math.max(5, Math.min(8, Math.round(lens.reduce((a, b) => a + b, 0) / lens.length)));
+  return base.map((o, i) => {
+    let ws = wordsOf(o);
+    if (ws.length > target + 1) ws = ws.slice(0, target + 1);
+    let out = ws.join(" ");
+    let guard = 0;
+    while (wordsOf(out).length < target - 1 && guard < 2) {
+      out = `${out} ${neutralPads[(i + guard + String(seed).length) % neutralPads.length]}`;
+      guard += 1;
+    }
+    return cleanRepeatedWords(out).replace(/\s+/g, " ").trim();
+  });
+}
+function polishQuestionStem(stem, context = "this concept") {
+  let q = cleanRepeatedWords(String(stem || "Choose the best answer.").replace(/\s+/g, " ").trim());
+  q = q.replace(/^SCENARIO:\s*/i, "Scenario: ");
+  q = q.replace(/[.…]+$/g, "").trim();
+  q = q.replace(/\s+:$/g, "");
+  q = q.replace(/^A pure-exploitation agent's characteristic failure$/i, "What failure should you expect from an agent that only exploits its current best-known action?");
+  q = q.replace(/^Advantage A\(s,a\) measures$/i, "What does the advantage A(s,a) measure during policy-gradient training?");
+  q = q.replace(/^For a tool-calling LLM agent, the state sₜ is$/i, "For a tool-calling LLM agent, which information should count as the current state sₜ?");
+  q = q.replace(/^The Markov property guarantees that$/i, "What does the Markov property guarantee about the current state?");
+  q = q.replace(/^Raising γ from 0\.5 toward 0\.99 makes the agent$/i, "What behavior changes when γ is raised from 0.5 toward 0.99?");
+  q = q.replace(/^RL differs from supervised learning because$/i, "Why is reinforcement learning different from supervised learning?");
+  q = q.replace(/^Exploration from a randomly-initialized LLM policy fails because$/i, "Why does exploration from a randomly initialized LLM policy usually fail?");
+  q = q.replace(/^An action with negative advantage should become$/i, "What should happen to an action whose advantage estimate is negative?");
+  q = q.replace(/^Rank by credit-assignment difficulty, easiest first$/i, "Which ordering ranks these environments by credit-assignment difficulty, from easiest to hardest?");
+  q = q.replace(/^Multi-turn sequential environments are distinguished by$/i, "What distinguishes multi-turn sequential environments from simpler agent environments?");
+  if (/^Scenario:/.test(q)) {
+    if (!/[?]$/.test(q)) q += " What is the best next conclusion or action?";
+    return cleanRepeatedWords(q);
+  }
+  if (/^(What|Why|Which|How|When|Where|Who|In what|For which)\b/i.test(q)) return cleanRepeatedWords(/[?]$/.test(q) ? q : `${q}?`);
+  const lower = q.toLowerCase();
+  if (/^order\b/i.test(q)) return cleanRepeatedWords(`Which sequence correctly orders this process: ${q.replace(/^order\s+/i, "")}?`);
+  if (/^rank\b/i.test(q)) return cleanRepeatedWords(`Which option gives the correct ranking for this prompt: ${q.replace(/^rank\s+/i, "")}?`);
+  if (/^not\b/i.test(q)) return cleanRepeatedWords(`Which option is not part of the mechanism described here: ${q}?`);
+  const inContext = q.match(/^(In .+?, )(.+)$/i);
+  if (/\bteaches$/i.test(q)) return cleanRepeatedWords(inContext ? `${inContext[1]}what does ${inContext[2].replace(/\s*teaches$/i, "")} teach?` : `What does ${q.replace(/\s*teaches$/i, "")} teach?`);
+  if (/\bhelps\b.*\bby$/i.test(q) || /\bprimarily help by$/i.test(q)) return cleanRepeatedWords(`How does ${q.replace(/\s*by$/i, "")} help?`);
+  if (/\bshould preserve evidence by$/i.test(q)) return cleanRepeatedWords(`How should ${q.replace(/\s*by$/i, "")} preserve evidence?`);
+  if (/\bstruggles\b.*\bbecause$/i.test(q) || /\bfails because$/i.test(q) || /\bdiffers\b.*\bbecause$/i.test(q)) return cleanRepeatedWords(`Why does this happen: ${q.replace(/\s*because$/i, "")}?`);
+  if (/\bworks because$/i.test(q)) return cleanRepeatedWords(`Why does this pipeline work: ${q.replace(/\s*because$/i, "")}?`);
+  if (/\bsolves$/i.test(q)) return cleanRepeatedWords(`What problem does ${q.replace(/\s*solves$/i, "")} solve?`);
+  if (/\bmatters downstream because$/i.test(q)) return cleanRepeatedWords(`Why does ${q.replace(/\s*because$/i, "")} matter downstream?`);
+  if (/\bmeasures$/i.test(q)) return cleanRepeatedWords(`What does ${q.replace(/\s*measures$/i, "")} measure?`);
+  if (/\bguarantees that$/i.test(q)) return cleanRepeatedWords(`What does this guarantee in ${context}?`);
+  if (/\bshould become$/i.test(q)) return cleanRepeatedWords(`What should ${q.replace(/\s*should become$/i, "")} become?`);
+  if (/\b(is|are|becomes|become|means|represents|requires|skips|enables|exists to|depends on)$/i.test(q)) return cleanRepeatedWords(`Which option correctly completes this idea: ${q}?`);
+  if (lower.includes(" ___ ")) return cleanRepeatedWords(`Which option correctly fills in the blank for this prompt: ${q}?`);
+  if (!/[?]$/.test(q)) return cleanRepeatedWords(`Which option best answers this prompt: ${q}?`);
+  return q;
+}
+function polishQuestion(q, context = "this concept") {
+  if (!q) return q;
+  const options = balanceOptionLengths(Array.isArray(q.options) ? q.options : [], `${context}-${q.q || "question"}`);
+  const a = Number.isInteger(q.a) && q.a >= 0 && q.a < 4 ? q.a : 0;
+  let why = String(q.why || "This answer follows the mechanism taught in this concept.").replace(/\s+/g, " ").trim();
+  if (!/[.!?]$/.test(why)) why += ".";
+  if (why.length < 35) why = `${why} It connects the choice to the mechanism instead of a surface clue.`;
+  return { ...q, q: polishQuestionStem(q.q, context), options, a, why };
+}
+function polishQuestions(qs, context = "this concept") {
+  return (qs || []).map((q) => polishQuestion(q, context));
+}
 function balanceQuestion(q, seed = "edokai") {
   if (!q) return null;
   const raw = Array.isArray(q.options) ? q.options.map((o) => String(o || "").replace(/\s+/g, " ").replace(/[.…]+$/g, "").trim()).filter(Boolean) : [];
@@ -203,12 +300,10 @@ function balanceQuestion(q, seed = "edokai") {
   const fallbacks = ["neighbor mechanism in this region", "nearby but wrong design path", "surface-only evaluation signal", "unrelated runtime detail here"];
   const unique = [correct, ...raw.filter((_, i) => i !== a0), ...fallbacks].filter((o, i, arr) => o && arr.indexOf(o) === i).slice(0, 4);
   while (unique.length < 4) unique.push(`nearby distractor ${unique.length}`);
-  const lens = unique.map((o) => o.split(/\s+/).filter(Boolean).length);
-  const target = Math.max(4, ...lens);
-  const options = unique.map((o) => `${o}${o.split(/\s+/).length < target - 2 ? " in this lesson" : ""}`);
+  const options = balanceOptionLengths(unique, seed);
   const idx = Math.abs(Array.from(seed).reduce((h, ch) => ((h * 31 + ch.charCodeAt(0)) | 0), 0)) % 4;
   [options[0], options[idx]] = [options[idx], options[0]];
-  return { ...q, q: String(q.q || "Choose the best source-grounded answer."), options, a: idx, why: String(q.why || "This advances the source-backed learning path.") };
+  return polishQuestion({ ...q, q: String(q.q || "Choose the best source-grounded answer."), options, a: idx, why: String(q.why || "This advances the source-backed learning path.") }, seed);
 }
 function uniqueConceptName(name, section, used) {
   const base = String(name || "Source Mechanism").replace(/\s+/g, " ").trim();
@@ -239,12 +334,26 @@ const teachMissionFor = (w) => `Master ${w.title} well enough to explain mechani
 const applyTeachingParadigm = (w) => ({
   ...w,
   teaching: { ...TEACHING_PARADIGM, mission: w.mission || teachMissionFor(w), resources: (w.links || []).map((l) => l.label).slice(0, 4) },
-  regions: (w.regions || []).map((r, i) => ({
-    ...r,
-    teachPhase: r.teachPhase || (i === 0 ? "mission + foundations" : "spaced transfer"),
-    concepts: (r.concepts || []).map((c) => ({ ...c, lore: narrativeLore(c.name, c.lore, w.title) })),
-    referenceHint: r.referenceHint || `Reference terms: ${(r.concepts || []).map((c) => c.name).join(", ")}.`,
-  })),
+  regions: (w.regions || []).map((r, i) => {
+    const concepts = (r.concepts || []).map((c) => ({
+      ...c,
+      lore: narrativeLore(c.name, c.lore, w.title),
+      questions: polishQuestions(c.questions, `${w.title} / ${r.name} / ${c.name}`),
+    }));
+    const sides = (r.sides || []).map((side) => ({
+      ...side,
+      questions: polishQuestions(side.questions, `${w.title} / ${r.name} / ${side.name || "side quest"}`),
+    }));
+    const gym = r.gym ? { ...r.gym, questions: polishQuestions(r.gym.questions, `${w.title} / ${r.name} gym`) } : r.gym;
+    return {
+      ...r,
+      concepts,
+      sides,
+      gym,
+      teachPhase: r.teachPhase || (i === 0 ? "mission + foundations" : "spaced transfer"),
+      referenceHint: r.referenceHint || `Reference terms: ${(r.concepts || []).map((c) => c.name).join(", ")}.`,
+    };
+  }),
 });
 const teachRecordId = (worldId, conceptId) => `${worldId}:${conceptId}`;
 
@@ -264,8 +373,8 @@ async function findResource(concept, cfg) {
   return parseJSON(await askModel(
     `Find the single best free online resource (article/primer/docs) with optimal coverage for learning: "${concept}". Use web search.\nRespond ONLY raw JSON: {"title":"...","url":"...","sections":["3-6 main learnable sections of that resource"]}`, cfg, { needsWeb: true }));
 }
-const REGION_JSON_SPEC = `{"npcText":"40-word NPC summary of the key principle","referenceHint":"one sentence glossary/reference summary","concepts":[{"name":"unique concept name, not reused elsewhere in this generated world","sprite":"emoji","lore":"70-100 word lore: explain this concept as a named Edokai encounter, mechanism, stakes, and evidence","questions":[{"q":"advancement question that proves the learner can use this concept","options":["complete option","complete option","complete option","complete option"],"a":0,"why":"why this answer advances mastery"},{...}]}],"side":{"name":"healing creature name","sprite":"emoji","recLevel":2,"desc":"side duel framed as healing retention practice","questions":[{"q":"HEALING SCENARIO: applied real-world scenario that reinforces prerequisites","options":[4 complete, similar-length options],"a":0,"why":"why this heals/reinforces"},{...}]}}
-Exactly 2 concepts (2 questions each) + 1 side (2 scenario questions). Concept names must be unique across the whole generated world, not generic duplicates. Critical questions are advancement gates; side questions are healing/retention gates that restore HP. No option may be truncated or length-reveal the answer. Apply this teaching paradigm: ${TEACH_PROMPT} ${QUALITY_RULES}`;
+const REGION_JSON_SPEC = `{"npcText":"40-word NPC summary of the key principle","referenceHint":"one sentence glossary/reference summary","concepts":[{"name":"unique concept name, not reused elsewhere in this generated world","sprite":"emoji","lore":"90-130 word cohesive lore paragraph: no bullet fragments, no TERM: clause lists; teach the concept as a memorable mechanism with a concrete scene, state change, stakes, and evidence","questions":[{"q":"clear complete question with enough scenario context to choose an answer without guessing","options":["complete plausible option","complete plausible option","complete plausible option","complete plausible option"],"a":0,"why":"complete explanation that ties the answer to the mechanism"},{...}]}],"side":{"name":"healing creature name","sprite":"emoji","recLevel":2,"desc":"side duel framed as healing retention practice","questions":[{"q":"HEALING SCENARIO: clear applied scenario that reinforces prerequisites and asks for the best conclusion/action","options":[4 complete, similar-length plausible options],"a":0,"why":"complete explanation of why this heals/reinforces"},{...}]}}
+Exactly 2 concepts (2 questions each) + 1 side (2 scenario questions). Concept names must be unique across the whole generated world, not generic duplicates. Lore must read like a short teaching story, not broken notes or colon-separated bullets. Critical questions are advancement gates; side questions are healing/retention gates that restore HP. Every question stem must be a complete sentence or scenario with a clear ask; avoid fragments like “X is...” or “failure:”. No option may be truncated or length-reveal the answer. Apply this teaching paradigm: ${TEACH_PROMPT} ${QUALITY_RULES}`;
 
 async function buildRegionFrom(sourceDesc, section, idx, cfg, pdfB64) {
   const prompt = pdfB64
@@ -280,7 +389,7 @@ async function buildRegionFrom(sourceDesc, section, idx, cfg, pdfB64) {
       ...c,
       id: `g${idx}c${i}`,
       name,
-      lore: lore.length > 40 ? lore : `The ${name} encounter teaches how ${section} turns from a vague topic into an inspectable mechanism. Capture it by naming the moving parts, tracing the evidence, and deciding when the idea should change an implementation or design choice.`,
+      lore: lore.length > 40 ? lore : `${name} begins as a concrete problem inside ${section}: the learner must notice which part of the system changes state, which evidence shows the change worked, and which design choice would fail without it. Capture the encounter by telling that causal story back in your own words before answering the advancement question.`,
       questions: (c.questions || []).map((q, qi) => balanceQuestion(q, `${section}-${name}-critical-${qi}`)).filter(Boolean).slice(0, 2),
     };
   });
@@ -312,7 +421,7 @@ function normalizeGeneratedWorld(w) {
         return {
           ...c,
           name,
-          lore: String(c.lore || "").length > 40 ? c.lore : `The ${name} encounter turns ${r.name} into a concrete learner-facing mechanism with stakes, moving parts, and evidence.`,
+          lore: String(c.lore || "").length > 40 ? c.lore : `${name} is the key mechanism in ${r.name}: it changes what the learner can predict, debug, or design. The encounter is captured when you can name the state before and after the mechanism acts, then point to evidence that the change mattered.`,
           questions: (c.questions || []).map((q, qi) => balanceQuestion(q, `${w.title}-${r.name}-${name}-${qi}`)).filter(Boolean).slice(0, 2),
         };
       });
@@ -1674,15 +1783,59 @@ function sweCategory(k) {
 }
 function cleanBlindTitle(title) { return String(title || "Kata").replace(/\s*\(Blind 75 #\d+\)\s*/g, "").trim(); }
 function narrativeLore(name, lore, worldTitle = "this world") {
-  const text = String(lore || "").replace(/\s+/g, " ").trim();
+  let text = String(lore || "").replace(/\s+/g, " ").trim();
   if (!text) return text;
-  if (/^(In|At|When|Imagine|Picture|Inside)\b/.test(text) && text.length > 180) return text;
-  const softened = text
-    .replace(/\bSINGLE-TURN:/g, "single-turn episodes begin as")
-    .replace(/\bTOOL-USE:/g, "tool-use episodes become")
-    .replace(/\bMULTI-TURN SEQUENTIAL:/g, "multi-turn sequential work stretches into")
-    .replace(/;\s*/g, "; ");
-  return `In ${worldTitle}, ${name} is not a glossary flashcard; it is a scene you can replay. ${softened} Read it as a mechanism with stakes: what state changes, what signal gets easier or harder to assign, and what failure you would notice if the idea were missing.`;
+  const wrapped = text.match(/^In ([^,]+), (.+?) is not a glossary flashcard; it is a scene you can replay\. (.+?) Read it as a mechanism with stakes:.*$/);
+  if (wrapped) text = wrapped[3].trim();
+  const sentenceCount = (text.match(/[.!?](\s|$)/g) || []).length;
+  const labelCount = (text.match(/\b[A-Z][A-Z0-9+/@-]{2,}:\s/g) || []).length;
+  const hasChoppySignals = labelCount >= 2 || /;\s*[A-Z][A-Z0-9+/@-]{2,}:/.test(text) || /trivial credit assignment|moderate horizon|credit crueler/i.test(text);
+
+  if (/^Environment Types$/i.test(name)) {
+    return "Agent environments are training arenas with different kinds of memory. In a single-turn arena, the agent answers once and the reward lands immediately, so blame and credit are easy to assign. In a tool-use arena, the agent must decide when to call tools, read observations, and recover from intermediate mistakes; rewards can now attach to the quality of each step. In a multi-turn sequential arena, early choices change the future state, and the consequence of a bad click may not appear until many turns later. This progression matters because the environment chooses how sparse the reward is, how hard exploration becomes, and whether the agent can learn from a clear signal or only from delayed fallout.";
+  }
+
+  const cleaned = text
+    .replace(/\bSINGLE-TURN:\s*/g, "In the single-turn case, ")
+    .replace(/\bTOOL-USE:\s*/g, "With tool use, ")
+    .replace(/\bMULTI-TURN SEQUENTIAL:\s*/g, "In multi-turn sequential work, ")
+    .replace(/\b([A-Z][A-Z0-9+/@-]{2,}):\s*/g, (_, label) => `${label.replace(/[-_]/g, " ")} means `)
+    .replace(/;\s*/g, ". ")
+    .replace(/\s+—\s+/g, " — ")
+    .replace(/\.\s*\./g, ".")
+    .trim();
+
+  if (!hasChoppySignals && text.length >= 150 && sentenceCount >= 3) return cleaned;
+
+  const variants = [
+    `${name} is the moment in ${worldTitle} where an abstract term turns into a decision you can test. ${cleaned} As you read, track the moving part: what information changes, what evidence would confirm it, and which failure appears when the mechanism is missing.`,
+    `Think of ${name} as a small machine inside ${worldTitle}. ${cleaned} The useful question is not “can I recite the definition?” but “can I predict how the system behaves when this part is present, absent, or tuned badly?”`,
+    `${name} should feel like a cause-and-effect story. ${cleaned} Start from the situation, follow the state change, then name the consequence. That path is what makes the idea reusable in a design review, debugging session, or interview answer.`,
+    `When ${worldTitle} introduces ${name}, the learner is being asked to notice a mechanism, not memorize a label. ${cleaned} Anchor the lore in one concrete contrast: what gets easier, what gets harder, and what signal tells you the concept is doing real work.`
+  ];
+  let h = 0; for (const ch of String(name)) h = (h * 31 + ch.charCodeAt(0)) >>> 0;
+  return variants[h % variants.length];
+}
+
+function splitSentences(text) {
+  return String(text || "").replace(/\s+/g, " ").trim().match(/[^.!?]+[.!?]+|[^.!?]+$/g) || [];
+}
+function conceptNote(c, deep = "") {
+  const lore = narrativeLore(c.name, c.lore || "");
+  const parts = splitSentences(lore).map((x) => x.trim()).filter(Boolean);
+  const mechanism = parts[0] || `${c.name} is a mechanism worth testing in context.`;
+  const consequence = parts.slice(1, 3).join(" ") || "Use the question to connect the definition to a concrete state change.";
+  const deepText = String(deep || "").replace(/\s+/g, " ").trim();
+  return {
+    mechanism,
+    consequence,
+    checkpoint: `Before answering, ask: what changes when ${c.name} is present, and what evidence would rule out a distractor?`,
+    deep: deepText ? splitSentences(deepText).slice(0, 2).join(" ") : "",
+  };
+}
+function compactLore(c) {
+  const n = conceptNote(c);
+  return `${n.mechanism} ${n.consequence}`.trim();
 }
 function sweIo(k) {
   const base = cleanBlindTitle(k.title);
@@ -3168,8 +3321,8 @@ export default function App() {
 
   useEffect(() => {
     (async () => {
-      const s = await loadStore("ru-save", { xp: 0, hp: 100, badges: [], captured: [], sides: [], katas: {}, qstats: {}, kataHints: {}, kataAttempts: {}, learningRecords: [], senzu: null, pet: { mood: "idle", msg: "ready" }, player: null });
-      s.sides = s.sides || []; s.katas = s.katas || {}; s.qstats = s.qstats || {}; s.kataHints = s.kataHints || {}; s.kataAttempts = s.kataAttempts || {}; s.learningRecords = s.learningRecords || []; s.senzu = s.senzu || null; s.pet = s.pet || { mood: "idle", msg: "ready" };
+      const s = await loadStore("ru-save", { xp: 0, hp: 100, badges: [], captured: [], sides: [], katas: {}, qstats: {}, kataHints: {}, kataAttempts: {}, learningRecords: [], dexQuestions: [], senzu: null, pet: { mood: "idle", msg: "ready" }, player: null });
+      s.sides = s.sides || []; s.katas = s.katas || {}; s.qstats = s.qstats || {}; s.kataHints = s.kataHints || {}; s.kataAttempts = s.kataAttempts || {}; s.learningRecords = s.learningRecords || []; s.dexQuestions = s.dexQuestions || []; s.senzu = s.senzu || null; s.pet = s.pet || { mood: "idle", msg: "ready" };
       if (!s.player && typeof window !== "undefined" && window.edokaiDb && window.edokaiDb.auth) {
         try { s.player = await window.edokaiDb.auth("local-player"); } catch {}
       }
@@ -3194,28 +3347,10 @@ export default function App() {
 
   useEffect(() => {
     return subscribeDkgSnapshot(
-      (snapshot) => {
-        const liveWorlds = snapshotToEdokaiWorlds(snapshot.payload);
-        if (liveWorlds.length) {
-          setDkgWorlds(() => {
-            saveStore("ru-dkg-worlds", liveWorlds);
-            return liveWorlds;
-          });
-        }
-        const dkgSummary = summarizeDkgSnapshot(snapshot.payload);
-        setDkgSync((prev) => ({
-          ...prev,
-          status: snapshot.realtime ? "live" : snapshot.empty ? "empty" : "synced",
-          updatedAt: snapshot.updatedAt || snapshot.payload?.synced_at || null,
-          stats: snapshot.payload?.stats || null,
-          recentSources: dkgSummary.recentSources,
-          recentRuns: dkgSummary.recentRuns,
-          error: null,
-        }));
-      },
+      applyDkgSnapshot,
       (status) => {
-        if (status.disabled) setDkgSync((prev) => ({ ...prev, status: "disabled", error: status.message }));
-        else if (status.error) setDkgSync((prev) => ({ ...prev, status: "error", error: status.error }));
+        if (status.disabled) setDkgSync((prev) => ({ ...prev, status: "disabled", error: status.message, source: status.source || prev.source }));
+        else if (status.error) setDkgSync((prev) => ({ ...prev, status: "error", error: status.error, source: status.source || prev.source }));
         else if (status.realtimeStatus) setDkgSync((prev) => ({ ...prev, realtimeStatus: status.realtimeStatus }));
       }
     );
@@ -3226,6 +3361,43 @@ export default function App() {
   const persistUKatas = (k) => { setUKatas(k); saveStore("ru-ukatas", k); };
   const persistAug = (a) => { setAug(a); saveStore("ru-aug", a); };
   const persistLore = (l) => { setDeepLore(l); saveStore("ru-lore", l); };
+  const applyDkgSnapshot = (snapshot) => {
+    const liveWorlds = snapshotToEdokaiWorlds(snapshot.payload);
+    if (liveWorlds.length) {
+      setDkgWorlds(() => {
+        saveStore("ru-dkg-worlds", liveWorlds);
+        return liveWorlds;
+      });
+    }
+    const dkgSummary = summarizeDkgSnapshot(snapshot.payload);
+    setDkgSync((prev) => ({
+      ...prev,
+      status: snapshot.realtime ? "live" : snapshot.empty ? "empty" : "synced",
+      source: snapshot.source || prev.source,
+      updatedAt: snapshot.updatedAt || snapshot.payload?.synced_at || null,
+      stats: snapshot.payload?.stats || null,
+      recentSources: dkgSummary.recentSources,
+      recentRuns: dkgSummary.recentRuns,
+      error: null,
+    }));
+    return liveWorlds.length;
+  };
+  const refreshDkgNow = async () => {
+    setDkgSync((prev) => ({ ...prev, status: "refreshing", error: null }));
+    try {
+      const snapshot = await loadDkgSnapshot({ force: true });
+      if (snapshot.ok) {
+        const count = applyDkgSnapshot(snapshot);
+        showToast(`Live DKG updated from ${snapshot.source || "source"}: ${count} worlds`);
+      } else {
+        setDkgSync((prev) => ({ ...prev, status: snapshot.disabled ? "disabled" : "error", error: snapshot.error || snapshot.message }));
+        showToast(snapshot.error || snapshot.message || "Live DKG refresh failed.");
+      }
+    } catch (e) {
+      setDkgSync((prev) => ({ ...prev, status: "error", error: e.message || String(e) }));
+      showToast(`Live DKG refresh failed: ${e.message || e}`);
+    }
+  };
   const deepenLore = async (c) => {
     if (deepLore[c.id] || busy === "lore") return;
     setBusy("lore");
@@ -3308,13 +3480,22 @@ export default function App() {
       id,
       worldId: world.id,
       title: c.name,
-      summary: `Captured ${c.name}: ${c.lore.slice(0, 180)}${c.lore.length > 180 ? "…" : ""}`,
+      summary: compactLore(c),
       evidence: `Won the critical encounter in ${region.name}.`,
       ts: Date.now(),
     }];
   };
   const worldLearningRecords = (w = world) => (save.learningRecords || []).filter((r) => r.worldId === w.id);
   const capturedConceptsFor = (w = world) => w.regions.flatMap((r) => r.concepts.map((c) => ({ ...c, regionName: r.name }))).filter((c) => capturedSet.has(c.id));
+  const dexQuestionsFor = (w = world) => (save.dexQuestions || []).filter((q) => q.worldId === w.id);
+  const addDexQuestion = (q, srcId = battleSrc, srcName = conceptName(srcId)) => {
+    if (!q) return;
+    const qid = `${world.id}:${srcId}:${String(q.q || "").slice(0, 80)}`;
+    if ((save.dexQuestions || []).some((x) => x.id === qid)) { showToast("Already saved to Conceptdex."); return; }
+    persist({ ...save, dexQuestions: [...(save.dexQuestions || []), { id: qid, worldId: world.id, src: srcId, sourceName: srcName, q: q.q, options: q.options, a: q.a, why: q.why, ts: Date.now() }] });
+    showToast("Question saved to Conceptdex.");
+  };
+  const removeDexQuestion = (id) => persist({ ...save, dexQuestions: (save.dexQuestions || []).filter((q) => q.id !== id) });
   const testCustomModel = async () => {
     if (!cfg.baseUrl || !cfg.model) { setModelTest({ ok: false, msg: "Set a base URL and model first." }); return; }
     setModelTest({ ok: null, msg: "Testing model connection…" });
@@ -3876,6 +4057,16 @@ ${QUALITY_RULES}`, cfg));
     qbtn: { display: "block", width: "100%", textAlign: "left", marginBottom: 8, background: T.card, border: `1.5px solid ${T.line}`, color: T.ink, borderRadius: 10, padding: "11px 13px", fontSize: 13.5, fontWeight: 600, cursor: "pointer", fontFamily: "inherit", lineHeight: 1.45 },
   };
 
+  const NarutoPet = ({ pet = {} }) => {
+    const mood = pet.mood || "idle";
+    const msg = pet.msg || "Believe it — keep training.";
+    const frame = mood === "harm" ? 2 : mood === "heal" || mood === "senzu" ? 3 : mood === "quest" ? 4 : mood === "done" ? 5 : 0;
+    return <div title={`Naruto pet · ${msg}`} style={{ width: 54, minWidth: 54, textAlign: "center", border: `1px solid ${T.line}`, borderRadius: 14, padding: "3px 4px", background: mood === "harm" ? T.penaltySoft : mood === "heal" || mood === "senzu" ? T.rewardSoft : T.card }}>
+      <div style={{ width: 40, height: 43, margin: "0 auto", backgroundImage: "url('/pets/naruto-spritesheet.webp')", backgroundSize: "320px 387px", backgroundPosition: `-${(frame % 8) * 40}px -${Math.floor(frame / 8) * 43}px`, imageRendering: "auto", animation: mood === "harm" ? "shake .25s ease" : "bob 1.6s ease-in-out infinite" }} />
+      <div style={S.mono(7, T.inkSoft)}>{mood}</div>
+    </div>;
+  };
+
   if (!save) return <div style={{ ...S.app, display: "flex", alignItems: "center", justifyContent: "center" }}><span style={S.mono()}>loading save file…</span></div>;
 
   const HUD = ({ back }) => (
@@ -3891,10 +4082,7 @@ ${QUALITY_RULES}`, cfg));
             <div style={{ height: "100%", width: `${(save.hp / maxHp) * 100}%`, background: save.hp / maxHp > 0.4 ? T.reward : T.penalty, transition: "width .4s" }} />
           </div>
         </div>
-        <div title={save.pet?.msg || "Edokai pet"} style={{ width: 42, minWidth: 42, textAlign: "center", border: `1px solid ${T.line}`, borderRadius: 12, padding: "3px 4px", background: save.pet?.mood === "harm" ? T.penaltySoft : save.pet?.mood === "heal" || save.pet?.mood === "senzu" ? T.rewardSoft : T.card }}>
-          <div style={{ fontSize: 20, animation: save.pet?.mood === "harm" ? "shake .25s ease" : "bob 1.6s ease-in-out infinite" }}>{save.pet?.mood === "harm" ? "😿" : save.pet?.mood === "senzu" ? "🐉" : save.pet?.mood === "heal" ? "😸" : "🐾"}</div>
-          <div style={S.mono(7, T.inkSoft)}>{save.pet?.mood || "idle"}</div>
-        </div>
+        <NarutoPet pet={save.pet} />
         <button onClick={toggleMusic} title="Low-volume background music" style={{ background: "none", border: `1px solid ${T.line}`, color: T.ink, borderRadius: 8, width: 30, height: 30, cursor: "pointer", fontSize: 14 }}>{musicOn ? "🎵" : "🔇"}</button>
         <button onClick={toggleTheme} title={darkMode ? "Switch to light mode" : "Switch to dark mode"} style={{ background: "none", border: `1px solid ${T.line}`, color: T.ink, borderRadius: 8, width: 30, height: 30, cursor: "pointer", fontSize: 14 }}>{darkMode ? "☀️" : "🌙"}</button>
         <button onClick={() => { setDexWorld(activeWorld); setScreen("dex"); }} style={{ ...S.btn(T.explore), padding: "7px 10px", fontSize: 12 }}>📖</button>
@@ -3943,9 +4131,12 @@ ${QUALITY_RULES}`, cfg));
       </div>
     );
   };
-  const QCard = ({ q, ord, onAnswer, label, color }) => (
+  const QCard = ({ q, ord, onAnswer, label, color, onSave = null }) => (
     <div style={{ ...S.card, animation: "slideUp .25s ease" }}>
-      <span style={S.mono(10, color || T.explore)}>{label}</span>
+      <div style={{ display: "flex", justifyContent: "space-between", gap: 8, alignItems: "center" }}>
+        <span style={S.mono(10, color || T.explore)}>{label}</span>
+        {onSave && <button onClick={(e) => { e.stopPropagation(); onSave(q); }} style={{ ...S.chip(false), padding: "4px 8px", fontSize: 11 }}>＋ Conceptdex</button>}
+      </div>
       <div style={{ fontWeight: 700, fontSize: 15, lineHeight: 1.55, margin: "8px 0 12px" }}>{q.q}</div>
       {ord.map((optIdx, i) => (
         <button key={i} onClick={() => onAnswer(i)} style={S.qbtn}>
@@ -4022,16 +4213,22 @@ ${QUALITY_RULES}`, cfg));
           <button onClick={() => setHomeView("atlas")} style={{ ...S.btn(homeView === "atlas" ? T.explore : "transparent", homeView === "atlas" ? "#fff" : T.inkSoft), flex: 1, padding: "7px 10px", fontSize: 12, borderRadius: 999 }}>🗺️ Atlas view</button>
         </div>
         <TeachingPanel target={world} compact />
-        <Collapsible id="liveDkg" title={`LIVE DKG · ${dkgSync.status.toUpperCase()}`} color={dkgSync.status === "error" ? T.penalty : T.explore} style={{ marginTop: 10, background: dkgSync.status === "error" ? T.penaltySoft : dkgSync.status === "disabled" ? T.card : T.exploreSoft }} right={dkgSync.updatedAt ? <span style={S.mono(9, T.inkSoft)}>{new Date(dkgSync.updatedAt).toLocaleString()}</span> : null}>
+        <Collapsible id="liveDkg" title={`LIVE DKG · ${dkgSync.status.toUpperCase()}`} color={dkgSync.status === "error" ? T.penalty : T.explore} style={{ marginTop: 10, background: dkgSync.status === "error" ? T.penaltySoft : dkgSync.status === "disabled" ? T.card : T.exploreSoft }} right={<button onClick={(e) => { e.stopPropagation(); refreshDkgNow(); }} style={{ ...S.chip(false), fontSize: 11, padding: "5px 9px" }}>{dkgSync.status === "refreshing" ? "Pulling…" : "Pull latest"}</button>}>
           <p style={{ fontSize: 12.5, color: T.inkSoft, lineHeight: 1.5, margin: 0 }}>
             {dkgSync.status === "disabled"
-              ? "Set VITE_SUPABASE_ANON_KEY in Netlify to load live Supabase graph snapshots."
+              ? "No live DKG source is available yet. The app now tries browser Supabase, the Netlify DKG proxy, then GitHub raw knowledge files; configure Netlify server env or click Pull latest after GitHub deploys."
               : dkgSync.status === "error"
-                ? `Supabase sync error: ${dkgSync.error}`
+                ? `Live DKG sync error: ${dkgSync.error}`
                 : dkgSync.stats
-                  ? `${dkgSync.stats.node_count || 0} graph nodes · ${dkgSync.stats.edge_count || 0} edges · ${dkgSync.stats.macro_world_count || 0} macro worlds synced from Supabase.`
-                  : "Waiting for the latest Supabase graph snapshot…"}
+                  ? `${dkgSync.stats.node_count || 0} graph nodes · ${dkgSync.stats.edge_count || 0} edges · ${dkgSync.stats.macro_world_count || 0} macro worlds synced from ${dkgSync.source || "live DKG"}.`
+                  : "Waiting for the latest live DKG snapshot from Supabase, Netlify proxy, or GitHub raw…"}
           </p>
+          <div style={{ display: "flex", flexWrap: "wrap", gap: 6, marginTop: 8 }}>
+            <span style={S.mono(9, T.inkSoft)}>source: {dkgSync.source || "auto"}</span>
+            {dkgSync.updatedAt && <span style={S.mono(9, T.inkSoft)}>updated: {new Date(dkgSync.updatedAt).toLocaleString()}</span>}
+            {dkgSync.realtimeStatus && <span style={S.mono(9, T.inkSoft)}>realtime: {dkgSync.realtimeStatus}</span>}
+            {!dkgSync.browserSupabaseConfigured && <span style={S.mono(9, T.gold)}>browser anon key absent; using server proxy/GitHub fallback</span>}
+          </div>
           {!!(dkgSync.recentSources || []).length && <Collapsible id="liveDkgSources" title="RECENT LIVE INGESTS / SOURCES" color={T.inkSoft} style={{ marginTop: 10, padding: 10, background: T.card }}>
             <div style={{ display: "grid", gap: 6 }}>
               {(dkgSync.recentSources || []).slice(0, 3).map((src) => (
@@ -4257,7 +4454,7 @@ ${QUALITY_RULES}`, cfg));
             <span style={S.mono(10, "#9FA8CC")}>Q{gaunt.idx + 1}/{gaunt.pool.length} · {"❤️".repeat(gaunt.lives)}{"🖤".repeat(3 - gaunt.lives)} · {gaunt.score} ✓</span>
           </div>
           <div style={{ marginTop: 10 }}>
-            <QCard q={q} ord={gaunt.ord} onAnswer={answerGauntlet} label={`FROM: ${q.name} · +8 XP`} color={T.gold} />
+            <QCard q={q} ord={gaunt.ord} onAnswer={answerGauntlet} label={`FROM: ${q.name} · +8 XP`} color={T.gold} onSave={(qq) => addDexQuestion(qq, q.src || "gauntlet", q.name || "Gauntlet")} />
           </div>
           {gaunt.fb && (
             <div style={{ background: gaunt.fb.ok ? T.rewardSoft : T.penaltySoft, borderRadius: 14, padding: 14, marginTop: 12, animation: "slideUp .25s ease" }}>
@@ -4458,10 +4655,10 @@ ${QUALITY_RULES}`, cfg));
           <Collapsible id="teachResources" title="RESOURCES.md / SOURCES" color={T.explore} style={{ marginTop: 10 }}>
             {(teachW.links || []).length ? teachW.links.map((l) => <div key={l.url} style={{ marginTop: 7 }}><a href={l.url} target="_blank" rel="noreferrer" style={{ color: T.explore, fontWeight: 800, fontSize: 13 }}>{l.label}</a><div style={{ fontSize: 12, color: T.inkSoft }}>Use for source-grounded lore, examples, and follow-up reading.</div></div>) : <p style={{ fontSize: 12.5, color: T.inkSoft }}>Custom worlds built from pasted text/PDFs use that source as their resource.</p>}
           </Collapsible>
-          <Collapsible id="teachGlossary" title="GLOSSARY.md · captured concepts only" color={T.gold} style={{ marginTop: 10 }}>
-            {glossary.length ? glossary.map((c) => <div key={c.id} style={{ marginTop: 9, borderTop: `1px solid ${T.line}`, paddingTop: 8 }}><b style={{ fontSize: 13.5 }}>{c.sprite} {c.name}</b><p style={{ fontSize: 12.5, color: T.inkSoft, lineHeight: 1.55, margin: "4px 0 0" }}>{c.lore.slice(0, 230)}{c.lore.length > 230 ? "…" : ""}</p></div>) : <p style={{ fontSize: 12.5, color: T.inkSoft }}>Defeat critical encounters to promote terms into the glossary. This keeps the reference layer honest: it only contains concepts you have demonstrated.</p>}
+          <Collapsible id="teachGlossary" title={`GLOSSARY.md · ${glossary.length} captured concepts`} color={T.gold} style={{ marginTop: 10 }}>
+            {glossary.length ? glossary.map((c) => { const n = conceptNote(c, deepLore[c.id]); return <div key={c.id} style={{ marginTop: 9, borderTop: `1px solid ${T.line}`, paddingTop: 8 }}><b style={{ fontSize: 13.5 }}>{c.sprite} {c.name}</b><p style={{ fontSize: 12.5, color: T.inkSoft, lineHeight: 1.55, margin: "4px 0" }}>{n.mechanism}</p><span style={S.mono(9, T.explore)}>check: {n.checkpoint}</span></div>; }) : <p style={{ fontSize: 12.5, color: T.inkSoft }}>Defeat critical encounters to promote terms into the glossary. This keeps the reference layer honest: it only contains concepts you have demonstrated.</p>}
           </Collapsible>
-          <Collapsible id="teachRecords" title="LEARNING RECORDS" color={T.reward} style={{ marginTop: 10 }}>
+          <Collapsible id="teachRecords" title={`LEARNING RECORDS · ${records.length}`} color={T.reward} style={{ marginTop: 10 }}>
             {records.length ? records.map((r) => <div key={r.id} style={{ marginTop: 9, borderTop: `1px solid ${T.line}`, paddingTop: 8 }}><b style={{ fontSize: 13.5 }}>{r.title}</b><p style={{ fontSize: 12.5, color: T.inkSoft, lineHeight: 1.55, margin: "4px 0 0" }}>{r.summary}</p><span style={S.mono(9, T.reward)}>{r.evidence}</span></div>) : <p style={{ fontSize: 12.5, color: T.inkSoft }}>Learning records appear when a critical is won. They are evidence of understanding, not a session log.</p>}
           </Collapsible>
         </div>
@@ -4474,39 +4671,52 @@ ${QUALITY_RULES}`, cfg));
     const dexW = allWorlds.find((w) => w.id === dexWorld) || world;
     const dTotal = dexW.regions.reduce((n, r) => n + r.concepts.length, 0);
     const dGot = dexW.regions.reduce((n, r) => n + r.concepts.filter((c) => capturedSet.has(c.id)).length, 0);
+    const savedQs = dexQuestionsFor(dexW);
+    const capturedByRegion = dexW.regions.map((r) => ({ ...r, capturedConcepts: r.concepts.filter((c) => capturedSet.has(c.id)) })).filter((r) => r.capturedConcepts.length || r.concepts.length);
     return (
       <div style={S.app}><style>{CSS}</style><Toast /><HUD back={() => setScreen("home")} />
         <div style={{ ...S.wrap, paddingTop: 16 }}>
           <h2 style={{ fontSize: 20, fontWeight: 800, margin: "0 0 6px" }}>Conceptdex</h2>
+          <p style={{ fontSize: 12.5, color: T.inkSoft, lineHeight: 1.55, margin: "0 0 10px" }}>A compact field guide: captured concepts are summarized as decision notes, and saved questions live in a separate review deck. Use the + dex button during battles or gauntlets to save questions that are worth drilling again.</p>
           <div style={{ display: "flex", gap: 6, flexWrap: "wrap" }}>
             {allWorlds.map((w) => <button key={w.id} onClick={() => setDexWorld(w.id)} style={S.chip(dexWorld === w.id)}>{w.emoji} {w.title}</button>)}
           </div>
-          <div style={{ marginTop: 10 }}><span style={S.mono(10.5, dGot === dTotal && dTotal > 0 ? T.reward : T.inkSoft)}>{dexW.title}: {dGot}/{dTotal} CAPTURED · lore unlocks on capture</span></div>
-          {dexW.regions.map((r) => (
-            <div key={r.id} style={{ marginTop: 14 }}>
-              <div style={{ fontWeight: 800, fontSize: 15 }}>{r.emoji} {r.name}</div>
-              {r.concepts.map((c) => {
-                const got = capturedSet.has(c.id);
-                return (
-                  <div key={c.id} style={{ ...S.card, marginTop: 8, padding: 13, opacity: got ? 1 : 0.6 }}>
-                    <div style={{ display: "flex", gap: 10, alignItems: "center" }}>
-                      <span style={{ fontSize: 24, filter: got ? "none" : "grayscale(1) brightness(0.4)" }}>{c.sprite}</span>
-                      <span style={{ fontWeight: 800, fontSize: 15 }}>{got ? c.name : "???"}</span>
-                      {got && <span style={{ ...S.mono(9, T.reward), marginLeft: "auto" }}>CAPTURED</span>}
-                    </div>
-                    {got ? (
-                      <>
-                        <p style={{ fontSize: 13, lineHeight: 1.6, margin: "8px 0 0" }}>{c.lore}</p>
-                        {deepLore[c.id]
-                          ? <p style={{ fontSize: 12.5, lineHeight: 1.6, margin: "8px 0 0", padding: "8px 10px", background: T.exploreSoft, borderRadius: 8 }}>🔍 {deepLore[c.id]}</p>
-                          : <button onClick={() => deepenLore(c)} disabled={busy === "lore"} style={{ ...S.chip(false), marginTop: 8, fontSize: 11.5 }}>{busy === "lore" ? "…" : "🔍 Deepen"}</button>}
-                      </>
-                    ) : <p style={{ fontSize: 12.5, color: T.inkSoft, margin: "6px 0 0" }}>A critical encounter in {r.name}. Defeat it to unlock its lore.</p>}
-                  </div>
-                );
-              })}
-            </div>
-          ))}
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 8, marginTop: 10 }}>
+            <div style={{ ...S.card, padding: 10 }}><span style={S.mono(9, T.gold)}>CAPTURED</span><div style={{ fontWeight: 900 }}>{dGot}/{dTotal}</div></div>
+            <div style={{ ...S.card, padding: 10 }}><span style={S.mono(9, T.explore)}>SAVED Q</span><div style={{ fontWeight: 900 }}>{savedQs.length}</div></div>
+            <div style={{ ...S.card, padding: 10 }}><span style={S.mono(9, T.reward)}>REGIONS</span><div style={{ fontWeight: 900 }}>{dexW.regions.length}</div></div>
+          </div>
+
+          <Collapsible id={`dex-q-${dexW.id}`} title={`SAVED QUESTION DECK · ${savedQs.length}`} color={T.explore} style={{ marginTop: 12 }}>
+            {savedQs.length ? savedQs.map((sq) => (
+              <div key={sq.id} style={{ borderTop: `1px solid ${T.line}`, paddingTop: 9, marginTop: 9 }}>
+                <div style={{ display: "flex", justifyContent: "space-between", gap: 8, alignItems: "baseline" }}>
+                  <span style={S.mono(9, T.explore)}>{sq.sourceName || conceptName(sq.src)}</span>
+                  <button onClick={() => removeDexQuestion(sq.id)} style={{ ...S.chip(false), padding: "3px 8px", fontSize: 10 }}>remove</button>
+                </div>
+                <p style={{ fontSize: 13, fontWeight: 800, lineHeight: 1.45, margin: "6px 0" }}>{sq.q}</p>
+                <div style={{ display: "grid", gap: 4 }}>
+                  {(sq.options || []).map((o, i) => <div key={i} style={{ fontSize: 12.5, color: i === sq.a ? T.reward : T.inkSoft }}><b>{String.fromCharCode(65 + i)}.</b> {o}{i === sq.a ? " ✓" : ""}</div>)}
+                </div>
+                <p style={{ fontSize: 12.5, color: T.inkSoft, lineHeight: 1.5, margin: "6px 0 0" }}>{sq.why}</p>
+              </div>
+            )) : <p style={{ fontSize: 12.5, color: T.inkSoft, lineHeight: 1.5 }}>No saved questions yet. During any battle, tap <b>＋ dex</b>; during gauntlets, tap <b>＋ Conceptdex</b>.</p>}
+          </Collapsible>
+
+          {capturedByRegion.map((r) => {
+            const got = r.capturedConcepts.length;
+            return <Collapsible key={r.id} id={`dex-r-${dexW.id}-${r.id}`} title={`${r.emoji} ${r.name} · ${got}/${r.concepts.length} captured`} color={got ? T.gold : T.inkSoft} style={{ marginTop: 10 }}>
+              {got ? r.capturedConcepts.map((c) => { const n = conceptNote(c, deepLore[c.id]); return (
+                <div key={c.id} style={{ borderTop: `1px solid ${T.line}`, paddingTop: 9, marginTop: 9 }}>
+                  <div style={{ display: "flex", gap: 8, alignItems: "center" }}><span style={{ fontSize: 20 }}>{c.sprite}</span><b style={{ fontSize: 14 }}>{c.name}</b><span style={{ ...S.mono(9, T.reward), marginLeft: "auto" }}>CAPTURED</span></div>
+                  <p style={{ fontSize: 12.8, lineHeight: 1.55, margin: "6px 0 0" }}>{n.mechanism}</p>
+                  <p style={{ fontSize: 12.5, color: T.inkSoft, lineHeight: 1.5, margin: "5px 0 0" }}><b>Decision note:</b> {n.consequence}</p>
+                  <p style={{ fontSize: 12, color: T.explore, lineHeight: 1.5, margin: "5px 0 0" }}>{n.checkpoint}</p>
+                  {deepLore[c.id] ? <p style={{ fontSize: 12, color: T.inkSoft, lineHeight: 1.5, margin: "5px 0 0" }}>🔍 {n.deep}</p> : <button onClick={() => deepenLore(c)} disabled={busy === "lore"} style={{ ...S.chip(false), marginTop: 7, fontSize: 11 }}>🔍 Deepen</button>}
+                </div>
+              ); }) : <p style={{ fontSize: 12.5, color: T.inkSoft, lineHeight: 1.5 }}>No captures in this region yet. Locked concepts stay off the page so the dex remains short and useful.</p>}
+            </Collapsible>;
+          })}
         </div>
       </div>
     );
@@ -4583,7 +4793,7 @@ ${QUALITY_RULES}`, cfg));
         </div>
         <div style={{ ...S.card, marginTop: 12 }}>
           <span style={S.mono(10)}>SOUNDTRACK</span>
-          <p style={{ fontSize: 12.5, color: T.inkSoft, lineHeight: 1.5, margin: "6px 0 8px" }}>The app ships with a DBZ-inspired background track from <code>public/audio/dbz_songs.mp3</code>, played at low lo-fi volume by default so it sits under the study loop instead of overpowering it. You can still load your own file for this session.</p>
+          <p style={{ fontSize: 12.5, color: T.inkSoft, lineHeight: 1.5, margin: "6px 0 8px" }}>The app now uses a tiny generated lo-fi synth loop by default instead of bundling a large audio file. You can still load your own audio file for this session.</p>
           <label style={{ ...S.chip(false), display: "inline-block", cursor: "pointer" }}>
             🎵 Choose audio file…
             <input type="file" accept="audio/*" style={{ display: "none" }} onChange={(e) => {
@@ -4597,7 +4807,7 @@ ${QUALITY_RULES}`, cfg));
         <div style={{ ...S.card, marginTop: 12 }}>
           <span style={S.mono(10)}>SAVE DATA</span>
           <p style={{ fontSize: 12.5, color: T.inkSoft, margin: "6px 0 10px" }}>Player {save.player?.name || "local-player"} · UUID {save.player?.id || "pending"} · Session {save.player?.sessionId || "pending"}<br />XP {save.xp} · {save.captured.length} concepts · {save.badges.length} badges · {Object.keys(save.katas).length} katas · telemetry on {Object.keys(save.qstats).length} topics</p>
-          <button onClick={() => { persist({ xp: 0, hp: 100, badges: [], captured: [], sides: [], katas: {}, qstats: {}, kataHints: {}, kataAttempts: {}, learningRecords: [], senzu: null, pet: { mood: "idle", msg: "ready" }, player: save.player }); persistAug({}); showToast("Save reset."); }} style={{ ...S.btn(T.penalty), padding: "8px 14px", fontSize: 12.5 }}>Reset progress</button>
+          <button onClick={() => { persist({ xp: 0, hp: 100, badges: [], captured: [], sides: [], katas: {}, qstats: {}, kataHints: {}, kataAttempts: {}, learningRecords: [], dexQuestions: [], senzu: null, pet: { mood: "idle", msg: "ready" }, player: save.player }); persistAug({}); showToast("Save reset."); }} style={{ ...S.btn(T.penalty), padding: "8px 14px", fontSize: 12.5 }}>Reset progress</button>
         </div>
       </div>
     </div>
@@ -4903,19 +5113,24 @@ ${QUALITY_RULES}`, cfg));
               <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: 6 }}>
                 <span style={S.mono(10, kindColor)}>{battle.kind === "side" ? "APPLIED SCENARIO" : "CHOOSE YOUR MOVE"} · wrong = −{battle.kind === "gym" ? 22 : 16} HP</span>
                 <span style={{ display: "flex", gap: 6 }}>
+                  <button onClick={() => addDexQuestion(q)} style={{ ...S.chip(false), padding: "4px 10px", fontSize: 11 }}>＋ dex</button>
                   <button onClick={() => setBattle({ ...battle, showNotes: !battle.showNotes })} style={{ ...S.chip(battle.showNotes), padding: "4px 10px", fontSize: 11 }}>📜 notes</button>
                   {side && side.code && <button onClick={() => setBattle({ ...battle, showCode: !battle.showCode })} style={{ ...S.chip(battle.showCode), padding: "4px 10px", fontSize: 11 }}>{"</>"}</button>}
                 </span>
               </div>
               {battle.showNotes && (
-                <div style={{ maxHeight: 220, overflowY: "auto", marginTop: 8, padding: "10px 12px", background: T.paper, borderRadius: 10 }}>
-                  {battleNotes().map((c) => (
-                    <div key={c.id} style={{ marginBottom: 8 }}>
-                      <b style={{ fontSize: 12.5 }}>{c.sprite} {c.name}:</b>
-                      <span style={{ fontSize: 12.5, lineHeight: 1.55 }}> {c.lore}{deepLore[c.id] ? " 🔍 " + deepLore[c.id] : ""}</span>
-                    </div>
-                  ))}
-                  <span style={S.mono(9)}>consulting notes is studying, not cheating — retention comes from use</span>
+                <div style={{ maxHeight: 260, overflowY: "auto", marginTop: 8, padding: "10px 12px", background: T.paper, borderRadius: 10 }}>
+                  {battleNotes().map((c) => {
+                    const n = conceptNote(c, deepLore[c.id]);
+                    return <div key={c.id} style={{ marginBottom: 10, borderBottom: `1px solid ${T.line}`, paddingBottom: 8 }}>
+                      <b style={{ fontSize: 12.5 }}>{c.sprite} {c.name}</b>
+                      <p style={{ fontSize: 12.5, lineHeight: 1.55, margin: "4px 0 0" }}>{n.mechanism}</p>
+                      <p style={{ fontSize: 12.5, lineHeight: 1.55, margin: "4px 0 0", color: T.inkSoft }}><b>Use it:</b> {n.consequence}</p>
+                      <p style={{ fontSize: 12, lineHeight: 1.5, margin: "4px 0 0", color: T.explore }}>{n.checkpoint}</p>
+                      {n.deep && <p style={{ fontSize: 12, lineHeight: 1.5, margin: "4px 0 0", color: T.inkSoft }}>🔍 {n.deep}</p>}
+                    </div>;
+                  })}
+                  <span style={S.mono(9)}>notes are compact decision aids: mechanism → consequence → answer check</span>
                 </div>
               )}
               {side && side.code && battle.showCode && <pre style={{ ...S.pre, marginTop: 8, maxHeight: 180, overflowY: "auto" }}>{side.code}</pre>}
