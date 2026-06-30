@@ -212,28 +212,26 @@ function cleanRepeatedWords(text) {
   return out;
 }
 function compactOption(text) {
-  let out = sentenceCaseOption(text)
-    .replace(/\s*[-–—:]\s+.*$/g, "")
-    .replace(/\s*\([^)]{18,}\)\s*/g, " ")
-    .replace(/\b(?:primarily|mainly|exactly|actually|simply|just|always|never)\b/gi, "")
+  // Keep the authored answer intact. Earlier versions cut answers to ~8 words
+  // to hide length tells, but that made lore questions feel truncated. We only
+  // clean repeated whitespace/terminal punctuation here; balancing happens by
+  // adding neutral context to shorter choices rather than deleting meaning.
+  const out = sentenceCaseOption(text)
     .replace(/\s+/g, " ")
     .trim();
-  const ws = wordsOf(out);
-  if (ws.length > 8) out = ws.slice(0, 8).join(" ");
   return cleanRepeatedWords(out).replace(/[.;:]+$/g, "") || "Nearby but wrong mechanism";
 }
 function balanceOptionLengths(options, seed = "edokai") {
   const base = (options || []).slice(0, 4).map(compactOption);
   while (base.length < 4) base.push(compactOption(`Nearby wrong mechanism ${base.length + 1}`));
-  const neutralPads = ["for this case", "in this setting", "under the same signal", "for the learner"];
+  const neutralPads = ["for this case", "in this setting", "under the same signal", "for the learner", "in the same lesson"];
   const lens = base.map((o) => wordsOf(o).length);
-  const target = Math.max(5, Math.min(8, Math.round(lens.reduce((a, b) => a + b, 0) / lens.length)));
+  const maxLen = Math.max(...lens, 5);
+  const target = Math.min(maxLen, 16);
   return base.map((o, i) => {
-    let ws = wordsOf(o);
-    if (ws.length > target + 1) ws = ws.slice(0, target + 1);
-    let out = ws.join(" ");
+    let out = o;
     let guard = 0;
-    while (wordsOf(out).length < target - 1 && guard < 2) {
+    while (wordsOf(out).length < target - 2 && guard < 4) {
       out = `${out} ${neutralPads[(i + guard + String(seed).length) % neutralPads.length]}`;
       guard += 1;
     }

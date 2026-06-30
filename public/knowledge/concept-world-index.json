@@ -1,0 +1,1287 @@
+{
+  "schema_version": 1,
+  "updated_at": "2026-06-29T03:22:38Z",
+  "macro_worlds": {
+    "agents": {
+      "label": "Agents",
+      "description": "Agentic workflows, RL/post-training, planning, orchestration, evaluation, and tool-using systems.",
+      "regions": [
+        {
+          "id": "language-world-models-for-agents",
+          "label": "Language World Models for Agents",
+          "summary": "How language models can simulate agent environments, predict state transitions, and provide synthetic experience for planning and RL.",
+          "source_ids": [
+            "emergentmind-2606-24597-qwen-agentworld-2026"
+          ],
+          "concept_ids": [
+            "qwen-agentworld-language-world-models",
+            "agentworldbench",
+            "agentic-rl-through-world-simulation"
+          ],
+          "critical_concepts": [
+            "qwen-agentworld-language-world-models",
+            "agentic-rl-through-world-simulation",
+            "agentworldbench"
+          ],
+          "prerequisite_links": [],
+          "side_retention_duels": [
+            {
+              "id": "world-model-vs-policy",
+              "prompt": "What does a language world model primarily predict?",
+              "left": "Environment state transitions conditioned on observations/actions",
+              "right": "Only the final user-facing answer text",
+              "answer": "It predicts environment dynamics/state transitions, which can then support planning or RL."
+            }
+          ],
+          "quiz_questions": [
+            {
+              "question": "What is the central role of Qwen-AgentWorld in the agent loop?",
+              "choices": [
+                "Replace tokenization with image patches.",
+                "Simulate next states of agent environments from observations and actions.",
+                "Serve embeddings for vector search only.",
+                "Compress teacher logits into a student vocabulary."
+              ],
+              "answer_index": 1,
+              "source_ids": [
+                "emergentmind-2606-24597-qwen-agentworld-2026"
+              ]
+            }
+          ]
+        },
+        {
+          "id": "agent-data-and-self-improvement",
+          "label": "Agent Data & Self-Improvement",
+          "summary": "Data-generation, reasoning-scaling, and evaluator-evolution loops for building stronger agentic models.",
+          "source_ids": [
+            "emergentmind-2606-25996-autodata-2026",
+            "emergentmind-2606-24855-openthoughts-agent-2026",
+            "emergentmind-2606-23595-spiral-2026",
+            "emergentmind-2606-26294-red-queen-godel-machine-2026"
+          ],
+          "concept_ids": [
+            "autodata-agentic-synthetic-data",
+            "openthoughts-agent-data-recipes",
+            "spiral-search-and-aggregate",
+            "red-queen-godel-machine",
+            "co-evolving-agent-evaluators"
+          ],
+          "critical_concepts": [
+            "autodata-agentic-synthetic-data",
+            "spiral-search-and-aggregate",
+            "co-evolving-agent-evaluators"
+          ],
+          "prerequisite_links": [],
+          "side_retention_duels": [
+            {
+              "id": "static-vs-coevolving-eval",
+              "prompt": "Which evaluation setting fits self-improving agents that may outgrow a benchmark?",
+              "left": "A stationary verifier frozen forever",
+              "right": "Evaluator co-evolution with the improving agent",
+              "answer": "The Red Queen framing argues for co-evolving evaluators when static criteria become stale."
+            }
+          ],
+          "quiz_questions": [
+            {
+              "question": "Why is the Red Queen Gödel Machine relevant to self-improving agents?",
+              "choices": [
+                "It replaces every benchmark with OCR transcription.",
+                "It removes post-training data from agent development.",
+                "It studies co-evolving agents and evaluators instead of assuming a fixed verifier.",
+                "It uses only a static i.i.d. test set."
+              ],
+              "answer_index": 2,
+              "source_ids": [
+                "emergentmind-2606-26294-red-queen-godel-machine-2026"
+              ]
+            }
+          ]
+        },
+        {
+          "id": "agent-systems-foundations",
+          "label": "Agent Systems Foundations",
+          "summary": "Practitioner mental models for autonomous AI systems across foundations, orchestration, deployment, and production reliability.",
+          "source_ids": [
+            "emergentmind-2606-24937-hitchhikers-guide-agentic-ai-2026",
+            "arxiv-2606-24937-hitchhikers-guide-agentic-ai-2026"
+          ],
+          "concept_ids": [
+            "agentic-ai-full-stack-reference",
+            "agentic-ai-layered-stack",
+            "agent-harness-orchestration"
+          ],
+          "critical_concepts": [
+            "agentic-ai-full-stack-reference"
+          ],
+          "prerequisite_links": [],
+          "side_retention_duels": [
+            {
+              "id": "prompt-only-vs-full-stack",
+              "prompt": "How should learners frame agentic systems?",
+              "left": "Prompt-only trick collection",
+              "right": "Full-stack system from foundations through production",
+              "answer": "The source frames agentic systems as full-stack production systems."
+            }
+          ],
+          "quiz_questions": [
+            {
+              "question": "What is the premise of the Hitchhiker’s Guide to Agentic AI?",
+              "choices": [
+                "Agent systems are only prompt templates.",
+                "Autonomous systems need no evaluation layer.",
+                "Agents are unrelated to deployment concerns.",
+                "Good agentic systems require understanding the whole stack from foundations to production."
+              ],
+              "answer_index": 3,
+              "source_ids": [
+                "emergentmind-2606-24937-hitchhikers-guide-agentic-ai-2026",
+                "arxiv-2606-24937-hitchhikers-guide-agentic-ai-2026"
+              ]
+            }
+          ]
+        },
+        {
+          "id": "continual-learning-and-plasticity",
+          "label": "Continual Learning & Plasticity",
+          "summary": "How LLMs retain or lose the ability to learn new information after prior training.",
+          "source_ids": [
+            "emergentmind-2606-24752-plasticity-loss-llms-2026"
+          ],
+          "concept_ids": [
+            "plasticity-loss-in-llms"
+          ],
+          "critical_concepts": [
+            "plasticity-loss-in-llms"
+          ],
+          "prerequisite_links": [],
+          "side_retention_duels": [
+            {
+              "id": "forgetting-vs-plasticity-loss",
+              "prompt": "What does plasticity loss emphasize?",
+              "left": "Forgetting old facts only",
+              "right": "Difficulty learning new information after prior learning",
+              "answer": "Plasticity loss is about reduced ability to learn new information after previous learning."
+            }
+          ],
+          "quiz_questions": [
+            {
+              "question": "What is plasticity loss?",
+              "choices": [
+                "Reduced ability to learn new information after earlier learning.",
+                "A tokenizer changing Unicode normalization.",
+                "A retrieval index returning too many chunks.",
+                "A GPU matrix multiply using lower precision."
+              ],
+              "answer_index": 0,
+              "source_ids": [
+                "emergentmind-2606-24752-plasticity-loss-llms-2026"
+              ]
+            }
+          ]
+        },
+        {
+          "id": "agent-safety-internals",
+          "label": "Agent Safety Internals",
+          "summary": "Activation-level tools for detecting misaligned cognitive processes before harmful behaviors surface externally.",
+          "source_ids": [
+            "emergentmind-2606-24251-misalignment-thinking-probes-2026"
+          ],
+          "concept_ids": [
+            "misalignment-indicator-probes",
+            "meta-plan-guided-misalignment-data"
+          ],
+          "critical_concepts": [
+            "misalignment-indicator-probes"
+          ],
+          "prerequisite_links": [],
+          "side_retention_duels": [
+            {
+              "id": "behavior-judge-vs-internal-probe",
+              "prompt": "Where does the probe look for warning signs?",
+              "left": "External final answer only",
+              "right": "Internal activations associated with indicator processes",
+              "answer": "The source probes internal activations for misalignment indicators."
+            }
+          ],
+          "quiz_questions": [
+            {
+              "question": "What do misalignment indicator probes monitor?",
+              "choices": [
+                "Only the length of the model answer.",
+                "Internal activations for fine-grained processes linked to misaligned behavior.",
+                "The number of retrieved documents.",
+                "GPU utilization during training."
+              ],
+              "answer_index": 1,
+              "source_ids": [
+                "emergentmind-2606-24251-misalignment-thinking-probes-2026"
+              ]
+            }
+          ]
+        },
+        {
+          "id": "full-stack-agentic-ai-systems",
+          "label": "Full-Stack Agentic AI Systems",
+          "summary": "A source-backed roadmap for seeing agents as a layered production system rather than a prompt trick: substrate models, RL/reasoning, retrieval/memory, harnesses, protocols, coordination, interfaces, evaluation, and deployment.",
+          "source_ids": [
+            "arxiv-2606-24937-hitchhikers-guide-agentic-ai-2026",
+            "emergentmind-2606-24937-hitchhikers-guide-agentic-ai-2026"
+          ],
+          "concept_ids": [
+            "agentic-ai-full-stack-reference",
+            "agentic-ai-layered-stack",
+            "agent-harness-orchestration",
+            "agentic-environments-and-benchmarks"
+          ],
+          "critical_concepts": [
+            "agentic-ai-layered-stack",
+            "agent-harness-orchestration",
+            "agentic-environments-and-benchmarks"
+          ],
+          "prerequisite_links": [
+            {
+              "from": "agentic-ai-full-stack-reference",
+              "to": "agentic-ai-layered-stack",
+              "why": "The paper/book is the source that motivates the layered mental model."
+            },
+            {
+              "from": "agentic-ai-layered-stack",
+              "to": "agent-harness-orchestration",
+              "why": "The harness is the runtime layer that turns model capability into repeatable agent behavior."
+            }
+          ],
+          "side_retention_duels": [
+            {
+              "id": "prompt-trick-vs-layered-system",
+              "prompt": "What is the main Edokai framing for agentic AI after this source?",
+              "left": "A prompt-only recipe collection",
+              "right": "A layered production system from foundations through deployment",
+              "answer": "The guide argues for the layered production-system view."
+            }
+          ],
+          "quiz_questions": [
+            {
+              "question": "Why does the guide treat LLM architecture, RL, RAG, memory, orchestration, protocols, UI, evaluation, and deployment together?",
+              "choices": [
+                "Because agentic systems are strongest when every stack layer is understood and integrated.",
+                "Because RAG replaces all RL and evaluation layers.",
+                "Because multi-agent coordination removes the need for memory.",
+                "Because production deployment is unrelated to agent design."
+              ],
+              "answer_index": 0,
+              "source_ids": [
+                "arxiv-2606-24937-hitchhikers-guide-agentic-ai-2026"
+              ]
+            }
+          ]
+        },
+        {
+          "id": "agent-harness-context-and-tools",
+          "label": "Agent Harness, Context and Tools",
+          "summary": "The agent runtime layer manages context budgets, prompt assembly, tool schemas and routing, MCP integration, state, error recovery, observability, and human checkpoints.",
+          "source_ids": [
+            "arxiv-2606-24937-hitchhikers-guide-agentic-ai-2026"
+          ],
+          "concept_ids": [
+            "agent-harness-orchestration",
+            "context-window-management-strategies",
+            "model-context-protocol-tool-integration",
+            "agentic-ui-supervision-patterns"
+          ],
+          "critical_concepts": [
+            "agent-harness-orchestration",
+            "context-window-management-strategies",
+            "model-context-protocol-tool-integration"
+          ],
+          "prerequisite_links": [
+            {
+              "from": "context-window-management-strategies",
+              "to": "agent-harness-orchestration",
+              "why": "Harness design must allocate, compress, and monitor context before it can run reliable multi-step loops."
+            },
+            {
+              "from": "model-context-protocol-tool-integration",
+              "to": "agent-harness-orchestration",
+              "why": "MCP-style tool/resource discovery is one implementation path for the harness tool layer."
+            }
+          ],
+          "side_retention_duels": [
+            {
+              "id": "context-budget-vs-more-tools",
+              "prompt": "What fails first in many long-running agents?",
+              "left": "Context budget and state discipline",
+              "right": "The number of available tool names alone",
+              "answer": "The guide emphasizes context management, state, and orchestration, not simply adding more tools."
+            }
+          ],
+          "quiz_questions": [
+            {
+              "question": "What does an agent harness primarily coordinate?",
+              "choices": [
+                "Only final answer formatting.",
+                "The runtime loop: context, prompt assembly, tools, state, errors, observability, and human checkpoints.",
+                "A vector index with no model calls.",
+                "A static benchmark leaderboard."
+              ],
+              "answer_index": 1,
+              "source_ids": [
+                "arxiv-2606-24937-hitchhikers-guide-agentic-ai-2026"
+              ]
+            }
+          ]
+        },
+        {
+          "id": "multi-agent-protocols-and-supervision",
+          "label": "Multi-Agent Protocols and Supervision",
+          "summary": "How agents coordinate with each other and with humans through A2A communication, multi-agent topologies, debate/reflection/division-of-labor patterns, agentic UI, approvals, audit trails, and benchmarked environments.",
+          "source_ids": [
+            "arxiv-2606-24937-hitchhikers-guide-agentic-ai-2026"
+          ],
+          "concept_ids": [
+            "agent-to-agent-communication-protocol",
+            "multi-agent-architecture-topologies",
+            "agentic-ui-supervision-patterns",
+            "agentic-environments-and-benchmarks"
+          ],
+          "critical_concepts": [
+            "agent-to-agent-communication-protocol",
+            "multi-agent-architecture-topologies",
+            "agentic-ui-supervision-patterns"
+          ],
+          "prerequisite_links": [
+            {
+              "from": "agent-to-agent-communication-protocol",
+              "to": "multi-agent-architecture-topologies",
+              "why": "Agents need capability advertisement and task-lifecycle coordination before complex multi-agent topologies are reliable."
+            },
+            {
+              "from": "agentic-environments-and-benchmarks",
+              "to": "multi-agent-architecture-topologies",
+              "why": "Coordination patterns should be tested in environments that expose multi-step and multi-agent failures."
+            }
+          ],
+          "side_retention_duels": [
+            {
+              "id": "single-vs-multi-agent-boundary",
+              "prompt": "When does multi-agent design become useful?",
+              "left": "When decomposition, redundancy, debate, or parallelism matter",
+              "right": "Whenever one prompt can be made longer",
+              "answer": "The guide frames multi-agent systems around coordination needs such as decomposition, redundancy, debate, and parallelism."
+            }
+          ],
+          "quiz_questions": [
+            {
+              "question": "Which pair best matches the guide’s protocol boundary?",
+              "choices": [
+                "MCP for inter-agent task lifecycle; A2A for GPU kernels.",
+                "MCP for model/tool integration; A2A for agent-to-agent communication.",
+                "A2A for tokenizer merges; MCP for pretraining data dedupe.",
+                "Both protocols are only UI frameworks."
+              ],
+              "answer_index": 1,
+              "source_ids": [
+                "arxiv-2606-24937-hitchhikers-guide-agentic-ai-2026"
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    "transformer-architecture": {
+      "label": "Transformer Architecture",
+      "description": "Embeddings, attention, MoE, and modern architecture mechanisms.",
+      "regions": [
+        {
+          "id": "token-distribution-losses",
+          "label": "Token Distribution Losses",
+          "summary": "How student and teacher probability distributions are compared at each generated token, including forward/reverse KL and top-k approximations.",
+          "source_ids": [
+            "hf-space-trl-distillation-trainer-2026",
+            "trl-distillation-trainer-docs-2026"
+          ],
+          "concept_ids": [
+            "top-k-kl-approximation",
+            "forward-kl-divergence",
+            "reverse-kl-divergence"
+          ],
+          "critical_concepts": [
+            "forward-kl-divergence",
+            "reverse-kl-divergence",
+            "top-k-kl-approximation"
+          ],
+          "prerequisite_links": [
+            {
+              "from": "forward-kl-divergence",
+              "to": "top-k-kl-approximation",
+              "why": "Full-vocabulary KL establishes the target divergence; top-k is the practical approximation used when full vocabulary logprobs are too large."
+            },
+            {
+              "from": "reverse-kl-divergence",
+              "to": "top-k-kl-approximation",
+              "why": "Reverse KL changes which token IDs are selected under the top-k approximation."
+            }
+          ],
+          "side_retention_duels": [
+            {
+              "id": "forward-vs-reverse-kl-token-choice",
+              "prompt": "In top-k distillation, which model chooses the compared token IDs?",
+              "left": "Forward KL: teacher top-k token IDs",
+              "right": "Reverse KL: student top-k token IDs",
+              "answer": "Both are true for their respective divergence directions; the duel is about remembering which side selects the support."
+            }
+          ],
+          "quiz_questions": [
+            {
+              "question": "Why does TRL's distillation article approximate KL with top-k logprobs?",
+              "choices": [
+                "Because KL cannot be computed for language models.",
+                "Because top-k changes every teacher into a smaller model.",
+                "Because full-vocabulary logprobs can require enormous tensors per sample.",
+                "Because vLLM only supports one token per sequence."
+              ],
+              "answer_index": 2,
+              "source_ids": [
+                "hf-space-trl-distillation-trainer-2026"
+              ]
+            }
+          ]
+        },
+        {
+          "id": "emergence-and-sparse-attention",
+          "label": "Emergence & Sparse Attention Patterns",
+          "summary": "Capability emergence as stochastic acquisition of task-relevant attention patterns, with architecture knobs that affect how quickly patterns are learned.",
+          "source_ids": [
+            "emergentmind-2606-25010-emergent-capabilities-2026"
+          ],
+          "concept_ids": [
+            "sparse-attention-pattern-emergence",
+            "attention-head-scaling-efficiency"
+          ],
+          "critical_concepts": [
+            "sparse-attention-pattern-emergence",
+            "attention-head-scaling-efficiency"
+          ],
+          "prerequisite_links": [],
+          "side_retention_duels": [
+            {
+              "id": "loss-smooth-vs-capability-abrupt",
+              "prompt": "How can smooth pretraining loss coexist with abrupt capabilities?",
+              "left": "Capabilities may appear when sparse attention patterns are learned",
+              "right": "Loss smoothness means no internal mechanism changes",
+              "answer": "The source argues abrupt capability emergence can track sudden learning of sparse attention patterns."
+            }
+          ],
+          "quiz_questions": [
+            {
+              "question": "What mechanism does the source connect to abrupt emergent capabilities?",
+              "choices": [
+                "A mandatory increase in tokenizer vocabulary size.",
+                "Vector database latency.",
+                "External teacher-server batching.",
+                "Abrupt learning of task-relevant sparse attention patterns."
+              ],
+              "answer_index": 3,
+              "source_ids": [
+                "emergentmind-2606-25010-emergent-capabilities-2026"
+              ]
+            }
+          ]
+        },
+        {
+          "id": "depth-aware-transformer-allocation",
+          "label": "Depth-Aware Transformer Allocation",
+          "summary": "Non-uniform parameter allocation across layers as an alternative to identical transformer/recurrent/memory stacks.",
+          "source_ids": [
+            "emergentmind-2606-23670-tapered-language-models-2026"
+          ],
+          "concept_ids": [
+            "tapered-language-models",
+            "depth-aware-parameter-allocation"
+          ],
+          "critical_concepts": [
+            "tapered-language-models",
+            "depth-aware-parameter-allocation"
+          ],
+          "prerequisite_links": [],
+          "side_retention_duels": [
+            {
+              "id": "uniform-vs-depth-aware",
+              "prompt": "How does tapered allocation differ from the classic stack?",
+              "left": "Uniform identical layers",
+              "right": "Depth-aware non-uniform allocation",
+              "answer": "Tapered LMs explore non-uniform allocation across depth."
+            }
+          ],
+          "quiz_questions": [
+            {
+              "question": "What default architecture assumption do tapered language models challenge?",
+              "choices": [
+                "Every layer in the stack should receive identical parameter allocation.",
+                "Language models need no depth.",
+                "Attention heads cannot be varied.",
+                "Evaluation should only use one benchmark."
+              ],
+              "answer_index": 0,
+              "source_ids": [
+                "emergentmind-2606-23670-tapered-language-models-2026"
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    "generative-models": {
+      "label": "Generative Models",
+      "description": "KL divergence, autoencoders, diffusion, likelihood models, and generation objectives.",
+      "regions": [
+        {
+          "id": "knowledge-distillation-and-compression",
+          "label": "Knowledge Distillation & Compression",
+          "summary": "Teacher-student methods that transfer behavior or token distributions from large generative models into smaller deployable students.",
+          "source_ids": [
+            "hf-space-trl-distillation-trainer-2026",
+            "trl-distillation-bibliography-2026"
+          ],
+          "concept_ids": [
+            "distilling-100b-models-40x-faster-with-trl",
+            "on-policy-distillation",
+            "off-policy-distillation",
+            "domain-specific-reasoning-distillation",
+            "capacity-gap-in-distillation"
+          ],
+          "critical_concepts": [
+            "off-policy-distillation",
+            "on-policy-distillation",
+            "capacity-gap-in-distillation"
+          ],
+          "prerequisite_links": [
+            {
+              "from": "off-policy-distillation",
+              "to": "on-policy-distillation",
+              "why": "Learners first compare teacher-generated trajectories with student-generated rollouts before seeing why self-generated mistakes matter."
+            },
+            {
+              "from": "on-policy-distillation",
+              "to": "capacity-gap-in-distillation",
+              "why": "After the training loop is clear, capacity gap explains why bigger teachers may not always produce proportionally stronger students."
+            }
+          ],
+          "side_retention_duels": [
+            {
+              "id": "off-policy-vs-on-policy-distillation-source",
+              "prompt": "Where do the training trajectories come from?",
+              "left": "Off-policy: teacher-generated completions",
+              "right": "On-policy: student-generated rollouts scored by teacher",
+              "answer": "On-policy uses the student rollouts; off-policy uses teacher-generated trajectories."
+            },
+            {
+              "id": "teacher-size-vs-student-capacity",
+              "prompt": "Does a much larger teacher always produce a much better student?",
+              "left": "Yes, teacher benchmark gains transfer linearly",
+              "right": "No, student capacity can limit absorption",
+              "answer": "No. The article reports similar 4B student outcomes from 30B and 235B teachers on AIME25, suggesting a capacity gap."
+            }
+          ],
+          "quiz_questions": [
+            {
+              "question": "What is the core on-policy distillation move in the TRL article?",
+              "choices": [
+                "Delete the teacher after generating a fixed prompt dataset.",
+                "Let the student generate rollouts, then ask the teacher to score those same rollouts.",
+                "Train only on human-written completions and avoid model logprobs.",
+                "Use a larger student than the teacher to avoid KL divergence."
+              ],
+              "answer_index": 1,
+              "source_ids": [
+                "hf-space-trl-distillation-trainer-2026"
+              ]
+            }
+          ]
+        },
+        {
+          "id": "specialized-local-students",
+          "label": "Specialized Local Students",
+          "summary": "Practical distillation patterns for moving useful large-model behaviors into smaller local or resource-constrained models.",
+          "source_ids": [
+            "hf-space-trl-distillation-trainer-2026"
+          ],
+          "concept_ids": [
+            "domain-specific-reasoning-distillation",
+            "qwen3-235b-teacher-distillation"
+          ],
+          "critical_concepts": [
+            "domain-specific-reasoning-distillation"
+          ],
+          "prerequisite_links": [
+            {
+              "from": "domain-specific-reasoning-distillation",
+              "to": "qwen3-235b-teacher-distillation",
+              "why": "The Qwen example is a concrete 100B+ teacher case for the broader specialized-student pattern."
+            }
+          ],
+          "side_retention_duels": [
+            {
+              "id": "local-student-vs-cloud-teacher",
+              "prompt": "Why distill instead of always using the largest teacher directly?",
+              "left": "The teacher may require hundreds of GB of memory or many GPUs.",
+              "right": "The student becomes larger than the teacher after training.",
+              "answer": "Distillation targets deployable smaller students when the teacher is too expensive or memory-heavy to use frequently."
+            }
+          ],
+          "quiz_questions": [
+            {
+              "question": "Which benchmark did the Qwen math distillation section use as the main evaluation target?",
+              "choices": [
+                "ImageNet",
+                "MMLU-Pro only",
+                "AIME25",
+                "HumanEval JavaScript"
+              ],
+              "answer_index": 2,
+              "source_ids": [
+                "hf-space-trl-distillation-trainer-2026"
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    "perception-world-models": {
+      "label": "Perception & World Models",
+      "description": "VLMs, latent world models, JEPA-style representation prediction, and embodied/perceptual models.",
+      "regions": []
+    },
+    "llm-systems-serving": {
+      "label": "LLM Systems & Serving",
+      "description": "Inference, caching, quantization, speculative decoding, serving systems, and production throughput.",
+      "regions": [
+        {
+          "id": "distillation-serving-systems",
+          "label": "Distillation Serving Systems",
+          "summary": "Systems patterns for making teacher-student training loops fast enough when rollout generation and teacher logprob scoring are served through inference engines.",
+          "source_ids": [
+            "hf-space-trl-distillation-trainer-2026",
+            "trl-distillation-trainer-docs-2026"
+          ],
+          "concept_ids": [
+            "trl-distillation-trainer",
+            "generation-buffer",
+            "teacher-server-logprob-serving",
+            "request-batching-for-teacher-logprobs",
+            "binary-logprob-encoding",
+            "vllm-batched-inference-engine",
+            "qwen3-235b-teacher-distillation"
+          ],
+          "critical_concepts": [
+            "generation-buffer",
+            "teacher-server-logprob-serving",
+            "request-batching-for-teacher-logprobs",
+            "binary-logprob-encoding"
+          ],
+          "prerequisite_links": [
+            {
+              "from": "vllm-batched-inference-engine",
+              "to": "generation-buffer",
+              "why": "The buffer exists to expose enough prompts for vLLM batching during student rollout generation."
+            },
+            {
+              "from": "teacher-server-logprob-serving",
+              "to": "request-batching-for-teacher-logprobs",
+              "why": "External teacher serving creates concurrent worker requests that need batching to control tail latency."
+            },
+            {
+              "from": "teacher-server-logprob-serving",
+              "to": "binary-logprob-encoding",
+              "why": "Once server compute is fast enough, logprob payload transfer becomes the bottleneck."
+            }
+          ],
+          "side_retention_duels": [
+            {
+              "id": "generation-buffer-vs-training-microbatch",
+              "prompt": "What does the generation buffer decouple?",
+              "left": "Training microbatch size from rollout generation batch size",
+              "right": "Teacher vocabulary size from tokenizer vocabulary size",
+              "answer": "It decouples training microbatch size from rollout generation batch size."
+            },
+            {
+              "id": "compute-bottleneck-vs-transfer-bottleneck",
+              "prompt": "After request batching improved server latency, what became the next bottleneck?",
+              "left": "Transferring top-k logprob payloads back to clients",
+              "right": "Finding enough prompts in the dataset schema",
+              "answer": "Logprob payload transfer became the bottleneck, motivating binary encoding."
+            }
+          ],
+          "quiz_questions": [
+            {
+              "question": "What format did the article use for faster teacher logprob payloads?",
+              "choices": [
+                "Plain English JSON summaries of the teacher's reasoning.",
+                "One CSV file per generated token streamed over FTP.",
+                "A screenshot of the teacher's logits chart.",
+                "Base64-encoded NumPy arrays containing logprobs and token IDs plus shape metadata."
+              ],
+              "answer_index": 3,
+              "source_ids": [
+                "hf-space-trl-distillation-trainer-2026"
+              ]
+            }
+          ]
+        },
+        {
+          "id": "large-teacher-deployment-constraints",
+          "label": "Large Teacher Deployment Constraints",
+          "summary": "Memory and placement constraints that force 100B+ teacher models into separate serving infrastructure instead of colocating them with student training.",
+          "source_ids": [
+            "hf-space-trl-distillation-trainer-2026"
+          ],
+          "concept_ids": [
+            "teacher-server-logprob-serving",
+            "qwen3-235b-teacher-distillation"
+          ],
+          "critical_concepts": [
+            "teacher-server-logprob-serving"
+          ],
+          "prerequisite_links": [
+            {
+              "from": "qwen3-235b-teacher-distillation",
+              "to": "teacher-server-logprob-serving",
+              "why": "The 235B teacher example motivates external teacher serving because it cannot fit alongside student training."
+            }
+          ],
+          "side_retention_duels": [
+            {
+              "id": "colocated-vs-external-teacher",
+              "prompt": "When should a teacher move to an external server?",
+              "left": "When the teacher is too large to colocate with student training GPUs",
+              "right": "Whenever the student has fewer training examples",
+              "answer": "External serving is motivated by teacher memory/placement constraints."
+            }
+          ],
+          "quiz_questions": [
+            {
+              "question": "Why did the article move 100B+ teachers to an external vLLM server?",
+              "choices": [
+                "Because colocating teacher and student on the same GPUs was not practical at that scale.",
+                "Because the teacher model was a vision-only encoder.",
+                "Because JSON cannot represent text tokens.",
+                "Because on-policy distillation forbids teacher logprobs."
+              ],
+              "answer_index": 0,
+              "source_ids": [
+                "hf-space-trl-distillation-trainer-2026"
+              ]
+            }
+          ]
+        },
+        {
+          "id": "evaluation-efficiency-and-benchmark-selection",
+          "label": "Evaluation Efficiency & Benchmark Selection",
+          "summary": "Methods for reducing repeated benchmark cost while still tracking training progress, design choices, and checkpoint quality.",
+          "source_ids": [
+            "emergentmind-2606-24020-benchpress-2026"
+          ],
+          "concept_ids": [
+            "benchpress-eval-subselection"
+          ],
+          "critical_concepts": [
+            "benchpress-eval-subselection"
+          ],
+          "prerequisite_links": [],
+          "side_retention_duels": [
+            {
+              "id": "all-evals-vs-subselected-evals",
+              "prompt": "What bottleneck does BENCHPRESS target?",
+              "left": "Running every benchmark every time",
+              "right": "Selecting a smaller informative eval set",
+              "answer": "It targets eval-subselection to avoid unnecessary repeated benchmark runs."
+            }
+          ],
+          "quiz_questions": [
+            {
+              "question": "What question motivates BENCHPRESS?",
+              "choices": [
+                "How to render 3D meshes from one image?",
+                "Which evaluations are actually necessary when releases report dozens of benchmarks?",
+                "How to replace attention with convolution everywhere?",
+                "How to avoid all model evaluation?"
+              ],
+              "answer_index": 1,
+              "source_ids": [
+                "emergentmind-2606-24020-benchpress-2026"
+              ]
+            }
+          ]
+        },
+        {
+          "id": "agent-native-memory-systems",
+          "label": "Agent-Native Memory Systems",
+          "summary": "Persistent memory treated as a governed data-management system across agent execution rather than a simple retrieval add-on.",
+          "source_ids": [
+            "emergentmind-2606-24775-agent-native-memory-2026"
+          ],
+          "concept_ids": [
+            "agent-native-memory-system",
+            "memory-lifecycle-governance"
+          ],
+          "critical_concepts": [
+            "agent-native-memory-system",
+            "memory-lifecycle-governance"
+          ],
+          "prerequisite_links": [],
+          "side_retention_duels": [
+            {
+              "id": "rag-lookup-vs-memory-lifecycle",
+              "prompt": "What is the broader memory-system view?",
+              "left": "Single retrieval lookup",
+              "right": "Persistent lifecycle with update/consolidation/governance",
+              "answer": "Agent-native memory is broader than one retrieval lookup."
+            }
+          ],
+          "quiz_questions": [
+            {
+              "question": "What makes memory agent-native in this source?",
+              "choices": [
+                "It is a one-shot prompt prefix with no updates.",
+                "It removes persistent information entirely.",
+                "It spans storage, retrieval, update, consolidation, and lifecycle governance during execution.",
+                "It only stores image pixels."
+              ],
+              "answer_index": 2,
+              "source_ids": [
+                "emergentmind-2606-24775-agent-native-memory-2026"
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    "retrieval-augmented-generation": {
+      "label": "Retrieval-Augmented Generation",
+      "emoji": "🕸️",
+      "description": "RAG systems, graph retrieval, corpus-grounded synthesis, query-focused summarization, and retrieval evaluation mechanisms.",
+      "router_policy": {
+        "created_by": "manual-router-correction-20260628",
+        "promotion_reason": "GraphRAG introduced a coherent retrieval/sensemaking cluster with its own problem framing, index-building pipeline, runtime answering path, and evaluation criteria. Routing it under generic serving hid the learning path.",
+        "future_growth_rule": "Route vector RAG, GraphRAG, hybrid retrieval, reranking, indexing, query-focused summarization, and retrieval evaluation here unless the source is strictly about low-level inference serving infrastructure."
+      },
+      "regions": [
+        {
+          "id": "graph-rag-global-sensemaking",
+          "label": "Graph RAG & Global Sensemaking",
+          "summary": "How graph-structured indexes let LLMs answer corpus-wide 'sensemaking' questions that conventional chunk-retrieval RAG cannot, by summarizing communities of related entities.",
+          "source_ids": [
+            "arxiv-2404-16130-graphrag-2024"
+          ],
+          "concept_ids": [
+            "graphrag-query-focused-summarization",
+            "global-sensemaking-qfs",
+            "conventional-vector-rag",
+            "map-reduce-answer-generation"
+          ],
+          "critical_concepts": [
+            "graphrag-query-focused-summarization",
+            "global-sensemaking-qfs",
+            "conventional-vector-rag"
+          ],
+          "prerequisite_links": [
+            {
+              "from": "conventional-vector-rag",
+              "to": "global-sensemaking-qfs",
+              "why": "Learners first see why similarity-retrieval RAG works for local facts, which exposes the gap on whole-corpus questions."
+            },
+            {
+              "from": "global-sensemaking-qfs",
+              "to": "graphrag-query-focused-summarization",
+              "why": "Once the sensemaking/QFS problem is clear, GraphRAG is introduced as the graph-based solution."
+            },
+            {
+              "from": "graphrag-query-focused-summarization",
+              "to": "map-reduce-answer-generation",
+              "why": "Understanding the overall approach sets up how queries are actually answered at runtime."
+            }
+          ],
+          "side_retention_duels": [
+            {
+              "id": "local-vs-global-rag",
+              "prompt": "Which question type breaks conventional vector RAG?",
+              "left": "'What did section 3 say about X?' (local fact lookup)",
+              "right": "'What are the main themes across the whole corpus?' (global sensemaking)",
+              "answer": "The global, whole-corpus sensemaking question is what vector RAG fails on, because no small set of retrieved chunks contains the answer."
+            },
+            {
+              "id": "map-vs-reduce-step",
+              "prompt": "Where is the single global answer assembled?",
+              "left": "Map step: each community summary gives a partial answer in parallel",
+              "right": "Reduce step: partial answers are combined into the final answer",
+              "answer": "The reduce step combines the partial answers; the map step only produces independent partials."
+            }
+          ],
+          "quiz_questions": [
+            {
+              "question": "Why does GraphRAG outperform conventional vector RAG on questions like 'What are the main themes in this dataset?'",
+              "choices": [
+                "Because GraphRAG uses a larger embedding model for similarity search.",
+                "Because vector RAG cannot read text files at all.",
+                "Because GraphRAG skips the LLM and answers from the graph directly.",
+                "Because such questions need reasoning across the whole corpus, which graph community summaries cover but a few retrieved chunks do not."
+              ],
+              "answer_index": 3,
+              "source_ids": [
+                "arxiv-2404-16130-graphrag-2024"
+              ]
+            },
+            {
+              "question": "What are the two stages GraphRAG uses to build its index?",
+              "choices": [
+                "Derive an entity knowledge graph from source documents, then pregenerate community summaries for groups of related entities.",
+                "Fine-tune the LLM, then quantize it to 4-bit.",
+                "Crawl the web, then store embeddings in a vector database.",
+                "Translate the corpus, then deduplicate sentences."
+              ],
+              "answer_index": 0,
+              "source_ids": [
+                "arxiv-2404-16130-graphrag-2024"
+              ]
+            }
+          ]
+        },
+        {
+          "id": "graph-index-construction",
+          "label": "Graph Index Construction & Community Hierarchy",
+          "summary": "The pipeline that turns raw text into a queryable structure: LLM entity/relationship/claim extraction, Leiden hierarchical community detection, and bottom-up community summarization.",
+          "source_ids": [
+            "arxiv-2404-16130-graphrag-2024"
+          ],
+          "concept_ids": [
+            "entity-knowledge-graph-index",
+            "leiden-hierarchical-community-detection",
+            "community-summaries",
+            "llm-judged-sensemaking-metrics"
+          ],
+          "critical_concepts": [
+            "entity-knowledge-graph-index",
+            "leiden-hierarchical-community-detection",
+            "community-summaries"
+          ],
+          "prerequisite_links": [
+            {
+              "from": "entity-knowledge-graph-index",
+              "to": "leiden-hierarchical-community-detection",
+              "why": "You need the entity graph before you can partition it into communities."
+            },
+            {
+              "from": "leiden-hierarchical-community-detection",
+              "to": "community-summaries",
+              "why": "Communities define which elements get summarized together, bottom-up."
+            },
+            {
+              "from": "community-summaries",
+              "to": "llm-judged-sensemaking-metrics",
+              "why": "Once summaries drive answers, you need sensemaking-specific metrics to evaluate answer quality."
+            }
+          ],
+          "side_retention_duels": [
+            {
+              "id": "nodes-edges-covariates",
+              "prompt": "What three element kinds make up the GraphRAG index?",
+              "left": "Nodes (entities), edges (relationships), covariates (claims)",
+              "right": "Vectors, tokens, and attention heads",
+              "answer": "The graph index spans nodes (entities), edges (relationships), and covariates (claims)."
+            },
+            {
+              "id": "flat-vs-hierarchical-communities",
+              "prompt": "How are communities summarized?",
+              "left": "Bottom-up hierarchy: higher-level summaries fold in lower-level ones",
+              "right": "A single flat summary of the whole graph at once",
+              "answer": "Summaries are built bottom-up over a community hierarchy, with higher levels recursively incorporating lower-level element summaries."
+            }
+          ],
+          "quiz_questions": [
+            {
+              "question": "Which algorithm does GraphRAG use to partition its entity graph into nested communities?",
+              "choices": [
+                "K-means over token embeddings.",
+                "Leiden community detection, applied recursively/hierarchically.",
+                "Beam search decoding.",
+                "Gradient-boosted trees."
+              ],
+              "answer_index": 1,
+              "source_ids": [
+                "arxiv-2404-16130-graphrag-2024"
+              ]
+            },
+            {
+              "question": "In GraphRAG's evaluation, what role does the 'Directness' criterion play?",
+              "choices": [
+                "The primary metric GraphRAG is optimized to win.",
+                "A measure of inference latency in milliseconds.",
+                "A control criterion expected to oppose comprehensiveness and diversity, not a target to maximize.",
+                "A count of GPUs used during indexing."
+              ],
+              "answer_index": 2,
+              "source_ids": [
+                "arxiv-2404-16130-graphrag-2024"
+              ]
+            }
+          ]
+        },
+        {
+          "id": "agentic-rag-and-memory",
+          "label": "Agentic RAG and Memory",
+          "summary": "How retrieval becomes an agent subsystem: non-parametric knowledge, indexing/retrieval/reranking/compression, and memory stores that support multi-step agent behavior.",
+          "source_ids": [
+            "arxiv-2606-24937-hitchhikers-guide-agentic-ai-2026"
+          ],
+          "concept_ids": [
+            "agentic-rag",
+            "agentic-memory-systems",
+            "context-window-management-strategies"
+          ],
+          "critical_concepts": [
+            "agentic-rag",
+            "agentic-memory-systems"
+          ],
+          "prerequisite_links": [
+            {
+              "from": "agentic-rag",
+              "to": "agentic-memory-systems",
+              "why": "Agent memory often uses retrieval-backed external stores as non-parametric knowledge."
+            }
+          ],
+          "side_retention_duels": [
+            {
+              "id": "parametric-vs-nonparametric-agent-knowledge",
+              "prompt": "What does Agentic RAG add to an agent?",
+              "left": "External/non-parametric knowledge retrieved at runtime",
+              "right": "Only another copy of the model weights",
+              "answer": "RAG adds retrieval-time non-parametric knowledge that can feed the agent loop."
+            }
+          ],
+          "quiz_questions": [
+            {
+              "question": "Why does this source route Agentic RAG to Retrieval-Augmented Generation instead of generic serving?",
+              "choices": [
+                "It is about low-level GPU kernel scheduling only.",
+                "It centers retrieval, indexing, reranking/compression, and non-parametric knowledge inside agent loops.",
+                "It removes retrieval from agents entirely.",
+                "It is only a UI approval pattern."
+              ],
+              "answer_index": 1,
+              "source_ids": [
+                "arxiv-2606-24937-hitchhikers-guide-agentic-ai-2026"
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  },
+  "unrouted_concepts": [],
+  "routing_history": [
+    {
+      "run_id": "manual-telegram-trl-distillation-20260628T021239Z",
+      "source_ids": [
+        "hf-space-trl-distillation-trainer-2026",
+        "trl-distillation-trainer-docs-2026"
+      ],
+      "routed_concepts": [
+        "distilling-100b-models-40x-faster-with-trl",
+        "trl-distillation-trainer",
+        "on-policy-distillation",
+        "off-policy-distillation",
+        "generation-buffer",
+        "teacher-server-logprob-serving",
+        "request-batching-for-teacher-logprobs",
+        "binary-logprob-encoding",
+        "top-k-kl-approximation",
+        "forward-kl-divergence",
+        "reverse-kl-divergence",
+        "capacity-gap-in-distillation",
+        "domain-specific-reasoning-distillation",
+        "vllm-batched-inference-engine",
+        "qwen3-235b-teacher-distillation"
+      ],
+      "worlds_enhanced": [
+        "generative-models",
+        "llm-systems-serving",
+        "transformer-architecture"
+      ],
+      "new_worlds_created": [],
+      "manual_review": [
+        "Capacity gap is currently routed to Generative Models with possible future cross-link to evaluation if Edokai adds a dedicated evaluation world."
+      ],
+      "completed_at": "2026-06-28T02:12:39Z"
+    },
+    {
+      "run_id": "manual-telegram-graphrag-20260628T070500Z",
+      "source_ids": [
+        "arxiv-2404-16130-graphrag-2024"
+      ],
+      "routed_concepts": [
+        "graphrag-query-focused-summarization",
+        "global-sensemaking-qfs",
+        "conventional-vector-rag",
+        "entity-knowledge-graph-index",
+        "leiden-hierarchical-community-detection",
+        "community-summaries",
+        "map-reduce-answer-generation",
+        "llm-judged-sensemaking-metrics"
+      ],
+      "worlds_enhanced": [
+        "llm-systems-serving"
+      ],
+      "new_worlds_created": [],
+      "manual_review": [
+        "GraphRAG/RAG concepts routed under LLM Systems & Serving as two new regions; consider a dedicated Retrieval & RAG cluster or macro world once more retrieval sources accumulate."
+      ],
+      "completed_at": "2026-06-28T07:05:00Z"
+    },
+    {
+      "run_id": "manual-router-correction-rag-20260628",
+      "source_ids": [
+        "arxiv-2404-16130-graphrag-2024"
+      ],
+      "routed_concepts": [
+        "community-summaries",
+        "conventional-vector-rag",
+        "entity-knowledge-graph-index",
+        "global-sensemaking-qfs",
+        "graphrag-query-focused-summarization",
+        "leiden-hierarchical-community-detection",
+        "llm-judged-sensemaking-metrics",
+        "map-reduce-answer-generation"
+      ],
+      "world_actions": [
+        "promoted GraphRAG regions from LLM Systems & Serving into new Retrieval-Augmented Generation macro world",
+        "updated DKG world_hint for GraphRAG concept nodes"
+      ],
+      "router_learning": "Coherent retrieval clusters with their own index construction, query-time algorithm, and evaluation axis should self-promote to a macro world instead of being appended to generic serving."
+    },
+    {
+      "run_id": "manual-telegram-trl-distillation-refresh-20260628T071253Z",
+      "source_ids": [
+        "hf-space-trl-distillation-trainer-2026",
+        "hf-space-api-trl-distillation-trainer-2026",
+        "trl-distillation-trainer-docs-2026",
+        "trl-distillation-bibliography-2026"
+      ],
+      "routed_concepts": [
+        "distilling-100b-models-40x-faster-with-trl",
+        "trl-distillation-trainer",
+        "on-policy-distillation",
+        "off-policy-distillation",
+        "generation-buffer",
+        "teacher-server-logprob-serving",
+        "request-batching-for-teacher-logprobs",
+        "binary-logprob-encoding",
+        "top-k-kl-approximation",
+        "forward-kl-divergence",
+        "reverse-kl-divergence",
+        "capacity-gap-in-distillation",
+        "domain-specific-reasoning-distillation",
+        "vllm-batched-inference-engine",
+        "qwen3-235b-teacher-distillation"
+      ],
+      "worlds_enhanced": [],
+      "new_worlds_created": [],
+      "manual_review": [],
+      "router_learning": "Re-ingest confirmed TRL distillation spans the existing Generative Models, LLM Systems & Serving, and Transformer Architecture umbrellas; no new macro world was promoted because the cluster is already covered by distillation/compression, serving-system, and token-loss regions.",
+      "completed_at": "2026-06-28T07:12:53Z"
+    },
+    {
+      "run_id": "daily-emergentmind-all-topics-20260628T140150Z",
+      "source_ids": [
+        "emergentmind-2606-24597-qwen-agentworld-2026",
+        "emergentmind-2606-25996-autodata-2026",
+        "emergentmind-2606-24855-openthoughts-agent-2026",
+        "emergentmind-2606-23595-spiral-2026",
+        "emergentmind-2606-24020-benchpress-2026",
+        "emergentmind-2606-25010-emergent-capabilities-2026",
+        "emergentmind-2606-23670-tapered-language-models-2026",
+        "emergentmind-2606-26294-red-queen-godel-machine-2026",
+        "emergentmind-2606-24937-hitchhikers-guide-agentic-ai-2026",
+        "emergentmind-2606-24775-agent-native-memory-2026",
+        "emergentmind-2606-24752-plasticity-loss-llms-2026",
+        "emergentmind-2606-24251-misalignment-thinking-probes-2026"
+      ],
+      "routed_concepts": [
+        "agent-native-memory-system",
+        "agentic-ai-full-stack-reference",
+        "agentic-rl-through-world-simulation",
+        "agentworldbench",
+        "attention-head-scaling-efficiency",
+        "autodata-agentic-synthetic-data",
+        "benchpress-eval-subselection",
+        "co-evolving-agent-evaluators",
+        "depth-aware-parameter-allocation",
+        "memory-lifecycle-governance",
+        "meta-plan-guided-misalignment-data",
+        "misalignment-indicator-probes",
+        "openthoughts-agent-data-recipes",
+        "plasticity-loss-in-llms",
+        "qwen-agentworld-language-world-models",
+        "red-queen-godel-machine",
+        "sparse-attention-pattern-emergence",
+        "spiral-search-and-aggregate",
+        "tapered-language-models"
+      ],
+      "worlds_enhanced": [
+        "agents",
+        "llm-systems-serving",
+        "transformer-architecture"
+      ],
+      "new_worlds_created": [],
+      "manual_review": [
+        "No new macro world promoted; all new clusters fit existing Agents, Transformer Architecture, and LLM Systems & Serving umbrellas. Safety-related misalignment-probe claims should remain source-qualified and not be treated as deployment guarantees."
+      ],
+      "router_learning": "Homepage trending papers strengthened Agents as a broad umbrella: language world models, data-generation recipes, reasoning scaffolds, memory, safety probes, and co-evolving evaluators are distinct regions but share an agent-loop learner mental model.",
+      "completed_at": "2026-06-28T14:01:50Z"
+    },
+    {
+      "run_id": "daily-concept-world-builder-20260628T143101Z",
+      "source_ids": [],
+      "routed_concepts": [],
+      "worlds_enhanced": [
+        "agents",
+        "transformer-architecture",
+        "generative-models",
+        "llm-systems-serving",
+        "retrieval-augmented-generation"
+      ],
+      "new_worlds_created": [],
+      "manual_review": [],
+      "router_learning": "Daily builder checker found all authored quiz answers were still position-0; rotated answer positions while preserving source-grounded correct choices so Edokai quizzes avoid answer-position tells.",
+      "quality_actions": [
+        "rotated_answer_positions_for_14_of_18_authored_quizzes"
+      ],
+      "completed_at": "2026-06-28T14:31:01Z"
+    },
+    {
+      "run_id": "manual-telegram-hitchhikers-guide-agentic-ai-20260629T032238Z",
+      "source_ids": [
+        "arxiv-2606-24937-hitchhikers-guide-agentic-ai-2026"
+      ],
+      "routed_concepts": [
+        "agentic-ai-full-stack-reference",
+        "agentic-ai-layered-stack",
+        "agent-harness-orchestration",
+        "context-window-management-strategies",
+        "agentic-memory-systems",
+        "agentic-rag",
+        "model-context-protocol-tool-integration",
+        "agent-to-agent-communication-protocol",
+        "multi-agent-architecture-topologies",
+        "agentic-environments-and-benchmarks",
+        "agentic-ui-supervision-patterns"
+      ],
+      "worlds_enhanced": [
+        "agents",
+        "retrieval-augmented-generation"
+      ],
+      "new_worlds_created": [],
+      "router_learning": "Broad agentic-stack survey sources should enhance the Agents macro world as layered regions, while RAG/Agentic RAG concepts should cross-route to Retrieval-Augmented Generation when the mechanism is retrieval/indexing/memory rather than low-level serving.",
+      "manual_review": [],
+      "completed_at": "2026-06-29T03:22:38Z"
+    }
+  ]
+}

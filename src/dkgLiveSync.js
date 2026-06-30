@@ -9,7 +9,7 @@ export const DKG_ROW_ID = viteEnv.VITE_EDOKAI_DKG_ROW_ID || "latest";
 export const DKG_NETLIFY_FUNCTION = viteEnv.VITE_EDOKAI_DKG_FUNCTION || "/.netlify/functions/dkg-snapshot";
 export const DKG_GITHUB_OWNER = viteEnv.VITE_EDOKAI_DKG_GITHUB_OWNER || "junaidahmed361";
 export const DKG_GITHUB_REPO = viteEnv.VITE_EDOKAI_DKG_GITHUB_REPO || "edokai";
-export const DKG_GITHUB_REF = viteEnv.VITE_EDOKAI_DKG_GITHUB_REF || "fix-lore-model-fallback";
+export const DKG_GITHUB_REF = viteEnv.VITE_EDOKAI_DKG_GITHUB_REF || "main";
 export const DKG_GITHUB_RAW_BASE = (viteEnv.VITE_EDOKAI_DKG_GITHUB_RAW_BASE || `https://raw.githubusercontent.com/${DKG_GITHUB_OWNER}/${DKG_GITHUB_REPO}/${DKG_GITHUB_REF}/knowledge`).replace(/\/$/, "");
 
 let client = null;
@@ -62,35 +62,71 @@ async function loadNetlifyDkgSnapshot() {
   }
 }
 
+function dkgPayloadFromFiles(dkg, conceptWorldIndex, source) {
+  const payload = {
+    synced_at: new Date().toISOString(),
+    dkg,
+    conceptWorldIndex,
+    stats: {
+      source_count: Object.keys(dkg.sources || {}).length,
+      node_count: Object.keys(dkg.nodes || {}).length,
+      edge_count: Array.isArray(dkg.edges) ? dkg.edges.length : 0,
+      macro_world_count: Object.keys(conceptWorldIndex.macro_worlds || {}).length,
+    },
+  };
+  return { ok: true, payload, updatedAt: payload.synced_at, source };
+}
+
+async function loadJsonPair(base, source) {
+  const trimmed = String(base || "").replace(/\/$/, "");
+  const [dkgRes, idxRes] = await Promise.all([
+    fetch(`${trimmed}/edokai-dkg.json`, { cache: "no-store", headers: { accept: "application/json" } }),
+    fetch(`${trimmed}/concept-world-index.json`, { cache: "no-store", headers: { accept: "application/json" } }),
+  ]);
+  if (!dkgRes.ok || !idxRes.ok) throw new Error(`${source} fetch failed: graph HTTP ${dkgRes.status}, index HTTP ${idxRes.status}`);
+  const [dkg, conceptWorldIndex] = await Promise.all([dkgRes.json(), idxRes.json()]);
+  return dkgPayloadFromFiles(dkg, conceptWorldIndex, source);
+}
+
+function githubRawCandidates() {
+  const candidates = [];
+  if (DKG_GITHUB_RAW_BASE) candidates.push(DKG_GITHUB_RAW_BASE);
+  const mainBase = `https://raw.githubusercontent.com/${DKG_GITHUB_OWNER}/${DKG_GITHUB_REPO}/main/knowledge`;
+  const headBase = `https://raw.githubusercontent.com/${DKG_GITHUB_OWNER}/${DKG_GITHUB_REPO}/HEAD/knowledge`;
+  for (const base of [mainBase, headBase]) if (!candidates.includes(base)) candidates.push(base);
+  return candidates;
+}
+
 async function loadGithubDkgSnapshot() {
-  if (!DKG_GITHUB_RAW_BASE || typeof fetch !== "function") return { ok: false, disabled: true, source: "github-raw", message: "No GitHub raw DKG base configured." };
-  try {
-    const [dkgRes, idxRes] = await Promise.all([
-      fetch(`${DKG_GITHUB_RAW_BASE}/edokai-dkg.json`, { cache: "no-store", headers: { accept: "application/json" } }),
-      fetch(`${DKG_GITHUB_RAW_BASE}/concept-world-index.json`, { cache: "no-store", headers: { accept: "application/json" } }),
-    ]);
-    if (!dkgRes.ok || !idxRes.ok) return { ok: false, source: "github-raw", error: `GitHub raw fetch failed: graph HTTP ${dkgRes.status}, index HTTP ${idxRes.status}` };
-    const [dkg, conceptWorldIndex] = await Promise.all([dkgRes.json(), idxRes.json()]);
-    const payload = {
-      synced_at: new Date().toISOString(),
-      dkg,
-      conceptWorldIndex,
-      stats: {
-        source_count: Object.keys(dkg.sources || {}).length,
-        node_count: Object.keys(dkg.nodes || {}).length,
-        edge_count: Array.isArray(dkg.edges) ? dkg.edges.length : 0,
-        macro_world_count: Object.keys(conceptWorldIndex.macro_worlds || {}).length,
-      },
-    };
-    return { ok: true, payload, updatedAt: payload.synced_at, source: "github-raw" };
-  } catch (e) {
-    return { ok: false, source: "github-raw", error: e.message || String(e) };
+  if (typeof fetch !== "function") return { ok: false, disabled: true, source: "github-raw", message: "Fetch unavailable in this runtime." };
+  const errors = [];
+  for (const base of githubRawCandidates()) {
+    try {
+      const result = await loadJsonPair(base, "github-raw");
+      return { ...result, rawBase: base };
+    } catch (e) {
+      errors.push(`${base}: ${e.message || String(e)}`);
+    }
   }
+  return { ok: false, source: "github-raw", error: errors.join(" | ") || "GitHub raw DKG unavailable." };
+}
+
+async function loadBundledDkgSnapshot() {
+  if (typeof fetch !== "function") return { ok: false, disabled: true, source: "bundled-dkg", message: "Fetch unavailable in this runtime." };
+  const errors = [];
+  for (const base of ["./knowledge", "knowledge", "/knowledge"]) {
+    try {
+      return await loadJsonPair(base, "bundled-dkg");
+    } catch (e) {
+      errors.push(`${base}: ${e.message || String(e)}`);
+    }
+  }
+  return { ok: false, source: "bundled-dkg", error: errors.join(" | ") };
 }
 
 export async function loadDkgSnapshot({ force = false } = {}) {
   const attempts = [];
-  const sources = force ? [loadSupabaseDkgSnapshot, loadNetlifyDkgSnapshot, loadGithubDkgSnapshot] : [loadSupabaseDkgSnapshot, loadNetlifyDkgSnapshot, loadGithubDkgSnapshot];
+  const sources = force ? [loadSupabaseDkgSnapshot, loadNetlifyDkgSnapshot, loadGithubDkgSnapshot, loadBundledDkgSnapshot] : [loadSupabaseDkgSnapshot, loadNetlifyDkgSnapshot, loadGithubDkgSnapshot, loadBundledDkgSnapshot];
   for (const loader of sources) {
     const result = await loader();
     if (result.ok) return result;
@@ -229,28 +265,21 @@ function compactOptionText(text) {
   let out = String(text || "")
     .replace(/\s+/g, " ")
     .replace(/[.…]+$/g, "")
-    .replace(/\s*[-–—:]\s+.*$/g, "")
-    .replace(/\s*\([^)]{18,}\)\s*/g, " ")
-    .replace(/\b(?:primarily|mainly|exactly|actually|simply|just|always|never)\b/gi, "")
     .trim();
   if (!out) out = "nearby but wrong mechanism";
   out = out[0].toUpperCase() + out.slice(1);
-  const ws = optionWordList(out);
-  if (ws.length > 8) out = ws.slice(0, 8).join(" ");
   return cleanRepeatedWords(out).replace(/[.;:]+$/g, "");
 }
 function balanceOptions(options, seed = "question") {
-  const pads = ["for this case", "in this setting", "under the same signal", "for the learner"];
+  const pads = ["for this case", "in this setting", "under the same signal", "for the learner", "in the same lesson"];
   const base = (options || []).slice(0, 4).map(compactOptionText);
   while (base.length < 4) base.push(compactOptionText(`nearby distractor ${base.length}`));
   const lens = base.map(optionWords);
-  const target = Math.max(5, Math.min(8, Math.round(lens.reduce((a, b) => a + b, 0) / lens.length)));
+  const target = Math.min(Math.max(...lens, 5), 16);
   return base.map((o, i) => {
-    let words = optionWordList(o);
-    if (words.length > target + 1) words = words.slice(0, target + 1);
-    let out = words.join(" ");
+    let out = o;
     let guard = 0;
-    while (optionWords(out) < target - 1 && guard < 2) {
+    while (optionWords(out) < target - 2 && guard < 4) {
       out = `${out} ${pads[(i + guard + String(seed).length) % pads.length]}`;
       guard += 1;
     }
