@@ -265,28 +265,21 @@ function compactOptionText(text) {
   let out = String(text || "")
     .replace(/\s+/g, " ")
     .replace(/[.…]+$/g, "")
-    .replace(/\s*[-–—:]\s+.*$/g, "")
-    .replace(/\s*\([^)]{18,}\)\s*/g, " ")
-    .replace(/\b(?:primarily|mainly|exactly|actually|simply|just|always|never)\b/gi, "")
     .trim();
   if (!out) out = "nearby but wrong mechanism";
   out = out[0].toUpperCase() + out.slice(1);
-  const ws = optionWordList(out);
-  if (ws.length > 8) out = ws.slice(0, 8).join(" ");
   return cleanRepeatedWords(out).replace(/[.;:]+$/g, "");
 }
 function balanceOptions(options, seed = "question") {
-  const pads = ["for this case", "in this setting", "under the same signal", "for the learner"];
+  const pads = ["for this case", "in this setting", "under the same signal", "for the learner", "in the same lesson"];
   const base = (options || []).slice(0, 4).map(compactOptionText);
   while (base.length < 4) base.push(compactOptionText(`nearby distractor ${base.length}`));
   const lens = base.map(optionWords);
-  const target = Math.max(5, Math.min(8, Math.round(lens.reduce((a, b) => a + b, 0) / lens.length)));
+  const target = Math.min(Math.max(...lens, 5), 16);
   return base.map((o, i) => {
-    let words = optionWordList(o);
-    if (words.length > target + 1) words = words.slice(0, target + 1);
-    let out = words.join(" ");
+    let out = o;
     let guard = 0;
-    while (optionWords(out) < target - 1 && guard < 2) {
+    while (optionWords(out) < target - 2 && guard < 4) {
       out = `${out} ${pads[(i + guard + String(seed).length) % pads.length]}`;
       guard += 1;
     }
