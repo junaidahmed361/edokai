@@ -8,6 +8,15 @@ I started this because my self-prescribed ADHD makes the normal study flow hard.
 
 The app is now branded Edokai end-to-end: repo, browser title, desktop app name, DMG name, and in-app title screen.
 
+## Twilight redesign
+
+The UI got a full game-like overhaul inspired by polished stylized-world sites (Elysium-style): a twilight-first glass design system with aurora gradients, glow accents, and a Sora/JetBrains Mono type pairing; a daylight theme remains one toggle away.
+
+- The placeholder three.js atlas is replaced by a smooth force-directed constellation (`src/ForceGraph.jsx` + `src/AtlasGraph.jsx`): worlds are glowing hubs sized by concept count, regions orbit as satellites, capture progress rings every node, dashed golden threads join worlds sharing sources, and the layout stays gently alive. Drag nodes, pan, zoom; click a world to focus, click again to enter.
+- The Conceptdex is now a slide-in panel from the right (`src/ConceptdexDrawer.jsx`), available from every screen via the HUD 📖 Dex button (Esc closes). Each world renders as its own mini-constellation: captured concepts shine in their region's colour, undiscovered ones are ghost "?" stars, and the saved-question deck plus per-region field notes live below the graph.
+- Graph node hues were chosen with a colour-vision-deficiency validator: all 8 world colours pass the all-pairs CVD separation target (ΔE ≥ 12) against the atlas sky, alongside direct labels on every node.
+- Screens use the available real estate generously (1160px shell, responsive card grids for worlds/regions/katas, a wider 16:10 board) without crowding: one hero surface per screen, everything else in quiet glass panels.
+
 The launch web version is live here:
 
 https://sprightly-paprenjak-d963a0.netlify.app/

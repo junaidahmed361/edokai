@@ -1,7 +1,8 @@
 import React, { useState, useEffect, useRef, useMemo } from "react";
 import { dkgSyncConfigStatus, loadDkgSnapshot, subscribeDkgSnapshot, snapshotToEdokaiWorlds, mergeDkgWorlds, summarizeDkgSnapshot } from "./dkgLiveSync";
-
-const DkgThreeMap = React.lazy(() => import("./DkgThreeMap.jsx"));
+import AtlasGraph from "./AtlasGraph.jsx";
+import ConceptdexDrawer from "./ConceptdexDrawer.jsx";
+import { withAlpha, tint } from "./uiTheme.js";
 
 /* ============================================================
    EDOKAI
@@ -15,23 +16,27 @@ const DkgThreeMap = React.lazy(() => import("./DkgThreeMap.jsx"));
    resource (URL, PDF, pasted text, or just a concept name).
    ============================================================ */
 
+/* Twilight-first design system: dreamy stylized-world palette (deep indigo
+   skies, aurora accents, glass panels) with an airy daylight counterpart. */
 const THEMES = {
   light: {
-    paper: "#EBEFF6", card: "#FFFFFF", ink: "#1B2440", inkSoft: "#5A6480",
-    line: "#D4DAE8", reward: "#1F9D6B", rewardSoft: "#E2F4EC",
-    penalty: "#D9534F", penaltySoft: "#FBE9E8", action: "#E8643F",
-    explore: "#5B4FD6", exploreSoft: "#ECEAFB", gold: "#C99A2C", night: "#232B47",
-    code: "#141A2E", codeText: "#D6DEF5", hud: "rgba(235,239,246,0.94)", shadow: "rgba(27,36,64,0.08)",
+    paper: "#E9EDF9", card: "rgba(255,255,255,0.82)", cardSolid: "#FFFFFF", ink: "#1C2442", inkSoft: "#5D6890",
+    line: "rgba(93,104,144,0.20)", reward: "#149E6E", rewardSoft: "rgba(20,158,110,0.10)",
+    penalty: "#D9534F", penaltySoft: "rgba(217,83,79,0.10)", action: "#E8643F",
+    explore: "#5B5BD6", exploreSoft: "rgba(91,91,214,0.10)", gold: "#C08A1E", teal: "#0FA7A0", night: "#232B54",
+    code: "#141A2E", codeText: "#D6DEF5", hud: "rgba(244,246,255,0.72)", shadow: "rgba(27,36,64,0.10)",
+    glow: "rgba(91,91,214,0.22)",
   },
   dark: {
-    paper: "#0B1020", card: "#141B31", ink: "#EDF2FF", inkSoft: "#A9B4D0",
-    line: "#2B3557", reward: "#5BE0A2", rewardSoft: "#123629",
-    penalty: "#FF7A76", penaltySoft: "#3B1E25", action: "#FF916B",
-    explore: "#9E94FF", exploreSoft: "#26214C", gold: "#FFD166", night: "#070B16",
-    code: "#050816", codeText: "#DDE7FF", hud: "rgba(11,16,32,0.94)", shadow: "rgba(0,0,0,0.35)",
+    paper: "#080B1A", card: "rgba(20,27,54,0.62)", cardSolid: "#141B36", ink: "#EEF2FF", inkSoft: "#9AA6CC",
+    line: "rgba(148,163,214,0.16)", reward: "#3DDC97", rewardSoft: "rgba(61,220,151,0.10)",
+    penalty: "#FF7A76", penaltySoft: "rgba(255,122,118,0.10)", action: "#FF8E5E",
+    explore: "#8D9BFF", exploreSoft: "rgba(141,155,255,0.12)", gold: "#FFC862", teal: "#3ED6C4", night: "#05070F",
+    code: "#0A0F22", codeText: "#D9E2FF", hud: "rgba(8,11,26,0.70)", shadow: "rgba(2,4,12,0.5)",
+    glow: "rgba(141,155,255,0.30)",
   },
 };
-const T = { ...THEMES.light };
+const T = { ...THEMES.dark };
 
 /* ============================================================
    MUSIC ENGINE — bundled low-volume lo-fi background track
@@ -3304,7 +3309,7 @@ export default function App() {
   const [deepLore, setDeepLore] = useState({});        // conceptId -> model-expanded lore
   const [wilds, setWilds] = useState(null);            // the knowledge RL environment
   const [repl, setRepl] = useState("");                // REPL input line
-  const [darkMode, setDarkMode] = useState(false);
+  const [darkMode, setDarkMode] = useState(true);
   const [dojoOpen, setDojoOpen] = useState({ swe: true, torchleet: true, ml: true, sys: true, custom: true });
   const [kataAttempts, setKataAttempts] = useState(0);
   const [todoGuidance, setTodoGuidance] = useState(true);
@@ -3314,7 +3319,8 @@ export default function App() {
   const [dkgSync, setDkgSync] = useState({ ...dkgSyncConfigStatus(), status: "booting", updatedAt: null, stats: null, recentSources: [], recentRuns: [] });
   const [dkgWorlds, setDkgWorlds] = useState([]);
   const [mapFocus, setMapFocus] = useState(null);
-  const [homeView, setHomeView] = useState("list");
+  const [homeView, setHomeView] = useState("atlas");
+  const [dexOpen, setDexOpen] = useState(false);
   const [sectionOpen, setSectionOpen] = useState({ liveDkg: true, teachPanel: true, studySources: true, teachMission: true, teachResources: true, teachGlossary: true, teachRecords: true });
 
   Object.assign(T, darkMode ? THEMES.dark : THEMES.light);
@@ -3333,7 +3339,7 @@ export default function App() {
       setUKatas(await loadStore("ru-ukatas", []));
       setAug(await loadStore("ru-aug", {}));
       setDeepLore(await loadStore("ru-lore", {}));
-      const c = await loadStore("ru-cfg", { provider: "builtin", baseUrl: "", apiKey: "", model: "", anthropicKey: "", darkMode: false });
+      const c = await loadStore("ru-cfg", { provider: "builtin", baseUrl: "", apiKey: "", model: "", anthropicKey: "", darkMode: true });
       if (!c.anthropicKey && typeof window !== "undefined" && window.edokaiAuth && window.edokaiAuth.anthropicKey) c.anthropicKey = window.edokaiAuth.anthropicKey;
       if (typeof window !== "undefined" && window.edokaiAuth && typeof window.edokaiAuth.claudeCodeStatus === "function") {
         window.edokaiAuth.claudeCodeStatus().then(setClaudeCodeAuth).catch((e) => setClaudeCodeAuth({ loggedIn: false, error: e.message || String(e) }));
@@ -4044,17 +4050,32 @@ ${QUALITY_RULES}`, cfg));
     return StableCodeEditor;
   }, [darkMode]);
 
-  /* ---------- styles ---------- */
+  /* ---------- styles: twilight glass system ---------- */
+  const appBg = darkMode
+    ? `radial-gradient(1100px 720px at 82% -12%, rgba(104,133,246,0.16), transparent 62%),
+       radial-gradient(900px 640px at -8% 26%, rgba(62,214,196,0.09), transparent 56%),
+       radial-gradient(880px 600px at 52% 112%, rgba(208,95,175,0.10), transparent 60%), ${T.paper}`
+    : `radial-gradient(1100px 720px at 82% -12%, rgba(122,143,255,0.20), transparent 62%),
+       radial-gradient(900px 640px at -8% 26%, rgba(63,196,182,0.14), transparent 56%),
+       radial-gradient(880px 600px at 52% 112%, rgba(235,142,205,0.15), transparent 60%), ${T.paper}`;
   const S = {
-    app: { minHeight: "100vh", background: T.paper, color: T.ink, fontFamily: "'Space Grotesk', system-ui, sans-serif" },
-    wrap: { maxWidth: 620, margin: "0 auto", padding: "0 14px 60px" },
-    card: { background: T.card, border: `1px solid ${T.line}`, borderRadius: 14, padding: 16 },
-    btn: (bg, c = "#fff") => ({ background: bg, color: c, border: "none", borderRadius: 10, padding: "11px 18px", fontWeight: 700, fontSize: 14, cursor: "pointer", fontFamily: "inherit" }),
-    chip: (on) => ({ border: `1.5px solid ${on ? T.explore : T.line}`, background: on ? T.exploreSoft : T.card, color: on ? T.explore : T.inkSoft, borderRadius: 999, padding: "7px 13px", fontSize: 13, fontWeight: 600, cursor: "pointer", fontFamily: "inherit" }),
-    mono: (size = 10.5, color = T.inkSoft) => ({ fontFamily: "'JetBrains Mono', monospace", fontSize: size, letterSpacing: "0.06em", color, fontWeight: 700 }),
-    pre: { background: T.code, color: T.codeText, borderRadius: 10, padding: "12px 14px", fontFamily: "'JetBrains Mono', monospace", fontSize: 11.5, lineHeight: 1.6, overflowX: "auto", whiteSpace: "pre", margin: 0 },
-    input: { width: "100%", boxSizing: "border-box", border: `1px solid ${T.line}`, borderRadius: 10, padding: "11px 12px", fontSize: 13.5, fontFamily: "'JetBrains Mono', monospace", background: T.card, color: T.ink, outline: "none" },
-    qbtn: { display: "block", width: "100%", textAlign: "left", marginBottom: 8, background: T.card, border: `1.5px solid ${T.line}`, color: T.ink, borderRadius: 10, padding: "11px 13px", fontSize: 13.5, fontWeight: 600, cursor: "pointer", fontFamily: "inherit", lineHeight: 1.45 },
+    app: { minHeight: "100vh", background: appBg, backgroundAttachment: "fixed", color: T.ink, fontFamily: "'Sora', 'Space Grotesk', system-ui, sans-serif" },
+    wrap: { maxWidth: 1160, margin: "0 auto", padding: "0 clamp(14px, 4vw, 40px) 80px" },
+    card: {
+      background: T.card, border: `1px solid ${T.line}`, borderRadius: 18, padding: 18,
+      backdropFilter: "blur(14px)", WebkitBackdropFilter: "blur(14px)",
+      boxShadow: darkMode ? "0 14px 40px rgba(2,4,12,0.35), inset 0 1px 0 rgba(255,255,255,0.05)" : "0 14px 40px rgba(27,36,64,0.08), inset 0 1px 0 rgba(255,255,255,0.7)",
+    },
+    btn: (bg, c = "#fff") => (String(bg)[0] === "#"
+      ? { background: `linear-gradient(180deg, ${tint(bg, 0.16)}, ${bg})`, color: c, border: "none", borderRadius: 12, padding: "11px 18px", fontWeight: 700, fontSize: 14, cursor: "pointer", fontFamily: "inherit", boxShadow: `0 6px 20px ${withAlpha(bg, 0.35)}, inset 0 1px 0 rgba(255,255,255,0.28)` }
+      : { background: bg, color: c, border: "none", borderRadius: 12, padding: "11px 18px", fontWeight: 700, fontSize: 14, cursor: "pointer", fontFamily: "inherit" }),
+    btnGhost: { background: "rgba(148,163,214,0.08)", border: `1px solid ${T.line}`, color: T.inkSoft, borderRadius: 10, padding: "6px 13px", fontSize: 12, cursor: "pointer", fontFamily: "inherit", fontWeight: 700 },
+    chip: (on) => ({ border: `1px solid ${on ? withAlpha(T.explore, 0.6) : T.line}`, background: on ? T.exploreSoft : (darkMode ? "rgba(255,255,255,0.04)" : "rgba(255,255,255,0.6)"), color: on ? T.explore : T.inkSoft, borderRadius: 999, padding: "7px 13px", fontSize: 13, fontWeight: 600, cursor: "pointer", fontFamily: "inherit" }),
+    mono: (size = 10.5, color = T.inkSoft) => ({ fontFamily: "'JetBrains Mono', monospace", fontSize: size, letterSpacing: "0.07em", color, fontWeight: 700 }),
+    pre: { background: T.code, color: T.codeText, border: `1px solid ${darkMode ? "rgba(148,163,214,0.14)" : "transparent"}`, borderRadius: 12, padding: "12px 14px", fontFamily: "'JetBrains Mono', monospace", fontSize: 11.5, lineHeight: 1.6, overflowX: "auto", whiteSpace: "pre", margin: 0 },
+    input: { width: "100%", boxSizing: "border-box", border: `1px solid ${T.line}`, borderRadius: 12, padding: "11px 12px", fontSize: 13.5, fontFamily: "'JetBrains Mono', monospace", background: darkMode ? "rgba(10,15,34,0.7)" : "rgba(255,255,255,0.85)", color: T.ink, outline: "none" },
+    qbtn: { display: "block", width: "100%", textAlign: "left", marginBottom: 8, background: darkMode ? "rgba(255,255,255,0.035)" : "rgba(255,255,255,0.75)", border: `1px solid ${T.line}`, color: T.ink, borderRadius: 12, padding: "12px 14px", fontSize: 13.5, fontWeight: 600, cursor: "pointer", fontFamily: "inherit", lineHeight: 1.45 },
+    grid: (min = 320) => ({ display: "grid", gridTemplateColumns: `repeat(auto-fill, minmax(min(${min}px, 100%), 1fr))`, gap: 12 }),
   };
 
   const NarutoPet = ({ pet = {} }) => {
@@ -4069,38 +4090,71 @@ ${QUALITY_RULES}`, cfg));
 
   if (!save) return <div style={{ ...S.app, display: "flex", alignItems: "center", justifyContent: "center" }}><span style={S.mono()}>loading save file…</span></div>;
 
+  const iconBtn = () => ({ background: darkMode ? "rgba(255,255,255,0.045)" : "rgba(255,255,255,0.7)", border: `1px solid ${T.line}`, color: T.ink, borderRadius: 11, width: 34, height: 34, cursor: "pointer", fontSize: 15, display: "grid", placeItems: "center", flexShrink: 0 });
+  const xpIntoLevel = save ? save.xp - (level - 1) * 150 : 0;
   const HUD = ({ back }) => (
-    <div style={{ position: "sticky", top: 0, zIndex: 20, background: T.hud, backdropFilter: "blur(8px)", borderBottom: `1px solid ${T.line}` }}>
-      <div style={{ maxWidth: 620, margin: "0 auto", padding: "10px 14px", display: "flex", alignItems: "center", gap: 8 }}>
-        {back && <button onClick={back} aria-label="Back" style={{ background: "none", border: `1px solid ${T.line}`, borderRadius: 8, width: 30, height: 30, cursor: "pointer", color: T.ink, flexShrink: 0 }}>←</button>}
-        <div style={{ flex: 1, minWidth: 0 }}>
-          <div style={{ display: "flex", justifyContent: "space-between" }}>
-            <span style={S.mono(10, T.ink)}>LV.{level} · {save.xp} XP</span>
-            <span style={S.mono(10, T.gold)}>🎖 {save.badges.length}</span>
+    <div style={{ position: "sticky", top: 0, zIndex: 20, background: T.hud, backdropFilter: "blur(18px)", WebkitBackdropFilter: "blur(18px)", borderBottom: `1px solid ${T.line}` }}>
+      <div style={{ maxWidth: 1160, margin: "0 auto", padding: "10px clamp(14px, 4vw, 40px)", display: "flex", alignItems: "center", gap: 10 }}>
+        {back && <button onClick={back} aria-label="Back" style={iconBtn()}>←</button>}
+        <div title={`Level ${level} · ${xpIntoLevel}/150 XP into this level`} style={{ position: "relative", width: 40, height: 40, flexShrink: 0, borderRadius: "50%", display: "grid", placeItems: "center", background: `conic-gradient(${T.explore} ${Math.round((xpIntoLevel / 150) * 360)}deg, ${darkMode ? "rgba(255,255,255,0.10)" : "rgba(28,36,66,0.12)"} 0deg)`, boxShadow: `0 0 16px ${withAlpha(darkMode ? "#8D9BFF" : "#5B5BD6", 0.35)}` }}>
+          <div style={{ width: 32, height: 32, borderRadius: "50%", background: darkMode ? "#10162E" : "#FFFFFF", display: "grid", placeItems: "center" }}>
+            <span style={S.mono(10.5, T.ink)}>{level}</span>
           </div>
-          <div style={{ height: 7, background: T.line, borderRadius: 4, marginTop: 4, overflow: "hidden" }}>
-            <div style={{ height: "100%", width: `${(save.hp / maxHp) * 100}%`, background: save.hp / maxHp > 0.4 ? T.reward : T.penalty, transition: "width .4s" }} />
+        </div>
+        <div style={{ flex: 1, minWidth: 0 }}>
+          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", gap: 8 }}>
+            <span style={{ ...S.mono(9.5, T.ink), whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>LV.{level} · {save.xp} XP</span>
+            <span style={{ ...S.mono(9.5, T.gold), whiteSpace: "nowrap" }}>🎖 {save.badges.length}</span>
+          </div>
+          <div style={{ height: 7, background: darkMode ? "rgba(255,255,255,0.08)" : "rgba(28,36,66,0.10)", borderRadius: 4, marginTop: 5, overflow: "hidden" }}>
+            <div style={{ height: "100%", width: `${(save.hp / maxHp) * 100}%`, borderRadius: 4, background: save.hp / maxHp > 0.4 ? `linear-gradient(90deg, ${T.reward}, ${tint(darkMode ? "#3DDC97" : "#149E6E", 0.35)})` : `linear-gradient(90deg, ${T.penalty}, ${tint("#FF7A76", 0.25)})`, boxShadow: `0 0 10px ${withAlpha(save.hp / maxHp > 0.4 ? (darkMode ? "#3DDC97" : "#149E6E") : "#FF7A76", 0.5)}`, transition: "width .4s" }} />
           </div>
         </div>
         <NarutoPet pet={save.pet} />
-        <button onClick={toggleMusic} title="Low-volume background music" style={{ background: "none", border: `1px solid ${T.line}`, color: T.ink, borderRadius: 8, width: 30, height: 30, cursor: "pointer", fontSize: 14 }}>{musicOn ? "🎵" : "🔇"}</button>
-        <button onClick={toggleTheme} title={darkMode ? "Switch to light mode" : "Switch to dark mode"} style={{ background: "none", border: `1px solid ${T.line}`, color: T.ink, borderRadius: 8, width: 30, height: 30, cursor: "pointer", fontSize: 14 }}>{darkMode ? "☀️" : "🌙"}</button>
-        <button onClick={() => { setDexWorld(activeWorld); setScreen("dex"); }} style={{ ...S.btn(T.explore), padding: "7px 10px", fontSize: 12 }}>📖</button>
-        <button onClick={() => setScreen("settings")} style={{ background: "none", border: `1px solid ${T.line}`, color: T.ink, borderRadius: 8, width: 30, height: 30, cursor: "pointer", fontSize: 14 }}>⚙️</button>
+        <button onClick={toggleMusic} title="Low-volume background music" style={iconBtn()}>{musicOn ? "🎵" : "🔇"}</button>
+        <button onClick={toggleTheme} title={darkMode ? "Switch to daylight" : "Switch to twilight"} style={iconBtn()}>{darkMode ? "☀️" : "🌙"}</button>
+        <button onClick={() => { setDexWorld(activeWorld); setDexOpen(true); }} title="Open the Conceptdex" style={{ ...S.btn(T.explore), padding: "8px 13px", fontSize: 12.5, display: "flex", alignItems: "center", gap: 6 }}>📖 <span style={{ fontWeight: 800 }}>Dex</span></button>
+        <button onClick={() => setScreen("settings")} title="Settings" style={iconBtn()}>⚙️</button>
       </div>
     </div>
   );
   const Tabs = () => (
-    <div style={{ display: "flex", gap: 6, marginTop: 14, flexWrap: "wrap" }}>
-      {[["home", "🌍 Learn"], ["dojo", "⌨️ Dojo"], ["wildspick", "🌿 Wilds"], ["coach", "🧪 Coach"], ["teachspace", "📚 Mission"], ["papers", "📡 Papers"]].map(([id, label]) => {
+    <div style={{ display: "inline-flex", gap: 4, marginTop: 16, flexWrap: "wrap", padding: 5, borderRadius: 999, background: darkMode ? "rgba(13,19,42,0.6)" : "rgba(255,255,255,0.55)", border: `1px solid ${T.line}`, backdropFilter: "blur(12px)", WebkitBackdropFilter: "blur(12px)" }}>
+      {[["home", "🌍", "Learn"], ["dojo", "⌨️", "Dojo"], ["wildspick", "🌿", "Wilds"], ["coach", "🧪", "Coach"], ["teachspace", "📚", "Mission"], ["papers", "📡", "Papers"]].map(([id, icon, label]) => {
         const on = screen === id || (id === "home" && ["home", "regionlist", "region"].includes(screen));
-        const activeBg = darkMode ? T.explore : T.ink;
-        const activeFg = darkMode ? "#FFFFFF" : "#FFFFFF";
-        return <button key={id} onClick={() => setScreen(id)} style={{ ...S.btn(on ? activeBg : T.card, on ? activeFg : T.inkSoft), border: `1px solid ${on ? activeBg : T.line}`, padding: "8px 14px", fontSize: 13 }}>{label}</button>;
+        return (
+          <button key={id} onClick={() => setScreen(id)} style={{
+            border: "none", cursor: "pointer", fontFamily: "inherit", fontWeight: 700, fontSize: 13,
+            padding: "9px 16px", borderRadius: 999, display: "flex", alignItems: "center", gap: 7,
+            background: on ? `linear-gradient(180deg, ${tint(T.explore, 0.14)}, ${T.explore})` : "transparent",
+            color: on ? "#FFFFFF" : T.inkSoft,
+            boxShadow: on ? `0 6px 18px ${withAlpha(darkMode ? "#8D9BFF" : "#5B5BD6", 0.4)}, inset 0 1px 0 rgba(255,255,255,0.3)` : "none",
+          }}><span>{icon}</span>{label}</button>
+        );
       })}
     </div>
   );
-  const Toast = () => toast ? <div style={{ position: "fixed", bottom: 24, left: "50%", transform: "translateX(-50%)", zIndex: 60, background: T.ink, color: "#fff", padding: "10px 16px", borderRadius: 12, fontSize: 13.5, fontWeight: 700, animation: "slideUp .3s ease", maxWidth: "85%", textAlign: "center" }}>{toast}</div> : null;
+  const Toast = () => toast ? <div style={{ position: "fixed", bottom: 26, left: "50%", transform: "translateX(-50%)", zIndex: 80, background: darkMode ? "rgba(19,26,54,0.92)" : "rgba(28,36,66,0.94)", color: "#F2F5FF", border: "1px solid rgba(148,163,214,0.35)", backdropFilter: "blur(12px)", padding: "11px 18px", borderRadius: 14, fontSize: 13.5, fontWeight: 700, animation: "slideUp .3s ease", maxWidth: "85%", textAlign: "center", boxShadow: "0 16px 44px rgba(2,4,12,0.45)" }}>{toast}</div> : null;
+  const chrome = (
+    <>
+      <style>{CSS}</style>
+      <Toast />
+      <ConceptdexDrawer
+        open={dexOpen}
+        onClose={() => setDexOpen(false)}
+        worlds={allWorlds}
+        dexWorld={dexWorld}
+        setDexWorld={setDexWorld}
+        capturedSet={capturedSet}
+        savedQuestions={dexQuestionsFor(allWorlds.find((w) => w.id === dexWorld) || world)}
+        onRemoveQuestion={removeDexQuestion}
+        deepLore={deepLore}
+        onDeepen={deepenLore}
+        busy={busy}
+        conceptNote={conceptNote}
+      />
+    </>
+  );
   const SenzuPanel = ({ compact = false }) => {
     const q = save.senzu;
     const active = q && !q.claimed;
@@ -4187,30 +4241,47 @@ ${QUALITY_RULES}`, cfg));
 
   /* ============ TITLE ============ */
   if (screen === "title") return (
-    <div style={{ ...S.app, display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", textAlign: "center", padding: 20 }}>
-      <style>{CSS}</style>
-      <div style={{ fontSize: 60, animation: "bob 2.5s ease-in-out infinite" }}>🧢</div>
-      <h1 style={{ fontSize: 32, fontWeight: 800, letterSpacing: "-0.02em", margin: "8px 0 2px" }}>EDOKAI</h1>
-      <span style={S.mono(11, T.explore)}>5 UMBRELLA WORLDS · TORCHLEET DOJO · SELF-IMPROVING COACH</span>
-      <p style={{ color: T.inkSoft, maxWidth: 430, lineHeight: 1.6, fontSize: 14.5, marginTop: 14 }}>
-        Board worlds for <b style={{ color: T.action }}>concepts</b>, a <b style={{ color: T.explore }}>Dojo</b> with runnable Python katas, per-world <b>Trial Gauntlets</b>, and a <b style={{ color: T.reward }}>Coach</b> that watches your misses and forges new drills. The teaching loop is mission-grounded, resource-first, and built for storage strength.
-      </p>
-      <button onClick={() => setScreen("home")} style={{ ...S.btn(T.explore), fontSize: 16, padding: "13px 30px", marginTop: 18 }}>{save.xp > 0 ? "Continue journey →" : "Begin journey →"}</button>
+    <div style={{ ...S.app, position: "relative", overflow: "hidden", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", textAlign: "center", padding: 20 }}>
+      {chrome}
+      <div aria-hidden style={{ position: "absolute", inset: "-25%", pointerEvents: "none", background: `radial-gradient(34% 30% at 26% 30%, ${withAlpha(darkMode ? "#6885F6" : "#7A8FFF", 0.22)}, transparent 70%), radial-gradient(30% 26% at 74% 22%, ${withAlpha("#3ED6C4", darkMode ? 0.13 : 0.18)}, transparent 70%), radial-gradient(36% 30% at 60% 84%, ${withAlpha("#D05FAF", darkMode ? 0.12 : 0.16)}, transparent 70%)`, animation: "auroraDrift 24s ease-in-out infinite alternate" }} />
+      {["🌍", "⚛️", "🌊", "👁️", "🚄"].map((e, i) => (
+        <span key={i} aria-hidden style={{ position: "absolute", fontSize: 24 + (i % 3) * 8, opacity: darkMode ? 0.5 : 0.55, filter: `saturate(1.1) drop-shadow(0 0 14px ${withAlpha("#8D9BFF", 0.55)})`, left: `${[8, 84, 14, 78, 48][i]}%`, top: `${[22, 18, 74, 70, 88][i]}%`, animation: `floatY ${7 + i * 1.7}s ease-in-out ${i * 0.9}s infinite`, pointerEvents: "none" }}>{e}</span>
+      ))}
+      <div style={{ position: "relative", animation: "fadeScale .7s ease" }}>
+        <div style={{ fontSize: 62, animation: "bob 3s ease-in-out infinite", filter: `drop-shadow(0 10px 26px ${withAlpha("#8D9BFF", 0.45)})` }}>🧢</div>
+        <h1 style={{ fontSize: "clamp(44px, 8vw, 72px)", fontWeight: 800, letterSpacing: "0.06em", margin: "10px 0 6px", fontFamily: "'Sora','Space Grotesk',sans-serif", background: `linear-gradient(115deg, ${darkMode ? "#EEF2FF" : "#1C2442"} 25%, ${T.explore} 55%, ${T.teal} 85%)`, WebkitBackgroundClip: "text", backgroundClip: "text", color: "transparent", textShadow: "none" }}>EDOKAI</h1>
+        <span style={S.mono(11, T.explore)}>CONCEPT WORLDS · TORCHLEET DOJO · SELF-IMPROVING COACH</span>
+        <p style={{ color: T.inkSoft, maxWidth: 470, lineHeight: 1.65, fontSize: 15, margin: "16px auto 0" }}>
+          A living atlas of <b style={{ color: T.action }}>concept worlds</b>, a <b style={{ color: T.explore }}>Dojo</b> with runnable Python katas, per-world <b style={{ color: T.gold }}>Trial Gauntlets</b>, and a <b style={{ color: T.reward }}>Coach</b> that watches your misses and forges new drills.
+        </p>
+        <div style={{ display: "flex", gap: 8, justifyContent: "center", flexWrap: "wrap", marginTop: 18 }}>
+          {[["🗺️", "force-directed atlas"], ["📖", "conceptdex"], ["⚔️", "gauntlets"], ["🐍", "live python"]].map(([icon, label]) => (
+            <span key={label} style={{ ...S.mono(9.5, T.inkSoft), background: T.card, border: `1px solid ${T.line}`, borderRadius: 999, padding: "7px 12px", backdropFilter: "blur(10px)" }}>{icon} {label}</span>
+          ))}
+        </div>
+        <button onClick={() => setScreen("home")} style={{ ...S.btn(T.explore), fontSize: 16.5, padding: "15px 38px", marginTop: 26, borderRadius: 16, boxShadow: `0 10px 34px ${withAlpha(darkMode ? "#8D9BFF" : "#5B5BD6", 0.5)}, inset 0 1px 0 rgba(255,255,255,0.35)`, animation: "glowPulse 3.2s ease-in-out infinite" }}>{save.xp > 0 ? "Continue journey →" : "Begin journey →"}</button>
+        {save.xp > 0 && <div style={{ ...S.mono(9.5, T.inkSoft), marginTop: 12 }}>LV.{level} · {save.xp} XP · {save.captured.length} CONCEPTS CAPTURED</div>}
+      </div>
     </div>
   );
 
   /* ============ HOME ============ */
   if (screen === "home") return (
-    <div style={S.app}><style>{CSS}</style><Toast /><HUD back={() => setScreen("title")} />
+    <div style={S.app}>{chrome}<HUD back={() => setScreen("title")} />
       <div style={{ ...S.wrap }}>
         <Tabs />
-        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", marginTop: 14 }}>
-          <h2 style={{ fontSize: 20, fontWeight: 800, margin: 0 }}>Concept Worlds</h2>
-          <button onClick={() => { setScan(null); setScreen("spawn"); }} style={{ ...S.btn(T.action), padding: "7px 12px", fontSize: 12 }}>+ Bring your own</button>
-        </div>
-        <div style={{ display: "flex", gap: 6, marginTop: 10, background: darkMode ? "#101832" : "#F2F4FA", border: `1px solid ${T.line}`, borderRadius: 999, padding: 4 }}>
-          <button onClick={() => setHomeView("list")} style={{ ...S.btn(homeView === "list" ? T.explore : "transparent", homeView === "list" ? "#fff" : T.inkSoft), flex: 1, padding: "7px 10px", fontSize: 12, borderRadius: 999 }}>☰ List view</button>
-          <button onClick={() => setHomeView("atlas")} style={{ ...S.btn(homeView === "atlas" ? T.explore : "transparent", homeView === "atlas" ? "#fff" : T.inkSoft), flex: 1, padding: "7px 10px", fontSize: 12, borderRadius: 999 }}>🗺️ Atlas view</button>
+        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: 12, marginTop: 20, flexWrap: "wrap" }}>
+          <div>
+            <h2 style={{ fontSize: "clamp(24px, 3.4vw, 32px)", fontWeight: 800, margin: 0, letterSpacing: "-0.02em", fontFamily: "'Sora','Space Grotesk',sans-serif" }}>Concept Worlds</h2>
+            <span style={S.mono(9.5, T.inkSoft)}>{allWorlds.length} WORLDS · {save.captured.length} CONCEPTS CAPTURED · LV.{level}</span>
+          </div>
+          <div style={{ display: "flex", gap: 8, alignItems: "center", flexWrap: "wrap" }}>
+            <div style={{ display: "inline-flex", gap: 4, padding: 4, borderRadius: 999, background: darkMode ? "rgba(13,19,42,0.6)" : "rgba(255,255,255,0.55)", border: `1px solid ${T.line}` }}>
+              <button onClick={() => setHomeView("atlas")} style={{ ...S.btn(homeView === "atlas" ? T.explore : "transparent", homeView === "atlas" ? "#fff" : T.inkSoft), padding: "7px 14px", fontSize: 12, borderRadius: 999 }}>🗺️ Atlas</button>
+              <button onClick={() => setHomeView("list")} style={{ ...S.btn(homeView === "list" ? T.explore : "transparent", homeView === "list" ? "#fff" : T.inkSoft), padding: "7px 14px", fontSize: 12, borderRadius: 999 }}>☰ List</button>
+            </div>
+            <button onClick={() => { setScan(null); setScreen("spawn"); }} style={{ ...S.btn(T.action), padding: "9px 14px", fontSize: 12.5 }}>+ Bring your own</button>
+          </div>
         </div>
         <TeachingPanel target={world} compact />
         <Collapsible id="liveDkg" title={`LIVE DKG · ${dkgSync.status.toUpperCase()}`} color={dkgSync.status === "error" ? T.penalty : T.explore} style={{ marginTop: 10, background: dkgSync.status === "error" ? T.penaltySoft : dkgSync.status === "disabled" ? T.card : T.exploreSoft }} right={<button onClick={(e) => { e.stopPropagation(); refreshDkgNow(); }} style={{ ...S.chip(false), fontSize: 11, padding: "5px 9px" }}>{dkgSync.status === "refreshing" ? "Pulling…" : "Pull latest"}</button>}>
@@ -4249,50 +4320,50 @@ ${QUALITY_RULES}`, cfg));
           </Collapsible>}
         </Collapsible>
         {homeView === "atlas" && (
-          <div style={{ marginTop: 12 }}>
-            <React.Suspense fallback={<div style={{ ...S.card, height: 390, display: "grid", placeItems: "center", color: T.inkSoft }}><span style={S.mono(10)}>loading three.js atlas…</span></div>}>
-              <DkgThreeMap
-                worlds={allWorlds}
-                focusedWorld={focusedMapWorld}
-                mapStats={mapStats}
-                capturedSet={capturedSet}
-                darkMode={darkMode}
-                T={T}
-                onFocus={(id) => { setMapFocus(id); setActiveWorld(id); }}
-                onStudy={(id) => { setActiveWorld(id); setRegionIdx(0); setAtNode("start"); setScreen("regionlist"); }}
-              />
-            </React.Suspense>
-            <div style={{ ...S.card, marginTop: 10, background: darkMode ? "#101832" : "#FAFBFF" }}>
-              <span style={S.mono(10, T.action)}>ATLAS FOCUS</span>
-              <div style={{ display: "flex", justifyContent: "space-between", gap: 10, alignItems: "center", marginTop: 6 }}>
-                <div>
-                  <div style={{ fontWeight: 900 }}>{focusedMapWorld.emoji} {focusedMapWorld.title}</div>
-                  <div style={{ fontSize: 12.5, color: T.inkSoft }}>{mapStats(focusedMapWorld).concepts} concepts · {focusedMapWorld.regions.length} regions · switch back to list any time.</div>
-                </div>
-                <button onClick={() => { setActiveWorld(focusedMapWorld.id); setRegionIdx(0); setAtNode("start"); setScreen("regionlist"); }} style={{ ...S.btn(T.explore), padding: "8px 11px", fontSize: 12 }}>Study →</button>
-              </div>
-            </div>
+          <div style={{ marginTop: 14, animation: "fadeScale .5s ease" }}>
+            <AtlasGraph
+              worlds={allWorlds}
+              focusedWorld={focusedMapWorld}
+              mapStats={mapStats}
+              capturedSet={capturedSet}
+              height={Math.max(440, Math.min(620, typeof window !== "undefined" ? window.innerHeight * 0.62 : 540))}
+              onFocus={(id) => { setMapFocus(id); setActiveWorld(id); }}
+              onStudy={(id) => { setActiveWorld(id); setRegionIdx(0); setAtNode("start"); setScreen("regionlist"); }}
+            />
           </div>
         )}
-        {homeView === "list" && allWorlds.map((w) => {
-          const total = w.regions.reduce((n, r) => n + r.concepts.length, 0);
-          const got = w.regions.reduce((n, r) => n + r.concepts.filter((c) => capturedSet.has(c.id)).length, 0);
-          const badges = w.regions.filter((r) => save.badges.includes(r.gym.badge)).length;
-          const custom = !BUILTIN_WORLDS.find((b) => b.id === w.id);
-          return (
-            <div key={w.id} onClick={() => { setActiveWorld(w.id); setRegionIdx(0); setAtNode("start"); setScreen("regionlist"); }}
-              style={{ ...S.card, marginTop: 10, display: "flex", alignItems: "center", gap: 14, cursor: "pointer" }}>
-              <div style={{ fontSize: 30 }}>{w.emoji}</div>
-              <div style={{ flex: 1 }}>
-                <div style={{ fontWeight: 800, fontSize: 15.5 }}>{w.title} {badges === w.regions.length && badges > 0 ? "🎖" : ""}</div>
-                {w.blurb && <div style={{ fontSize: 12, color: T.inkSoft, lineHeight: 1.4 }}>{w.blurb}</div>}
-                <span style={S.mono(9.5, got === total && total > 0 ? T.reward : T.inkSoft)}>{got}/{total} CONCEPTS · {w.regions.length} REGION{w.regions.length === 1 ? "" : "S"}{custom ? " · CUSTOM" : ""}</span>
-              </div>
-              {custom && <button onClick={(e) => { e.stopPropagation(); persistWorlds(worlds.filter((x) => x.id !== w.id)); }} style={{ background: "none", border: "none", color: T.inkSoft, cursor: "pointer", fontSize: 15 }}>✕</button>}
-              <span style={{ color: T.explore, fontWeight: 800, fontSize: 20 }}>›</span>
-            </div>
-          );
-        })}
+        {homeView === "list" && (
+          <div style={{ ...S.grid(330), marginTop: 14 }}>
+            {allWorlds.map((w, wi) => {
+              const total = w.regions.reduce((n, r) => n + r.concepts.length, 0);
+              const got = w.regions.reduce((n, r) => n + r.concepts.filter((c) => capturedSet.has(c.id)).length, 0);
+              const badges = w.regions.filter((r) => save.badges.includes(r.gym.badge)).length;
+              const custom = !BUILTIN_WORLDS.find((b) => b.id === w.id);
+              const pct = total ? Math.round((got / total) * 100) : 0;
+              return (
+                <div key={w.id} onClick={() => { setActiveWorld(w.id); setRegionIdx(0); setAtNode("start"); setScreen("regionlist"); }}
+                  className="worldCard" style={{ ...S.card, display: "flex", flexDirection: "column", gap: 10, cursor: "pointer", position: "relative", overflow: "hidden" }}>
+                  <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
+                    <div style={{ width: 46, height: 46, borderRadius: 15, display: "grid", placeItems: "center", fontSize: 25, flexShrink: 0, background: T.exploreSoft, border: `1px solid ${withAlpha(darkMode ? "#8D9BFF" : "#5B5BD6", 0.3)}` }}>{w.emoji}</div>
+                    <div style={{ flex: 1, minWidth: 0 }}>
+                      <div style={{ fontWeight: 800, fontSize: 15.5, fontFamily: "'Sora','Space Grotesk',sans-serif" }}>{w.title} {badges === w.regions.length && badges > 0 ? "🎖" : ""}</div>
+                      <span style={S.mono(9, got === total && total > 0 ? T.reward : T.inkSoft)}>{got}/{total} CONCEPTS · {w.regions.length} REGION{w.regions.length === 1 ? "" : "S"}{custom ? " · CUSTOM" : ""}</span>
+                    </div>
+                    {custom && <button onClick={(e) => { e.stopPropagation(); persistWorlds(worlds.filter((x) => x.id !== w.id)); }} style={{ background: "none", border: "none", color: T.inkSoft, cursor: "pointer", fontSize: 15 }}>✕</button>}
+                  </div>
+                  {w.blurb && <div style={{ fontSize: 12.3, color: T.inkSoft, lineHeight: 1.5, flex: 1 }}>{w.blurb}</div>}
+                  <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+                    <div style={{ flex: 1, height: 5, background: darkMode ? "rgba(255,255,255,0.08)" : "rgba(28,36,66,0.10)", borderRadius: 4, overflow: "hidden" }}>
+                      <div style={{ height: "100%", width: `${pct}%`, borderRadius: 4, background: `linear-gradient(90deg, ${T.explore}, ${T.teal})`, boxShadow: `0 0 8px ${withAlpha(darkMode ? "#8D9BFF" : "#5B5BD6", 0.55)}` }} />
+                    </div>
+                    <span style={S.mono(9, pct === 100 ? T.reward : T.inkSoft)}>{pct}%</span>
+                    <span style={{ color: T.explore, fontWeight: 800, fontSize: 18 }}>›</span>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        )}
       </div>
     </div>
   );
@@ -4301,28 +4372,25 @@ ${QUALITY_RULES}`, cfg));
   if (screen === "map") {
     const focusStats = mapStats(focusedMapWorld);
     return (
-      <div style={S.app}><style>{CSS}</style><Toast /><HUD back={() => setScreen("home")} />
+      <div style={S.app}>{chrome}<HUD back={() => setScreen("home")} />
         <div style={{ ...S.wrap }}>
           <Tabs />
-          <div style={{ ...S.card, marginTop: 14, background: darkMode ? "linear-gradient(135deg,#101832,#17203f)" : "linear-gradient(135deg,#F5F8FF,#FFFFFF)" }}>
-            <span style={S.mono(10, T.explore)}>EDOKAI ATLAS · THREE.JS TERRITORY MAP</span>
-            <h2 style={{ fontSize: 21, fontWeight: 800, margin: "6px 0 4px" }}>A spatial DKG map you can read at a glance.</h2>
-            <p style={{ fontSize: 13, color: T.inkSoft, lineHeight: 1.55, margin: 0 }}>Each island is a macro-world, orbiting dots are its regions, green arcs show capture progress, and source-overlap lines show nearby territories. Click an island to focus it; use Study to jump into the learner path.</p>
+          <div style={{ ...S.card, marginTop: 16 }}>
+            <span style={S.mono(10, T.explore)}>EDOKAI ATLAS · LIVING CONSTELLATION</span>
+            <h2 style={{ fontSize: 22, fontWeight: 800, margin: "6px 0 4px", fontFamily: "'Sora','Space Grotesk',sans-serif" }}>Your knowledge graph, laid out by physics.</h2>
+            <p style={{ fontSize: 13, color: T.inkSoft, lineHeight: 1.55, margin: 0 }}>Worlds are glowing hubs sized by concept count; regions orbit them as satellites; capture progress rings each node, and dashed golden threads join worlds that share sources. Drag anything — the layout breathes and settles on its own.</p>
           </div>
 
-          <div style={{ marginTop: 10 }}>
-            <React.Suspense fallback={<div style={{ ...S.card, height: 390, display: "grid", placeItems: "center", color: T.inkSoft }}><span style={S.mono(10)}>loading three.js atlas…</span></div>}>
-              <DkgThreeMap
-                worlds={allWorlds}
-                focusedWorld={focusedMapWorld}
-                mapStats={mapStats}
-                capturedSet={capturedSet}
-                darkMode={darkMode}
-                T={T}
-                onFocus={(id) => { setMapFocus(id); setActiveWorld(id); }}
-                onStudy={(id) => { setActiveWorld(id); setRegionIdx(0); setAtNode("start"); setScreen("regionlist"); }}
-              />
-            </React.Suspense>
+          <div style={{ marginTop: 12 }}>
+            <AtlasGraph
+              worlds={allWorlds}
+              focusedWorld={focusedMapWorld}
+              mapStats={mapStats}
+              capturedSet={capturedSet}
+              height={Math.max(460, Math.min(640, typeof window !== "undefined" ? window.innerHeight * 0.64 : 560))}
+              onFocus={(id) => { setMapFocus(id); setActiveWorld(id); }}
+              onStudy={(id) => { setActiveWorld(id); setRegionIdx(0); setAtNode("start"); setScreen("regionlist"); }}
+            />
           </div>
 
           <div style={{ ...S.card, marginTop: 12 }}>
@@ -4385,10 +4453,10 @@ ${QUALITY_RULES}`, cfg));
 
   /* ============ REGION LIST ============ */
   if (screen === "regionlist") return (
-    <div style={S.app}><style>{CSS}</style><Toast /><HUD back={() => setScreen("home")} />
+    <div style={S.app}>{chrome}<HUD back={() => setScreen("home")} />
       <div style={{ ...S.wrap, paddingTop: 16 }}>
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-          <h2 style={{ fontSize: 20, fontWeight: 800, margin: 0 }}>{world.emoji} {world.title}</h2>
+          <h2 style={{ fontSize: "clamp(22px, 3vw, 28px)", fontWeight: 800, margin: 0, letterSpacing: "-0.02em", fontFamily: "'Sora','Space Grotesk',sans-serif" }}>{world.emoji} {world.title}</h2>
           <button onClick={() => startGauntlet()} style={{ ...S.btn(T.gold), padding: "8px 12px", fontSize: 12 }}>⚔️ Trial Gauntlet</button>
         </div>
         {(world.links || []).length > 0 && (
@@ -4400,13 +4468,14 @@ ${QUALITY_RULES}`, cfg));
         )}
         <TeachingPanel target={world} />
         <SenzuPanel />
+        <div style={{ ...S.grid(340), marginTop: 14 }}>
         {regions.map((r, i) => {
           const locked = !(i === 0 || save.badges.includes(regions[i - 1].gym.badge));
           const got = r.concepts.filter((c) => capturedSet.has(c.id)).length;
           const sGot = (r.sides || []).filter((s) => sidesSet.has(s.id)).length;
           return (
             <div key={r.id} onClick={() => { if (!locked) { setRegionIdx(i); setAtNode("start"); setScreen("region"); } }}
-              style={{ ...S.card, marginTop: 10, display: "flex", alignItems: "center", gap: 14, opacity: locked ? 0.5 : 1, cursor: locked ? "default" : "pointer" }}>
+              className="worldCard" style={{ ...S.card, display: "flex", alignItems: "center", gap: 14, opacity: locked ? 0.55 : 1, cursor: locked ? "default" : "pointer" }}>
               <div style={{ fontSize: 32 }}>{locked ? "🔒" : r.emoji}</div>
               <div style={{ flex: 1 }}>
                 <div style={{ fontWeight: 800, fontSize: 15.5 }}>{r.name} {save.badges.includes(r.gym.badge) && "🎖"}</div>
@@ -4417,6 +4486,7 @@ ${QUALITY_RULES}`, cfg));
             </div>
           );
         })}
+        </div>
       </div>
     </div>
   );
@@ -4426,7 +4496,7 @@ ${QUALITY_RULES}`, cfg));
     if (gaunt.done) {
       const weak = coachRows().slice(0, 3);
       return (
-        <div style={S.app}><style>{CSS}</style><Toast /><HUD back={() => { setGaunt(null); setScreen("regionlist"); }} />
+        <div style={S.app}>{chrome}<HUD back={() => { setGaunt(null); setScreen("regionlist"); }} />
           <div style={{ ...S.wrap, paddingTop: 20 }}>
             <div style={{ ...S.card, textAlign: "center" }}>
               <div style={{ fontSize: 42 }}>{gaunt.lives > 0 ? "🏆" : "💀"}</div>
@@ -4446,18 +4516,18 @@ ${QUALITY_RULES}`, cfg));
     }
     const q = gaunt.pool[gaunt.idx];
     return (
-      <div style={{ ...S.app, background: T.night }}><style>{CSS}</style><Toast />
-        <div style={{ maxWidth: 620, margin: "0 auto", padding: "16px 14px 60px" }}>
-          <button onClick={() => { setGaunt(null); setScreen("regionlist"); }} style={{ background: "none", border: "1px solid #46548F", color: "#9FA8CC", borderRadius: 8, padding: "5px 12px", fontSize: 12, cursor: "pointer", fontFamily: "inherit", fontWeight: 700, marginBottom: 8 }}>← Exit gauntlet</button>
-          <div style={{ display: "flex", justifyContent: "space-between", color: "#9FA8CC" }}>
-            <span style={S.mono(10, "#9FA8CC")}>{gaunt.focus ? `FOCUSED DRILL · ${gaunt.focus.toUpperCase()}` : `TRIAL GAUNTLET · ${world.title.toUpperCase()}`}</span>
-            <span style={S.mono(10, "#9FA8CC")}>Q{gaunt.idx + 1}/{gaunt.pool.length} · {"❤️".repeat(gaunt.lives)}{"🖤".repeat(3 - gaunt.lives)} · {gaunt.score} ✓</span>
+      <div style={S.app}>{chrome}
+        <div style={{ maxWidth: 780, margin: "0 auto", padding: "16px clamp(14px, 3vw, 28px) 60px" }}>
+          <button onClick={() => { setGaunt(null); setScreen("regionlist"); }} style={{ background: "rgba(148,163,214,0.10)", border: `1px solid ${T.line}`, color: T.inkSoft, borderRadius: 10, backdropFilter: "blur(8px)", padding: "5px 12px", fontSize: 12, cursor: "pointer", fontFamily: "inherit", fontWeight: 700, marginBottom: 8 }}>← Exit gauntlet</button>
+          <div style={{ display: "flex", justifyContent: "space-between", color: T.inkSoft }}>
+            <span style={S.mono(10, T.inkSoft)}>{gaunt.focus ? `FOCUSED DRILL · ${gaunt.focus.toUpperCase()}` : `TRIAL GAUNTLET · ${world.title.toUpperCase()}`}</span>
+            <span style={S.mono(10, T.inkSoft)}>Q{gaunt.idx + 1}/{gaunt.pool.length} · {"❤️".repeat(gaunt.lives)}{"🖤".repeat(3 - gaunt.lives)} · {gaunt.score} ✓</span>
           </div>
           <div style={{ marginTop: 10 }}>
             <QCard q={q} ord={gaunt.ord} onAnswer={answerGauntlet} label={`FROM: ${q.name} · +8 XP`} color={T.gold} onSave={(qq) => addDexQuestion(qq, q.src || "gauntlet", q.name || "Gauntlet")} />
           </div>
           {gaunt.fb && (
-            <div style={{ background: gaunt.fb.ok ? T.rewardSoft : T.penaltySoft, borderRadius: 14, padding: 14, marginTop: 12, animation: "slideUp .25s ease" }}>
+            <div style={{ ...S.card, background: gaunt.fb.ok ? T.rewardSoft : T.penaltySoft, border: `1px solid ${gaunt.fb.ok ? withAlpha(darkMode ? "#3DDC97" : "#149E6E", 0.4) : withAlpha("#FF7A76", 0.4)}`, marginTop: 12, animation: "slideUp .25s ease" }}>
               <b style={{ color: gaunt.fb.ok ? T.reward : T.penalty, fontSize: 13 }}>{gaunt.fb.ok ? "✓ Correct" : "✗ Miss"}</b>
               <p style={{ fontSize: 13, lineHeight: 1.55, margin: "6px 0 10px" }}>{gaunt.fb.msg}</p>
               <button onClick={nextGauntlet} style={{ ...S.btn(T.ink), width: "100%" }}>Next →</button>
@@ -4473,7 +4543,7 @@ ${QUALITY_RULES}`, cfg));
     const rows = coachRows();
     const augCount = (aug[world.id] || []).length;
     return (
-      <div style={S.app}><style>{CSS}</style><Toast /><HUD back={() => setScreen("home")} />
+      <div style={S.app}>{chrome}<HUD back={() => setScreen("home")} />
         <div style={{ ...S.wrap }}>
           <Tabs />
           <h2 style={{ fontSize: 20, fontWeight: 800, margin: "14px 0 2px" }}>🧪 The Coach — {world.title}</h2>
@@ -4505,7 +4575,7 @@ ${QUALITY_RULES}`, cfg));
   /* ============ WILDS PICKER ============ */
   if (screen === "wildspick") {
     return (
-      <div style={S.app}><style>{CSS}</style><Toast /><HUD back={() => setScreen("home")} />
+      <div style={S.app}>{chrome}<HUD back={() => setScreen("home")} />
         <div style={{ ...S.wrap }}>
           <Tabs />
           <h2 style={{ fontSize: 20, fontWeight: 800, margin: "14px 0 2px" }}>🌿 The Wilds — {world.title}</h2>
@@ -4529,19 +4599,19 @@ ${QUALITY_RULES}`, cfg));
   /* ============ WILDS EPISODE ============ */
   if (screen === "wilds" && wilds) {
     if (wilds.busy) return (
-      <div style={{ ...S.app, background: T.night, display: "flex", alignItems: "center", justifyContent: "center", flexDirection: "column", gap: 12 }}><style>{CSS}</style>
+      <div style={{ ...S.app, display: "flex", alignItems: "center", justifyContent: "center", flexDirection: "column", gap: 12 }}>{chrome}
         <div style={{ fontSize: 48, animation: "bob 1.6s ease-in-out infinite" }}>🌿</div>
-        <span style={{ ...S.mono(11, "#9FA8CC") }}>THE ENV IS FORGING TASKS: {wilds.name.toUpperCase()}…</span>
-        <button onClick={() => { setWilds(null); setScreen("wildspick"); }} style={{ background: "none", border: "1px solid #46548F", color: "#9FA8CC", borderRadius: 8, padding: "6px 14px", cursor: "pointer", fontFamily: "inherit", fontWeight: 700 }}>← Back</button>
+        <span style={{ ...S.mono(11, T.inkSoft) }}>THE ENV IS FORGING TASKS: {wilds.name.toUpperCase()}…</span>
+        <button onClick={() => { setWilds(null); setScreen("wildspick"); }} style={{ background: "rgba(148,163,214,0.10)", border: `1px solid ${T.line}`, color: T.inkSoft, borderRadius: 10, backdropFilter: "blur(8px)", padding: "6px 14px", cursor: "pointer", fontFamily: "inherit", fontWeight: 700 }}>← Back</button>
       </div>
     );
     if (wilds.error) return (
-      <div style={S.app}><style>{CSS}</style><HUD back={() => { setWilds(null); setScreen("wildspick"); }} />
+      <div style={S.app}>{chrome}<HUD back={() => { setWilds(null); setScreen("wildspick"); }} />
         <div style={{ ...S.wrap, paddingTop: 20 }}><div style={{ ...S.card, color: T.penalty, fontSize: 13.5 }}>{wilds.error}</div></div>
       </div>
     );
     if (wilds.done) return (
-      <div style={S.app}><style>{CSS}</style><Toast /><HUD back={() => { setWilds(null); setScreen("wildspick"); }} />
+      <div style={S.app}>{chrome}<HUD back={() => { setWilds(null); setScreen("wildspick"); }} />
         <div style={{ ...S.wrap, paddingTop: 20 }}>
           <div style={{ ...S.card, textAlign: "center" }}>
             <div style={{ fontSize: 42 }}>🌿</div>
@@ -4557,18 +4627,18 @@ ${QUALITY_RULES}`, cfg));
     );
     const q = wilds.qs[wilds.idx];
     return (
-      <div style={{ ...S.app, background: T.night }}><style>{CSS}</style><Toast />
-        <div style={{ maxWidth: 620, margin: "0 auto", padding: "16px 14px 60px" }}>
-          <button onClick={() => { setWilds(null); setScreen("wildspick"); }} style={{ background: "none", border: "1px solid #46548F", color: "#9FA8CC", borderRadius: 8, padding: "5px 12px", fontSize: 12, cursor: "pointer", fontFamily: "inherit", fontWeight: 700, marginBottom: 8 }}>← Leave the Wilds</button>
+      <div style={S.app}>{chrome}
+        <div style={{ maxWidth: 780, margin: "0 auto", padding: "16px clamp(14px, 3vw, 28px) 60px" }}>
+          <button onClick={() => { setWilds(null); setScreen("wildspick"); }} style={{ background: "rgba(148,163,214,0.10)", border: `1px solid ${T.line}`, color: T.inkSoft, borderRadius: 10, backdropFilter: "blur(8px)", padding: "5px 12px", fontSize: 12, cursor: "pointer", fontFamily: "inherit", fontWeight: 700, marginBottom: 8 }}>← Leave the Wilds</button>
           <div style={{ display: "flex", justifyContent: "space-between" }}>
-            <span style={S.mono(10, "#9FA8CC")}>🌿 WILDS EPISODE · {wilds.name.toUpperCase()}</span>
-            <span style={S.mono(10, "#9FA8CC")}>Q{wilds.idx + 1}/{wilds.qs.length} · {wilds.score} ✓</span>
+            <span style={S.mono(10, T.inkSoft)}>🌿 WILDS EPISODE · {wilds.name.toUpperCase()}</span>
+            <span style={S.mono(10, T.inkSoft)}>Q{wilds.idx + 1}/{wilds.qs.length} · {wilds.score} ✓</span>
           </div>
           <div style={{ marginTop: 10 }}>
             <QCard q={q} ord={wilds.ord} onAnswer={answerWilds} label="FRESH TASK — GROUNDED IN LORE · +10 XP" color={T.reward} />
           </div>
           {wilds.fb && (
-            <div style={{ background: wilds.fb.ok ? T.rewardSoft : T.penaltySoft, borderRadius: 14, padding: 14, marginTop: 12, animation: "slideUp .25s ease" }}>
+            <div style={{ ...S.card, background: wilds.fb.ok ? T.rewardSoft : T.penaltySoft, border: `1px solid ${wilds.fb.ok ? withAlpha(darkMode ? "#3DDC97" : "#149E6E", 0.4) : withAlpha("#FF7A76", 0.4)}`, marginTop: 12, animation: "slideUp .25s ease" }}>
               <b style={{ color: wilds.fb.ok ? T.reward : T.penalty, fontSize: 13 }}>{wilds.fb.ok ? "✓ Verified correct" : "✗ Miss"}</b>
               <p style={{ fontSize: 13, lineHeight: 1.55, margin: "6px 0 4px" }}>{wilds.fb.msg}</p>
               {wilds.fb.ev && <p style={{ fontSize: 12, color: T.inkSoft, margin: "0 0 10px" }}>📜 EVIDENCE: "{wilds.fb.ev}"</p>}
@@ -4582,7 +4652,7 @@ ${QUALITY_RULES}`, cfg));
 
   /* ============ SPAWN ============ */
   if (screen === "spawn") return (
-    <div style={S.app}><style>{CSS}</style><Toast /><HUD back={() => setScreen("home")} />
+    <div style={S.app}>{chrome}<HUD back={() => setScreen("home")} />
       <div style={{ ...S.wrap, paddingTop: 18 }}>
         <h2 style={{ fontSize: 20, fontWeight: 800, margin: "0 0 4px" }}>Bring your own resource</h2>
         <p style={{ color: T.inkSoft, fontSize: 13.5, lineHeight: 1.55 }}>Paste a link or text, upload a PDF, or just name a concept — Edokai finds or uses the best resource first. Then choose: <b>learn</b> it as a mission-grounded board world, or <b>implement</b> it as a dojo kata with feedback loops.</p>
@@ -4642,7 +4712,7 @@ ${QUALITY_RULES}`, cfg));
     const glossary = capturedConceptsFor(teachW);
     const records = worldLearningRecords(teachW);
     return (
-      <div style={S.app}><style>{CSS}</style><Toast /><HUD back={() => setScreen("home")} />
+      <div style={S.app}>{chrome}<HUD back={() => setScreen("home")} />
         <div style={{ ...S.wrap, paddingTop: 16 }}>
           <h2 style={{ fontSize: 20, fontWeight: 800, margin: "0 0 6px" }}>📚 Teach Workspace</h2>
           <div style={{ display: "flex", gap: 6, flexWrap: "wrap" }}>
@@ -4666,65 +4736,9 @@ ${QUALITY_RULES}`, cfg));
     );
   }
 
-  /* ============ CONCEPTDEX (per world) ============ */
-  if (screen === "dex") {
-    const dexW = allWorlds.find((w) => w.id === dexWorld) || world;
-    const dTotal = dexW.regions.reduce((n, r) => n + r.concepts.length, 0);
-    const dGot = dexW.regions.reduce((n, r) => n + r.concepts.filter((c) => capturedSet.has(c.id)).length, 0);
-    const savedQs = dexQuestionsFor(dexW);
-    const capturedByRegion = dexW.regions.map((r) => ({ ...r, capturedConcepts: r.concepts.filter((c) => capturedSet.has(c.id)) })).filter((r) => r.capturedConcepts.length || r.concepts.length);
-    return (
-      <div style={S.app}><style>{CSS}</style><Toast /><HUD back={() => setScreen("home")} />
-        <div style={{ ...S.wrap, paddingTop: 16 }}>
-          <h2 style={{ fontSize: 20, fontWeight: 800, margin: "0 0 6px" }}>Conceptdex</h2>
-          <p style={{ fontSize: 12.5, color: T.inkSoft, lineHeight: 1.55, margin: "0 0 10px" }}>A compact field guide: captured concepts are summarized as decision notes, and saved questions live in a separate review deck. Use the + dex button during battles or gauntlets to save questions that are worth drilling again.</p>
-          <div style={{ display: "flex", gap: 6, flexWrap: "wrap" }}>
-            {allWorlds.map((w) => <button key={w.id} onClick={() => setDexWorld(w.id)} style={S.chip(dexWorld === w.id)}>{w.emoji} {w.title}</button>)}
-          </div>
-          <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 8, marginTop: 10 }}>
-            <div style={{ ...S.card, padding: 10 }}><span style={S.mono(9, T.gold)}>CAPTURED</span><div style={{ fontWeight: 900 }}>{dGot}/{dTotal}</div></div>
-            <div style={{ ...S.card, padding: 10 }}><span style={S.mono(9, T.explore)}>SAVED Q</span><div style={{ fontWeight: 900 }}>{savedQs.length}</div></div>
-            <div style={{ ...S.card, padding: 10 }}><span style={S.mono(9, T.reward)}>REGIONS</span><div style={{ fontWeight: 900 }}>{dexW.regions.length}</div></div>
-          </div>
-
-          <Collapsible id={`dex-q-${dexW.id}`} title={`SAVED QUESTION DECK · ${savedQs.length}`} color={T.explore} style={{ marginTop: 12 }}>
-            {savedQs.length ? savedQs.map((sq) => (
-              <div key={sq.id} style={{ borderTop: `1px solid ${T.line}`, paddingTop: 9, marginTop: 9 }}>
-                <div style={{ display: "flex", justifyContent: "space-between", gap: 8, alignItems: "baseline" }}>
-                  <span style={S.mono(9, T.explore)}>{sq.sourceName || conceptName(sq.src)}</span>
-                  <button onClick={() => removeDexQuestion(sq.id)} style={{ ...S.chip(false), padding: "3px 8px", fontSize: 10 }}>remove</button>
-                </div>
-                <p style={{ fontSize: 13, fontWeight: 800, lineHeight: 1.45, margin: "6px 0" }}>{sq.q}</p>
-                <div style={{ display: "grid", gap: 4 }}>
-                  {(sq.options || []).map((o, i) => <div key={i} style={{ fontSize: 12.5, color: i === sq.a ? T.reward : T.inkSoft }}><b>{String.fromCharCode(65 + i)}.</b> {o}{i === sq.a ? " ✓" : ""}</div>)}
-                </div>
-                <p style={{ fontSize: 12.5, color: T.inkSoft, lineHeight: 1.5, margin: "6px 0 0" }}>{sq.why}</p>
-              </div>
-            )) : <p style={{ fontSize: 12.5, color: T.inkSoft, lineHeight: 1.5 }}>No saved questions yet. During any battle, tap <b>＋ dex</b>; during gauntlets, tap <b>＋ Conceptdex</b>.</p>}
-          </Collapsible>
-
-          {capturedByRegion.map((r) => {
-            const got = r.capturedConcepts.length;
-            return <Collapsible key={r.id} id={`dex-r-${dexW.id}-${r.id}`} title={`${r.emoji} ${r.name} · ${got}/${r.concepts.length} captured`} color={got ? T.gold : T.inkSoft} style={{ marginTop: 10 }}>
-              {got ? r.capturedConcepts.map((c) => { const n = conceptNote(c, deepLore[c.id]); return (
-                <div key={c.id} style={{ borderTop: `1px solid ${T.line}`, paddingTop: 9, marginTop: 9 }}>
-                  <div style={{ display: "flex", gap: 8, alignItems: "center" }}><span style={{ fontSize: 20 }}>{c.sprite}</span><b style={{ fontSize: 14 }}>{c.name}</b><span style={{ ...S.mono(9, T.reward), marginLeft: "auto" }}>CAPTURED</span></div>
-                  <p style={{ fontSize: 12.8, lineHeight: 1.55, margin: "6px 0 0" }}>{n.mechanism}</p>
-                  <p style={{ fontSize: 12.5, color: T.inkSoft, lineHeight: 1.5, margin: "5px 0 0" }}><b>Decision note:</b> {n.consequence}</p>
-                  <p style={{ fontSize: 12, color: T.explore, lineHeight: 1.5, margin: "5px 0 0" }}>{n.checkpoint}</p>
-                  {deepLore[c.id] ? <p style={{ fontSize: 12, color: T.inkSoft, lineHeight: 1.5, margin: "5px 0 0" }}>🔍 {n.deep}</p> : <button onClick={() => deepenLore(c)} disabled={busy === "lore"} style={{ ...S.chip(false), marginTop: 7, fontSize: 11 }}>🔍 Deepen</button>}
-                </div>
-              ); }) : <p style={{ fontSize: 12.5, color: T.inkSoft, lineHeight: 1.5 }}>No captures in this region yet. Locked concepts stay off the page so the dex remains short and useful.</p>}
-            </Collapsible>;
-          })}
-        </div>
-      </div>
-    );
-  }
-
   /* ============ SETTINGS ============ */
   if (screen === "settings") return (
-    <div style={S.app}><style>{CSS}</style><Toast /><HUD back={() => setScreen("home")} />
+    <div style={S.app}>{chrome}<HUD back={() => setScreen("home")} />
       <div style={{ ...S.wrap, paddingTop: 18 }}>
         <h2 style={{ fontSize: 20, fontWeight: 800, margin: "0 0 4px" }}>Model settings</h2>
         <p style={{ color: T.inkSoft, fontSize: 13, lineHeight: 1.55 }}>Generation can run through the Claude bridge, the desktop Claude Code OAuth bridge, the Netlify Anthropic proxy, a user-supplied Anthropic key, or any OpenAI-compatible endpoint. On desktop, signing in once with <code>claude auth login</code> lets Edokai use Claude Code's browser-based authentication without an explicit API-key environment variable.</p>
@@ -4815,7 +4829,7 @@ ${QUALITY_RULES}`, cfg));
 
   /* ============ PAPER SCOUT ============ */
   if (screen === "papers") return (
-    <div style={S.app}><style>{CSS}</style><Toast /><HUD back={() => setScreen("home")} />
+    <div style={S.app}>{chrome}<HUD back={() => setScreen("home")} />
       <div style={{ ...S.wrap }}>
         <Tabs />
         <h2 style={{ fontSize: 20, fontWeight: 800, margin: "14px 0 4px" }}>📡 Paper Scout</h2>
@@ -4844,7 +4858,7 @@ ${QUALITY_RULES}`, cfg));
   if (screen === "dojo") {
     const fams = [["swe", "🧩 Software Engineering · Blind 75"], ["sys", "🏰 System Design"], ["ml", "🧠 ML Engineering · ranked for current interviews"], ["torchleet", "🔥 TorchLeet · PyTorch practice"], ["custom", "🌀 Your forged katas"]];
     return (
-      <div style={S.app}><style>{CSS}</style><Toast /><HUD back={() => setScreen("home")} />
+      <div style={S.app}>{chrome}<HUD back={() => setScreen("home")} />
         <div style={{ ...S.wrap }}>
           <Tabs />
           <h2 style={{ fontSize: 20, fontWeight: 800, margin: "14px 0 0" }}>⌨️ The Dojo</h2>
@@ -4865,10 +4879,10 @@ ${QUALITY_RULES}`, cfg));
             return (
               <div key={fam} style={{ marginTop: 16 }}>
                 <button onClick={() => setDojoOpen({ ...dojoOpen, [fam]: !dojoOpen[fam] })} style={{ width: "100%", textAlign: "left", background: "none", border: "none", color: T.ink, fontWeight: 800, fontSize: 14.5, cursor: "pointer", padding: "4px 0", fontFamily: "inherit" }}>{dojoOpen[fam] ? "⌄" : "›"} {label} <span style={S.mono(9, T.inkSoft)}>({ks.length})</span></button>
-                {dojoOpen[fam] && ks.map((k, rankIdx) => {
+                {dojoOpen[fam] && <div style={{ ...S.grid(360), marginTop: 10 }}>{ks.map((k, rankIdx) => {
                   const p = kProgress(k.id); const done = p >= (k.steps.length || 1);
                   return (
-                    <div key={k.id} onClick={() => openKata(k)} style={{ ...S.card, marginTop: 8, padding: 13, display: "flex", gap: 12, alignItems: "center", cursor: "pointer", background: done ? T.rewardSoft : T.card }}>
+                    <div key={k.id} onClick={() => openKata(k)} className="worldCard" style={{ ...S.card, padding: 14, display: "flex", gap: 12, alignItems: "center", cursor: "pointer", background: done ? T.rewardSoft : T.card }}>
                       <span style={{ fontSize: 22 }}>{k.emoji || "⌨️"}</span>
                       <div style={{ flex: 1 }}>
                         <div style={{ fontWeight: 700, fontSize: 14 }}>{fam === "ml" && <span style={S.mono(9, T.gold)}>#{rankIdx + 1} interview&nbsp;</span>}{k.title} {LABS[k.id] ? "🧪" : ""}</div>
@@ -4878,7 +4892,7 @@ ${QUALITY_RULES}`, cfg));
                       <span style={{ color: T.explore, fontWeight: 800 }}>›</span>
                     </div>
                   );
-                })}
+                })}</div>}
               </div>
             );
           })}
@@ -4896,7 +4910,7 @@ ${QUALITY_RULES}`, cfg));
     const showSol = kPhase === "sol";
     const showHints = kPhase === "hints";
     return (
-      <div style={S.app}><style>{CSS}</style><Toast /><HUD back={() => setScreen("dojo")} />
+      <div style={S.app}>{chrome}<HUD back={() => setScreen("dojo")} />
         <div style={{ ...S.wrap, paddingTop: 16 }}>
           <h2 style={{ fontSize: 19, fontWeight: 800, margin: 0 }}>{kata.emoji || "⌨️"} {kata.title} {done && "✓"}</h2>
           <div style={{ fontSize: 12.5, color: T.inkSoft, lineHeight: 1.5, margin: "4px 0 8px" }}>{kata.blurb}</div>
@@ -5018,37 +5032,43 @@ ${QUALITY_RULES}`, cfg));
     const kindColor = battle.kind === "critical" ? T.action : battle.kind === "side" ? T.explore : T.gold;
     const side = battle.kind === "side" ? battle.side : null;
     return (
-      <div style={{ ...S.app, background: T.night }}><style>{CSS}</style><Toast />
-        <div style={{ maxWidth: 620, margin: "0 auto", padding: "16px 14px 60px" }}>
+      <div style={S.app}>{chrome}
+        <div style={{ maxWidth: 780, margin: "0 auto", padding: "16px clamp(14px, 3vw, 28px) 60px" }}>
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 4 }}>
-            <button onClick={() => { setBattle(null); setScreen("region"); }} style={{ background: "none", border: "1px solid #46548F", color: "#9FA8CC", borderRadius: 8, padding: "5px 12px", fontSize: 12, cursor: "pointer", fontFamily: "inherit", fontWeight: 700 }}>← Retreat & review</button>
-            <span style={{ ...S.mono(10, "#9FA8CC") }}>{kindLabel} · {Math.min(battle.qIdx + 1, bQuestions.length)}/{bQuestions.length} Q</span>
+            <button onClick={() => { setBattle(null); setScreen("region"); }} style={{ background: "rgba(148,163,214,0.10)", border: `1px solid ${T.line}`, color: T.inkSoft, borderRadius: 10, backdropFilter: "blur(8px)", padding: "5px 12px", fontSize: 12, cursor: "pointer", fontFamily: "inherit", fontWeight: 700 }}>← Retreat & review</button>
+            <span style={{ ...S.mono(10, T.inkSoft) }}>{kindLabel} · {Math.min(battle.qIdx + 1, bQuestions.length)}/{bQuestions.length} Q</span>
           </div>
-          <div style={{ background: "linear-gradient(180deg,#2E3A66 0%,#3D4E85 100%)", borderRadius: 16, padding: "18px 16px 14px", border: "1px solid #46548F", marginTop: 6 }}>
-            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start" }}>
-              <div style={{ background: "rgba(255,255,255,0.95)", borderRadius: 10, padding: "8px 12px", minWidth: 165 }}>
-                <div style={{ fontWeight: 800, fontSize: 13.5 }}>{battle.kind === "gym" ? "👑 " : ""}{enemyName}</div>
-                <div style={{ height: 7, background: T.line, borderRadius: 4, marginTop: 5 }}>
-                  <div style={{ height: "100%", width: `${enemyPct}%`, background: enemyPct > 40 ? T.reward : T.penalty, borderRadius: 4, transition: "width .5s" }} />
-                </div>
-                <span style={S.mono(9, T.inkSoft)}>HP {battle.enemyHp}/{battle.enemyMax}</span>
-              </div>
-              <div style={{ fontSize: 56, animation: battle.phase === "feedback" && !battle.wrong ? "hit .4s" : "bob 2.4s ease-in-out infinite" }}>{enemy.sprite}</div>
-            </div>
-            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-end", marginTop: 14 }}>
-              <div style={{ fontSize: 44, animation: battle.wrong && battle.phase === "feedback" ? "hit .4s" : "none" }}>🧢</div>
-              <div style={{ background: "rgba(255,255,255,0.95)", borderRadius: 10, padding: "8px 12px", minWidth: 165 }}>
-                <div style={{ fontWeight: 800, fontSize: 13.5 }}>YOU · LV.{level}</div>
-                <div style={{ height: 7, background: T.line, borderRadius: 4, marginTop: 5 }}>
-                  <div style={{ height: "100%", width: `${(save.hp / maxHp) * 100}%`, background: save.hp / maxHp > 0.4 ? T.reward : T.penalty, borderRadius: 4, transition: "width .5s" }} />
-                </div>
-                <span style={S.mono(9, T.inkSoft)}>HP {save.hp}/{maxHp} · STREAK ×{battle.streak}</span>
-              </div>
-            </div>
+          <div style={{ position: "relative", overflow: "hidden", background: "radial-gradient(120% 130% at 50% -20%, #2A3468 0%, #1B2450 42%, #101736 78%, #0B102A 100%)", borderRadius: 22, padding: "20px 18px 16px", border: "1px solid rgba(148,163,214,0.28)", marginTop: 8, boxShadow: "0 22px 60px rgba(3,6,18,0.5), inset 0 1px 0 rgba(255,255,255,0.08)" }}>
+            <div aria-hidden style={{ position: "absolute", inset: "-30%", pointerEvents: "none", background: `radial-gradient(36% 30% at 26% 22%, ${withAlpha(String(kindColor)[0] === "#" ? kindColor : "#8D9BFF", 0.22)}, transparent 70%), radial-gradient(30% 26% at 76% 78%, rgba(62,214,196,0.10), transparent 70%)`, animation: "auroraDrift 18s ease-in-out infinite alternate" }} />
+            {(() => {
+              const plate = { position: "relative", background: "rgba(9,13,30,0.72)", border: "1px solid rgba(148,163,214,0.3)", backdropFilter: "blur(10px)", borderRadius: 13, padding: "9px 13px", minWidth: 175, color: "#EEF2FF" };
+              const track = { height: 7, background: "rgba(255,255,255,0.10)", borderRadius: 4, marginTop: 6, overflow: "hidden" };
+              const fill = (pct, good) => ({ height: "100%", width: `${pct}%`, borderRadius: 4, background: good ? "linear-gradient(90deg,#3DDC97,#7FF0C0)" : "linear-gradient(90deg,#FF7A76,#FFA69E)", boxShadow: `0 0 10px ${good ? "rgba(61,220,151,0.6)" : "rgba(255,122,118,0.6)"}`, transition: "width .5s" });
+              return (
+                <>
+                  <div style={{ position: "relative", display: "flex", justifyContent: "space-between", alignItems: "flex-start" }}>
+                    <div style={plate}>
+                      <div style={{ fontWeight: 800, fontSize: 13.5 }}>{battle.kind === "gym" ? "👑 " : ""}{enemyName}</div>
+                      <div style={track}><div style={fill(enemyPct, enemyPct > 40)} /></div>
+                      <span style={S.mono(9, "#A5B1D6")}>HP {battle.enemyHp}/{battle.enemyMax}</span>
+                    </div>
+                    <div style={{ fontSize: 58, filter: "drop-shadow(0 8px 22px rgba(141,155,255,0.4))", animation: battle.phase === "feedback" && !battle.wrong ? "hit .4s" : "bob 2.4s ease-in-out infinite" }}>{enemy.sprite}</div>
+                  </div>
+                  <div style={{ position: "relative", display: "flex", justifyContent: "space-between", alignItems: "flex-end", marginTop: 16 }}>
+                    <div style={{ fontSize: 46, filter: "drop-shadow(0 6px 16px rgba(62,214,196,0.35))", animation: battle.wrong && battle.phase === "feedback" ? "hit .4s" : "none" }}>🧢</div>
+                    <div style={plate}>
+                      <div style={{ fontWeight: 800, fontSize: 13.5 }}>YOU · LV.{level}</div>
+                      <div style={track}><div style={fill((save.hp / maxHp) * 100, save.hp / maxHp > 0.4)} /></div>
+                      <span style={S.mono(9, "#A5B1D6")}>HP {save.hp}/{maxHp} · STREAK ×{battle.streak}</span>
+                    </div>
+                  </div>
+                </>
+              );
+            })()}
           </div>
 
           {battle.phase === "briefing" && side && (
-            <div style={{ background: T.card, borderRadius: 14, padding: 16, marginTop: 12, animation: "slideUp .3s ease" }}>
+            <div style={{ ...S.card, marginTop: 12, animation: "slideUp .3s ease" }}>
               <span style={S.mono(10, kindColor)}>MISSION BRIEFING — RETENTION DUEL</span>
               <p style={{ fontSize: 14, lineHeight: 1.6, margin: "8px 0 10px" }}>{side.desc}</p>
               <span style={{ ...S.mono(10, level >= (side.recLevel || 1) ? T.reward : T.penalty), background: level >= (side.recLevel || 1) ? T.rewardSoft : T.penaltySoft, padding: "5px 10px", borderRadius: 999 }}>
@@ -5077,7 +5097,7 @@ ${QUALITY_RULES}`, cfg));
           )}
 
           {battle.phase === "lore" && (
-            <div style={{ background: T.card, borderRadius: 14, padding: 16, marginTop: 12, animation: "slideUp .3s ease" }}>
+            <div style={{ ...S.card, marginTop: 12, animation: "slideUp .3s ease" }}>
               <span style={S.mono(10, kindColor)}>{battle.kind === "critical" ? "LORE — READ TO ARM YOURSELF" : "GYM RECAP — EVERYTHING THIS REGION TAUGHT"}</span>
               {battle.kind === "critical" ? (
                 <>
@@ -5109,7 +5129,7 @@ ${QUALITY_RULES}`, cfg));
           )}
 
           {battle.phase === "question" && q && (
-            <div style={{ background: T.card, borderRadius: 14, padding: 16, marginTop: 12, animation: "slideUp .3s ease" }}>
+            <div style={{ ...S.card, marginTop: 12, animation: "slideUp .3s ease" }}>
               <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: 6 }}>
                 <span style={S.mono(10, kindColor)}>{battle.kind === "side" ? "APPLIED SCENARIO" : "CHOOSE YOUR MOVE"} · wrong = −{battle.kind === "gym" ? 22 : 16} HP</span>
                 <span style={{ display: "flex", gap: 6 }}>
@@ -5144,7 +5164,7 @@ ${QUALITY_RULES}`, cfg));
           )}
 
           {["feedback", "victory", "defeat"].includes(battle.phase) && (
-            <div style={{ background: battle.phase === "victory" ? T.rewardSoft : battle.wrong || battle.phase === "defeat" ? T.penaltySoft : T.rewardSoft, borderRadius: 14, padding: 16, marginTop: 12, animation: "slideUp .3s ease" }}>
+            <div style={{ ...S.card, background: battle.phase === "victory" ? T.rewardSoft : battle.wrong || battle.phase === "defeat" ? T.penaltySoft : T.rewardSoft, border: `1px solid ${battle.phase === "victory" ? withAlpha(darkMode ? "#3DDC97" : "#149E6E", 0.4) : battle.wrong || battle.phase === "defeat" ? withAlpha("#FF7A76", 0.4) : withAlpha(darkMode ? "#3DDC97" : "#149E6E", 0.4)}`, marginTop: 12, animation: "slideUp .3s ease" }}>
               <span style={S.mono(10, battle.phase === "victory" ? T.reward : battle.wrong || battle.phase === "defeat" ? T.penalty : T.reward)}>
                 {battle.phase === "victory" ? (battle.kind === "critical" ? "CONCEPT CAPTURED!" : battle.kind === "side" ? "KNOWLEDGE REINFORCED!" : "BADGE EARNED!") : battle.phase === "defeat" ? "YOU BLACKED OUT" : battle.wrong ? "COUNTERATTACK!" : "DIRECT HIT!"}
               </span>
@@ -5165,8 +5185,8 @@ ${QUALITY_RULES}`, cfg));
     const gymUnlocked = criticalsDone === region.concepts.length;
     const at = board.nodes.find((n) => n.id === atNode) || board.nodes[0];
     return (
-      <div style={S.app}><style>{CSS}</style><Toast /><HUD back={() => setScreen("regionlist")} />
-        <div style={{ maxWidth: 620, margin: "0 auto", padding: "12px 14px 50px" }}>
+      <div style={S.app}>{chrome}<HUD back={() => setScreen("regionlist")} />
+        <div style={{ ...S.wrap, paddingTop: 14 }}>
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline" }}>
             <div style={{ fontWeight: 800, fontSize: 17 }}>{region.emoji} {region.name}</div>
             <span style={S.mono(10, gymUnlocked ? T.reward : T.inkSoft)}>{criticalsDone}/{region.concepts.length} criticals{gymUnlocked ? " · GYM OPEN" : ""}</span>
@@ -5178,8 +5198,8 @@ ${QUALITY_RULES}`, cfg));
           </div>
           <TeachingPanel target={world} region={region} compact />
           <SenzuPanel compact />
-          <div style={{ position: "relative", width: "100%", aspectRatio: "5/4", background: "linear-gradient(160deg,#A8D8A0 0%,#7BC47F 45%,#69B583 100%)", borderRadius: 16, border: `3px solid ${T.ink}`, overflow: "hidden", boxShadow: "0 8px 28px rgba(27,36,64,0.2)", marginTop: 10 }}>
-            <div style={{ position: "absolute", inset: 0, opacity: 0.35, fontSize: 18, pointerEvents: "none" }}>
+          <div style={{ position: "relative", width: "100%", maxWidth: 900, margin: "12px auto 0", aspectRatio: "16/10", background: "radial-gradient(130% 110% at 50% -14%, #9FDCAE 0%, #5CBB88 40%, #35997A 74%, #237664 100%)", borderRadius: 26, border: "1px solid rgba(16,64,52,0.35)", overflow: "hidden", boxShadow: "0 24px 60px rgba(8,34,28,0.35), inset 0 2px 0 rgba(255,255,255,0.3), inset 0 -30px 60px rgba(12,50,42,0.35)" }}>
+            <div style={{ position: "absolute", inset: 0, opacity: 0.4, fontSize: 26, pointerEvents: "none" }}>
               <span style={{ position: "absolute", left: "4%", top: "8%" }}>🌲</span>
               <span style={{ position: "absolute", left: "88%", top: "12%" }}>🌲</span>
               <span style={{ position: "absolute", left: "14%", top: "78%" }}>🌳</span>
@@ -5229,9 +5249,9 @@ ${QUALITY_RULES}`, cfg));
             </div>
           </Collapsible>}
 
-          <div style={{ marginTop: 12 }}>
+          <div style={{ ...S.grid(340), marginTop: 14 }}>
             {region.concepts.map((c) => (
-              <div key={c.id} onClick={() => tapNode("c:" + c.id)} style={{ display: "flex", alignItems: "center", gap: 10, padding: "8px 10px", borderRadius: 10, background: capturedSet.has(c.id) ? T.rewardSoft : T.card, border: `1px solid ${T.line}`, marginBottom: 6, cursor: "pointer" }}>
+              <div key={c.id} onClick={() => tapNode("c:" + c.id)} style={{ display: "flex", alignItems: "center", gap: 10, padding: "11px 13px", borderRadius: 14, background: capturedSet.has(c.id) ? T.rewardSoft : T.card, border: `1px solid ${capturedSet.has(c.id) ? withAlpha(darkMode ? "#3DDC97" : "#149E6E", 0.35) : T.line}`, cursor: "pointer", backdropFilter: "blur(10px)" }}>
                 <span style={{ fontSize: 18 }}>{c.sprite}</span>
                 <span style={{ fontWeight: 700, fontSize: 13.5, flex: 1 }}>{c.name}</span>
                 <span style={S.mono(9, capturedSet.has(c.id) ? T.reward : T.action)}>{capturedSet.has(c.id) ? "CAPTURED · re-read lore" : `CRITICAL · ${c.questions.length}Q`}</span>
@@ -5240,7 +5260,7 @@ ${QUALITY_RULES}`, cfg));
             {(region.sides || []).map((s) => {
               const met = (s.prereqs || []).every((p) => capturedSet.has(p));
               return (
-                <div key={s.id} onClick={() => tapNode("s:" + s.id)} style={{ display: "flex", alignItems: "center", gap: 10, padding: "8px 10px", borderRadius: 10, background: sidesSet.has(s.id) ? T.exploreSoft : T.card, border: `1px dashed ${T.explore}`, marginBottom: 6, cursor: "pointer" }}>
+                <div key={s.id} onClick={() => tapNode("s:" + s.id)} style={{ display: "flex", alignItems: "center", gap: 10, padding: "11px 13px", borderRadius: 14, background: sidesSet.has(s.id) ? T.exploreSoft : T.card, border: `1px dashed ${withAlpha(darkMode ? "#8D9BFF" : "#5B5BD6", 0.55)}`, cursor: "pointer", backdropFilter: "blur(10px)" }}>
                   <span style={{ fontSize: 18 }}>{s.sprite}</span>
                   <div style={{ flex: 1 }}>
                     <span style={{ fontWeight: 700, fontSize: 13.5 }}>{s.name}</span>
@@ -5256,7 +5276,7 @@ ${QUALITY_RULES}`, cfg));
         </div>
         {dialog && (
           <div onClick={() => setDialog(null)} style={{ position: "fixed", left: 0, right: 0, bottom: 0, zIndex: 40, padding: 12 }}>
-            <div style={{ maxWidth: 620, margin: "0 auto", background: T.card, border: `3px solid ${T.ink}`, borderRadius: 14, padding: "14px 16px", animation: "slideUp .25s ease", boxShadow: "0 -4px 24px rgba(27,36,64,0.25)" }}>
+            <div style={{ maxWidth: 720, margin: "0 auto", background: darkMode ? "rgba(19,26,54,0.94)" : "rgba(255,255,255,0.96)", border: `1px solid ${withAlpha(darkMode ? "#8D9BFF" : "#5B5BD6", 0.4)}`, borderRadius: 18, padding: "16px 18px", animation: "slideUp .25s ease", backdropFilter: "blur(16px)", boxShadow: "0 -8px 40px rgba(2,4,12,0.45)" }}>
               <span style={S.mono(10.5, T.explore)}>{dialog.name.toUpperCase()}</span>
               <p style={{ fontSize: 14, lineHeight: 1.6, margin: "6px 0 8px" }}>{dialog.text}</p>
               <span style={S.mono(9.5)}>tap to close ▾</span>
@@ -5271,12 +5291,35 @@ ${QUALITY_RULES}`, cfg));
 }
 
 const CSS = `
-@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;600;700;800&family=JetBrains+Mono:wght@400;600;800&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Sora:wght@400;600;700;800&family=Space+Grotesk:wght@400;600;700;800&family=JetBrains+Mono:wght@400;600;800&display=swap');
 @keyframes bob { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-4px); } }
 @keyframes tokenBob { 0%,100% { transform: translate(-50%,-130%) translateY(0); } 50% { transform: translate(-50%,-130%) translateY(-5px); } }
 @keyframes hit { 0%,100% { transform: translateX(0); filter: none; } 30% { transform: translateX(-7px); filter: brightness(1.6); } 60% { transform: translateX(7px); } }
 @keyframes slideUp { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: translateY(0); } }
 @keyframes pulse { 0%,100% { transform: translate(-50%,-50%) scale(1); } 50% { transform: translate(-50%,-50%) scale(1.08); } }
-button:focus-visible { outline: 2px solid #5B4FD6; outline-offset: 2px; }
+@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+@keyframes fadeScale { from { opacity: 0; transform: scale(.975) translateY(8px); } to { opacity: 1; transform: scale(1) translateY(0); } }
+@keyframes floatY { 0%,100% { transform: translateY(0) rotate(-2deg); } 50% { transform: translateY(-14px) rotate(2deg); } }
+@keyframes auroraDrift { 0% { transform: translate3d(-2.5%, -1.5%, 0) scale(1); } 100% { transform: translate3d(2.5%, 2%, 0) scale(1.06); } }
+@keyframes glowPulse { 0%,100% { filter: brightness(1); } 50% { filter: brightness(1.12); } }
+@keyframes starTwinkle { 0%,100% { opacity: .85; } 50% { opacity: .4; } }
+html { scrollbar-color: rgba(140,158,220,.35) transparent; }
+body { margin: 0; }
+::selection { background: rgba(141,155,255,.35); }
+::-webkit-scrollbar { width: 10px; height: 10px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: rgba(140,158,220,.28); border-radius: 8px; border: 2px solid transparent; background-clip: content-box; }
+::-webkit-scrollbar-thumb:hover { background: rgba(140,158,220,.45); border: 2px solid transparent; background-clip: content-box; }
+button { transition: filter .18s ease, box-shadow .25s ease, background .2s ease, border-color .2s ease, color .2s ease, opacity .2s ease; }
+button:hover:not(:disabled) { filter: brightness(1.09) saturate(1.05); }
+button:active:not(:disabled) { filter: brightness(.96); }
+button:disabled { opacity: .6; cursor: default; }
+a { transition: color .2s ease, filter .2s ease; }
+a:hover { filter: brightness(1.15); }
+input, textarea { transition: border-color .2s ease, box-shadow .25s ease; }
+input:focus, textarea:focus { border-color: rgba(141,155,255,.65) !important; box-shadow: 0 0 0 3px rgba(141,155,255,.18); }
+.worldCard { transition: transform .22s cubic-bezier(.3,.7,.3,1), box-shadow .25s ease, border-color .25s ease; }
+.worldCard:hover { transform: translateY(-3px); box-shadow: 0 22px 55px rgba(2,4,12,.4); border-color: rgba(141,155,255,.45); }
+button:focus-visible, [tabindex]:focus-visible { outline: 2px solid #8D9BFF; outline-offset: 2px; }
 @media (prefers-reduced-motion: reduce) { * { animation: none !important; transition: none !important; } }
 `;
