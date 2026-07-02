@@ -136,17 +136,7 @@ export default function ForceGraph({
     const cam = camRef.current;
     let raf = 0; let dpr = 1; let W = 0; let H = 0;
 
-    const resize = () => {
-      dpr = Math.min(window.devicePixelRatio || 1, 2);
-      W = canvas.clientWidth; H = canvas.clientHeight;
-      canvas.width = W * dpr; canvas.height = H * dpr;
-      if (!sim.userMoved) sim.fitted = false; // reframe when the container reshapes
-    };
-    resize();
-    const ro = new ResizeObserver(resize);
-    ro.observe(canvas);
-
-    const fit = () => {
+    const fit = (smooth = false) => {
       const ns = [...sim.nodes.values()];
       if (!ns.length || !W) return;
       let x0 = Infinity; let y0 = Infinity; let x1 = -Infinity; let y1 = -Infinity;
@@ -155,10 +145,28 @@ export default function ForceGraph({
         x1 = Math.max(x1, a.x + a.r + 34); y1 = Math.max(y1, a.y + a.r + 34);
       }
       const k = Math.max(minZoom, Math.min(maxZoom, Math.min(W / (x1 - x0), H / (y1 - y0)) * 0.94));
-      cam.k = k; cam.x = (x0 + x1) / 2; cam.y = (y0 + y1) / 2 + 10 / k;
-      cam.tx = cam.ty = cam.tk = null;
+      const cx = (x0 + x1) / 2; const cy = (y0 + y1) / 2 + 10 / k;
+      if (smooth) { cam.tx = cx; cam.ty = cy; cam.tk = k; }
+      else { cam.k = k; cam.x = cx; cam.y = cy; cam.tx = cam.ty = cam.tk = null; }
       sim.fitted = true;
     };
+
+    // Debounced, tweened reframe: while the container animates (e.g. the dex
+    // drawer condensing) the observer fires every frame — snapping the camera
+    // each tick reads as flicker, so wait for quiet, then glide to the new fit.
+    let refitT = 0;
+    const resize = () => {
+      dpr = Math.min(window.devicePixelRatio || 1, 2);
+      W = canvas.clientWidth; H = canvas.clientHeight;
+      canvas.width = W * dpr; canvas.height = H * dpr;
+      if (sim.fitted && !sim.userMoved) {
+        clearTimeout(refitT);
+        refitT = setTimeout(() => fit(true), 160);
+      }
+    };
+    resize();
+    const ro = new ResizeObserver(resize);
+    ro.observe(canvas);
 
     const toWorld = (px, py) => ({ x: (px - W / 2) / cam.k + cam.x, y: (py - H / 2) / cam.k + cam.y });
     const pick = (px, py) => {
@@ -380,6 +388,7 @@ export default function ForceGraph({
 
     return () => {
       cancelAnimationFrame(raf);
+      clearTimeout(refitT);
       ro.disconnect();
       document.removeEventListener("visibilitychange", onVis);
       canvas.removeEventListener("pointerdown", onDown);

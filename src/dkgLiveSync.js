@@ -398,6 +398,7 @@ function buildRegion(region, idx, nodesById, worldLabel) {
     id: regionSlug,
     name,
     emoji: region.emoji || "🛰️",
+    arc: region.arc || inferArc(name),
     intro: region.summary || region.description || `Live DKG region synced into ${worldLabel}.`,
     npc: {
       name: "Graph Curator",
@@ -428,6 +429,41 @@ function linksFromSources(sources, sourceIds) {
   return out;
 }
 
+/* Lore identities for live macro worlds (CLAUDE.md rule 1). Titles that match
+   a builtin world's lore title merge into it via mergeDkgWorlds; "agents" is
+   deliberately distinct from the RL-focused builtin frontier. */
+const DKG_WORLD_LORE = {
+  agents: { title: "The Agentworks", emoji: "\u{1F3D7}\uFE0F", domain: "Agent Systems & Production" },
+  "transformer-architecture": { title: "The Attention Citadel" },
+  "generative-models": { title: "The Dreaming Depths" },
+  "perception-world-models": { title: "The Worldseer Observatory" },
+  "llm-systems-serving": { title: "The Throughput Shogunate" },
+  "retrieval-augmented-generation": { title: "The Retrieval Archives", emoji: "\u{1F5C4}\uFE0F", domain: "Retrieval-Augmented Generation" },
+};
+
+/* Lore arc inference for live regions (CLAUDE.md rule 4): group case boards
+   into chaptered arcs in the style of the builtin worlds ("Foundations of…",
+   "The Craft of…", "The Way of…"). Explicit region.arc always wins. */
+const DKG_ARC_RULES = [
+  [/world model|imagin|simulat/i, "The Way of Imagining"],
+  [/safety|alignment|misalign|vigilan/i, "The Way of Vigilance"],
+  [/protocol|supervision|multi-agent|coordinat|council/i, "The Councils of Many"],
+  [/harness|context|tool/i, "The Craft of Harnesses"],
+  [/verification|reward/i, "The Craft of Reward"],
+  [/data|self-improvement|continual|plasticity/i, "The Forge of Self-Improvement"],
+  [/scaling|long.?horizon|reasoning|deliberation|scaffold/i, "The Long Roads"],
+  [/foundation|full.?stack/i, "Foundations of Systems"],
+  [/distillation|compression|student|teacher/i, "The Craft of Distillation"],
+  [/serving|deployment|throughput|latency/i, "The Way of Throughput"],
+  [/memory|cache|benchmark|evaluation|efficiency/i, "The Craft of Memory"],
+  [/retrieval|rag|graph|index|sensemaking/i, "The Craft of Retrieval"],
+  [/token|loss|attention|emergence|sparse|depth|embedding/i, "The Deep Mechanics"],
+];
+const inferArc = (name) => {
+  for (const [re, arc] of DKG_ARC_RULES) if (re.test(String(name || ""))) return arc;
+  return "Uncharted Paths";
+};
+
 export function snapshotToEdokaiWorlds(payload) {
   if (!payload) return [];
   const dkg = payload.dkg || payload.edokai_dkg || payload.graph || {};
@@ -447,11 +483,13 @@ export function snapshotToEdokaiWorlds(payload) {
 
     const sourceIds = [...new Set(rawRegions.flatMap((r) => (Array.isArray(r.source_ids) ? r.source_ids : [])))];
 
+    const lore = DKG_WORLD_LORE[worldId] || {};
     return [{
       id: `dkg-${slug(worldId)}`,
       macroId: worldId,
-      title: friendlyName(world.label || world.title || worldId, worldId),
-      emoji: world.emoji || "🧬",
+      title: lore.title || friendlyName(world.label || world.title || worldId, worldId),
+      domain: lore.domain || friendlyName(world.label || world.title || worldId, worldId),
+      emoji: lore.emoji || world.emoji || "🧬",
       blurb: world.description || "Live concept world synced from the Edokai DKG.",
       mission: world.mission || `Master ${friendlyName(world.label || worldId, worldId)} through source-grounded DKG concepts.`,
       links: linksFromSources(sources, sourceIds),

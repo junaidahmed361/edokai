@@ -26,12 +26,17 @@ export default function ConceptdexDrawer({
   // list below (scroll) and can be pinned open/closed with the toggle.
   const [graphBig, setGraphBig] = useState(true);
   const manualRef = useRef(false);
-  const graphH = graphBig ? "min(58vh, 460px)" : 128;
+  const lastToggleRef = useRef(0);
+  const graphH = graphBig ? "min(68vh, 580px)" : 128;
+  // Wide hysteresis + a cooldown so the height animation can finish without
+  // the scroll position re-crossing a threshold and flickering the graph.
   const onBodyScroll = (e) => {
     if (manualRef.current) return;
+    const now = Date.now();
+    if (now - lastToggleRef.current < 700) return;
     const top = e.currentTarget.scrollTop;
-    if (top > 60 && graphBig) setGraphBig(false);
-    else if (top < 8 && !graphBig) setGraphBig(true);
+    if (top > 140 && graphBig) { lastToggleRef.current = now; setGraphBig(false); }
+    else if (top <= 2 && !graphBig) { lastToggleRef.current = now; setGraphBig(true); }
   };
 
   const world = worlds.find((w) => w.id === dexWorld) || worlds[0];
@@ -122,7 +127,7 @@ export default function ConceptdexDrawer({
             <ForceGraph
               nodes={nodes}
               links={links}
-              height={460}
+              height={580}
               focusId={selectedId}
               style={{ position: "absolute", inset: 0, height: "100%" }}
               onNodeClick={(id) => { if (!id.startsWith("w:") && !id.startsWith("r:")) setSelectedId(id); }}

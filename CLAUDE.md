@@ -41,8 +41,16 @@ rules are embedded in the runtime generation prompts (`NAMING_RULES` and
 ## 4. Scaling: arcs consolidate case boards
 
 - Worlds will grow; regions within a world are grouped into **arcs** (a short
-  categorical chapter name, e.g. "Foundations of Decision", "The Craft of
-  Reward") via the optional `arc` field on a region.
+  categorical chapter name) via the optional `arc` field on a region.
+- Arc names follow the house style set by The Agentic RL Frontier:
+  "Foundations of …", "The Craft of …", "The Way of …", "The Councils of …",
+  "The Forge of …", "The Long Roads" — short, evocative, categorical. Live DKG
+  regions get arcs from `DKG_ARC_RULES` in `src/dkgLiveSync.js`; extend those
+  rules when new content categories appear.
+- World identity: the builtin **The Agentic RL Frontier** is the RL/post-training
+  world; the live-DKG **The Agentworks** is agent systems & production. Live
+  macro worlds take lore titles from `DKG_WORLD_LORE` — titles matching a
+  builtin world merge into it, so keep them in sync when renaming.
 - The region list renders arc sections automatically whenever regions carry
   arcs; generated worlds with more than 4 regions must assign each region an
   arc (see `REGION_JSON_SPEC`). Use 2–4 arcs per world; arcs get lore names too.

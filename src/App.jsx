@@ -1623,7 +1623,7 @@ const _g = (id) => ATLAS.find((w) => w.id === id).regions[0];
    Ids never change; arcs are display grouping only. */
 const withArcs = (regions, arcs) => regions.map((r) => (arcs[r.id] ? { ...r, arc: arcs[r.id] } : r));
 const BUILTIN_WORLDS = [
-  { id: "w-rl", title: "The Agentic Frontier", emoji: "🤖", domain: "Agents & Agentic RL",
+  { id: "w-rl", title: "The Agentic RL Frontier", emoji: "🤖", domain: "Agents & Agentic RL · post-training",
     blurb: "Agentic workflows → MDPs → SFT → tool rewards → PPO/GRPO/DPO → orchestration.",
     links: [
       { label: "Source primer · aman.ai Agentic RL", url: "https://aman.ai/primers/ai/agentic-RL/" },
@@ -1651,7 +1651,10 @@ const BUILTIN_WORLDS = [
       { label: "Karpathy · Let's build GPT from scratch", url: "https://www.youtube.com/watch?v=kCc8FmEb1nY" },
       { label: "Karpathy · nanoGPT", url: "https://github.com/karpathy/nanoGPT" },
     ],
-    regions: [_g("w-embed"), _g("w-attn"), _g("w-moe"), _g("w-arch")] },
+    regions: withArcs([_g("w-embed"), _g("w-attn"), _g("w-moe"), _g("w-arch")], {
+      "emb-r": "Foundations of Signal", "attn-r": "Foundations of Signal",
+      "moe-r": "The Craft of Blocks", "arch-r": "The Craft of Blocks",
+    }) },
   { id: "w-gen", title: "The Dreaming Depths", emoji: "🌫️", domain: "Generative Models",
     blurb: "KL's two personalities → autoencoder family → diffusion.",
     links: [
@@ -1659,7 +1662,9 @@ const BUILTIN_WORLDS = [
       { label: "Lilian Weng · Diffusion Models", url: "https://lilianweng.github.io/posts/2021-07-11-diffusion-models/" },
       { label: "Karpathy · Neural Networks: Zero to Hero (makemore→GPT)", url: "https://karpathy.ai/zero-to-hero.html" },
     ],
-    regions: [_g("w-kl"), _g("w-ae"), _g("w-diffusion")] },
+    regions: withArcs([_g("w-kl"), _g("w-ae"), _g("w-diffusion")], {
+      "kl-r": "Foundations of Belief", "ae-r": "The Craft of Dreams", "diff-r": "The Craft of Dreams",
+    }) },
   { id: "w-percept", title: "The Worldseer Observatory", emoji: "👁️", domain: "Perception & World Models",
     blurb: "Pixels → language (VLMs), and pixels → planning (JEPA, LeJEPA).",
     links: [
@@ -1669,7 +1674,9 @@ const BUILTIN_WORLDS = [
       { label: "Fei-Fei Li · World Labs on spatial intelligence", url: "https://www.worldlabs.ai/blog" },
       { label: "LeCun · A Path Towards Autonomous Machine Intelligence", url: "https://openreview.net/pdf?id=BZ5a1r-kVsf" },
     ],
-    regions: [_g("w-vlm"), WM_REGION] },
+    regions: withArcs([_g("w-vlm"), WM_REGION], {
+      "vlm-r": "The Way of Seeing", "wm-r": "The Way of Imagining",
+    }) },
   { id: "w-sys", title: "The Throughput Shogunate", emoji: "⚙️", domain: "LLM Systems & Serving",
     blurb: "KV cache & quantization → parallelism, drafts, disaggregation.",
     links: [
@@ -1677,7 +1684,9 @@ const BUILTIN_WORLDS = [
       { label: "vLLM · PagedAttention paper", url: "https://arxiv.org/abs/2309.06180" },
       { label: "Zero to Hero with vLLM (capacity planning §8.3)", url: "https://martinuke0.github.io/posts/2026-01-04-zero-to-hero-with-vllm-a-practical-guide-for-highthroughput-llm-inference/#83-capacity-planning" },
     ],
-    regions: [INF_REGION_A, INF_REGION_B] },
+    regions: withArcs([INF_REGION_A, INF_REGION_B], {
+      "inf-cache": "The Craft of Memory", "inf-flow": "The Way of Throughput",
+    }) },
 ];
 
 /* ============================================================
