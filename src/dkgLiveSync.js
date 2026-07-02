@@ -226,32 +226,31 @@ const optionWords = (o) => String(o || "").trim().split(/\s+/).filter(Boolean).l
 const optionWordList = (o) => String(o || "").trim().split(/\s+/).filter(Boolean);
 const cleanRepeatedWords = (text) => String(text || "").replace(/\b([A-Za-z][A-Za-z0-9'-]*)\b(?:\s+\1\b)+/gi, "$1").replace(/\s+/g, " ").trim();
 function compactOptionText(text) {
-  let out = String(text || "")
-    .replace(/\s+/g, " ")
-    .replace(/[.…]+$/g, "")
-    .replace(/\s*[-–—:]\s+.*$/g, "")
-    .replace(/\s*\([^)]{18,}\)\s*/g, " ")
-    .replace(/\b(?:primarily|mainly|exactly|actually|simply|just|always|never)\b/gi, "")
-    .trim();
+  // Options are NEVER truncated (CLAUDE.md rule 3): only cleaned.
+  let out = String(text || "").replace(/\s+/g, " ").replace(/[.…]+$/g, "").trim();
   if (!out) out = "nearby but wrong mechanism";
   out = out[0].toUpperCase() + out.slice(1);
-  const ws = optionWordList(out);
-  if (ws.length > 8) out = ws.slice(0, 8).join(" ");
-  return cleanRepeatedWords(out).replace(/[.;:]+$/g, "");
+  return cleanRepeatedWords(out).replace(/[;:]+$/g, "");
 }
+const OPTION_TAILS = [
+  "in this workflow", "for this scenario", "during this stage", "across these tasks",
+  "in this system", "under these constraints", "for this pipeline", "at this step",
+  "in day-to-day practice", "for the task at hand",
+];
 function balanceOptions(options, seed = "question") {
-  const pads = ["for this case", "in this setting", "under the same signal", "for the learner"];
   const base = (options || []).slice(0, 4).map(compactOptionText);
   while (base.length < 4) base.push(compactOptionText(`nearby distractor ${base.length}`));
-  const lens = base.map(optionWords);
-  const target = Math.max(5, Math.min(8, Math.round(lens.reduce((a, b) => a + b, 0) / lens.length)));
+  // Dissolve length tells by EXPANDING short options with varied natural
+  // tails (never by cutting long ones) until the spread is small.
+  const seedN = Math.abs(hashCode(seed));
+  const maxLen = Math.max(...base.map(optionWords));
+  const used = new Set();
   return base.map((o, i) => {
-    let words = optionWordList(o);
-    if (words.length > target + 1) words = words.slice(0, target + 1);
-    let out = words.join(" ");
+    let out = o;
     let guard = 0;
-    while (optionWords(out) < target - 1 && guard < 2) {
-      out = `${out} ${pads[(i + guard + String(seed).length) % pads.length]}`;
+    while (maxLen - optionWords(out) > 3 && guard < 3) {
+      const tail = OPTION_TAILS[(seedN + i * 3 + guard * 7 + out.length) % OPTION_TAILS.length];
+      if (!used.has(tail) && !out.toLowerCase().includes(tail)) { out = `${out} ${tail}`; used.add(tail); }
       guard += 1;
     }
     return cleanRepeatedWords(out);
@@ -355,7 +354,7 @@ function duelToSide(duel, idx, regionSlug, conceptIds, fallbackQuestions) {
     .join("  •  ");
   return {
     id: `${regionSlug}-duel-${slug(duel.id || String(idx))}`,
-    name: truncate(prompt, 40),
+    name: duel.name || `Recall Trial ${idx + 1}`,
     sprite: "⚔️",
     anchor: 1,
     recLevel: 2,

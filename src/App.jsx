@@ -218,29 +218,28 @@ function cleanRepeatedWords(text) {
   return out;
 }
 function compactOption(text) {
-  let out = sentenceCaseOption(text)
-    .replace(/\s*[-–—:]\s+.*$/g, "")
-    .replace(/\s*\([^)]{18,}\)\s*/g, " ")
-    .replace(/\b(?:primarily|mainly|exactly|actually|simply|just|always|never)\b/gi, "")
-    .replace(/\s+/g, " ")
-    .trim();
-  const ws = wordsOf(out);
-  if (ws.length > 8) out = ws.slice(0, 8).join(" ");
-  return cleanRepeatedWords(out).replace(/[.;:]+$/g, "") || "Nearby but wrong mechanism";
+  // Options are NEVER truncated (CLAUDE.md rule 3): only cleaned.
+  return cleanRepeatedWords(sentenceCaseOption(text)).replace(/[;:]+$/g, "") || "Nearby but wrong mechanism";
 }
+const OPTION_TAILS = [
+  "in this workflow", "for this scenario", "during this stage", "across these tasks",
+  "in this system", "under these constraints", "for this pipeline", "at this step",
+  "in day-to-day practice", "for the task at hand",
+];
 function balanceOptionLengths(options, seed = "edokai") {
   const base = (options || []).slice(0, 4).map(compactOption);
   while (base.length < 4) base.push(compactOption(`Nearby wrong mechanism ${base.length + 1}`));
-  const neutralPads = ["for this case", "in this setting", "under the same signal", "for the learner"];
-  const lens = base.map((o) => wordsOf(o).length);
-  const target = Math.max(5, Math.min(8, Math.round(lens.reduce((a, b) => a + b, 0) / lens.length)));
+  // Dissolve length tells by EXPANDING short options with varied natural
+  // tails (never by cutting long ones) until the spread is small.
+  const seedN = Math.abs(Array.from(String(seed)).reduce((h, ch) => ((h * 31 + ch.charCodeAt(0)) | 0), 0));
+  const maxLen = Math.max(...base.map((o) => wordsOf(o).length));
+  const used = new Set();
   return base.map((o, i) => {
-    let ws = wordsOf(o);
-    if (ws.length > target + 1) ws = ws.slice(0, target + 1);
-    let out = ws.join(" ");
+    let out = o;
     let guard = 0;
-    while (wordsOf(out).length < target - 1 && guard < 2) {
-      out = `${out} ${neutralPads[(i + guard + String(seed).length) % neutralPads.length]}`;
+    while (maxLen - wordsOf(out).length > 3 && guard < 3) {
+      const tail = OPTION_TAILS[(seedN + i * 3 + guard * 7 + out.length) % OPTION_TAILS.length];
+      if (!used.has(tail) && !out.toLowerCase().includes(tail)) { out = `${out} ${tail}`; used.add(tail); }
       guard += 1;
     }
     return cleanRepeatedWords(out).replace(/\s+/g, " ").trim();
@@ -469,14 +468,16 @@ async function reviewCode(kataTitle, framework, code, cfg) {
    New top-level features must add a step here (see CLAUDE.md).
    ============================================================ */
 const TOUR_STEPS = [
-  { icon: "\u{1F5FA}\uFE0F", kicker: "LEARN", title: "The Atlas", body: "Every **world** is a glowing hub in a living constellation, its **regions** orbiting as satellites. Click a world to focus it, click again to enter. Progress rings fill as you capture concepts, and golden threads join worlds that share sources." },
-  { icon: "\u{1F9ED}", kicker: "WORLDS", title: "Case boards & arcs", body: "Inside a world, case boards are grouped into **arcs** — lore-named chapters that keep growing content organized.\n- \u2B21 **Criticals** teach a new concept and gate the path\n- \u25C7 **Sides** are retention duels that heal your HP\n- \u{1F3DB} the **Gym** awards the region badge" },
-  { icon: "\u2328\uFE0F", kicker: "DOJO", title: "The Dojo", body: "Implementation katas: **Blind 75**, **TorchLeet**, ML engineering, and system design — with live in-browser Python, runnable tests, and AI review. Senzu healing quests route here: clear two katas to fully recover HP." },
-  { icon: "\u{1F33F}", kicker: "WILDS", title: "The Wilds", body: "An episode generator over any world's lore. Each run forges **brand-new, verifiable questions** grounded strictly in the material — so practice never goes stale — and it biases toward the topics you miss most." },
-  { icon: "\u{1F9EA}", kicker: "COACH", title: "The Coach", body: "Every answer feeds per-concept telemetry. The Coach reads your **miss patterns** and forges targeted scenario drills that join the world's question pool — the system teaches hardest where you are weakest." },
-  { icon: "\u2694\uFE0F", kicker: "GAUNTLET", title: "Trial Gauntlet", body: "The world exam: **3 lives**, the entire shuffled question pool including coach-forged drills, and a weakest-topic report at the end. Run it to prove a world is truly cleared." },
-  { icon: "\u{1F4D6}", kicker: "CONCEPTDEX", title: "The Conceptdex", body: "Your field guide, sliding in from the right on any screen. Captured concepts shine in their region's colour; undiscovered ones stay ghost stars. During battles, tap **\uFF0B dex** to bank tricky questions into its review deck." },
-  { icon: "\u{1F4E1}", kicker: "MISSION & PAPERS", title: "Mission log & Paper scout", body: "**Mission** is the teach workspace: mission, resources, glossary terms and learning records earned by wins. **Papers** scouts fresh research — any paper can be forged into a brand-new world with *+ Bring your own*." },
+  { icon: "\u{1F5FA}\uFE0F", kicker: "LEARN", title: "The Atlas", target: '[data-tour="atlas"]', body: "Every **world** is a glowing hub in a living constellation, its **regions** orbiting as satellites. Click a world to focus it, click again to enter. Progress rings fill as you capture concepts, and golden threads join worlds that share sources." },
+  { icon: "\u{1F9ED}", kicker: "WORLDS", title: "Case boards & arcs", target: '[data-tour="tab-home"]', body: "Inside a world, case boards are grouped into **arcs** — lore-named chapters that keep growing content organized.\n- \u2B21 **Criticals** teach a new concept and gate the path\n- \u25C7 **Sides** are retention duels that heal your HP\n- \u{1F3DB} the **Gym** awards the region badge" },
+  { icon: "\u{1FAD8}", kicker: "HP & SENZU", title: "Harm, healing, and the Senzu bean", target: '[data-tour="hp"]', body: "This bar is your HP.\n- Missing a **critical** question draws a counterattack that costs HP\n- Winning **side duels** heals you back\n- When you are badly hurt, start the **\u{1FAD8} Senzu bean** quest: clear one Blind 75 kata and one ML kata in the Dojo to fully recover" },
+  { icon: "\u2328\uFE0F", kicker: "DOJO", title: "The Dojo", target: '[data-tour="tab-dojo"]', body: "Implementation katas: **Blind 75**, **TorchLeet**, ML engineering, and system design — with live in-browser Python, runnable tests, and AI review. Senzu healing quests route here." },
+  { icon: "\u{1F33F}", kicker: "WILDS", title: "The Wilds", target: '[data-tour="tab-wildspick"]', body: "An episode generator over any world's lore. Each run forges **brand-new, verifiable questions** grounded strictly in the material — so practice never goes stale — and it biases toward the topics you miss most." },
+  { icon: "\u{1F9EA}", kicker: "COACH", title: "The Coach", target: '[data-tour="tab-coach"]', body: "Every answer feeds per-concept telemetry. The Coach reads your **miss patterns** and forges targeted scenario drills that join the world's question pool — the system teaches hardest where you are weakest." },
+  { icon: "\u2694\uFE0F", kicker: "GAUNTLET", title: "Trial Gauntlet", target: null, body: "The world exam, launched from any world or the Coach: **3 lives**, the entire shuffled question pool including coach-forged drills, and a weakest-topic report at the end. Run it to prove a world is truly cleared." },
+  { icon: "\u{1F4D6}", kicker: "CONCEPTDEX", title: "The Conceptdex", target: '[data-tour="dex"]', body: "Your field guide, sliding in from the right on any screen. Captured concepts shine in their region's colour; undiscovered ones stay ghost stars. During battles, tap **\uFF0B dex** to bank tricky questions into its review deck." },
+  { icon: "\u{1F4E1}", kicker: "MISSION & PAPERS", title: "Mission log & Paper scout", target: '[data-tour="tab-papers"]', body: "**Mission** is the teach workspace: mission, resources, glossary terms and learning records earned by wins. **Papers** scouts fresh research — any paper can be forged into a brand-new world with *+ Bring your own*." },
+  { icon: "\u{1F9E0}", kicker: "MODELS", title: "Bring your own brain", target: '[data-tour="settings"]', body: "Generation runs through whatever model you connect in **\u2699\uFE0F Settings**: sign into a **Claude Code** or **Codex** subscription (desktop app), paste an **Anthropic API key**, or point at any local OpenAI-compatible endpoint:\n- Ollama — `http://localhost:11434/v1`\n- LM Studio — `http://localhost:1234/v1`\nThis powers the Wilds, Coach, Deepen Lore, imports, and code review." },
 ];
 
 /* ============================================================
@@ -4120,6 +4121,7 @@ ${QUALITY_RULES}`, cfg));
     pre: { background: T.code, color: T.codeText, border: `1px solid ${darkMode ? "rgba(148,163,214,0.14)" : "transparent"}`, borderRadius: 12, padding: "12px 14px", fontFamily: "'JetBrains Mono', monospace", fontSize: 11.5, lineHeight: 1.6, overflowX: "auto", whiteSpace: "pre", margin: 0 },
     input: { width: "100%", boxSizing: "border-box", border: `1px solid ${T.line}`, borderRadius: 12, padding: "11px 12px", fontSize: 13.5, fontFamily: "'JetBrains Mono', monospace", background: darkMode ? "rgba(10,15,34,0.7)" : "rgba(255,255,255,0.85)", color: T.ink, outline: "none" },
     qbtn: { display: "block", width: "100%", textAlign: "left", marginBottom: 8, background: darkMode ? "rgba(255,255,255,0.035)" : "rgba(255,255,255,0.75)", border: `1px solid ${T.line}`, color: T.ink, borderRadius: 12, padding: "12px 14px", fontSize: 13.5, fontWeight: 600, cursor: "pointer", fontFamily: "inherit", lineHeight: 1.45 },
+    inkBtn: darkMode ? "#3A4374" : "#1C2442",
     grid: (min = 320) => ({ display: "grid", gridTemplateColumns: `repeat(auto-fill, minmax(min(${min}px, 100%), 1fr))`, gap: 12 }),
   };
 
@@ -4146,7 +4148,7 @@ ${QUALITY_RULES}`, cfg));
             <span style={S.mono(10.5, T.ink)}>{level}</span>
           </div>
         </div>
-        <div style={{ flex: 1, minWidth: 0 }}>
+        <div data-tour="hp" style={{ flex: 1, minWidth: 0 }}>
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", gap: 8 }}>
             <span style={{ ...S.mono(9.5, T.ink), whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>LV.{level} · {save.xp} XP</span>
             <span style={{ ...S.mono(9.5, T.gold), whiteSpace: "nowrap" }}>🎖 {save.badges.length}</span>
@@ -4159,8 +4161,8 @@ ${QUALITY_RULES}`, cfg));
         <button className="hideSm" onClick={() => setTourStep(0)} title="Replay the walkthrough" style={iconBtn()}>?</button>
         <button onClick={toggleMusic} title="Low-volume background music" style={iconBtn()}>{musicOn ? "🎵" : "🔇"}</button>
         <button onClick={toggleTheme} title={darkMode ? "Switch to daylight" : "Switch to twilight"} style={iconBtn()}>{darkMode ? "☀️" : "🌙"}</button>
-        <button onClick={() => { setDexWorld(activeWorld); setDexOpen(true); }} title="Open the Conceptdex" style={{ ...S.btn(T.explore), padding: "8px 13px", fontSize: 12.5, display: "flex", alignItems: "center", gap: 6 }}>📖 <span className="dexLabel" style={{ fontWeight: 800 }}>Dex</span></button>
-        <button onClick={() => setScreen("settings")} title="Settings" style={iconBtn()}>⚙️</button>
+        <button data-tour="dex" onClick={() => { setDexWorld(activeWorld); setDexOpen(true); }} title="Open the Conceptdex" style={{ ...S.btn(T.explore), padding: "8px 13px", fontSize: 12.5, display: "flex", alignItems: "center", gap: 6 }}>📖 <span className="dexLabel" style={{ fontWeight: 800 }}>Dex</span></button>
+        <button data-tour="settings" onClick={() => setScreen("settings")} title="Settings" style={iconBtn()}>⚙️</button>
       </div>
     </div>
   );
@@ -4169,7 +4171,7 @@ ${QUALITY_RULES}`, cfg));
       {[["home", "🌍", "Learn"], ["dojo", "⌨️", "Dojo"], ["wildspick", "🌿", "Wilds"], ["coach", "🧪", "Coach"], ["teachspace", "📚", "Mission"], ["papers", "📡", "Papers"]].map(([id, icon, label]) => {
         const on = screen === id || (id === "home" && ["home", "regionlist", "region"].includes(screen));
         return (
-          <button key={id} onClick={() => setScreen(id)} style={{
+          <button key={id} data-tour={"tab-" + id} onClick={() => setScreen(id)} style={{
             border: "none", cursor: "pointer", fontFamily: "inherit", fontWeight: 700, fontSize: 13,
             padding: "9px 16px", borderRadius: 999, display: "flex", alignItems: "center", gap: 7,
             background: on ? `linear-gradient(180deg, ${tint(T.explore, 0.14)}, ${T.explore})` : "transparent",
@@ -4185,9 +4187,22 @@ ${QUALITY_RULES}`, cfg));
   const walkthrough = tourStep === null ? null : (() => {
     const step = TOUR_STEPS[Math.min(tourStep, TOUR_STEPS.length - 1)];
     const last = tourStep >= TOUR_STEPS.length - 1;
+    // Spotlight: measure the step's target element and cut a glowing window
+    // around it in the scrim so the walkthrough points at the real UI.
+    let spot = null;
+    if (step.target && typeof document !== "undefined") {
+      const el = document.querySelector(step.target);
+      if (el) {
+        const r = el.getBoundingClientRect();
+        if (r.width > 0 && r.height > 0) spot = { left: r.left - 7, top: r.top - 7, width: r.width + 14, height: r.height + 14 };
+      }
+    }
+    const vh = typeof window !== "undefined" ? window.innerHeight : 800;
+    const placeLow = !!spot && spot.top + spot.height / 2 < vh * 0.45;
     return (
-      <div style={{ position: "fixed", inset: 0, zIndex: 85, display: "flex", alignItems: "center", justifyContent: "center", padding: 18, background: "rgba(4,7,18,0.6)", backdropFilter: "blur(6px)", WebkitBackdropFilter: "blur(6px)", animation: "fadeIn .3s ease" }}>
-        <div key={tourStep} style={{ width: "min(560px, 100%)", borderRadius: 24, padding: "24px 24px 18px", background: darkMode ? "rgba(19,26,54,0.97)" : "rgba(255,255,255,0.97)", border: `1px solid ${withAlpha(darkMode ? "#8D9BFF" : "#5B5BD6", 0.45)}`, boxShadow: "0 30px 90px rgba(2,4,12,0.55)", animation: "fadeScale .35s ease", position: "relative" }}>
+      <div style={{ position: "fixed", inset: 0, zIndex: 85, display: "flex", alignItems: placeLow ? "flex-end" : "center", justifyContent: "center", padding: 18, paddingBottom: placeLow ? "max(28px, 6vh)" : 18, background: spot ? "transparent" : "rgba(4,7,18,0.6)", backdropFilter: spot ? "none" : "blur(6px)", WebkitBackdropFilter: spot ? "none" : "blur(6px)", animation: "fadeIn .3s ease" }}>
+        {spot && <div aria-hidden style={{ position: "fixed", left: spot.left, top: spot.top, width: spot.width, height: spot.height, borderRadius: 16, border: `2px solid ${withAlpha(darkMode ? "#8D9BFF" : "#5B5BD6", 0.95)}`, boxShadow: `0 0 0 9999px rgba(4,7,18,0.62), 0 0 26px ${withAlpha("#8D9BFF", 0.6)}`, pointerEvents: "none", animation: "glowPulse 2.4s ease-in-out infinite" }} />}
+        <div key={tourStep} style={{ width: "min(560px, 100%)", borderRadius: 24, padding: "24px 24px 18px", background: darkMode ? "rgba(19,26,54,0.97)" : "rgba(255,255,255,0.97)", border: `1px solid ${withAlpha(darkMode ? "#8D9BFF" : "#5B5BD6", 0.45)}`, boxShadow: "0 30px 90px rgba(2,4,12,0.55)", animation: "fadeScale .35s ease", position: "relative", zIndex: 1 }}>
           <button onClick={finishTour} style={{ position: "absolute", right: 14, top: 14, zIndex: 1, ...S.chip(false), padding: "5px 11px", fontSize: 11 }}>Skip tour</button>
           <div aria-hidden style={{ fontSize: 44, pointerEvents: "none", filter: `drop-shadow(0 8px 20px ${withAlpha(darkMode ? "#8D9BFF" : "#5B5BD6", 0.45)})`, animation: "bob 2.6s ease-in-out infinite" }}>{step.icon}</div>
           <span style={S.mono(9.5, T.explore)}>STEP {tourStep + 1}/{TOUR_STEPS.length} · {step.kicker}</span>
@@ -4392,7 +4407,7 @@ ${QUALITY_RULES}`, cfg));
           </Collapsible>}
         </Collapsible>
         {homeView === "atlas" && (
-          <div style={{ marginTop: 14, animation: "fadeScale .5s ease" }}>
+          <div data-tour="atlas" style={{ marginTop: 14, animation: "fadeScale .5s ease" }}>
             <AtlasGraph
               worlds={allWorlds}
               focusedWorld={focusedMapWorld}
@@ -4623,7 +4638,7 @@ ${QUALITY_RULES}`, cfg));
             <div style={{ ...S.card, background: gaunt.fb.ok ? T.rewardSoft : T.penaltySoft, border: `1px solid ${gaunt.fb.ok ? withAlpha(darkMode ? "#3DDC97" : "#149E6E", 0.4) : withAlpha("#FF7A76", 0.4)}`, marginTop: 12, animation: "slideUp .25s ease" }}>
               <b style={{ color: gaunt.fb.ok ? T.reward : T.penalty, fontSize: 13 }}>{gaunt.fb.ok ? "✓ Correct" : "✗ Miss"}</b>
               <RichText text={gaunt.fb.msg} style={{ fontSize: 13, lineHeight: 1.55, margin: "6px 0 10px" }} />
-              <button onClick={nextGauntlet} style={{ ...S.btn(T.ink), width: "100%" }}>Next →</button>
+              <button onClick={nextGauntlet} style={{ ...S.btn(S.inkBtn), width: "100%" }}>Next →</button>
             </div>
           )}
         </div>
@@ -4735,7 +4750,7 @@ ${QUALITY_RULES}`, cfg));
               <b style={{ color: wilds.fb.ok ? T.reward : T.penalty, fontSize: 13 }}>{wilds.fb.ok ? "✓ Verified correct" : "✗ Miss"}</b>
               <RichText text={wilds.fb.msg} style={{ fontSize: 13, lineHeight: 1.55, margin: "6px 0 4px" }} />
               {wilds.fb.ev && <p style={{ fontSize: 12, color: T.inkSoft, margin: "0 0 10px" }}>📜 EVIDENCE: "{wilds.fb.ev}"</p>}
-              <button onClick={nextWilds} style={{ ...S.btn(T.ink), width: "100%" }}>Next →</button>
+              <button onClick={nextWilds} style={{ ...S.btn(S.inkBtn), width: "100%" }}>Next →</button>
             </div>
           )}
         </div>
@@ -4772,7 +4787,7 @@ ${QUALITY_RULES}`, cfg));
           <button onClick={() => setGoal("learn")} style={S.chip(goal === "learn")}>🌍 Learn concepts</button>
           <button onClick={() => setGoal("implement")} style={S.chip(goal === "implement")}>⌨️ Implement solution</button>
         </div>
-        <button onClick={doScan} disabled={busy === "scan"} style={{ ...S.btn(T.ink), width: "100%", marginTop: 12 }}>{busy === "scan" ? "Reading resource…" : "Scan resource"}</button>
+        <button onClick={doScan} disabled={busy === "scan"} style={{ ...S.btn(S.inkBtn), width: "100%", marginTop: 12 }}>{busy === "scan" ? "Reading resource…" : "Scan resource"}</button>
         {scan && scan.error && <div style={{ marginTop: 12, color: T.penalty, fontSize: 13.5 }}>{scan.error}</div>}
         {scan && !scan.error && (
           <div style={{ ...S.card, marginTop: 14 }}>
@@ -4929,7 +4944,7 @@ ${QUALITY_RULES}`, cfg));
         <p style={{ color: T.inkSoft, fontSize: 13, lineHeight: 1.55 }}>Live search over arXiv / Hugging Face Papers via the built-in model (Papers with Code was sunset in 2025). Found something good? Make it a world.</p>
         <div style={{ display: "flex", gap: 8, marginTop: 8 }}>
           <input value={paperQ} onChange={(e) => setPaperQ(e.target.value)} placeholder="e.g. JEPA world models, KV cache compression" style={{ ...S.input, flex: 1, minWidth: 0 }} />
-          <button onClick={doPapers} disabled={busy === "papers"} style={S.btn(T.ink)}>{busy === "papers" ? "…" : "Scout"}</button>
+          <button onClick={doPapers} disabled={busy === "papers"} style={S.btn(S.inkBtn)}>{busy === "papers" ? "…" : "Scout"}</button>
         </div>
         {papers && papers.error && <div style={{ marginTop: 12, color: T.penalty, fontSize: 13.5 }}>Scout failed — try a broader topic.</div>}
         {Array.isArray(papers) && papers.map((p, i) => (
@@ -5033,7 +5048,7 @@ ${QUALITY_RULES}`, cfg));
             <CodeEditor value={labCode} onChange={setLabCode} onRun={lab ? () => runLab(false) : null} rows={16} />
             <span style={S.mono(8.5)}>syntax-highlighted Python · TAB completes/indents · SHIFT+TAB dedents · ENTER auto-indents · {navigator.platform && navigator.platform.includes("Mac") ? "⌘" : "CTRL"}+ENTER runs</span>
             <div style={{ display: "flex", gap: 8, marginTop: 8, flexWrap: "wrap" }}>
-              {(lab || kata.family === "swe") && <button onClick={() => runLab(false)} disabled={busy === "lab"} style={{ ...S.btn(T.ink), flex: 1, minWidth: 90 }}>{busy === "lab" ? "Running…" : "▶ Run"}</button>}
+              {(lab || kata.family === "swe") && <button onClick={() => runLab(false)} disabled={busy === "lab"} style={{ ...S.btn(S.inkBtn), flex: 1, minWidth: 90 }}>{busy === "lab" ? "Running…" : "▶ Run"}</button>}
               {(LABS[kata.id]?.test || enrichSWEKata(kata).test) && <button onClick={() => runLab(true)} disabled={busy === "lab"} style={{ ...S.btn(kataValidated[kata.id] ? T.reward : T.card, kataValidated[kata.id] ? "#fff" : T.reward), border: `1px solid ${T.reward}`, flex: 1, minWidth: 110 }}>{busy === "lab" ? "Running…" : kataValidated[kata.id] ? "✓ Tests passed" : "✓ Run tests"}</button>}
               <button onClick={doReview} disabled={busy === "review"} style={{ ...S.btn(T.explore), flex: 1, minWidth: 120 }}>{busy === "review" ? "Reviewing…" : "🔍 AI review"}</button>
             </div>
@@ -5073,8 +5088,8 @@ ${QUALITY_RULES}`, cfg));
 
           {/* TODO lore / hints / solution / completion controls */}
           <div style={{ display: "flex", gap: 8, marginTop: 10, flexWrap: "wrap" }}>
-            {todoSteps.length > 0 && <button onClick={() => setKPhase(showHints ? "work" : "hints")} style={{ ...S.btn(showHints ? T.ink : T.card, showHints ? "#fff" : T.inkSoft), border: `1px solid ${T.line}`, flex: 1 }}>🧭 TODO lore & hints ({Object.keys(save.kataHints || {}).filter((h) => h.startsWith(kata.id + ":")).length}/{todoSteps.length})</button>}
-            <button onClick={() => setKPhase(showSol ? "work" : "sol")} style={{ ...S.btn(showSol ? T.ink : T.card, showSol ? "#fff" : T.inkSoft), border: `1px solid ${T.line}`, flex: 1 }}>{showSol ? "Hide solution" : "📖 Reveal final solution"}</button>
+            {todoSteps.length > 0 && <button onClick={() => setKPhase(showHints ? "work" : "hints")} style={{ ...S.btn(showHints ? S.inkBtn : T.card, showHints ? "#fff" : T.inkSoft), border: `1px solid ${T.line}`, flex: 1 }}>🧭 TODO lore & hints ({Object.keys(save.kataHints || {}).filter((h) => h.startsWith(kata.id + ":")).length}/{todoSteps.length})</button>}
+            <button onClick={() => setKPhase(showSol ? "work" : "sol")} style={{ ...S.btn(showSol ? S.inkBtn : T.card, showSol ? "#fff" : T.inkSoft), border: `1px solid ${T.line}`, flex: 1 }}>{showSol ? "Hide solution" : "📖 Reveal final solution"}</button>
             {!done && <button onClick={markKataComplete} style={{ ...S.btn(kataValidated[kata.id] ? T.gold : T.card, kataValidated[kata.id] ? "#1B2440" : T.inkSoft), border: `1px solid ${kataValidated[kata.id] ? T.gold : T.line}`, flex: 1 }}>🏁 Mark complete {kataValidated[kata.id] ? "(+60 XP)" : "(locked)"}</button>}
           </div>
 
@@ -5259,7 +5274,7 @@ ${QUALITY_RULES}`, cfg));
                 {battle.phase === "victory" ? (battle.kind === "critical" ? "CONCEPT CAPTURED!" : battle.kind === "side" ? "KNOWLEDGE REINFORCED!" : "BADGE EARNED!") : battle.phase === "defeat" ? "YOU BLACKED OUT" : battle.wrong ? "COUNTERATTACK!" : "DIRECT HIT!"}
               </span>
               <RichText text={battle.log} style={{ fontSize: 13.5, lineHeight: 1.6, marginTop: 8 }} />
-              <button onClick={continueBattle} style={{ ...S.btn(battle.phase === "victory" ? T.reward : T.ink), width: "100%", marginTop: 12 }}>
+              <button onClick={continueBattle} style={{ ...S.btn(battle.phase === "victory" ? T.reward : S.inkBtn), width: "100%", marginTop: 12 }}>
                 {battle.phase === "victory" ? "Return to the board →" : battle.phase === "defeat" ? "Wake up at entrance" : battle.wrong ? "Face the question again (reshuffled)" : "Next question →"}
               </button>
             </div>
