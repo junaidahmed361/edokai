@@ -8,6 +8,17 @@ I started this because my self-prescribed ADHD makes the normal study flow hard.
 
 The app is now branded Edokai end-to-end: repo, browser title, desktop app name, DMG name, and in-app title screen.
 
+## Twilight redesign
+
+The UI got a full game-like overhaul inspired by polished stylized-world sites (Elysium-style): a twilight-first glass design system with aurora gradients, glow accents, and a Sora/JetBrains Mono type pairing; a daylight theme remains one toggle away.
+
+- The placeholder three.js atlas is replaced by a smooth force-directed constellation (`src/ForceGraph.jsx` + `src/AtlasGraph.jsx`): worlds are glowing hubs sized by concept count, regions orbit as satellites, capture progress rings every node, dashed golden threads join worlds sharing sources, and the layout stays gently alive. Drag nodes, pan, zoom; click a world to focus, click again to enter.
+- The Conceptdex is now a slide-in panel from the right (`src/ConceptdexDrawer.jsx`), available from every screen via the HUD 📖 Dex button (Esc closes). Each world renders as its own mini-constellation: captured concepts shine in their region's colour, undiscovered ones are ghost "?" stars, and the saved-question deck plus per-region field notes live below the graph.
+- Graph node hues were chosen with a colour-vision-deficiency validator: all 8 world colours pass the all-pairs CVD separation target (ΔE ≥ 12) against the atlas sky, alongside direct labels on every node.
+- Screens use the available real estate generously (1160px shell, responsive card grids for worlds/regions/katas, a wider 16:10 board) without crowding: one hero surface per screen, everything else in quiet glass panels.
+- Persistent content rules (lore-appropriate naming, human-readable formatted lore, tell-free untruncated answers, arc-based scaling) live in `CLAUDE.md` and are embedded in the runtime generation prompts. Builtin worlds carry lore names now ("The Agentic Frontier", "The Attention Citadel", "The Dreaming Depths", "The Worldseer Observatory", "The Throughput Shogunate") with plain-language `domain` labels, and case boards group into lore-named arcs so worlds can absorb regions without sprawl.
+- A first-run walkthrough explains every tab and why it exists (Wilds = fresh lore-grounded episodes, Coach = telemetry-forged drills, Gauntlet = the 3-life world exam …), re-openable from the HUD "?" button. Lore and questions render through `src/RichText.jsx` (paragraphs, bullets, bold), the Conceptdex constellation is bigger and condenses as you scroll into the list, and the whole app is verified down to 390px-wide screens.
+
 The launch web version is live here:
 
 https://sprightly-paprenjak-d963a0.netlify.app/
@@ -243,7 +254,9 @@ The macOS DMG is packaged as a GitHub release candidate. Download the attached `
 
 Important macOS Gatekeeper note: Edokai is ad-hoc signed but not Apple Developer ID signed/notarized yet. On some macOS versions, a browser-downloaded DMG can still produce the misleading "app is damaged/broken and should be moved to Trash" dialog before Privacy & Security offers an unblock button. That is Gatekeeper quarantine behavior for an unnotarized app, not a failed DMG checksum.
 
-For the current RC, use `Edokai-3.0.0-arm64-installer.dmg`. It packages Edokai.app together with an `Install Edokai.command` helper. Open the DMG, then run the helper instead of launching the app directly from the DMG. The helper copies Edokai to `/Applications`, strips the quarantine xattr from the installed copy, verifies the local code signature, and opens the app.
+The next iterative release candidate is **v3.3.0** — the twilight redesign build (force-directed atlas, Conceptdex drawer, spotlight walkthrough, lore arcs and case names, combined battle page, untruncated tell-free answers). Build it on macOS with `npm install && npm run dist:mac` → `release/Edokai-3.3.0-arm64.dmg`.
+
+For the previous RC, use `Edokai-3.0.0-arm64-installer.dmg`. It packages Edokai.app together with an `Install Edokai.command` helper. Open the DMG, then run the helper instead of launching the app directly from the DMG. The helper copies Edokai to `/Applications`, strips the quarantine xattr from the installed copy, verifies the local code signature, and opens the app.
 
 If macOS blocks the helper too, Control-click `Install Edokai.command` and choose Open. You can also use the terminal-only helper attached to the release:
 

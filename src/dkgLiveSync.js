@@ -226,32 +226,31 @@ const optionWords = (o) => String(o || "").trim().split(/\s+/).filter(Boolean).l
 const optionWordList = (o) => String(o || "").trim().split(/\s+/).filter(Boolean);
 const cleanRepeatedWords = (text) => String(text || "").replace(/\b([A-Za-z][A-Za-z0-9'-]*)\b(?:\s+\1\b)+/gi, "$1").replace(/\s+/g, " ").trim();
 function compactOptionText(text) {
-  let out = String(text || "")
-    .replace(/\s+/g, " ")
-    .replace(/[.…]+$/g, "")
-    .replace(/\s*[-–—:]\s+.*$/g, "")
-    .replace(/\s*\([^)]{18,}\)\s*/g, " ")
-    .replace(/\b(?:primarily|mainly|exactly|actually|simply|just|always|never)\b/gi, "")
-    .trim();
+  // Options are NEVER truncated (CLAUDE.md rule 3): only cleaned.
+  let out = String(text || "").replace(/\s+/g, " ").replace(/[.…]+$/g, "").trim();
   if (!out) out = "nearby but wrong mechanism";
   out = out[0].toUpperCase() + out.slice(1);
-  const ws = optionWordList(out);
-  if (ws.length > 8) out = ws.slice(0, 8).join(" ");
-  return cleanRepeatedWords(out).replace(/[.;:]+$/g, "");
+  return cleanRepeatedWords(out).replace(/[;:]+$/g, "");
 }
+const OPTION_TAILS = [
+  "in this workflow", "for this scenario", "during this stage", "across these tasks",
+  "in this system", "under these constraints", "for this pipeline", "at this step",
+  "in day-to-day practice", "for the task at hand",
+];
 function balanceOptions(options, seed = "question") {
-  const pads = ["for this case", "in this setting", "under the same signal", "for the learner"];
   const base = (options || []).slice(0, 4).map(compactOptionText);
   while (base.length < 4) base.push(compactOptionText(`nearby distractor ${base.length}`));
-  const lens = base.map(optionWords);
-  const target = Math.max(5, Math.min(8, Math.round(lens.reduce((a, b) => a + b, 0) / lens.length)));
+  // Dissolve length tells by EXPANDING short options with varied natural
+  // tails (never by cutting long ones) until the spread is small.
+  const seedN = Math.abs(hashCode(seed));
+  const maxLen = Math.max(...base.map(optionWords));
+  const used = new Set();
   return base.map((o, i) => {
-    let words = optionWordList(o);
-    if (words.length > target + 1) words = words.slice(0, target + 1);
-    let out = words.join(" ");
+    let out = o;
     let guard = 0;
-    while (optionWords(out) < target - 1 && guard < 2) {
-      out = `${out} ${pads[(i + guard + String(seed).length) % pads.length]}`;
+    while (maxLen - optionWords(out) > 3 && guard < 3) {
+      const tail = OPTION_TAILS[(seedN + i * 3 + guard * 7 + out.length) % OPTION_TAILS.length];
+      if (!used.has(tail) && !out.toLowerCase().includes(tail)) { out = `${out} ${tail}`; used.add(tail); }
       guard += 1;
     }
     return cleanRepeatedWords(out);
@@ -355,7 +354,7 @@ function duelToSide(duel, idx, regionSlug, conceptIds, fallbackQuestions) {
     .join("  •  ");
   return {
     id: `${regionSlug}-duel-${slug(duel.id || String(idx))}`,
-    name: truncate(prompt, 40),
+    name: duel.name || `Recall Trial ${idx + 1}`,
     sprite: "⚔️",
     anchor: 1,
     recLevel: 2,
@@ -367,7 +366,9 @@ function duelToSide(duel, idx, regionSlug, conceptIds, fallbackQuestions) {
 
 function buildRegion(region, idx, nodesById, worldLabel) {
   const regionSlug = `dkg-${slug(region.id || region.label || `region-${idx}`)}`;
-  const name = friendlyName(region.label || region.name || region.title || `Imported Region ${idx + 1}`, `Imported Region ${idx + 1}`);
+  const plainName = friendlyName(region.label || region.name || region.title || `Imported Region ${idx + 1}`, `Imported Region ${idx + 1}`);
+  const lore = regionLore(plainName);
+  const name = (lore && lore.name) || plainName;
 
   // Resolve concept_ids -> DKG nodes (skip refs that have no matching node).
   const conceptIds = Array.isArray(region.concept_ids) ? region.concept_ids : [];
@@ -398,7 +399,8 @@ function buildRegion(region, idx, nodesById, worldLabel) {
     id: regionSlug,
     name,
     emoji: region.emoji || "🛰️",
-    intro: region.summary || region.description || `Live DKG region synced into ${worldLabel}.`,
+    arc: region.arc || (lore && lore.arc) || inferArc(plainName),
+    intro: region.summary || region.description || `${plainName} — live DKG region synced into ${worldLabel}.`,
     npc: {
       name: "Graph Curator",
       text: region.summary || region.description || "These concepts came from the live Edokai dynamic knowledge graph.",
@@ -428,6 +430,78 @@ function linksFromSources(sources, sourceIds) {
   return out;
 }
 
+/* Lore identities for live macro worlds (CLAUDE.md rule 1). Titles that match
+   a builtin world's lore title merge into it via mergeDkgWorlds; "agents" is
+   deliberately distinct from the RL-focused builtin frontier. */
+const DKG_WORLD_LORE = {
+  agents: { title: "The Agentworks", emoji: "\u{1F3D7}\uFE0F", domain: "Agent Systems & Production" },
+  "transformer-architecture": { title: "The Attention Citadel" },
+  "generative-models": { title: "The Dreaming Depths" },
+  "perception-world-models": { title: "The Worldseer Observatory" },
+  "llm-systems-serving": { title: "The Throughput Shogunate" },
+  "retrieval-augmented-generation": { title: "The Retrieval Archives", emoji: "\u{1F5C4}\uFE0F", domain: "Retrieval-Augmented Generation" },
+};
+
+/* Lore case names for live regions (CLAUDE.md rule 1): the DKG hands us dry
+   taxonomy labels ("Agent Systems Foundations"); each becomes an evocative
+   case name while its arc consolidates related boards (every arc aims for
+   2+ cases). The technical label stays visible via the region summary/intro.
+   Ordered: first match wins, so keep specific patterns above generic ones. */
+const DKG_REGION_LORE = [
+  [/full.?stack/i, "The Stack Spire", "Foundations of Systems"],
+  [/harness|context and tools/i, "The Harness Works", "Foundations of Systems"],
+  [/systems? foundations/i, "The Bedrock Yards", "Foundations of Systems"],
+  [/workflow adoption/i, "The Adoption Trailheads", "Foundations of Systems"],
+  [/multi.?agent|protocols?.*supervision|supervision/i, "The Envoy Halls", "The Councils of Many"],
+  [/safety|misalign/i, "The Inner Sentinels", "The Councils of Many"],
+  [/reasoning scaffold|deliberation/i, "The Deliberation Chambers", "The Councils of Many"],
+  [/world models?/i, "The Mirror Cartographers", "The Forge of Self-Improvement"],
+  [/self.?improvement/i, "The Datasmith Forge", "The Forge of Self-Improvement"],
+  [/continual|plasticity/i, "The Everlearn Gardens", "The Forge of Self-Improvement"],
+  [/verification|reward design/i, "The Proving Grounds", "The Forge of Self-Improvement"],
+  [/long.?horizon|agent scaling/i, "The Long Road Caravans", "The Forge of Self-Improvement"],
+  [/token distribution|losses/i, "The Loss Ledgers", "The Deep Mechanics"],
+  [/sparse attention|emergence/i, "The Sparse Constellations", "The Deep Mechanics"],
+  [/depth.?aware|allocation/i, "The Depth Wardens", "The Deep Mechanics"],
+  [/distillation serving|serving systems/i, "The Relay Kitchens", "The Way of Throughput"],
+  [/teacher deployment|deployment constraints/i, "The Titan Docks", "The Way of Throughput"],
+  [/evaluation efficiency|benchmark/i, "The Gauntlet Scales", "The Way of Throughput"],
+  [/knowledge distillation|compression/i, "The Distiller's Cauldron", "The Craft of Distillation"],
+  [/local students|specialized/i, "The Apprentice Ateliers", "The Craft of Distillation"],
+  [/agent.?native memory|memory systems/i, "The Memory Holds", "The Craft of Memory"],
+  [/sensemaking|global/i, "The Sensemaking Observatory", "The Craft of Retrieval"],
+  [/index construction|community hierarchy/i, "The Index Masons", "The Craft of Retrieval"],
+  [/agentic rag|rag and memory/i, "The Recall Envoys", "The Craft of Retrieval"],
+];
+const regionLore = (label) => {
+  for (const [re, name, arc] of DKG_REGION_LORE) if (re.test(String(label || ""))) return { name, arc };
+  return null;
+};
+
+/* Lore arc inference fallback for regions no rule names yet: group case
+   boards into chaptered arcs in the style of the builtin worlds
+   ("Foundations of…", "The Craft of…", "The Way of…"). Explicit region.arc
+   always wins. */
+const DKG_ARC_RULES = [
+  [/world model|imagin|simulat/i, "The Way of Imagining"],
+  [/safety|alignment|misalign|vigilan/i, "The Way of Vigilance"],
+  [/protocol|supervision|multi-agent|coordinat|council/i, "The Councils of Many"],
+  [/harness|context|tool/i, "The Craft of Harnesses"],
+  [/verification|reward/i, "The Craft of Reward"],
+  [/data|self-improvement|continual|plasticity/i, "The Forge of Self-Improvement"],
+  [/scaling|long.?horizon|reasoning|deliberation|scaffold/i, "The Long Roads"],
+  [/foundation|full.?stack/i, "Foundations of Systems"],
+  [/distillation|compression|student|teacher/i, "The Craft of Distillation"],
+  [/serving|deployment|throughput|latency/i, "The Way of Throughput"],
+  [/memory|cache|benchmark|evaluation|efficiency/i, "The Craft of Memory"],
+  [/retrieval|rag|graph|index|sensemaking/i, "The Craft of Retrieval"],
+  [/token|loss|attention|emergence|sparse|depth|embedding/i, "The Deep Mechanics"],
+];
+const inferArc = (name) => {
+  for (const [re, arc] of DKG_ARC_RULES) if (re.test(String(name || ""))) return arc;
+  return "Uncharted Paths";
+};
+
 export function snapshotToEdokaiWorlds(payload) {
   if (!payload) return [];
   const dkg = payload.dkg || payload.edokai_dkg || payload.graph || {};
@@ -447,11 +521,13 @@ export function snapshotToEdokaiWorlds(payload) {
 
     const sourceIds = [...new Set(rawRegions.flatMap((r) => (Array.isArray(r.source_ids) ? r.source_ids : [])))];
 
+    const lore = DKG_WORLD_LORE[worldId] || {};
     return [{
       id: `dkg-${slug(worldId)}`,
       macroId: worldId,
-      title: friendlyName(world.label || world.title || worldId, worldId),
-      emoji: world.emoji || "🧬",
+      title: lore.title || friendlyName(world.label || world.title || worldId, worldId),
+      domain: lore.domain || friendlyName(world.label || world.title || worldId, worldId),
+      emoji: lore.emoji || world.emoji || "🧬",
       blurb: world.description || "Live concept world synced from the Edokai DKG.",
       mission: world.mission || `Master ${friendlyName(world.label || worldId, worldId)} through source-grounded DKG concepts.`,
       links: linksFromSources(sources, sourceIds),
