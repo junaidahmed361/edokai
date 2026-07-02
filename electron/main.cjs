@@ -172,11 +172,12 @@ ipcMain.handle("storage-delete", async (_event, key) => {
 
 function createWindow() {
   const win = new BrowserWindow({
-    width: 760,
+    width: 1440,
     height: 920,
     minWidth: 420,
+    minHeight: 600,
     title: "Edokai",
-    backgroundColor: "#EBEFF6",
+    backgroundColor: "#080B1A",
     webPreferences: {
       contextIsolation: true,
       preload: path.join(__dirname, "preload.cjs"),
