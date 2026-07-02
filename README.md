@@ -1,4 +1,4 @@
-# Edokai v3
+# Edokai
 
 Edokai is a gamified learning interface for people who want technical study to feel less like forcing themselves through a giant blog tab and more like moving across a game board looking for the next fight.
 
