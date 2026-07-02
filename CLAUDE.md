@@ -54,6 +54,12 @@ rules are embedded in the runtime generation prompts (`NAMING_RULES` and
 - The region list renders arc sections automatically whenever regions carry
   arcs; generated worlds with more than 4 regions must assign each region an
   arc (see `REGION_JSON_SPEC`). Use 2–4 arcs per world; arcs get lore names too.
+- **Every arc needs 2+ case boards** — a one-case arc is a smell: fold it into
+  the nearest related arc, or drop arcs entirely for worlds with ≤4 boards.
+- Case boards themselves get lore names too: live DKG labels are renamed via
+  `DKG_REGION_LORE` in `src/dkgLiveSync.js` ("Agent Systems Foundations" →
+  "The Bedrock Yards"); add a rule there whenever a new dry label appears. The
+  plain technical label stays visible through the region summary/intro.
 - If a world outgrows its arcs, split it into a new world rather than exceeding
   ~5 regions per arc.
 

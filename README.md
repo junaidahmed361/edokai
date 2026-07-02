@@ -254,7 +254,9 @@ The macOS DMG is packaged as a GitHub release candidate. Download the attached `
 
 Important macOS Gatekeeper note: Edokai is ad-hoc signed but not Apple Developer ID signed/notarized yet. On some macOS versions, a browser-downloaded DMG can still produce the misleading "app is damaged/broken and should be moved to Trash" dialog before Privacy & Security offers an unblock button. That is Gatekeeper quarantine behavior for an unnotarized app, not a failed DMG checksum.
 
-For the current RC, use `Edokai-3.0.0-arm64-installer.dmg`. It packages Edokai.app together with an `Install Edokai.command` helper. Open the DMG, then run the helper instead of launching the app directly from the DMG. The helper copies Edokai to `/Applications`, strips the quarantine xattr from the installed copy, verifies the local code signature, and opens the app.
+The next iterative release candidate is **v3.2.0** — the twilight redesign build (force-directed atlas, Conceptdex drawer, walkthrough, lore arcs, combined battle page). Build it on macOS with `npm install && npm run dist:mac` → `release/Edokai-3.2.0-arm64.dmg`.
+
+For the previous RC, use `Edokai-3.0.0-arm64-installer.dmg`. It packages Edokai.app together with an `Install Edokai.command` helper. Open the DMG, then run the helper instead of launching the app directly from the DMG. The helper copies Edokai to `/Applications`, strips the quarantine xattr from the installed copy, verifies the local code signature, and opens the app.
 
 If macOS blocks the helper too, Control-click `Install Edokai.command` and choose Open. You can also use the terminal-only helper attached to the release:
 

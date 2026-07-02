@@ -1635,7 +1635,7 @@ const BUILTIN_WORLDS = [
       { label: "RL_Envs_101 (companion repo)", url: "https://github.com/adithya-s-k/RL_Envs_101" },
     ],
     regions: withArcs([SECURITY_AI_REGION, ...RL_REGIONS, _g("w-orch"), ENV_REGION], {
-      "agentic-workflows-r": "The Way of Workflows",
+      "agentic-workflows-r": "Agents at Scale",
       fields: "Foundations of Decision", village: "Foundations of Decision",
       forest: "The Craft of Reward", foundry: "The Craft of Reward", peaks: "The Craft of Reward",
       citadel: "Agents at Scale", "orch-r": "Agents at Scale", "env-r": "Agents at Scale",
@@ -1663,7 +1663,7 @@ const BUILTIN_WORLDS = [
       { label: "Karpathy · Neural Networks: Zero to Hero (makemore→GPT)", url: "https://karpathy.ai/zero-to-hero.html" },
     ],
     regions: withArcs([_g("w-kl"), _g("w-ae"), _g("w-diffusion")], {
-      "kl-r": "Foundations of Belief", "ae-r": "The Craft of Dreams", "diff-r": "The Craft of Dreams",
+      "kl-r": "The Craft of Dreams", "ae-r": "The Craft of Dreams", "diff-r": "The Craft of Dreams",
     }) },
   { id: "w-percept", title: "The Worldseer Observatory", emoji: "👁️", domain: "Perception & World Models",
     blurb: "Pixels → language (VLMs), and pixels → planning (JEPA, LeJEPA).",
@@ -1674,9 +1674,7 @@ const BUILTIN_WORLDS = [
       { label: "Fei-Fei Li · World Labs on spatial intelligence", url: "https://www.worldlabs.ai/blog" },
       { label: "LeCun · A Path Towards Autonomous Machine Intelligence", url: "https://openreview.net/pdf?id=BZ5a1r-kVsf" },
     ],
-    regions: withArcs([_g("w-vlm"), WM_REGION], {
-      "vlm-r": "The Way of Seeing", "wm-r": "The Way of Imagining",
-    }) },
+    regions: [_g("w-vlm"), WM_REGION] },
   { id: "w-sys", title: "The Throughput Shogunate", emoji: "⚙️", domain: "LLM Systems & Serving",
     blurb: "KV cache & quantization → parallelism, drafts, disaggregation.",
     links: [
@@ -3612,9 +3610,9 @@ export default function App() {
     }
     const nQ = kind === "gym" ? region.gym.questions.length : kind === "side" ? pool.length : payload.questions.length;
     const max = nQ * DMG;
-    if (kind === "critical") setBattle({ kind, concept: payload, phase: "lore", enemyHp: max, enemyMax: max, qIdx: 0, streak: 0, ord: shuf4(), showCode: false, log: `${payload.name} blocks the path!` });
+    if (kind === "critical") setBattle({ kind, concept: payload, phase: "question", showLore: true, enemyHp: max, enemyMax: max, qIdx: 0, streak: 0, ord: shuf4(), showCode: false, log: `${payload.name} blocks the path!` });
     else if (kind === "side") setBattle({ kind, side: payload, pool, phase: "briefing", enemyHp: max, enemyMax: max, qIdx: 0, streak: 0, ord: shuf4(), showCode: true, log: payload.desc });
-    else setBattle({ kind, gym: region.gym, phase: "lore", enemyHp: max, enemyMax: max, qIdx: 0, streak: 0, ord: shuf4(), showCode: false, log: `${region.gym.leader}: "${region.gym.taunt}"` });
+    else setBattle({ kind, gym: region.gym, phase: "question", showLore: true, enemyHp: max, enemyMax: max, qIdx: 0, streak: 0, ord: shuf4(), showCode: false, log: `${region.gym.leader}: "${region.gym.taunt}"` });
     setScreen("battle");
   };
   const bQuestions = battle ? (battle.kind === "critical" ? battle.concept.questions : battle.kind === "side" ? (battle.pool || battle.side.questions) : battle.gym.questions) : [];
@@ -3657,7 +3655,7 @@ export default function App() {
       else showToast(`${region.gym.badge} earned! +150 XP`);
       setBattle(null); setScreen("region");
     } else if (battle.phase === "defeat") { setBattle(null); setAtNode("start"); setScreen("region"); }
-    else if (battle.phase === "feedback") setBattle({ ...battle, phase: "question", qIdx: battle.wrong ? battle.qIdx : battle.qIdx + 1, ord: shuf4(), wrong: false });
+    else if (battle.phase === "feedback") setBattle({ ...battle, phase: "question", qIdx: battle.wrong ? battle.qIdx : battle.qIdx + 1, ord: shuf4(), wrong: false, showLore: false });
     else setBattle({ ...battle, phase: "question", ord: shuf4() });
   };
 
@@ -5133,26 +5131,26 @@ ${QUALITY_RULES}`, cfg));
             <button onClick={() => { setBattle(null); setScreen("region"); }} style={{ background: "rgba(148,163,214,0.10)", border: `1px solid ${T.line}`, color: T.inkSoft, borderRadius: 10, backdropFilter: "blur(8px)", padding: "5px 12px", fontSize: 12, cursor: "pointer", fontFamily: "inherit", fontWeight: 700 }}>← Retreat & review</button>
             <span style={{ ...S.mono(10, T.inkSoft) }}>{kindLabel} · {Math.min(battle.qIdx + 1, bQuestions.length)}/{bQuestions.length} Q</span>
           </div>
-          <div style={{ position: "relative", overflow: "hidden", background: "radial-gradient(120% 130% at 50% -20%, #2A3468 0%, #1B2450 42%, #101736 78%, #0B102A 100%)", borderRadius: 22, padding: "20px 18px 16px", border: "1px solid rgba(148,163,214,0.28)", marginTop: 8, boxShadow: "0 22px 60px rgba(3,6,18,0.5), inset 0 1px 0 rgba(255,255,255,0.08)" }}>
+          <div style={{ position: "relative", overflow: "hidden", background: "radial-gradient(120% 130% at 50% -20%, #2A3468 0%, #1B2450 42%, #101736 78%, #0B102A 100%)", borderRadius: 20, padding: "12px 14px 10px", border: "1px solid rgba(148,163,214,0.28)", marginTop: 8, boxShadow: "0 18px 48px rgba(3,6,18,0.5), inset 0 1px 0 rgba(255,255,255,0.08)" }}>
             <div aria-hidden style={{ position: "absolute", inset: "-30%", pointerEvents: "none", background: `radial-gradient(36% 30% at 26% 22%, ${withAlpha(String(kindColor)[0] === "#" ? kindColor : "#8D9BFF", 0.22)}, transparent 70%), radial-gradient(30% 26% at 76% 78%, rgba(62,214,196,0.10), transparent 70%)`, animation: "auroraDrift 18s ease-in-out infinite alternate" }} />
             {(() => {
-              const plate = { position: "relative", background: "rgba(9,13,30,0.72)", border: "1px solid rgba(148,163,214,0.3)", backdropFilter: "blur(10px)", borderRadius: 13, padding: "9px 13px", minWidth: 175, color: "#EEF2FF" };
+              const plate = { position: "relative", background: "rgba(9,13,30,0.72)", border: "1px solid rgba(148,163,214,0.3)", backdropFilter: "blur(10px)", borderRadius: 12, padding: "6px 11px", minWidth: 150, color: "#EEF2FF" };
               const track = { height: 7, background: "rgba(255,255,255,0.10)", borderRadius: 4, marginTop: 6, overflow: "hidden" };
               const fill = (pct, good) => ({ height: "100%", width: `${pct}%`, borderRadius: 4, background: good ? "linear-gradient(90deg,#3DDC97,#7FF0C0)" : "linear-gradient(90deg,#FF7A76,#FFA69E)", boxShadow: `0 0 10px ${good ? "rgba(61,220,151,0.6)" : "rgba(255,122,118,0.6)"}`, transition: "width .5s" });
               return (
                 <>
                   <div style={{ position: "relative", display: "flex", justifyContent: "space-between", alignItems: "flex-start" }}>
                     <div style={plate}>
-                      <div style={{ fontWeight: 800, fontSize: 13.5 }}>{battle.kind === "gym" ? "👑 " : ""}{enemyName}</div>
+                      <div style={{ fontWeight: 800, fontSize: 12.5 }}>{battle.kind === "gym" ? "👑 " : ""}{enemyName}</div>
                       <div style={track}><div style={fill(enemyPct, enemyPct > 40)} /></div>
                       <span style={S.mono(9, "#A5B1D6")}>HP {battle.enemyHp}/{battle.enemyMax}</span>
                     </div>
-                    <div style={{ fontSize: 58, filter: "drop-shadow(0 8px 22px rgba(141,155,255,0.4))", animation: battle.phase === "feedback" && !battle.wrong ? "hit .4s" : "bob 2.4s ease-in-out infinite" }}>{enemy.sprite}</div>
+                    <div style={{ fontSize: 40, filter: "drop-shadow(0 8px 22px rgba(141,155,255,0.4))", animation: battle.phase === "feedback" && !battle.wrong ? "hit .4s" : "bob 2.4s ease-in-out infinite" }}>{enemy.sprite}</div>
                   </div>
-                  <div style={{ position: "relative", display: "flex", justifyContent: "space-between", alignItems: "flex-end", marginTop: 16 }}>
-                    <div style={{ fontSize: 46, filter: "drop-shadow(0 6px 16px rgba(62,214,196,0.35))", animation: battle.wrong && battle.phase === "feedback" ? "hit .4s" : "none" }}>🧢</div>
+                  <div style={{ position: "relative", display: "flex", justifyContent: "space-between", alignItems: "flex-end", marginTop: 8 }}>
+                    <div style={{ fontSize: 32, filter: "drop-shadow(0 6px 16px rgba(62,214,196,0.35))", animation: battle.wrong && battle.phase === "feedback" ? "hit .4s" : "none" }}>🧢</div>
                     <div style={plate}>
-                      <div style={{ fontWeight: 800, fontSize: 13.5 }}>YOU · LV.{level}</div>
+                      <div style={{ fontWeight: 800, fontSize: 12.5 }}>YOU · LV.{level}</div>
                       <div style={track}><div style={fill((save.hp / maxHp) * 100, save.hp / maxHp > 0.4)} /></div>
                       <span style={S.mono(9, "#A5B1D6")}>HP {save.hp}/{maxHp} · STREAK ×{battle.streak}</span>
                     </div>
@@ -5191,35 +5189,32 @@ ${QUALITY_RULES}`, cfg));
             </div>
           )}
 
-          {battle.phase === "lore" && (
+          {battle.phase === "question" && battle.kind !== "side" && (
             <div style={{ ...S.card, marginTop: 12, animation: "slideUp .3s ease" }}>
-              <span style={S.mono(10, kindColor)}>{battle.kind === "critical" ? "LORE — READ TO ARM YOURSELF" : "GYM RECAP — EVERYTHING THIS REGION TAUGHT"}</span>
-              {battle.kind === "critical" ? (
+              <button onClick={() => setBattle({ ...battle, showLore: !battle.showLore })} style={{ width: "100%", textAlign: "left", background: "none", border: "none", cursor: "pointer", padding: 0, fontFamily: "inherit", display: "flex", justifyContent: "space-between", alignItems: "center", gap: 8 }}>
+                <span style={S.mono(10, kindColor)}>{battle.showLore ? "⌄" : "›"} {battle.kind === "critical" ? "LORE — READ TO ARM YOURSELF" : "GYM RECAP — EVERYTHING THIS REGION TAUGHT"}</span>
+                <span style={S.mono(9, T.inkSoft)}>{battle.showLore ? "collapse" : "expand"}</span>
+              </button>
+              {battle.showLore && (battle.kind === "critical" ? (
                 <>
                   <RichText text={battle.concept.lore} style={{ fontSize: 14, lineHeight: 1.65, marginTop: 8 }} />
-                  <div style={{ marginTop: 10, padding: "10px 12px", background: T.paper, borderRadius: 10 }}>
-                    <span style={S.mono(9.5, T.explore)}>TEACH LESSON LOOP</span>
-                    <p style={{ fontSize: 12.5, color: T.inkSoft, lineHeight: 1.55, margin: "5px 0 0" }}><b>One win:</b> use {battle.concept.name} correctly in an applied scenario. <b>Storage strength:</b> answer from memory first; open notes only after you commit. A win adds this concept to your glossary and learning records.</p>
-                  </div>
                   {deepLore[battle.concept.id]
                     ? <div style={{ fontSize: 13.5, lineHeight: 1.65, margin: "10px 0 0", padding: "10px 12px", background: T.exploreSoft, borderRadius: 10 }}><RichText text={`🔍 ${deepLore[battle.concept.id]}`} /></div>
                     : <button onClick={() => deepenLore(battle.concept)} disabled={busy === "lore"} style={{ ...S.btn(T.card, T.explore), border: `1.5px solid ${T.explore}`, width: "100%", marginTop: 10, fontSize: 13 }}>{busy === "lore" ? "Asking the sage…" : "🔍 Deepen this lore (intuition + worked example)"}</button>}
                 </>
               ) : (
                 <>
-                  <p style={{ fontSize: 13, color: T.inkSoft, lineHeight: 1.55, margin: "8px 0 0" }}>{battle.log} The gym tests every concept below — review before engaging. You can also retreat and replay any encounter.</p>
-                  <div style={{ maxHeight: 300, overflowY: "auto", marginTop: 10, paddingRight: 4 }}>
+                  <p style={{ fontSize: 13, color: T.inkSoft, lineHeight: 1.55, margin: "8px 0 0" }}>{battle.log} The gym tests every concept below — review before answering. You can retreat and replay any encounter.</p>
+                  <div style={{ maxHeight: 260, overflowY: "auto", marginTop: 10, paddingRight: 4 }}>
                     {region.concepts.map((c) => (
                       <div key={c.id} style={{ marginBottom: 10, padding: "10px 12px", background: T.paper, borderRadius: 10 }}>
                         <div style={{ fontWeight: 800, fontSize: 13.5 }}>{c.sprite} {c.name}</div>
                         <RichText text={c.lore} style={{ fontSize: 12.5, lineHeight: 1.6, marginTop: 4 }} />
-                        {deepLore[c.id] && <RichText text={`🔍 ${deepLore[c.id]}`} style={{ fontSize: 12.5, lineHeight: 1.6, marginTop: 6, color: T.explore }} />}
                       </div>
                     ))}
                   </div>
                 </>
-              )}
-              <button onClick={continueBattle} style={{ ...S.btn(T.action), width: "100%", marginTop: 14 }}>⚔️ Engage</button>
+              ))}
             </div>
           )}
 

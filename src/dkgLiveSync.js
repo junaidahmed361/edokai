@@ -367,7 +367,9 @@ function duelToSide(duel, idx, regionSlug, conceptIds, fallbackQuestions) {
 
 function buildRegion(region, idx, nodesById, worldLabel) {
   const regionSlug = `dkg-${slug(region.id || region.label || `region-${idx}`)}`;
-  const name = friendlyName(region.label || region.name || region.title || `Imported Region ${idx + 1}`, `Imported Region ${idx + 1}`);
+  const plainName = friendlyName(region.label || region.name || region.title || `Imported Region ${idx + 1}`, `Imported Region ${idx + 1}`);
+  const lore = regionLore(plainName);
+  const name = (lore && lore.name) || plainName;
 
   // Resolve concept_ids -> DKG nodes (skip refs that have no matching node).
   const conceptIds = Array.isArray(region.concept_ids) ? region.concept_ids : [];
@@ -398,8 +400,8 @@ function buildRegion(region, idx, nodesById, worldLabel) {
     id: regionSlug,
     name,
     emoji: region.emoji || "🛰️",
-    arc: region.arc || inferArc(name),
-    intro: region.summary || region.description || `Live DKG region synced into ${worldLabel}.`,
+    arc: region.arc || (lore && lore.arc) || inferArc(plainName),
+    intro: region.summary || region.description || `${plainName} — live DKG region synced into ${worldLabel}.`,
     npc: {
       name: "Graph Curator",
       text: region.summary || region.description || "These concepts came from the live Edokai dynamic knowledge graph.",
@@ -441,9 +443,46 @@ const DKG_WORLD_LORE = {
   "retrieval-augmented-generation": { title: "The Retrieval Archives", emoji: "\u{1F5C4}\uFE0F", domain: "Retrieval-Augmented Generation" },
 };
 
-/* Lore arc inference for live regions (CLAUDE.md rule 4): group case boards
-   into chaptered arcs in the style of the builtin worlds ("Foundations of…",
-   "The Craft of…", "The Way of…"). Explicit region.arc always wins. */
+/* Lore case names for live regions (CLAUDE.md rule 1): the DKG hands us dry
+   taxonomy labels ("Agent Systems Foundations"); each becomes an evocative
+   case name while its arc consolidates related boards (every arc aims for
+   2+ cases). The technical label stays visible via the region summary/intro.
+   Ordered: first match wins, so keep specific patterns above generic ones. */
+const DKG_REGION_LORE = [
+  [/full.?stack/i, "The Stack Spire", "Foundations of Systems"],
+  [/harness|context and tools/i, "The Harness Works", "Foundations of Systems"],
+  [/systems? foundations/i, "The Bedrock Yards", "Foundations of Systems"],
+  [/workflow adoption/i, "The Adoption Trailheads", "Foundations of Systems"],
+  [/multi.?agent|protocols?.*supervision|supervision/i, "The Envoy Halls", "The Councils of Many"],
+  [/safety|misalign/i, "The Inner Sentinels", "The Councils of Many"],
+  [/reasoning scaffold|deliberation/i, "The Deliberation Chambers", "The Councils of Many"],
+  [/world models?/i, "The Mirror Cartographers", "The Forge of Self-Improvement"],
+  [/self.?improvement/i, "The Datasmith Forge", "The Forge of Self-Improvement"],
+  [/continual|plasticity/i, "The Everlearn Gardens", "The Forge of Self-Improvement"],
+  [/verification|reward design/i, "The Proving Grounds", "The Forge of Self-Improvement"],
+  [/long.?horizon|agent scaling/i, "The Long Road Caravans", "The Forge of Self-Improvement"],
+  [/token distribution|losses/i, "The Loss Ledgers", "The Deep Mechanics"],
+  [/sparse attention|emergence/i, "The Sparse Constellations", "The Deep Mechanics"],
+  [/depth.?aware|allocation/i, "The Depth Wardens", "The Deep Mechanics"],
+  [/distillation serving|serving systems/i, "The Relay Kitchens", "The Way of Throughput"],
+  [/teacher deployment|deployment constraints/i, "The Titan Docks", "The Way of Throughput"],
+  [/evaluation efficiency|benchmark/i, "The Gauntlet Scales", "The Way of Throughput"],
+  [/knowledge distillation|compression/i, "The Distiller's Cauldron", "The Craft of Distillation"],
+  [/local students|specialized/i, "The Apprentice Ateliers", "The Craft of Distillation"],
+  [/agent.?native memory|memory systems/i, "The Memory Holds", "The Craft of Memory"],
+  [/sensemaking|global/i, "The Sensemaking Observatory", "The Craft of Retrieval"],
+  [/index construction|community hierarchy/i, "The Index Masons", "The Craft of Retrieval"],
+  [/agentic rag|rag and memory/i, "The Recall Envoys", "The Craft of Retrieval"],
+];
+const regionLore = (label) => {
+  for (const [re, name, arc] of DKG_REGION_LORE) if (re.test(String(label || ""))) return { name, arc };
+  return null;
+};
+
+/* Lore arc inference fallback for regions no rule names yet: group case
+   boards into chaptered arcs in the style of the builtin worlds
+   ("Foundations of…", "The Craft of…", "The Way of…"). Explicit region.arc
+   always wins. */
 const DKG_ARC_RULES = [
   [/world model|imagin|simulat/i, "The Way of Imagining"],
   [/safety|alignment|misalign|vigilan/i, "The Way of Vigilance"],
