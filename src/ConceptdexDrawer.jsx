@@ -1,6 +1,7 @@
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useEffect, useMemo, useRef, useState } from "react";
 import ForceGraph from "./ForceGraph.jsx";
 import { hueFor, withAlpha, tint, starShadows } from "./uiTheme.js";
+import RichText from "./RichText.jsx";
 
 /* ============================================================
    ConceptdexDrawer — the field guide as a slide-in panel from
@@ -21,6 +22,17 @@ export default function ConceptdexDrawer({
 }) {
   const [selectedId, setSelectedId] = useState(null);
   const [deckOpen, setDeckOpen] = useState(false);
+  // The constellation is the hero; it condenses when you shift focus to the
+  // list below (scroll) and can be pinned open/closed with the toggle.
+  const [graphBig, setGraphBig] = useState(true);
+  const manualRef = useRef(false);
+  const graphH = graphBig ? "min(58vh, 460px)" : 128;
+  const onBodyScroll = (e) => {
+    if (manualRef.current) return;
+    const top = e.currentTarget.scrollTop;
+    if (top > 60 && graphBig) setGraphBig(false);
+    else if (top < 8 && !graphBig) setGraphBig(true);
+  };
 
   const world = worlds.find((w) => w.id === dexWorld) || worlds[0];
   const worldIdx = Math.max(worlds.findIndex((w) => w.id === (world && world.id)), 0);
@@ -80,7 +92,7 @@ export default function ConceptdexDrawer({
       )}
       <aside role="dialog" aria-label="Conceptdex" style={{
         position: "fixed", top: 0, right: 0, bottom: 0, zIndex: 69,
-        width: "min(580px, calc(100vw - 20px))",
+        width: "min(660px, calc(100vw - 16px))",
         transform: open ? "translateX(0)" : "translateX(103%)",
         transition: "transform .42s cubic-bezier(.3,.75,.22,1)",
         background: "linear-gradient(200deg, rgba(19,26,54,0.97) 0%, rgba(9,13,30,0.97) 55%)",
@@ -104,24 +116,29 @@ export default function ConceptdexDrawer({
           ))}
         </div>
 
-        <div style={{ position: "relative", margin: "2px 14px 0", height: 300, flexShrink: 0, borderRadius: 20, overflow: "hidden", border: `1px solid ${LINE}`, background: "radial-gradient(130% 100% at 50% 0%, #17204A 0%, #0C1230 60%, #080C20 100%)" }}>
+        <div style={{ position: "relative", margin: "2px 14px 0", height: graphH, flexShrink: 0, borderRadius: 20, overflow: "hidden", border: `1px solid ${LINE}`, background: "radial-gradient(130% 100% at 50% 0%, #17204A 0%, #0C1230 60%, #080C20 100%)", transition: "height .45s cubic-bezier(.3,.75,.25,1)" }}>
           <div aria-hidden style={{ position: "absolute", top: 0, left: 0, width: 1, height: 1, borderRadius: "50%", boxShadow: stars, animation: "starTwinkle 6s ease-in-out infinite" }} />
           {open && (
             <ForceGraph
               nodes={nodes}
               links={links}
-              height={300}
+              height={460}
               focusId={selectedId}
               style={{ position: "absolute", inset: 0, height: "100%" }}
               onNodeClick={(id) => { if (!id.startsWith("w:") && !id.startsWith("r:")) setSelectedId(id); }}
             />
           )}
-          <div style={{ position: "absolute", left: 10, bottom: 10, ...mono(8.5), background: "rgba(9,13,30,0.7)", border: `1px solid ${LINE}`, borderRadius: 999, padding: "5px 9px", pointerEvents: "none" }}>
+          {graphBig && <div style={{ position: "absolute", left: 10, bottom: 10, ...mono(8.5), background: "rgba(9,13,30,0.7)", border: `1px solid ${LINE}`, borderRadius: 999, padding: "5px 9px", pointerEvents: "none" }}>
             ghost ? = undiscovered · click a star to inspect
-          </div>
+          </div>}
+          <button
+            onClick={() => { manualRef.current = true; setGraphBig(!graphBig); }}
+            title={graphBig ? "Condense the constellation" : "Expand the constellation"}
+            style={{ position: "absolute", right: 10, top: 10, ...mono(9, INK), background: "rgba(9,13,30,0.75)", border: `1px solid ${LINE}`, borderRadius: 999, padding: "6px 11px", cursor: "pointer", backdropFilter: "blur(8px)" }}
+          >{graphBig ? "⌃ condense" : "⌄ expand"}</button>
         </div>
 
-        <div style={{ flex: 1, overflowY: "auto", padding: "12px 18px 20px" }}>
+        <div onScroll={onBodyScroll} style={{ flex: 1, overflowY: "auto", padding: "12px 18px 20px" }}>
           {selected ? (
             <div style={{ borderRadius: 16, padding: 14, background: "rgba(255,255,255,0.045)", border: `1px solid ${LINE}`, animation: "slideUp .25s ease" }}>
               <div style={{ display: "flex", gap: 9, alignItems: "center" }}>
@@ -138,7 +155,7 @@ export default function ConceptdexDrawer({
                   <p style={{ fontSize: 12.3, color: INK_SOFT, lineHeight: 1.55, margin: "6px 0 0" }}><b>Decision note:</b> {note.consequence}</p>
                   <p style={{ fontSize: 12, color: "#8D9BFF", lineHeight: 1.55, margin: "6px 0 0" }}>{note.checkpoint}</p>
                   {deepLore[selected.id]
-                    ? <p style={{ fontSize: 12, color: INK_SOFT, lineHeight: 1.55, margin: "6px 0 0" }}>🔍 {note.deep}</p>
+                    ? <RichText text={`🔍 ${note.deep}`} style={{ fontSize: 12, color: INK_SOFT, lineHeight: 1.55, marginTop: 6 }} />
                     : onDeepen && <button onClick={() => onDeepen(selected)} disabled={busy === "lore"} style={{ ...chip(false), marginTop: 9, fontSize: 11.5 }}>{busy === "lore" ? "Asking the sage…" : "🔍 Deepen this lore"}</button>}
                 </>
               ) : (

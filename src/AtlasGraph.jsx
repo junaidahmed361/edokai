@@ -93,7 +93,7 @@ export default function AtlasGraph({
       <div style={{ position: "absolute", left: 14, top: 14, ...glass, borderRadius: 999, padding: "7px 12px", ...mono(9.5, "#A5B1D6"), pointerEvents: "none" }}>
         {hint || "drag to explore · scroll to zoom · click a world to focus"}
       </div>
-      <div style={{ position: "absolute", right: 14, top: 14, ...glass, borderRadius: 999, padding: "7px 12px", ...mono(9, "#A5B1D6"), pointerEvents: "none", display: "flex", gap: 10 }}>
+      <div className="hideSm" style={{ position: "absolute", right: 14, top: 14, ...glass, borderRadius: 999, padding: "7px 12px", ...mono(9, "#A5B1D6"), pointerEvents: "none", display: "flex", gap: 10 }}>
         <span>⬤ world</span><span>• region</span><span style={{ color: "#5BE0A2" }}>◠ captured</span>
       </div>
 

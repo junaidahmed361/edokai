@@ -140,6 +140,7 @@ export default function ForceGraph({
       dpr = Math.min(window.devicePixelRatio || 1, 2);
       W = canvas.clientWidth; H = canvas.clientHeight;
       canvas.width = W * dpr; canvas.height = H * dpr;
+      if (!sim.userMoved) sim.fitted = false; // reframe when the container reshapes
     };
     resize();
     const ro = new ResizeObserver(resize);
