@@ -27,27 +27,29 @@ for (const w of live) {
   }
 }
 
-// Verify enhancement: a builtin "Generative Models" world must GAIN regions, not duplicate.
+// Verify enhancement: a builtin world must GAIN regions, not duplicate.
+// Live DKG worlds use lore titles from DKG_WORLD_LORE, so this smoke fixture
+// must mirror the titles that mergeDkgWorlds actually sees in the app.
 const builtin = [
   { id: "w-rl", title: "Agents", emoji: "🤖", regions: [{ id: "fields", name: "Foundation Fields", concepts: [] }] },
-  { id: "w-gen", title: "Generative Models", emoji: "🌫️", regions: [{ id: "kl-region", name: "KL", concepts: [] }] },
-  { id: "w-sys", title: "LLM Systems & Serving", emoji: "⚙️", regions: [{ id: "infer", name: "Inference", concepts: [] }] },
-  { id: "w-tf", title: "Transformer Architecture", emoji: "🏛️", regions: [{ id: "attn", name: "Attention", concepts: [] }] },
+  { id: "w-gen", title: "The Dreaming Depths", emoji: "🌫️", regions: [{ id: "kl-region", name: "KL", concepts: [] }] },
+  { id: "w-sys", title: "The Throughput Shogunate", emoji: "⚙️", regions: [{ id: "infer", name: "Inference", concepts: [] }] },
+  { id: "w-tf", title: "The Attention Citadel", emoji: "🏛️", regions: [{ id: "attn", name: "Attention", concepts: [] }] },
 ];
 const merged = mergeDkgWorlds(builtin, live);
 
 ok(merged.length === builtin.length || merged.length === builtin.length + live.filter(l => !builtin.some(b => b.title.toLowerCase() === l.title.toLowerCase())).length, "no unexpected world count");
 
-const genTitles = merged.filter((w) => w.title === "Generative Models");
-ok(genTitles.length === 1, `Generative Models NOT duplicated (count=${genTitles.length})`);
+const genTitles = merged.filter((w) => w.title === "The Dreaming Depths");
+ok(genTitles.length === 1, `The Dreaming Depths NOT duplicated (count=${genTitles.length})`);
 const gen = genTitles[0];
-ok(gen.regions.length > 1, `Generative Models enhanced: ${gen.regions.length} regions (was 1)`);
+ok(gen.regions.length > 1, `The Dreaming Depths enhanced: ${gen.regions.length} regions (was 1)`);
 ok(gen.regions.some((r) => r.id === "kl-region"), "original builtin region preserved");
 ok(gen.regions.some((r) => r.id.startsWith("dkg-")), "new DKG region appended to existing world");
 
 // idempotency: merging again should not duplicate regions
 const merged2 = mergeDkgWorlds(merged, live);
-const gen2 = merged2.find((w) => w.title === "Generative Models");
+const gen2 = merged2.find((w) => w.title === "The Dreaming Depths");
 ok(gen2.regions.length === gen.regions.length, `idempotent re-merge (${gen2.regions.length} == ${gen.regions.length})`);
 
 console.log("\nSummary:", failures === 0 ? "ALL PASS" : `${failures} FAILURES`);
