@@ -59,13 +59,14 @@ export default function ForceGraph({
       }
       next.set(spec.id, { ...spec, x, y, vx: 0, vy: 0, phase: (h % 628) / 100 });
     });
+    const carried = [...next.keys()].filter((id) => prev.has(id)).length;
     sim.nodes = next;
     sim.links = links.filter((l) => next.has(l.source) && next.has(l.target));
     sim.alpha = Math.max(sim.alpha, isNew ? 1 : 0.5);
-    if (isNew) {
+    if (isNew || carried === 0) {
       for (let i = 0; i < 160; i += 1) tick(sim, 1);
       sim.alpha = 0.25;
-      sim.fitted = false; // fit on next frame, once canvas size is known
+      sim.fitted = false; // (re)fit on next frame, once canvas size is known
     }
   }, [dataKey]);
 
