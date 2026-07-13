@@ -5103,8 +5103,9 @@ ${QUALITY_RULES}`, cfg));
             {lab && (
               <div style={{ display: "flex", gap: 6, marginTop: 8, alignItems: "center" }}>
                 <span style={{ ...S.mono(12, T.reward) }}>&gt;&gt;&gt;</span>
+                {replFocused && <span aria-hidden="true" className="replBlinkCursor" style={{ color: T.reward, fontFamily: "'JetBrains Mono', monospace", fontWeight: 900, fontSize: 15, lineHeight: 1, textShadow: `0 0 10px ${T.reward}`, pointerEvents: "none", marginLeft: -2, marginRight: -2 }}>▌</span>}
                 <div style={{ position: "relative", flex: 1, minWidth: 0 }}>
-                  {replFocused && !repl && <span aria-hidden="true" style={{ position: "absolute", left: 12, top: "50%", transform: "translateY(-50%)", color: T.inkSoft, fontFamily: "'JetBrains Mono', monospace", fontSize: 12, pointerEvents: "none" }}>type Python here</span>}
+                  {replFocused && !repl && <span aria-hidden="true" style={{ position: "absolute", zIndex: 2, left: 12, top: "50%", transform: "translateY(-50%)", color: T.inkSoft, fontFamily: "'JetBrains Mono', monospace", fontSize: 12, pointerEvents: "none" }}>type Python here</span>}
                   <input className="replInput" value={repl} onFocus={() => setReplFocused(true)} onBlur={() => setReplFocused(false)} onChange={(e) => setRepl(e.target.value)} onKeyDown={async (e) => {
                   e.stopPropagation();
                   if (e.key === "Tab") {
@@ -5129,7 +5130,7 @@ ${QUALITY_RULES}`, cfg));
                     setLabOut((o) => o + (out ? "\n" + out.trimEnd() : ""));
                   } catch (err) { setLabOut((o) => o + "\n⚠️ " + (err.message || err)); }
                   setBusy("");
-                }} onKeyUp={(e) => e.stopPropagation()} onClick={(e) => e.stopPropagation()} placeholder={replFocused ? "" : "REPL — shares the session with ▶ Run (try: out.shape)"} spellCheck={false} style={{ ...S.input, padding: "8px 10px", paddingRight: 24, fontSize: 12, caretColor: T.reward }} />
+                }} onKeyUp={(e) => e.stopPropagation()} onClick={(e) => e.stopPropagation()} placeholder={replFocused ? "" : "REPL — shares the session with ▶ Run (try: out.shape)"} spellCheck={false} style={{ ...S.input, position: "relative", zIndex: 1, padding: "8px 10px", paddingRight: 24, fontSize: 12, caretColor: T.reward, background: replFocused ? "transparent" : S.input.background }} />
                   {replFocused && !repl && <span aria-hidden="true" className="replBlinkCursor" style={{ position: "absolute", left: 112, top: "50%", transform: "translateY(-50%)", color: T.reward, fontFamily: "'JetBrains Mono', monospace", fontWeight: 900, fontSize: 15, lineHeight: 1, textShadow: `0 0 10px ${T.reward}`, pointerEvents: "none" }}>▌</span>}
                 </div>
               </div>
