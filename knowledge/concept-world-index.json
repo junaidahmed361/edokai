@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "updated_at": "2026-06-29T03:22:38Z",
+  "updated_at": "2026-07-13T14:52:11Z",
   "macro_worlds": {
     "agents": {
       "label": "Agents",
@@ -127,10 +127,10 @@
             {
               "question": "What is the premise of the Hitchhiker’s Guide to Agentic AI?",
               "choices": [
-                "Agent systems are only prompt templates.",
-                "Autonomous systems need no evaluation layer.",
-                "Agents are unrelated to deployment concerns.",
-                "Good agentic systems require understanding the whole stack from foundations to production."
+                "It treats agents as simple prompt templates without runtime state.",
+                "It treats evaluation as optional decoration after deployment.",
+                "It treats tools and memory as unrelated deployment concerns.",
+                "It frames agents as layered systems from foundations to production."
               ],
               "answer_index": 3,
               "source_ids": [
@@ -207,10 +207,10 @@
             {
               "question": "What do misalignment indicator probes monitor?",
               "choices": [
-                "Only the length of the model answer.",
-                "Internal activations for fine-grained processes linked to misaligned behavior.",
-                "The number of retrieved documents.",
-                "GPU utilization during training."
+                "They count surface tokens in the final answer only.",
+                "They track internal activations associated with misaligned behaviors.",
+                "They rank retrieved documents without reading model states.",
+                "They measure accelerator utilization during training runs."
               ],
               "answer_index": 1,
               "source_ids": [
@@ -318,10 +318,10 @@
             {
               "question": "What does an agent harness primarily coordinate?",
               "choices": [
-                "Only final answer formatting.",
-                "The runtime loop: context, prompt assembly, tools, state, errors, observability, and human checkpoints.",
-                "A vector index with no model calls.",
-                "A static benchmark leaderboard."
+                "Only the final answer format and surface style.",
+                "Context, prompts, tools, state, errors, logs, and human checkpoints in the runtime loop.",
+                "A vector index that stores documents without model calls.",
+                "A static leaderboard that ignores execution traces."
               ],
               "answer_index": 1,
               "source_ids": [
@@ -384,6 +384,836 @@
               ]
             }
           ]
+        },
+        {
+          "id": "horizon-scaled-agent-training",
+          "label": "The Long-Horizon Foundry",
+          "summary": "Agentic scaling through long trajectories, knowledge-action graphs, verifier-guided supervision, and multi-teacher domain-routed distillation rather than raw parameter count.",
+          "source_ids": [
+            "emergentmind-2606-30616-agents-a1-horizon-scaling-2026"
+          ],
+          "concept_ids": [
+            "agents-a1-horizon-scaling",
+            "knowledge-action-graphs"
+          ],
+          "critical_concepts": [
+            "agents-a1-horizon-scaling",
+            "knowledge-action-graphs"
+          ],
+          "prerequisite_links": [],
+          "side_retention_duels": [
+            {
+              "id": "trajectory-vs-scale-only",
+              "prompt": "Which training signal best fits The Long-Horizon Foundry?",
+              "left": "Long evidence-action-verifier trajectories with knowledge-action graphs",
+              "right": "Only a larger parameter count with no trajectory supervision",
+              "answer": "Agents-A1 is routed here because it emphasizes long trajectories, knowledge-action graphs, verifier-guided supervision, and routed distillation rather than raw scale alone."
+            }
+          ],
+          "quiz_questions": [
+            {
+              "question": "What does “scaling the horizon” change about agent training?",
+              "choices": [
+                "It focuses supervision on long evidence-action-verifier trajectories instead of only increasing parameter count.",
+                "It removes tools and evaluates only single-turn final answers.",
+                "It trains image encoders while freezing every language component.",
+                "It routes user prompts through a static vector database without process traces."
+              ],
+              "answer_index": 0,
+              "source_ids": [
+                "emergentmind-2606-30616-agents-a1-horizon-scaling-2026"
+              ]
+            }
+          ]
+        },
+        {
+          "id": "interactive-coding-agent-evaluation",
+          "label": "The Pairing Arena",
+          "summary": "Coding-agent evaluation that replays real multi-turn user-agent sessions with a reactive user simulator, scoring both final correctness and corrective human effort.",
+          "source_ids": [
+            "emergentmind-2606-29957-swe-together-2026"
+          ],
+          "concept_ids": [
+            "swe-together",
+            "corrective-feedback-turns"
+          ],
+          "critical_concepts": [
+            "swe-together",
+            "corrective-feedback-turns"
+          ],
+          "prerequisite_links": [],
+          "side_retention_duels": [
+            {
+              "id": "static-benchmark-vs-reactive-session",
+              "prompt": "What does The Pairing Arena test that static coding benchmarks often miss?",
+              "left": "A multi-turn session with a reactive user simulator and correction burden",
+              "right": "A one-shot patch graded only after the final answer",
+              "answer": "SWE-Together makes the learner track interaction quality: clarification, corrections, final correctness, and how much user effort the agent needs."
+            }
+          ],
+          "quiz_questions": [
+            {
+              "question": "Why does SWE-Together add a user simulator to coding-agent benchmarks?",
+              "choices": [
+                "To evaluate interactive clarification and correction burden, not just final patch correctness.",
+                "To remove repository state and grade only natural-language style.",
+                "To train diffusion samplers with stochastic localization.",
+                "To replace all tests with social-media popularity counts."
+              ],
+              "answer_index": 0,
+              "source_ids": [
+                "emergentmind-2606-29957-swe-together-2026"
+              ]
+            }
+          ]
+        },
+        {
+          "id": "multi-agent-conversation-dynamics",
+          "label": "The Asymmetry Chasm",
+          "summary": "Open-ended multi-agent LLM conversations as dynamical systems, where self-play basins and mixed-play asymmetries reveal model-specific behavioral attractors.",
+          "source_ids": [
+            "emergentmind-2606-30571-llm-attractor-states-2026"
+          ],
+          "concept_ids": [
+            "llm-conversation-attractor-states",
+            "asymmetric-partner-influence"
+          ],
+          "critical_concepts": [
+            "llm-conversation-attractor-states",
+            "asymmetric-partner-influence"
+          ],
+          "prerequisite_links": [],
+          "side_retention_duels": [
+            {
+              "id": "attractor-basin-vs-independent-turns",
+              "prompt": "What warning does The Asymmetry Chasm give about agent collectives?",
+              "left": "Long-run conversations can settle into model-specific basins with asymmetric partner influence",
+              "right": "Each turn is independent of model identity and partner dynamics",
+              "answer": "The attractor-state source treats open-ended LLM conversations as dynamical systems, so learners should watch basins and partner asymmetries."
+            }
+          ],
+          "quiz_questions": [
+            {
+              "question": "What does the attractor-states paper suggest for multi-agent systems?",
+              "choices": [
+                "Long-run LLM interactions can have model-specific basins and asymmetric partner influence that should be monitored.",
+                "Two-agent conversations are always independent of model identity.",
+                "Self-play removes all discourse traits after the first turn.",
+                "Only final-answer unit tests matter for open-ended debates."
+              ],
+              "answer_index": 0,
+              "source_ids": [
+                "emergentmind-2606-30571-llm-attractor-states-2026"
+              ]
+            }
+          ]
+        },
+        {
+          "id": "self-evolving-agent-rl-systems",
+          "label": "The Evolution Control Tower",
+          "summary": "Production self-evolving agents need RL-grade trajectory protocols, governed data proxies, and control planes that decide when to update weights, tools, prompts, or harnesses.",
+          "source_ids": [
+            "emergentmind-2607-01120-self-evolving-agentic-rl-systems-2026"
+          ],
+          "concept_ids": [
+            "agent-trajectory-data-protocol",
+            "agent-evolution-control-plane"
+          ],
+          "critical_concepts": [
+            "agent-trajectory-data-protocol",
+            "agent-evolution-control-plane"
+          ],
+          "prerequisite_links": [],
+          "side_retention_duels": [
+            {
+              "id": "control-plane-vs-unbounded-self-update",
+              "prompt": "What keeps The Evolution Control Tower from becoming uncontrolled self-modification?",
+              "left": "A trajectory protocol, governed data proxy, and control plane for update decisions",
+              "right": "Automatic weight, prompt, and tool changes with no governance boundary",
+              "answer": "The source emphasizes RL-grade traces and an evolution control plane that decides whether to update weights, tools, prompts, or harnesses."
+            }
+          ],
+          "quiz_questions": [
+            {
+              "question": "What systems gap does the self-evolving agents paper emphasize?",
+              "choices": [
+                "The absence of RL-grade trajectory protocols, governed data proxies, and evolution control planes for deployed agents.",
+                "The need to remove all observability from enterprise agent deployments.",
+                "The claim that parameter scaling alone solves continual improvement.",
+                "The inability of diffusion models to sample from probability-flow ODEs."
+              ],
+              "answer_index": 0,
+              "source_ids": [
+                "emergentmind-2607-01120-self-evolving-agentic-rl-systems-2026"
+              ]
+            }
+          ]
+        },
+        {
+          "id": "the-verifier-dojo",
+          "label": "The Verifier Dojo",
+          "summary": "Language-model training with verifiable rewards and human demonstrations: combining checked outcomes with demonstrated process quality.",
+          "source_ids": [
+            "emergentmind-2607-01181-right-in-the-right-way-lm-training-with-ve-2026"
+          ],
+          "concept_ids": [
+            "verifiable-reward-human-demo-training",
+            "right-in-the-right-way-training"
+          ],
+          "critical_concepts": [
+            "verifiable-reward-human-demo-training",
+            "right-in-the-right-way-training"
+          ],
+          "prerequisite_links": [],
+          "side_retention_duels": [
+            {
+              "id": "outcome-vs-process",
+              "prompt": "Which signal pair is emphasized?",
+              "left": "Verifiable reward plus human demonstrations",
+              "right": "Only unlabelled inference latency",
+              "answer": "The source pairs checked outcomes with demonstrations of the desired way to solve the task."
+            }
+          ],
+          "quiz_questions": [
+            {
+              "question": "What does “right in the right way” add beyond final-answer reward?",
+              "choices": [
+                "It discards all verifiable rewards in favor of random labels.",
+                "It trains only a frozen visual encoder for dense prediction.",
+                "It replaces human demonstrations with benchmark names only.",
+                "It asks for correct outcomes reached through demonstrated process quality."
+              ],
+              "answer_index": 3,
+              "source_ids": [
+                "emergentmind-2607-01181-right-in-the-right-way-lm-training-with-ve-2026"
+              ]
+            }
+          ]
+        },
+        {
+          "id": "the-playable-laboratory",
+          "label": "The Playable Laboratory",
+          "summary": "AI Native Games as interactive environments where agents, generation, evaluation, and gameplay co-design each other.",
+          "source_ids": [
+            "emergentmind-2607-00527-ai-native-games-a-survey-and-roadmap-2026"
+          ],
+          "concept_ids": [
+            "ai-native-games",
+            "gameplay-as-agent-evaluation"
+          ],
+          "critical_concepts": [
+            "ai-native-games",
+            "gameplay-as-agent-evaluation"
+          ],
+          "prerequisite_links": [],
+          "side_retention_duels": [
+            {
+              "id": "scripted-vs-native",
+              "prompt": "What distinguishes AI-native games?",
+              "left": "Bolted-on scripted NPC behavior",
+              "right": "AI systems designed into the core gameplay loop",
+              "answer": "AI-native games make AI behavior part of the game design substrate."
+            }
+          ],
+          "quiz_questions": [
+            {
+              "question": "How should learners frame AI Native Games?",
+              "choices": [
+                "As interactive environments where AI systems and gameplay mechanics are co-designed.",
+                "As static graphics benchmarks with no interaction.",
+                "As database migrations unrelated to agents.",
+                "As a hardware-only technique for memory bandwidth."
+              ],
+              "answer_index": 0,
+              "source_ids": [
+                "emergentmind-2607-00527-ai-native-games-a-survey-and-roadmap-2026"
+              ]
+            }
+          ]
+        },
+        {
+          "id": "the-fade-scales",
+          "label": "The FADE Scales",
+          "summary": "FADE decomposes policy-gradient weights so learners can diagnose which weighting terms drive reinforcement-learning gains.",
+          "source_ids": [
+            "emergentmind-2607-01490-don-t-let-gains-fade-breaking-down-policy-2026"
+          ],
+          "concept_ids": [
+            "fade-policy-gradient-weights",
+            "policy-gradient-credit-weights"
+          ],
+          "critical_concepts": [
+            "fade-policy-gradient-weights",
+            "policy-gradient-credit-weights"
+          ],
+          "prerequisite_links": [],
+          "side_retention_duels": [
+            {
+              "id": "gain-vs-weight",
+              "prompt": "What is broken down?",
+              "left": "Policy-gradient weights",
+              "right": "CSS breakpoint tokens",
+              "answer": "FADE is about breaking down policy-gradient weights behind RL gains."
+            }
+          ],
+          "quiz_questions": [
+            {
+              "question": "What does FADE analyze in reinforcement learning?",
+              "choices": [
+                "Only the number of pixels in a panorama.",
+                "The legal text of software licenses.",
+                "The weighting terms behind policy-gradient gains.",
+                "A retrieval graph for podcast summarization."
+              ],
+              "answer_index": 2,
+              "source_ids": [
+                "emergentmind-2607-01490-don-t-let-gains-fade-breaking-down-policy-2026"
+              ]
+            }
+          ]
+        },
+        {
+          "id": "the-mean-field-council",
+          "label": "The Mean-Field Council",
+          "summary": "Mean Field Reinforcement Learning studies many-agent systems by replacing detailed pairwise interactions with aggregate population effects.",
+          "source_ids": [
+            "emergentmind-2607-01525-mean-field-reinforcement-learning-2026"
+          ],
+          "concept_ids": [
+            "mean-field-reinforcement-learning",
+            "population-level-agent-dynamics"
+          ],
+          "critical_concepts": [
+            "mean-field-reinforcement-learning",
+            "population-level-agent-dynamics"
+          ],
+          "prerequisite_links": [],
+          "side_retention_duels": [
+            {
+              "id": "pairwise-vs-population",
+              "prompt": "What interaction view is emphasized?",
+              "left": "Every pairwise interaction explicitly",
+              "right": "Aggregate population effects",
+              "answer": "Mean-field RL uses aggregate effects to make many-agent learning tractable."
+            }
+          ],
+          "quiz_questions": [
+            {
+              "question": "Why use a mean-field view in multi-agent RL?",
+              "choices": [
+                "To convert every agent into a panorama renderer.",
+                "To remove rewards from all training loops.",
+                "To store only static CSS design tokens.",
+                "To approximate many interactions through aggregate population dynamics."
+              ],
+              "answer_index": 3,
+              "source_ids": [
+                "emergentmind-2607-01525-mean-field-reinforcement-learning-2026"
+              ]
+            }
+          ]
+        },
+        {
+          "id": "the-conversable-commons",
+          "label": "The Conversable Commons",
+          "summary": "Conversable Complexity frames agentic LLM collectives as interpretable substrates whose interactions can be discussed and inspected.",
+          "source_ids": [
+            "emergentmind-2607-01047-conversable-complexity-agentic-llm-collect-2026"
+          ],
+          "concept_ids": [
+            "conversable-complexity",
+            "agentic-llm-collectives"
+          ],
+          "critical_concepts": [
+            "conversable-complexity",
+            "agentic-llm-collectives"
+          ],
+          "prerequisite_links": [],
+          "side_retention_duels": [
+            {
+              "id": "single-vs-collective",
+              "prompt": "What system scale is centered?",
+              "left": "One isolated model call",
+              "right": "Interacting LLM agent collectives",
+              "answer": "The paper frames agentic LLM collectives as interpretable substrates."
+            }
+          ],
+          "quiz_questions": [
+            {
+              "question": "What is the learner-facing focus of Conversable Complexity?",
+              "choices": [
+                "A single frozen convolution kernel for image denoising.",
+                "Interpretable interaction structure in collectives of LLM agents.",
+                "A batch-size scaling law with no agents involved.",
+                "A cryptographic counter for privacy accounting only."
+              ],
+              "answer_index": 1,
+              "source_ids": [
+                "emergentmind-2607-01047-conversable-complexity-agentic-llm-collect-2026"
+              ]
+            }
+          ]
+        },
+        {
+          "id": "the-verifier-scales",
+          "label": "The Verifier Scales",
+          "summary": "LLM-as-a-Verifier treats verification as a scaling axis for agentic tasks, using continuous token-logit expectations instead of discrete judge labels.",
+          "source_ids": [
+            "emergentmind-2607-05391-llm-as-a-verifier-a-general-purpose-verification-2026"
+          ],
+          "concept_ids": [
+            "llm-as-a-verifier",
+            "criteria-decomposed-verification"
+          ],
+          "critical_concepts": [
+            "llm-as-a-verifier",
+            "criteria-decomposed-verification"
+          ],
+          "prerequisite_links": [],
+          "side_retention_duels": [
+            {
+              "id": "continuous-vs-discrete-judge",
+              "prompt": "What makes the verifier different from a standard LM judge?",
+              "left": "It uses continuous expectations over scoring-token logits",
+              "right": "It asks once for a single coarse categorical score",
+              "answer": "The source frames continuous token-logit scoring as the mechanism that gives finer-grained verification feedback."
+            }
+          ],
+          "quiz_questions": [
+            {
+              "question": "Why is LLM-as-a-Verifier useful for agentic tasks?",
+              "choices": [
+                "It replaces all multi-step tasks with a static text classification dataset.",
+                "It provides fine-grained correctness feedback without training a new verifier model.",
+                "It removes the need to compare candidate solutions during evaluation.",
+                "It stores every environment transition inside a recurrent memory state."
+              ],
+              "answer_index": 1,
+              "source_ids": [
+                "emergentmind-2607-05391-llm-as-a-verifier-a-general-purpose-verification-2026"
+              ]
+            }
+          ]
+        },
+        {
+          "id": "the-graph-policy-workshop",
+          "label": "The Graph Policy Workshop",
+          "summary": "Graph-as-Policy uses a multi-agent coding harness to generate interpretable robot computation graphs, rehearse them in simulation, and refine them for variational automation tasks.",
+          "source_ids": [
+            "emergentmind-2607-05369-gap-a-graph-as-policy-multi-agent-self-2026"
+          ],
+          "concept_ids": [
+            "graph-as-policy-harness",
+            "variational-automation-tasks"
+          ],
+          "critical_concepts": [
+            "graph-as-policy-harness",
+            "variational-automation-tasks"
+          ],
+          "prerequisite_links": [],
+          "side_retention_duels": [
+            {
+              "id": "graph-policy-vs-monolithic-policy",
+              "prompt": "What does Graph-as-Policy generate?",
+              "left": "Interpretable computation graphs with perception, planning, and control nodes",
+              "right": "A single opaque model-free policy with no program structure",
+              "answer": "The source frames GaP as graph generation from a modular robot skill library."
+            }
+          ],
+          "quiz_questions": [
+            {
+              "question": "Why does GaP use an internal simulation environment?",
+              "choices": [
+                "To avoid evaluating any robot task that involves geometry variation.",
+                "To rehearse task instances with candidate graphs and refine their structure.",
+                "To replace directed computation graphs with fixed text prompts.",
+                "To compress transformer context through learned sparse landmarks."
+              ],
+              "answer_index": 1,
+              "source_ids": [
+                "emergentmind-2607-05369-gap-a-graph-as-policy-multi-agent-self-2026"
+              ]
+            }
+          ]
+        },
+        {
+          "id": "the-hybrid-cognition-council",
+          "label": "The Hybrid Cognition Council",
+          "arc": "The Long Roads",
+          "summary": "How human-AI groups form collective intelligence through networked attention, memory, reasoning differences, and coordination structure.",
+          "source_ids": [
+            "emergentmind-2607-05593-collective-cognition-in-hybrid-groups-a-network-2026"
+          ],
+          "concept_ids": [
+            "hybrid-collective-cognition",
+            "human-ai-network-structure"
+          ],
+          "critical_concepts": [
+            "hybrid-collective-cognition"
+          ],
+          "prerequisite_links": [],
+          "side_retention_duels": [
+            {
+              "id": "network-vs-individual-score",
+              "prompt": "What is the main learner move in hybrid cognition?",
+              "left": "Judge only one isolated model score",
+              "right": "Inspect the communication network and role structure",
+              "answer": "The source frames performance as emerging from human-AI network structure, not a lone score."
+            }
+          ],
+          "quiz_questions": [
+            {
+              "question": "Why does the hybrid cognition synthesis fit the Agents world?",
+              "choices": [
+                "It treats intelligence as coordination among humans and AI agents in a networked system.",
+                "It proves a new tokenization rule for every transformer model.",
+                "It replaces all agent evaluation with single-image classification.",
+                "It describes only a static database schema with no interaction loop."
+              ],
+              "answer_index": 0,
+              "source_ids": [
+                "emergentmind-2607-05593-collective-cognition-in-hybrid-groups-a-network-2026"
+              ]
+            }
+          ]
+        },
+        {
+          "id": "the-coder-workbench",
+          "label": "The Coder Workbench",
+          "arc": "The Long Roads",
+          "summary": "Coding agents trained to operate inside real executable repositories, where environments, tests, and autonomous repair loops matter as much as model scale.",
+          "source_ids": [
+            "emergentmind-2607-05471-kat-coder-v2-5-technical-report-2026"
+          ],
+          "concept_ids": [
+            "kat-coder-agentic-model",
+            "reproducible-repo-environments"
+          ],
+          "critical_concepts": [
+            "kat-coder-agentic-model"
+          ],
+          "prerequisite_links": [],
+          "side_retention_duels": [
+            {
+              "id": "chat-vs-repo-agent",
+              "prompt": "What distinguishes the KAT-Coder framing?",
+              "left": "Single-turn answer generation only",
+              "right": "Autonomous work inside executable repositories",
+              "answer": "It frames coding capability around repository-grounded agent behavior."
+            }
+          ],
+          "quiz_questions": [
+            {
+              "question": "What bottleneck does KAT-Coder-V2.5 emphasize for agentic coding?",
+              "choices": [
+                "Vocabulary size alone is the only limiting factor.",
+                "Executable repository environments and autonomous task feedback are central capability bottlenecks.",
+                "Image captioning labels are sufficient for coding agents.",
+                "The model should avoid tests because they reduce interactivity."
+              ],
+              "answer_index": 1,
+              "source_ids": [
+                "emergentmind-2607-05471-kat-coder-v2-5-technical-report-2026"
+              ]
+            }
+          ]
+        },
+        {
+          "id": "the-norm-weavers-forum",
+          "label": "The Norm-Weavers Forum",
+          "arc": "The Long Roads",
+          "summary": "Dynamic human-AI coordination where agents learn social norms as tacit expectations that make collaboration more compatible over time.",
+          "source_ids": [
+            "emergentmind-2607-07021-learning-social-norms-enhances-compatibility-in-dynamic-2026"
+          ],
+          "concept_ids": [
+            "social-norm-learning-for-ai-agents",
+            "compatibility-in-human-ai-coordination"
+          ],
+          "critical_concepts": [
+            "social-norm-learning-for-ai-agents"
+          ],
+          "prerequisite_links": [],
+          "side_retention_duels": [
+            {
+              "id": "explicit-command-vs-tacit-norm",
+              "prompt": "What does norm learning add beyond explicit instructions?",
+              "left": "Sensitivity to tacit shared expectations",
+              "right": "A larger tokenizer vocabulary only",
+              "answer": "The source links learned norms to compatibility in dynamic coordination."
+            }
+          ],
+          "quiz_questions": [
+            {
+              "question": "Why are social norms useful for human-AI coordination?",
+              "choices": [
+                "They act as tacit expectations that help partners coordinate in dynamic situations.",
+                "They remove the need for any interaction history.",
+                "They convert every task into a static image benchmark.",
+                "They guarantee deployment safety without evaluation."
+              ],
+              "answer_index": 0,
+              "source_ids": [
+                "emergentmind-2607-07021-learning-social-norms-enhances-compatibility-in-dynamic-2026"
+              ]
+            }
+          ]
+        },
+        {
+          "id": "the-asynchronous-rollout-yard",
+          "label": "The Asynchronous Rollout Yard",
+          "arc": "The Long Roads",
+          "summary": "Agentic reinforcement learning that updates from single rollouts asynchronously, reducing bottlenecks in post-training pipelines for language agents.",
+          "source_ids": [
+            "emergentmind-2607-07508-single-rollout-asynchronous-optimization-for-agentic-reinforcement-2026"
+          ],
+          "concept_ids": [
+            "single-rollout-asynchronous-optimization",
+            "agentic-rl-pipeline-asynchrony"
+          ],
+          "critical_concepts": [
+            "single-rollout-asynchronous-optimization"
+          ],
+          "prerequisite_links": [],
+          "side_retention_duels": [
+            {
+              "id": "sync-batch-vs-async-rollout",
+              "prompt": "What changes in the RL pipeline?",
+              "left": "Wait for synchronized rollout batches",
+              "right": "Update asynchronously from individual rollouts",
+              "answer": "The method targets asynchronous use of rollout evidence in agentic RL."
+            }
+          ],
+          "quiz_questions": [
+            {
+              "question": "What bottleneck does single-rollout asynchronous optimization address?",
+              "choices": [
+                "The lack of RGB textures in video diffusion datasets.",
+                "Synchronous RL pipelines that wait for large aligned rollout batches before updating.",
+                "A formal proof about braid group representation.",
+                "The absence of any policy in reinforcement learning."
+              ],
+              "answer_index": 1,
+              "source_ids": [
+                "emergentmind-2607-07508-single-rollout-asynchronous-optimization-for-agentic-reinforcement-2026"
+              ]
+            }
+          ]
+        },
+        {
+          "id": "the-tensor-proof-conclave",
+          "label": "The Tensor Proof Conclave",
+          "arc": "The Long Roads",
+          "summary": "A specialized multi-agent workflow for research-level autoformalization, where large language-model agents divide tensor-network theory into proof, translation, and checking roles.",
+          "source_ids": [
+            "emergentmind-2607-07857-multi-agent-autoformalization-of-tensor-network-theory-2026"
+          ],
+          "concept_ids": [
+            "multi-agent-autoformalization",
+            "tensor-network-theory-formalization",
+            "specialized-proof-agent-workflow"
+          ],
+          "critical_concepts": [
+            "multi-agent-autoformalization",
+            "specialized-proof-agent-workflow"
+          ],
+          "prerequisite_links": [],
+          "side_retention_duels": [
+            {
+              "id": "single-agent-vs-proof-team",
+              "prompt": "What makes the Conclave agentic?",
+              "left": "A coordinated team of role-specialized proof agents",
+              "right": "One static prompt that never checks formal output",
+              "answer": "The source describes an agent-driven workflow, so the learner should track delegation and checking rather than only final theorem text."
+            }
+          ],
+          "quiz_questions": [
+            {
+              "question": "Why is multi-agent autoformalization routed under Agents?",
+              "choices": [
+                "It asks agents to coordinate roles while producing and checking formal artifacts.",
+                "It only measures GPU memory bandwidth during inference serving.",
+                "It replaces theorem proving with image segmentation labels.",
+                "It studies tokenizer vocabulary size without any task workflow."
+              ],
+              "answer_index": 0,
+              "source_ids": [
+                "emergentmind-2607-07857-multi-agent-autoformalization-of-tensor-network-theory-2026"
+              ]
+            }
+          ]
+        },
+        {
+          "id": "the-persona-mirror-court",
+          "label": "The Persona Mirror Court",
+          "arc": "The Long Roads",
+          "summary": "A behavioral alignment study asking whether implicitly conveyed user identity shifts moral wrongness ratings in non-reasoning large language models.",
+          "source_ids": [
+            "emergentmind-2607-07605-user-identity-conditions-moral-wrongness-ratings-in-2026"
+          ],
+          "concept_ids": [
+            "user-identity-conditioned-moral-ratings",
+            "behavioral-bottom-up-ai-alignment",
+            "non-reasoning-llm-moral-evaluation"
+          ],
+          "critical_concepts": [
+            "user-identity-conditioned-moral-ratings",
+            "behavioral-bottom-up-ai-alignment"
+          ],
+          "prerequisite_links": [],
+          "side_retention_duels": [
+            {
+              "id": "identity-cue-vs-neutral-user",
+              "prompt": "What variable does the Mirror Court isolate?",
+              "left": "Implicit cues about the user identity in the prompt",
+              "right": "Only the number of GPUs used for decoding",
+              "answer": "The study is safety-adjacent, so Edokai keeps the claim scoped to observed rating shifts rather than broad moral competence."
+            }
+          ],
+          "quiz_questions": [
+            {
+              "question": "What does the user-identity moral-wrongness study test?",
+              "choices": [
+                "Whether diffusion models render higher-resolution videos after caching.",
+                "Whether retrieval systems improve MaxSim capacity with extra documents.",
+                "Whether implied user identity can shift moral wrongness ratings in non-reasoning LLMs.",
+                "Whether robot simulators export event-camera labels automatically."
+              ],
+              "answer_index": 2,
+              "source_ids": [
+                "emergentmind-2607-07605-user-identity-conditions-moral-wrongness-ratings-in-2026"
+              ]
+            }
+          ]
+        },
+        {
+          "id": "the-quantum-proof-foundry",
+          "label": "The Quantum Proof Foundry",
+          "arc": "The Long Roads",
+          "summary": "AI-assisted Lean formalization for quantum information, focused on machine-checking entropic quantities such as sandwiched Rényi relative entropy.",
+          "source_ids": [
+            "emergentmind-2607-05492-lean-quantum-toward-ai-assisted-formalization-of-2026"
+          ],
+          "concept_ids": [
+            "lean-quantum-formalization",
+            "sandwiched-renyi-relative-entropy",
+            "ai-assisted-theorem-proving-for-quantum-information"
+          ],
+          "critical_concepts": [
+            "lean-quantum-formalization",
+            "ai-assisted-theorem-proving-for-quantum-information"
+          ],
+          "prerequisite_links": [],
+          "side_retention_duels": [
+            {
+              "id": "checked-proof-vs-prose-claim",
+              "prompt": "What does the Foundry demand from a quantum information claim?",
+              "left": "A machine-checkable Lean formalization path",
+              "right": "A prose-only summary with no proof object",
+              "answer": "Lean-Quantum is routed as agentic formalization because the useful artifact is a checked mathematical structure."
+            }
+          ],
+          "quiz_questions": [
+            {
+              "question": "What is the learner-facing role of Lean-Quantum?",
+              "choices": [
+                "It builds AI-assisted, machine-checkable formalizations for quantum information results.",
+                "It streams video frames with lower visual latency at fixed resolution.",
+                "It estimates 6-DoF pose by translating camera clips into proxy images.",
+                "It ranks retrieval passages with a late-interaction MaxSim score."
+              ],
+              "answer_index": 0,
+              "source_ids": [
+                "emergentmind-2607-05492-lean-quantum-toward-ai-assisted-formalization-of-2026"
+              ]
+            }
+          ]
+        },
+        {
+          "id": "the-mechanized-mathematics-council",
+          "label": "The Mechanized Mathematics Council",
+          "arc": "The Long Roads",
+          "summary": "A survey-style argument that interactive theorem provers, automated theorem provers, and large language models are changing how mathematics is produced, checked, and taught.",
+          "source_ids": [
+            "emergentmind-2607-07162-the-technological-turn-in-mathematics-2026"
+          ],
+          "concept_ids": [
+            "technological-turn-in-mathematics",
+            "llms-for-mathematical-workflows",
+            "interactive-and-automated-theorem-provers"
+          ],
+          "critical_concepts": [
+            "technological-turn-in-mathematics",
+            "interactive-and-automated-theorem-provers"
+          ],
+          "prerequisite_links": [],
+          "side_retention_duels": [
+            {
+              "id": "paper-and-pencil-vs-mechanized-proof",
+              "prompt": "What changes in the technological turn?",
+              "left": "Mathematical work becomes intertwined with theorem provers and LLM tools",
+              "right": "Mathematics is reduced to audio transcription benchmarks",
+              "answer": "The source is routed here because it treats tooling as a workflow layer around reasoning and verification."
+            }
+          ],
+          "quiz_questions": [
+            {
+              "question": "What technologies anchor the “technological turn in mathematics”?",
+              "choices": [
+                "Interactive theorem provers, automated theorem provers, and large language models.",
+                "Only fiber interconnects and DRAM price curves.",
+                "Only video-to-video pose proxies for monocular cameras.",
+                "Only event-camera plugins for robotics simulation."
+              ],
+              "answer_index": 0,
+              "source_ids": [
+                "emergentmind-2607-07162-the-technological-turn-in-mathematics-2026"
+              ]
+            }
+          ]
+        },
+        {
+          "id": "the-beyond-human-measure",
+          "label": "The Beyond-Human Measure",
+          "summary": "The Beyond-Human Measure belongs in Edokai’s Agents world as an evaluation case board. The plain technical term is relative measurement for superhuman-scale intelligence: learners examine why static human-authored benchmarks saturate, then follow a protocol where models generate public challenges and outcomes are aggregated into an adversarial psychometric rating system.",
+          "source_ids": [
+            "emergentmind-2607-07040-measuring-intelligence-beyond-human-scale-2026"
+          ],
+          "concept_ids": [
+            "measuring-intelligence-beyond-human-scale",
+            "measuring-intelligence-beyond-human-scale-learning-problem",
+            "measuring-intelligence-beyond-human-scale-evaluation-signal"
+          ],
+          "critical_concepts": [
+            "measuring-intelligence-beyond-human-scale",
+            "measuring-intelligence-beyond-human-scale-learning-problem"
+          ],
+          "prerequisite_links": [],
+          "side_retention_duels": [
+            {
+              "id": "absolute-benchmark-vs-relative-rating",
+              "prompt": "Why does **Measuring Intelligence Beyond Human Scale** move away from ordinary absolute benchmarks?",
+              "left": "Human-authored benchmarks can saturate and stop separating systems above examiner ability.",
+              "right": "Absolute benchmarks are rejected because evaluation should never compare model outcomes.",
+              "answer": "The source argues for relative measurement: models generate public challenges, and aggregate outcomes form an adversarial psychometric rating."
+            }
+          ],
+          "quiz_questions": [
+            {
+              "question": "What is the core evaluation move in Measuring Intelligence Beyond Human Scale?",
+              "choices": [
+                "Keep using saturated human exams even when they no longer separate frontier systems.",
+                "Judge intelligence by visual SLAM reconstruction quality in robotics scenes only.",
+                "Use models to generate public challenges, then aggregate who solves them into a relative psychometric rating.",
+                "Replace benchmark design with private uncheckable claims from each evaluated model."
+              ],
+              "answer_index": 2,
+              "source_ids": [
+                "emergentmind-2607-07040-measuring-intelligence-beyond-human-scale-2026"
+              ]
+            }
+          ],
+          "arc": "The Long Roads"
         }
       ]
     },
@@ -527,6 +1357,422 @@
               ]
             }
           ]
+        },
+        {
+          "id": "long-context-attention-routing",
+          "label": "The Cache Vaults",
+          "summary": "Long-context transformer efficiency through hierarchical chunk/group routing, RoPE-aware summaries, and tiered K/V storage so learners can see how attention becomes a retrieval-and-systems problem.",
+          "source_ids": [
+            "emergentmind-2606-30709-hierarchical-global-attention-2026"
+          ],
+          "concept_ids": [
+            "hierarchical-global-attention",
+            "tiered-kv-store"
+          ],
+          "critical_concepts": [
+            "hierarchical-global-attention",
+            "tiered-kv-store"
+          ],
+          "prerequisite_links": [],
+          "side_retention_duels": [
+            {
+              "id": "hierarchical-cache-vs-flat-scan",
+              "prompt": "What makes The Cache Vaults different from simply scanning every token?",
+              "left": "Hierarchical chunk/group routing with RoPE-aware summaries and tiered K/V storage",
+              "right": "A flat attention pass that treats all past tokens as equally cheap",
+              "answer": "Hierarchical Global Attention turns long-context attention into a routing and cache-management problem rather than a uniform full-context scan."
+            }
+          ],
+          "quiz_questions": [
+            {
+              "question": "Why does HGA help long-context pretrained transformers on constrained GPUs?",
+              "choices": [
+                "It replaces all attention projections with a newly trained decoder stack.",
+                "It routes to a small relevant token working set while preserving exact attention over fetched tokens.",
+                "It removes K/V caches and recomputes every historical token on CPU only.",
+                "It turns autoregressive generation into a masked-image objective."
+              ],
+              "answer_index": 1,
+              "source_ids": [
+                "emergentmind-2606-30709-hierarchical-global-attention-2026"
+              ]
+            }
+          ],
+          "arc": "Foundations of Architecture"
+        },
+        {
+          "id": "localized-rl-adaptation",
+          "label": "The Middle-Layer Anvil",
+          "summary": "RL post-training gains can concentrate in a few middle transformer layers, motivating layer contribution analysis and selective adaptation rather than uniform full-parameter updates.",
+          "source_ids": [
+            "emergentmind-2607-01232-single-layer-rl-adaptation-2026"
+          ],
+          "concept_ids": [
+            "single-layer-rl-adaptation",
+            "layer-contribution-metric"
+          ],
+          "critical_concepts": [
+            "single-layer-rl-adaptation",
+            "layer-contribution-metric"
+          ],
+          "prerequisite_links": [],
+          "side_retention_duels": [
+            {
+              "id": "middle-layer-adaptation-vs-uniform-update",
+              "prompt": "What lesson does The Middle-Layer Anvil teach about RL adaptation?",
+              "left": "Post-training gains may concentrate in selected middle layers",
+              "right": "Every transformer layer must change by the same amount",
+              "answer": "The single-layer RL adaptation source motivates layer contribution analysis and selective adaptation instead of assuming uniform full-parameter updates."
+            }
+          ],
+          "quiz_questions": [
+            {
+              "question": "What did the single-layer RL study find about adaptation gains?",
+              "choices": [
+                "They are uniformly spread across every transformer block.",
+                "They come only from changing the tokenizer and embedding matrix.",
+                "They often concentrate in a small set of middle layers that can match full-parameter RL.",
+                "They disappear whenever GRPO is replaced by another RL objective."
+              ],
+              "answer_index": 2,
+              "source_ids": [
+                "emergentmind-2607-01232-single-layer-rl-adaptation-2026"
+              ]
+            }
+          ]
+        },
+        {
+          "id": "llm-cognitive-atlases",
+          "label": "The Cognitive Atlas",
+          "summary": "LLM interpretability at the system level: sparse feature parcellation, functional parcels, cognitive hierarchy, and failure-mode signatures for hallucination, bias, refusal, and sycophancy.",
+          "source_ids": [
+            "emergentmind-2607-00397-neurocogmap-2026"
+          ],
+          "concept_ids": [
+            "neurocogmap",
+            "functional-parcellation-of-llms"
+          ],
+          "critical_concepts": [
+            "neurocogmap",
+            "functional-parcellation-of-llms"
+          ],
+          "prerequisite_links": [],
+          "side_retention_duels": [
+            {
+              "id": "functional-parcels-vs-output-labels",
+              "prompt": "What does The Cognitive Atlas inspect beneath final-answer behavior?",
+              "left": "Sparse feature parcels, hierarchy, and internal signatures of failure modes",
+              "right": "Only external labels such as correct or incorrect answers",
+              "answer": "NeuroCogMap is routed here because it frames LLM interpretability as system-level mapping of functional parcels and failure-mode signatures."
+            }
+          ],
+          "quiz_questions": [
+            {
+              "question": "What level of interpretability does NeuroCogMap target?",
+              "choices": [
+                "Only token-level logprob calibration for serving latency.",
+                "System-level functional parcels and cognitive hierarchies inside LLM representations.",
+                "Only exact recovery of private training examples.",
+                "Only image segmentation masks from vision encoders."
+              ],
+              "answer_index": 1,
+              "source_ids": [
+                "emergentmind-2607-00397-neurocogmap-2026"
+              ]
+            }
+          ]
+        },
+        {
+          "id": "the-token-ledger",
+          "label": "The Token Ledger",
+          "summary": "Scaling laws for allocating training tokens across steps and batch size, helping learners reason about compute/data tradeoffs.",
+          "source_ids": [
+            "emergentmind-2607-01487-how-to-allocate-your-tokens-scaling-laws-w-2026"
+          ],
+          "concept_ids": [
+            "training-step-batch-scaling-laws",
+            "token-allocation-tradeoff"
+          ],
+          "critical_concepts": [
+            "training-step-batch-scaling-laws",
+            "token-allocation-tradeoff"
+          ],
+          "prerequisite_links": [],
+          "side_retention_duels": [
+            {
+              "id": "steps-vs-batch",
+              "prompt": "What is the central allocation axis?",
+              "left": "Training steps versus batch size",
+              "right": "Tokenizer vocabulary versus app theme",
+              "answer": "The paper studies how training tokens are allocated across steps and batch size."
+            }
+          ],
+          "quiz_questions": [
+            {
+              "question": "What question is this scaling-law paper trying to answer?",
+              "choices": [
+                "How to convert every benchmark into a robot task.",
+                "How to remove attention layers from every transformer.",
+                "How to allocate tokens between training steps and batch size.",
+                "How to replace all rewards with image captions."
+              ],
+              "answer_index": 2,
+              "source_ids": [
+                "emergentmind-2607-01487-how-to-allocate-your-tokens-scaling-laws-w-2026"
+              ]
+            }
+          ]
+        },
+        {
+          "id": "the-gemma-forge",
+          "label": "The Gemma Forge",
+          "summary": "Gemma 4 combines open-weight multimodal models, dense and mixture-of-experts variants, thinking mode, and efficiency design for long-context reasoning.",
+          "source_ids": [
+            "emergentmind-2607-02770-gemma-4-technical-report-2026"
+          ],
+          "concept_ids": [
+            "gemma-4-open-multimodal-models",
+            "encoder-free-multimodal-ingestion"
+          ],
+          "critical_concepts": [
+            "gemma-4-open-multimodal-models",
+            "encoder-free-multimodal-ingestion"
+          ],
+          "prerequisite_links": [],
+          "side_retention_duels": [
+            {
+              "id": "open-multimodal-vs-text-only",
+              "prompt": "What capability boundary does Gemma 4 cross?",
+              "left": "Open-weight multimodal reasoning over text, vision, and audio",
+              "right": "A text-only tokenizer benchmark with no multimodal encoders",
+              "answer": "The technical report positions Gemma 4 as natively multimodal rather than text-only."
+            }
+          ],
+          "quiz_questions": [
+            {
+              "question": "Which design theme is central to Gemma 4?",
+              "choices": [
+                "Open-weight multimodal models with efficiency, thinking mode, and long-context improvements.",
+                "Only dense text models with short contexts and no reasoning traces.",
+                "A retrieval-only index that never changes model architecture.",
+                "A robotics benchmark focused exclusively on tactile grippers."
+              ],
+              "answer_index": 0,
+              "source_ids": [
+                "emergentmind-2607-02770-gemma-4-technical-report-2026"
+              ]
+            }
+          ]
+        },
+        {
+          "id": "the-hierarchical-landmark-pass",
+          "label": "The Hierarchical Landmark Pass",
+          "summary": "HiLS Attention learns hierarchical chunk selection under the language-modeling loss to make sparse attention trainable and extrapolate to ultra-long context.",
+          "source_ids": [
+            "emergentmind-2607-02980-hierarchical-sparse-attention-done-right-toward-infinite-context-2026"
+          ],
+          "concept_ids": [
+            "hils-hierarchical-landmark-sparse-attention",
+            "native-sparse-long-context-training"
+          ],
+          "critical_concepts": [
+            "hils-hierarchical-landmark-sparse-attention",
+            "native-sparse-long-context-training"
+          ],
+          "prerequisite_links": [],
+          "side_retention_duels": [
+            {
+              "id": "chunk-selection-vs-dense-attention",
+              "prompt": "What problem does HiLS target?",
+              "left": "Learning accurate sparse chunk retrieval for long context",
+              "right": "Keeping dense quadratic attention unchanged forever",
+              "answer": "HiLS is proposed because inaccurate chunk selection limits prior sparse attention methods."
+            }
+          ],
+          "quiz_questions": [
+            {
+              "question": "How does HiLS Attention learn better long-context routing?",
+              "choices": [
+                "It stores all tokens in an unbounded exact cache without sparse computation.",
+                "It trains only image encoders and never touches language-model attention.",
+                "It fuses independently attended retrieved chunks using retrieval scores optimized by LM loss.",
+                "It evaluates robot manipulation in simulation and real-world hardware."
+              ],
+              "answer_index": 2,
+              "source_ids": [
+                "emergentmind-2607-02980-hierarchical-sparse-attention-done-right-toward-infinite-context-2026"
+              ]
+            }
+          ],
+          "arc": "Foundations of Architecture"
+        },
+        {
+          "id": "the-hippocampal-cache",
+          "label": "The Hippocampal Cache",
+          "summary": "HOLA augments linear attention with a bounded exact KV cache, pairing compressive recurrent state with sharp associative recall for facts the state would overwrite.",
+          "source_ids": [
+            "emergentmind-2607-02303-a-hippocampus-for-linear-attention-an-exact-memory-2026"
+          ],
+          "concept_ids": [
+            "hola-hippocampal-linear-attention",
+            "semiparametric-test-time-memory"
+          ],
+          "critical_concepts": [
+            "hola-hippocampal-linear-attention",
+            "semiparametric-test-time-memory"
+          ],
+          "prerequisite_links": [],
+          "side_retention_duels": [
+            {
+              "id": "recurrent-state-vs-exact-cache",
+              "prompt": "What does HOLA add to linear attention?",
+              "left": "A bounded exact KV cache for associations the recurrent state forgets",
+              "right": "A larger lossy recurrent state with no separate memory path",
+              "answer": "HOLA pairs the delta-rule state with an exact cache for sharp retrieval."
+            }
+          ],
+          "quiz_questions": [
+            {
+              "question": "Why is HOLA described as a hippocampal complement?",
+              "choices": [
+                "It adds exact associative memory beside the compressive linear-attention state.",
+                "It removes all cache reads and relies only on soft recurrent averaging.",
+                "It creates a tactile dataset for deformable robot world models.",
+                "It scores agent tasks by averaging verifier token probabilities."
+              ],
+              "answer_index": 0,
+              "source_ids": [
+                "emergentmind-2607-02303-a-hippocampus-for-linear-attention-an-exact-memory-2026"
+              ]
+            }
+          ],
+          "arc": "Foundations of Architecture"
+        },
+        {
+          "id": "the-sparse-delta-archive",
+          "label": "The Sparse Delta Archive",
+          "arc": "Foundations of Architecture",
+          "summary": "Sparse state scaling for linear RNN/linear-attention models that seek long-context recall without returning to quadratic dense attention.",
+          "source_ids": [
+            "emergentmind-2607-07386-sparse-delta-memory-scaling-the-state-of-2026"
+          ],
+          "concept_ids": [
+            "sparse-delta-memory",
+            "linear-rnn-state-sparsity"
+          ],
+          "critical_concepts": [
+            "sparse-delta-memory"
+          ],
+          "prerequisite_links": [],
+          "side_retention_duels": [
+            {
+              "id": "dense-attention-vs-sparse-state",
+              "prompt": "What is the architectural bet?",
+              "left": "Return to full dense attention everywhere",
+              "right": "Scale recurrent state through sparsity",
+              "answer": "The paper targets sparse state growth for linear models constrained by memory."
+            }
+          ],
+          "quiz_questions": [
+            {
+              "question": "What problem does Sparse Delta Memory target?",
+              "choices": [
+                "Replacing all sequence models with convolutional image filters.",
+                "Improving long-context recall for linear attention/RNN models without dense quadratic attention.",
+                "Eliminating the need for any recurrent state in language models.",
+                "Making benchmark labels independent of context length."
+              ],
+              "answer_index": 1,
+              "source_ids": [
+                "emergentmind-2607-07386-sparse-delta-memory-scaling-the-state-of-2026"
+              ]
+            }
+          ]
+        },
+        {
+          "id": "the-shared-geometry-atrium",
+          "label": "The Shared Geometry Atrium",
+          "arc": "Foundations of Architecture",
+          "summary": "Concept-representation work arguing that language models can represent and transform concepts through shared geometric structure rather than isolated static labels.",
+          "source_ids": [
+            "emergentmind-2607-04525-language-models-represent-and-transform-concepts-with-2026"
+          ],
+          "concept_ids": [
+            "shared-concept-geometry-in-language-models",
+            "concept-transformation-representations",
+            "nonstationary-concept-representation"
+          ],
+          "critical_concepts": [
+            "shared-concept-geometry-in-language-models",
+            "concept-transformation-representations"
+          ],
+          "prerequisite_links": [],
+          "side_retention_duels": [
+            {
+              "id": "fixed-label-vs-shared-geometry",
+              "prompt": "What does the Atrium emphasize about concepts?",
+              "left": "Shared geometric transformations inside representations",
+              "right": "Only a stationary dictionary entry for each word",
+              "answer": "The source challenges a static-label mental model by focusing learners on geometry and transformations."
+            }
+          ],
+          "quiz_questions": [
+            {
+              "question": "What question does shared concept geometry ask about language models?",
+              "choices": [
+                "Whether pose trackers can run without any camera stream.",
+                "Whether theorem provers should avoid all formal proof objects.",
+                "Whether DRAM prices can be ignored in serving systems.",
+                "Whether concepts are represented and transformed through common geometric structure."
+              ],
+              "answer_index": 3,
+              "source_ids": [
+                "emergentmind-2607-04525-language-models-represent-and-transform-concepts-with-2026"
+              ]
+            }
+          ]
+        },
+        {
+          "id": "the-gradient-based-speech-to-text",
+          "label": "The Gradient Based Speech To",
+          "summary": "A source-backed case board for Gradient-Based Speech-to-Text Alignment for Any ASR Model: From CTC to Speech LLMs: learners inspect the plain technical mechanism, the evaluation signal, and where the claim fits in Edokai's transformer architecture world.",
+          "source_ids": [
+            "emergentmind-2607-06831-gradient-based-speech-to-text-alignment-for-any-2026"
+          ],
+          "concept_ids": [
+            "gradient-based-speech-to-text-alignment-for",
+            "gradient-based-speech-to-text-alignment-for-any",
+            "gradient-based-speech-to-text-alignment-for-any"
+          ],
+          "critical_concepts": [
+            "gradient-based-speech-to-text-alignment-for",
+            "gradient-based-speech-to-text-alignment-for-any"
+          ],
+          "prerequisite_links": [],
+          "side_retention_duels": [
+            {
+              "id": "the-gradient-based-speech-to-duel",
+              "prompt": "What should Edokai learners remember about **Gradient-Based Speech-to-Text Alignment for Any ASR Model**?",
+              "left": "Treat it as a title-only bookmark without checking the mechanism.",
+              "right": "Track the mechanism, evidence signal, and limits stated by the source.",
+              "answer": "Use the source-backed mechanism and evaluation signal; avoid inferring guarantees beyond the paper summary."
+            }
+          ],
+          "quiz_questions": [
+            {
+              "question": "In the source **Gradient-Based Speech-to-Text Alignment for Any ASR Model: From CTC to Speech LLMs**, what is the main learner-facing mechanism Edokai should preserve?",
+              "choices": [
+                "It mainly replaces the user interface theme without changing the learning mechanism.",
+                "It is a clinical treatment protocol rather than a machine-learning research method.",
+                "It uses the source's Gradient-Based Speech-to-Text Alignment for Any ASR Model mechanism to address the paper's stated ML/AI problem.",
+                "It proves a pure-math theorem without a model, agent, or evaluation loop."
+              ],
+              "answer_index": 2,
+              "source_ids": [
+                "emergentmind-2607-06831-gradient-based-speech-to-text-alignment-for-any-2026"
+              ]
+            }
+          ]
         }
       ]
     },
@@ -630,16 +1876,508 @@
           ],
           "quiz_questions": [
             {
-              "question": "Which benchmark did the Qwen math distillation section use as the main evaluation target?",
+              "question": "Which evaluation target anchors the Qwen math distillation example?",
               "choices": [
-                "ImageNet",
-                "MMLU-Pro only",
-                "AIME25",
-                "HumanEval JavaScript"
+                "ImageNet-style image classification, which is unrelated to math-reasoning distillation.",
+                "MMLU-Pro alone, without a focused competition-math evaluation target.",
+                "AIME25 competition math, used to judge the distilled reasoning student.",
+                "HumanEval JavaScript synthesis, used as a coding-only benchmark substitute."
               ],
               "answer_index": 2,
               "source_ids": [
                 "hf-space-trl-distillation-trainer-2026"
+              ]
+            }
+          ]
+        },
+        {
+          "id": "diffusion-math-foundations",
+          "label": "The Langevin Lanterns",
+          "summary": "Diffusion-model foundations through sampling discrepancies, Langevin dynamics, score estimation, Tweedie identity, reverse SDEs, probability-flow ODEs, and error decomposition.",
+          "source_ids": [
+            "emergentmind-2607-01693-mathematical-diffusion-intro-2026"
+          ],
+          "concept_ids": [
+            "score-based-diffusion-foundations",
+            "tweedie-identity-for-denoising"
+          ],
+          "critical_concepts": [
+            "score-based-diffusion-foundations",
+            "tweedie-identity-for-denoising"
+          ],
+          "prerequisite_links": [],
+          "side_retention_duels": [
+            {
+              "id": "score-dynamics-vs-black-box-sampler",
+              "prompt": "What should learners trace inside The Langevin Lanterns?",
+              "left": "Score estimates, Langevin dynamics, reverse SDEs, probability-flow ODEs, and error terms",
+              "right": "A black-box image sampler with no stochastic-process model",
+              "answer": "The diffusion foundations source is about the mathematical path from score estimation through sampling dynamics and error decomposition."
+            }
+          ],
+          "quiz_questions": [
+            {
+              "question": "What role does the Tweedie identity play in the diffusion notes?",
+              "choices": [
+                "It replaces stochastic sampling with a deterministic database lookup.",
+                "It proves that contrastive negatives are unnecessary for VLM training.",
+                "It converts K/V cache routing into a sparse attention algorithm.",
+                "It links denoising posterior means with score estimation under Gaussian corruption."
+              ],
+              "answer_index": 3,
+              "source_ids": [
+                "emergentmind-2607-01693-mathematical-diffusion-intro-2026"
+              ]
+            }
+          ]
+        },
+        {
+          "id": "multi-teacher-on-policy-distillation",
+          "label": "The Teacher Confluence",
+          "summary": "Capability integration in LLM post-training by distilling several domain RL teachers into a student on the student’s own rollouts, using dense per-token supervision.",
+          "source_ids": [
+            "emergentmind-2606-30406-mopd-2026"
+          ],
+          "concept_ids": [
+            "multi-teacher-on-policy-distillation",
+            "capability-integration-in-post-training"
+          ],
+          "critical_concepts": [
+            "multi-teacher-on-policy-distillation",
+            "capability-integration-in-post-training"
+          ],
+          "prerequisite_links": [],
+          "side_retention_duels": [
+            {
+              "id": "student-rollouts-vs-offline-labels",
+              "prompt": "What makes The Teacher Confluence an on-policy distillation route?",
+              "left": "Teachers supervise the student on the student’s own rollouts with dense token signals",
+              "right": "Teachers label only a fixed offline corpus unrelated to student behavior",
+              "answer": "The MOPD source emphasizes integrating multiple domain RL teachers by supervising the student on its generated trajectories."
+            }
+          ],
+          "quiz_questions": [
+            {
+              "question": "What problem is MOPD designed to solve?",
+              "choices": [
+                "Combining multiple domain RL capabilities into one student without off-policy exposure bias.",
+                "Replacing all post-training with a fixed prompt template.",
+                "Building a browser benchmark from multi-turn coding sessions.",
+                "Estimating human cortical responses from SAE parcels only."
+              ],
+              "answer_index": 0,
+              "source_ids": [
+                "emergentmind-2606-30406-mopd-2026"
+              ]
+            }
+          ]
+        },
+        {
+          "id": "the-weight-archive",
+          "label": "The Weight Archive",
+          "summary": "WARP analyzes model weights to recover clues about the training-data portfolio that shaped them.",
+          "source_ids": [
+            "emergentmind-2607-01686-warp-weight-space-analysis-for-recovering-2026"
+          ],
+          "concept_ids": [
+            "warp-weight-space-analysis",
+            "training-data-portfolio-recovery"
+          ],
+          "critical_concepts": [
+            "warp-weight-space-analysis",
+            "training-data-portfolio-recovery"
+          ],
+          "prerequisite_links": [],
+          "side_retention_duels": [
+            {
+              "id": "outputs-vs-weights",
+              "prompt": "Where does WARP look for evidence?",
+              "left": "The model weight space",
+              "right": "Only chat transcript formatting",
+              "answer": "WARP is framed as weight-space analysis for recovering training-data portfolios."
+            }
+          ],
+          "quiz_questions": [
+            {
+              "question": "What is WARP trying to recover from a trained model?",
+              "choices": [
+                "The browser window size used during inference.",
+                "Only the final answer position in a quiz.",
+                "The training-data portfolio reflected in the model’s weights.",
+                "A hand-written CSS palette for UI cards."
+              ],
+              "answer_index": 2,
+              "source_ids": [
+                "emergentmind-2607-01686-warp-weight-space-analysis-for-recovering-2026"
+              ]
+            }
+          ]
+        },
+        {
+          "id": "the-spherical-rope-observatory",
+          "label": "The Spherical RoPE Observatory",
+          "summary": "SpheRoPE adapts rotary position ideas to 360° panorama generation without per-scene optimization.",
+          "source_ids": [
+            "emergentmind-2606-32033-spherope-zero-shot-optimization-free-360-p-2026"
+          ],
+          "concept_ids": [
+            "spherical-rope",
+            "optimization-free-panorama-generation"
+          ],
+          "critical_concepts": [
+            "spherical-rope",
+            "optimization-free-panorama-generation"
+          ],
+          "prerequisite_links": [],
+          "side_retention_duels": [
+            {
+              "id": "flat-vs-spherical",
+              "prompt": "What geometry does the method respect?",
+              "left": "Flat image coordinates only",
+              "right": "Spherical panorama coordinates",
+              "answer": "SpheRoPE is presented as spherical RoPE for 360 panorama generation."
+            }
+          ],
+          "quiz_questions": [
+            {
+              "question": "What mechanism does SpheRoPE contribute to panorama generation?",
+              "choices": [
+                "A verifier for Rust memory safety proofs.",
+                "A frozen benchmark score matrix for LLM releases.",
+                "A social-game survey with no image model component.",
+                "A spherical positional encoding for 360-degree image geometry."
+              ],
+              "answer_index": 3,
+              "source_ids": [
+                "emergentmind-2606-32033-spherope-zero-shot-optimization-free-360-p-2026"
+              ]
+            }
+          ]
+        },
+        {
+          "id": "the-one-step-mirror",
+          "label": "The One-Step Mirror",
+          "summary": "Representation Distribution Matching targets one-step visual generation by matching representation distributions rather than relying only on long sampling chains.",
+          "source_ids": [
+            "emergentmind-2607-02375-representation-distribution-matching-for-o-2026"
+          ],
+          "concept_ids": [
+            "representation-distribution-matching",
+            "one-step-visual-generation"
+          ],
+          "critical_concepts": [
+            "representation-distribution-matching",
+            "one-step-visual-generation"
+          ],
+          "prerequisite_links": [],
+          "side_retention_duels": [
+            {
+              "id": "many-step-vs-one-step",
+              "prompt": "What generation path is emphasized?",
+              "left": "Long iterative sampling only",
+              "right": "One-step visual generation",
+              "answer": "The source is about representation matching for one-step visual generation."
+            }
+          ],
+          "quiz_questions": [
+            {
+              "question": "What capability does Representation Distribution Matching target?",
+              "choices": [
+                "A many-agent mean-field equilibrium in games.",
+                "Rust model checking for unsafe blocks.",
+                "One-step visual generation through representation distribution alignment.",
+                "Token allocation between batch size and steps."
+              ],
+              "answer_index": 2,
+              "source_ids": [
+                "emergentmind-2607-02375-representation-distribution-matching-for-o-2026"
+              ]
+            }
+          ]
+        },
+        {
+          "id": "the-trust-region-distillery",
+          "label": "The Trust-Region Distillery",
+          "summary": "Trust Region Policy Distillation stabilizes on-policy distillation by dynamically constructing a proximal teacher with variance and monotonic-improvement guarantees.",
+          "source_ids": [
+            "emergentmind-2607-04751-trust-region-policy-distillation-2026"
+          ],
+          "concept_ids": [
+            "trust-region-policy-distillation",
+            "proximal-teacher-construction"
+          ],
+          "critical_concepts": [
+            "trust-region-policy-distillation",
+            "proximal-teacher-construction"
+          ],
+          "prerequisite_links": [],
+          "side_retention_duels": [
+            {
+              "id": "unstable-opd-vs-proximal-teacher",
+              "prompt": "What stabilizes TOP-D?",
+              "left": "A proximal teacher that constrains the distillation step",
+              "right": "An unrelated benchmark that removes policy updates",
+              "answer": "The paper claims dynamic proximal-teacher construction controls variance in on-policy distillation."
+            }
+          ],
+          "quiz_questions": [
+            {
+              "question": "What is the main aim of Trust Region Policy Distillation?",
+              "choices": [
+                "It introduces a visuotactile dataset for deformable object manipulation.",
+                "It builds a graph database for global query-focused summarization.",
+                "It converts full attention into a robot control interface.",
+                "It makes on-policy distillation more stable and sample efficient without extra overhead."
+              ],
+              "answer_index": 3,
+              "source_ids": [
+                "emergentmind-2607-04751-trust-region-policy-distillation-2026"
+              ]
+            }
+          ]
+        },
+        {
+          "id": "the-selective-sampling-gate",
+          "label": "The Selective Sampling Gate",
+          "summary": "Selective Importance Sampling treats accepted off-policy tokens as on-policy and keeps correction only for rejected tokens to reduce variance in LLM alignment.",
+          "source_ids": [
+            "emergentmind-2607-04728-turning-off-policy-tokens-on-policy-a-plug-2026"
+          ],
+          "concept_ids": [
+            "selective-importance-sampling-for-alignment",
+            "off-policy-token-variance"
+          ],
+          "critical_concepts": [
+            "selective-importance-sampling-for-alignment",
+            "off-policy-token-variance"
+          ],
+          "prerequisite_links": [],
+          "side_retention_duels": [
+            {
+              "id": "accepted-token-vs-ratio-explosion",
+              "prompt": "What happens to an accepted SIS token?",
+              "left": "It is treated as on-policy with unit importance score",
+              "right": "It receives a compounded sequence-level correction every time",
+              "answer": "SIS reduces variance by accepting some proposal tokens as on-policy."
+            }
+          ],
+          "quiz_questions": [
+            {
+              "question": "What problem does Selective Importance Sampling address?",
+              "choices": [
+                "It benchmarks real-world robot policies with standardized hardware resets.",
+                "It reduces variance from token-level importance ratios in off-policy LLM post-training.",
+                "It creates multimodal model weights for open-weight audio and vision.",
+                "It learns sparse chunk retrieval for context extrapolation in attention."
+              ],
+              "answer_index": 1,
+              "source_ids": [
+                "emergentmind-2607-04728-turning-off-policy-tokens-on-policy-a-plug-2026"
+              ]
+            }
+          ]
+        },
+        {
+          "id": "the-privileged-fork",
+          "label": "The Privileged Fork",
+          "summary": "Rethinking on-policy self-distillation shows that privileged context can harm thinking models by reshaping high-entropy reasoning forks in long traces.",
+          "source_ids": [
+            "emergentmind-2607-05184-rethinking-on-policy-self-distillation-for-thinking-models-2026"
+          ],
+          "concept_ids": [
+            "privileged-self-distillation-failure",
+            "high-entropy-reasoning-forks"
+          ],
+          "critical_concepts": [
+            "privileged-self-distillation-failure",
+            "high-entropy-reasoning-forks"
+          ],
+          "prerequisite_links": [],
+          "side_retention_duels": [
+            {
+              "id": "privileged-context-vs-thinking-forks",
+              "prompt": "Why can privileged context hurt thinking models?",
+              "left": "It reshapes high-entropy forks that support productive long reasoning",
+              "right": "It always increases every self-distilled model accuracy equally",
+              "answer": "The diagnostics link degradation to changes at high-entropy reasoning branches."
+            }
+          ],
+          "quiz_questions": [
+            {
+              "question": "What surprising result is reported for privileged self-distillation?",
+              "choices": [
+                "It always improves thinking models as rollout budgets increase.",
+                "It only affects robot manipulation policies with tactile grippers.",
+                "It proves sparse attention cannot extrapolate past training length.",
+                "It can degrade stronger thinking models on long reasoning traces."
+              ],
+              "answer_index": 3,
+              "source_ids": [
+                "emergentmind-2607-05184-rethinking-on-policy-self-distillation-for-thinking-models-2026"
+              ]
+            }
+          ]
+        },
+        {
+          "id": "the-streaming-imagegate",
+          "label": "The Streaming Imagegate",
+          "arc": "The Forge of Generative Craft",
+          "summary": "Latency-preserving upgrades for native-streaming audio-visual interaction models that raise resolution while keeping interactive response timing.",
+          "source_ids": [
+            "emergentmind-2607-04443-wan-streamer-v0-2-higher-resolution-same-2026"
+          ],
+          "concept_ids": [
+            "wan-streamer-v02",
+            "latency-preserving-av-generation"
+          ],
+          "critical_concepts": [
+            "wan-streamer-v02"
+          ],
+          "prerequisite_links": [],
+          "side_retention_duels": [
+            {
+              "id": "offline-vs-streaming-video",
+              "prompt": "What makes streaming generation harder than offline rendering?",
+              "left": "It must preserve interaction latency while producing frames",
+              "right": "It can ignore user timing completely",
+              "answer": "The paper frames the update around higher resolution without losing live latency."
+            }
+          ],
+          "quiz_questions": [
+            {
+              "question": "What is the key trade-off Wan-Streamer v0.2 tries to avoid?",
+              "choices": [
+                "Higher-resolution interactive video at the cost of unusable latency.",
+                "Replacing audio-visual modeling with text-only retrieval.",
+                "Training a robot policy without any generated media.",
+                "Higher-resolution output while preserving the prior streaming latency target."
+              ],
+              "answer_index": 3,
+              "source_ids": [
+                "emergentmind-2607-04443-wan-streamer-v0-2-higher-resolution-same-2026"
+              ]
+            }
+          ]
+        },
+        {
+          "id": "the-turn-aware-distillery",
+          "label": "The Turn-Aware Distillery",
+          "arc": "The Forge of Generative Craft",
+          "summary": "Long-horizon language-agent distillation that makes on-policy training turn-aware instead of matching a teacher uniformly across interaction traces.",
+          "source_ids": [
+            "emergentmind-2607-05804-turnopd-making-on-policy-distillation-turn-aware-2026"
+          ],
+          "concept_ids": [
+            "turnopd-turn-aware-distillation",
+            "long-horizon-agent-distillation"
+          ],
+          "critical_concepts": [
+            "turnopd-turn-aware-distillation"
+          ],
+          "prerequisite_links": [],
+          "side_retention_duels": [
+            {
+              "id": "flat-vs-turn-aware-opd",
+              "prompt": "What structure matters in TurnOPD?",
+              "left": "Turn-by-turn trajectory structure",
+              "right": "Only isolated token frequency",
+              "answer": "The paper focuses on making OPD turn-aware for long-horizon agent training."
+            }
+          ],
+          "quiz_questions": [
+            {
+              "question": "What makes TurnOPD different from a flat distillation recipe?",
+              "choices": [
+                "It treats every token in every turn as identical context.",
+                "It discards the student policy before collecting trajectories.",
+                "It applies only to static single-image reconstruction.",
+                "It makes on-policy distillation aware of turn structure in long-horizon agent traces."
+              ],
+              "answer_index": 3,
+              "source_ids": [
+                "emergentmind-2607-05804-turnopd-making-on-policy-distillation-turn-aware-2026"
+              ]
+            }
+          ]
+        },
+        {
+          "id": "the-flex-forcing-forge",
+          "label": "The Flex-Forcing Forge",
+          "arc": "The Forge of Generative Craft",
+          "summary": "A video diffusion training/inference frame that unifies autoregressive and bidirectional generation rather than locking video synthesis into one rigid direction.",
+          "source_ids": [
+            "emergentmind-2607-03509-flex-forcing-towards-a-unified-autoregressive-and-2026"
+          ],
+          "concept_ids": [
+            "flex-forcing-video-diffusion",
+            "bidirectional-video-generation"
+          ],
+          "critical_concepts": [
+            "flex-forcing-video-diffusion"
+          ],
+          "prerequisite_links": [],
+          "side_retention_duels": [
+            {
+              "id": "forward-only-vs-flexible-video",
+              "prompt": "Which contrast anchors the region?",
+              "left": "Rigid forward-only generation",
+              "right": "Flexible autoregressive/bidirectional generation",
+              "answer": "The source presents a unified video diffusion direction as the mechanism."
+            }
+          ],
+          "quiz_questions": [
+            {
+              "question": "What rigidity does Flex-Forcing try to relax?",
+              "choices": [
+                "A fixed inference paradigm that separates autoregressive and bidirectional video generation.",
+                "The requirement that all agents use graph databases.",
+                "The limit that tokenizers must have four symbols.",
+                "The assumption that robots cannot use tactile input."
+              ],
+              "answer_index": 0,
+              "source_ids": [
+                "emergentmind-2607-03509-flex-forcing-towards-a-unified-autoregressive-and-2026"
+              ]
+            }
+          ]
+        },
+        {
+          "id": "the-memorization-reuse-vault",
+          "label": "The Memorization Reuse Vault",
+          "arc": "The Forge of Generative Craft",
+          "summary": "Efficient LLM training through memorization-guided data reuse, choosing when repeated exposure to high-quality data helps rather than merely extending training.",
+          "source_ids": [
+            "emergentmind-2607-04969-train-smarter-not-longer-memorization-guided-data-2026"
+          ],
+          "concept_ids": [
+            "memorization-guided-data-reuse",
+            "efficient-multi-epoch-llm-training"
+          ],
+          "critical_concepts": [
+            "memorization-guided-data-reuse"
+          ],
+          "prerequisite_links": [],
+          "side_retention_duels": [
+            {
+              "id": "train-longer-vs-reuse-smarter",
+              "prompt": "What does the title’s advice mean mechanically?",
+              "left": "Blindly add more epochs",
+              "right": "Use memorization signals to reuse data selectively",
+              "answer": "The paper is about data reuse guided by memorization, not just longer training."
+            }
+          ],
+          "quiz_questions": [
+            {
+              "question": "What is the core idea of memorization-guided data reuse?",
+              "choices": [
+                "Delete all repeated examples regardless of evidence.",
+                "Move every training run to a robot simulator.",
+                "Replace language modeling with pose tracking.",
+                "Use memorization signals to choose efficient reuse of high-quality training data."
+              ],
+              "answer_index": 3,
+              "source_ids": [
+                "emergentmind-2607-04969-train-smarter-not-longer-memorization-guided-data-2026"
               ]
             }
           ]
@@ -649,7 +2387,849 @@
     "perception-world-models": {
       "label": "Perception & World Models",
       "description": "VLMs, latent world models, JEPA-style representation prediction, and embodied/perceptual models.",
-      "regions": []
+      "regions": [
+        {
+          "id": "adaptive-latent-world-models",
+          "label": "The Replanning Grove",
+          "summary": "Latent world models that adapt at test time inside model-predictive control: plan, act, update from observed transitions, and replan under distribution shift.",
+          "source_ids": [
+            "emergentmind-2606-32026-adajepa-2026"
+          ],
+          "concept_ids": [
+            "adajepa",
+            "plan-act-adapt-replan-loop"
+          ],
+          "critical_concepts": [
+            "adajepa",
+            "plan-act-adapt-replan-loop"
+          ],
+          "prerequisite_links": [],
+          "side_retention_duels": [
+            {
+              "id": "test-time-replanning-vs-fixed-latent",
+              "prompt": "What gives The Replanning Grove its adaptive character?",
+              "left": "The latent world model updates from observed transitions during MPC and replans",
+              "right": "The planner uses a frozen latent model that never changes after deployment",
+              "answer": "AdaJEPA belongs here because the world model adapts at test time while planning, acting, updating from transitions, and replanning under shift."
+            }
+          ],
+          "quiz_questions": [
+            {
+              "question": "What is the key deployment-time move in AdaJEPA?",
+              "choices": [
+                "It freezes the latent world model and relies only on larger beam search.",
+                "It converts every observation into a contrastive text-image retrieval example.",
+                "It updates the world model from observed transitions before replanning in MPC.",
+                "It discards latent prediction losses after pretraining finishes."
+              ],
+              "answer_index": 2,
+              "source_ids": [
+                "emergentmind-2606-32026-adajepa-2026"
+              ]
+            }
+          ]
+        },
+        {
+          "id": "noncontrastive-vision-language-pretraining",
+          "label": "The Patchwise Oracle",
+          "summary": "Vision-language representation learning without negatives, emphasizing dense patch-level semantic features for VLM backbones and segmentation instead of only pooled zero-shot alignment.",
+          "source_ids": [
+            "emergentmind-2607-00784-levljepa-2026"
+          ],
+          "concept_ids": [
+            "levljepa",
+            "sigreg-regularization"
+          ],
+          "critical_concepts": [
+            "levljepa",
+            "sigreg-regularization"
+          ],
+          "prerequisite_links": [],
+          "side_retention_duels": [
+            {
+              "id": "dense-patches-vs-pooled-contrast",
+              "prompt": "What distinction does The Patchwise Oracle preserve?",
+              "left": "Dense patch-level semantic features learned without negative pairs",
+              "right": "Only pooled image-text contrastive alignment with negatives",
+              "answer": "LeVLJEPA is routed here for noncontrastive vision-language pretraining that strengthens dense patch representations for VLMs and segmentation."
+            }
+          ],
+          "quiz_questions": [
+            {
+              "question": "Why is LeVLJEPA different from CLIP-style training?",
+              "choices": [
+                "It trains by cross-modal prediction and regularization without negative pairs or temperature-scaled contrastive batches.",
+                "It uses only labeled classification heads and never consumes text.",
+                "It improves dense features by expanding the tokenizer vocabulary.",
+                "It requires a momentum teacher and hard-negative mining for every batch."
+              ],
+              "answer_index": 0,
+              "source_ids": [
+                "emergentmind-2607-00784-levljepa-2026"
+              ]
+            }
+          ]
+        },
+        {
+          "id": "multimodal-world-latents",
+          "label": "The World Latent Sea",
+          "summary": "General world foundation modeling through unified next-state prediction over multimodal signals, combining dense video transitions with language-described semantic events.",
+          "source_ids": [
+            "emergentmind-2606-30534-orca-world-foundation-model-2026"
+          ],
+          "concept_ids": [
+            "orca-world-foundation-model",
+            "unconscious-and-conscious-world-learning"
+          ],
+          "critical_concepts": [
+            "orca-world-foundation-model",
+            "unconscious-and-conscious-world-learning"
+          ],
+          "prerequisite_links": [],
+          "side_retention_duels": [
+            {
+              "id": "next-state-latents-vs-caption-only",
+              "prompt": "What does The World Latent Sea model beyond caption matching?",
+              "left": "Unified next-state prediction over multimodal signals and language-described events",
+              "right": "A caption-only alignment task with no transition dynamics",
+              "answer": "The Orca source is a world-foundation-model route because it combines dense video transitions with semantic event descriptions."
+            }
+          ],
+          "quiz_questions": [
+            {
+              "question": "How does Orca frame foundation-model learning?",
+              "choices": [
+                "As next-state prediction in a unified multimodal world latent, not only next-token or next-frame prediction.",
+                "As a static benchmark that never produces downstream readouts.",
+                "As a retrieval-only system that stores text chunks in a vector index.",
+                "As single-layer RL on a frozen language-only transformer."
+              ],
+              "answer_index": 0,
+              "source_ids": [
+                "emergentmind-2606-30534-orca-world-foundation-model-2026"
+              ]
+            }
+          ],
+          "arc": "Foundations of Perception"
+        },
+        {
+          "id": "the-habit-forge",
+          "label": "The HABIT Forge",
+          "summary": "Human-Aware Behavior and Interaction Training (HABIT): robot manipulation data for learning intent-aware embodied behavior.",
+          "source_ids": [
+            "emergentmind-2606-31682-habit-human-aware-behavior-and-interaction-2026"
+          ],
+          "concept_ids": [
+            "habit-human-aware-interaction-training",
+            "human-aware-robot-manipulation"
+          ],
+          "critical_concepts": [
+            "habit-human-aware-interaction-training",
+            "human-aware-robot-manipulation"
+          ],
+          "prerequisite_links": [],
+          "side_retention_duels": [
+            {
+              "id": "object-only-vs-human-aware",
+              "prompt": "What extra signal does HABIT emphasize?",
+              "left": "Object-only manipulation traces",
+              "right": "Human-aware interaction behavior",
+              "answer": "HABIT emphasizes manipulation behavior in human interaction contexts."
+            }
+          ],
+          "quiz_questions": [
+            {
+              "question": "Why does HABIT matter for embodied learning?",
+              "choices": [
+                "It treats manipulation as isolated object motion with no human context.",
+                "It provides human-aware behavior and interaction data for robot manipulation.",
+                "It replaces robot policies with text-only retrieval prompts.",
+                "It evaluates only static image classification accuracy."
+              ],
+              "answer_index": 1,
+              "source_ids": [
+                "emergentmind-2606-31682-habit-human-aware-behavior-and-interaction-2026"
+              ]
+            }
+          ]
+        },
+        {
+          "id": "the-semantic-robot-grove",
+          "label": "The Semantic Robot Grove",
+          "summary": "Semantic reinforcement learning adapts generalist robot policies by using semantic structure as a guide for embodied improvement.",
+          "source_ids": [
+            "emergentmind-2606-31958-adapting-generalist-robot-policies-with-se-2026"
+          ],
+          "concept_ids": [
+            "semantic-reinforcement-learning-for-robots",
+            "generalist-robot-policy-adaptation"
+          ],
+          "critical_concepts": [
+            "semantic-reinforcement-learning-for-robots",
+            "generalist-robot-policy-adaptation"
+          ],
+          "prerequisite_links": [],
+          "side_retention_duels": [
+            {
+              "id": "generic-vs-adapted",
+              "prompt": "What changes after adaptation?",
+              "left": "A broad policy becomes better matched to target tasks",
+              "right": "The UI font size becomes the only learned parameter",
+              "answer": "Semantic RL adapts generalist robot policies toward target embodied tasks."
+            }
+          ],
+          "quiz_questions": [
+            {
+              "question": "What is the goal of semantic RL for generalist robot policies?",
+              "choices": [
+                "Train a language-only debate model with no embodiment.",
+                "Compress frontend assets for a static website.",
+                "Measure only benchmark correlations across LLM releases.",
+                "Adapt broad robot policies using semantic structure as guidance."
+              ],
+              "answer_index": 3,
+              "source_ids": [
+                "emergentmind-2606-31958-adapting-generalist-robot-policies-with-se-2026"
+              ]
+            }
+          ]
+        },
+        {
+          "id": "the-robodojo-courtyard",
+          "label": "The RoboDojo Courtyard",
+          "summary": "RoboDojo evaluates generalist robot manipulation policies across simulation and real-world tasks, exposing generalization, memory, precision, long-horizon control, and instruction following.",
+          "source_ids": [
+            "emergentmind-2607-04434-robodojo-a-unified-sim-and-real-benchmark-for-2026"
+          ],
+          "concept_ids": [
+            "robodojo-sim-real-benchmark",
+            "xpolicylab-policy-integration"
+          ],
+          "critical_concepts": [
+            "robodojo-sim-real-benchmark",
+            "xpolicylab-policy-integration"
+          ],
+          "prerequisite_links": [],
+          "side_retention_duels": [
+            {
+              "id": "sim-only-vs-sim-real",
+              "prompt": "Why does RoboDojo pair simulation with real-world evaluation?",
+              "left": "Simulation scales feedback while real-world tests expose deployment conditions",
+              "right": "Simulation alone perfectly captures every physical manipulation failure",
+              "answer": "The benchmark is designed to cover both scalable simulated tasks and physical deployment challenges."
+            }
+          ],
+          "quiz_questions": [
+            {
+              "question": "What gap does RoboDojo address for robot policy evaluation?",
+              "choices": [
+                "It studies language-model token logits without any embodied tasks.",
+                "It provides only a single short-horizon manipulation exercise.",
+                "It replaces robot control with offline image-captioning benchmarks.",
+                "It unifies diverse sim-and-real manipulation tasks for broader policy evaluation."
+              ],
+              "answer_index": 3,
+              "source_ids": [
+                "emergentmind-2607-04434-robodojo-a-unified-sim-and-real-benchmark-for-2026"
+              ]
+            }
+          ]
+        },
+        {
+          "id": "the-tactile-residual-grove",
+          "label": "The Tactile Residual Grove",
+          "summary": "OmniTacTune adapts pretrained visual robot policies with tactile residual corrections learned through real-world reinforcement learning.",
+          "source_ids": [
+            "emergentmind-2607-03723-omnitactune-policy-agnostic-real-world-rl-for-tactile-2026"
+          ],
+          "concept_ids": [
+            "omnitactune-tactile-residual-rl",
+            "contact-rich-tactile-adaptation"
+          ],
+          "critical_concepts": [
+            "omnitactune-tactile-residual-rl",
+            "contact-rich-tactile-adaptation"
+          ],
+          "prerequisite_links": [],
+          "side_retention_duels": [
+            {
+              "id": "visual-prior-vs-tactile-residual",
+              "prompt": "What does the tactile residual add to a visual policy?",
+              "left": "Local contact feedback that corrects contact-rich manipulation failures",
+              "right": "A replacement for all visual priors and demonstration data",
+              "answer": "The source keeps the visual policy as a prior and learns tactile residual corrections."
+            }
+          ],
+          "quiz_questions": [
+            {
+              "question": "How does OmniTacTune improve pretrained visual robot policies?",
+              "choices": [
+                "It deletes the base policy and trains a symbolic planner from scratch.",
+                "It adapts tactile feedback through residual reinforcement learning on real interactions.",
+                "It evaluates text-only answers with continuous scoring-token logits.",
+                "It compresses long-context attention into a sparse retrieval landmark."
+              ],
+              "answer_index": 1,
+              "source_ids": [
+                "emergentmind-2607-03723-omnitactune-policy-agnostic-real-world-rl-for-tactile-2026"
+              ]
+            }
+          ]
+        },
+        {
+          "id": "the-siamese-embedding-mirror",
+          "label": "The Siamese Embedding Mirror",
+          "summary": "SiamJEPA studies masked Siamese student encoders with an EMA teacher as a regularizing variant of Joint Embedding Predictive Architectures.",
+          "source_ids": [
+            "emergentmind-2607-04044-siamjepa-on-the-role-of-siamese-student-encoders-2026"
+          ],
+          "concept_ids": [
+            "siamjepa-siamese-student-encoders",
+            "latent-embedding-prediction-regularization"
+          ],
+          "critical_concepts": [
+            "siamjepa-siamese-student-encoders",
+            "latent-embedding-prediction-regularization"
+          ],
+          "prerequisite_links": [],
+          "side_retention_duels": [
+            {
+              "id": "pixel-reconstruction-vs-latent-prediction",
+              "prompt": "What does JEPA-style learning predict?",
+              "left": "Latent embeddings for masked regions",
+              "right": "Raw pixels for every masked patch",
+              "answer": "The paper contrasts JEPA latent prediction with masked autoencoder pixel reconstruction."
+            }
+          ],
+          "quiz_questions": [
+            {
+              "question": "What role do Siamese student encoders play in SiamJEPA?",
+              "choices": [
+                "They convert robot force signals into tactile residual actions.",
+                "They score agentic task solutions through repeated verifier calls.",
+                "They shard mixture-of-experts training across parallel devices.",
+                "They regularize JEPA representation learning and accelerate early training."
+              ],
+              "answer_index": 3,
+              "source_ids": [
+                "emergentmind-2607-04044-siamjepa-on-the-role-of-siamese-student-encoders-2026"
+              ]
+            }
+          ],
+          "arc": "Foundations of Perception"
+        },
+        {
+          "id": "the-deformable-orchard",
+          "label": "The Deformable Orchard",
+          "summary": "Deform360 supplies a large visuotactile dataset for deformable object world models, comparing 2D video and 3D particle modeling trade-offs.",
+          "source_ids": [
+            "emergentmind-2607-05390-deform360-a-massive-multi-view-visuotactile-dataset-for-2026"
+          ],
+          "concept_ids": [
+            "deform360-visuotactile-dataset",
+            "deformable-object-world-modeling"
+          ],
+          "critical_concepts": [
+            "deform360-visuotactile-dataset",
+            "deformable-object-world-modeling"
+          ],
+          "prerequisite_links": [],
+          "side_retention_duels": [
+            {
+              "id": "deformable-vs-rigid-worlds",
+              "prompt": "Why are deformable-object world models difficult?",
+              "left": "Object state is high-dimensional and changes with material deformation",
+              "right": "The object remains a rigid block with one fixed pose",
+              "answer": "The source emphasizes complex material properties and contact-induced local deformation."
+            }
+          ],
+          "quiz_questions": [
+            {
+              "question": "What does Deform360 contribute to robot world modeling?",
+              "choices": [
+                "A text-only benchmark for coding-agent verification tasks.",
+                "A multi-view visuotactile dataset for deformable object dynamics.",
+                "A KV-cache method for linear-attention recall at inference time.",
+                "A policy-distillation theorem for mathematical reasoning models."
+              ],
+              "answer_index": 1,
+              "source_ids": [
+                "emergentmind-2607-05390-deform360-a-massive-multi-view-visuotactile-dataset-for-2026"
+              ]
+            }
+          ]
+        },
+        {
+          "id": "the-pixelworld-foundry",
+          "label": "The PixelWorld Foundry",
+          "arc": "Foundations of Perception",
+          "summary": "A pixel-space route that brings 3D scene reconstruction and 3D scene generation into one shared modeling frame.",
+          "source_ids": [
+            "emergentmind-2607-05373-pixworld-unifying-3d-scene-generation-and-reconstruction-2026"
+          ],
+          "concept_ids": [
+            "pixworld-pixel-space-3d",
+            "unified-3d-generation-reconstruction"
+          ],
+          "critical_concepts": [
+            "pixworld-pixel-space-3d"
+          ],
+          "prerequisite_links": [],
+          "side_retention_duels": [
+            {
+              "id": "separate-3d-vs-unified-pixel",
+              "prompt": "What is the main PixelWorld bridge?",
+              "left": "Separate reconstruction and generation pipelines",
+              "right": "A shared pixel-space frame for both tasks",
+              "answer": "The source frames 3D generation and reconstruction as unified in pixel space."
+            }
+          ],
+          "quiz_questions": [
+            {
+              "question": "What two tasks does PixWorld try to unify?",
+              "choices": [
+                "KV-cache compression and model billing only.",
+                "Social norm learning and oncology triage.",
+                "3D scene reconstruction and 3D scene generation in pixel space.",
+                "Speculative decoding and braid group faithfulness."
+              ],
+              "answer_index": 2,
+              "source_ids": [
+                "emergentmind-2607-05373-pixworld-unifying-3d-scene-generation-and-reconstruction-2026"
+              ]
+            }
+          ]
+        },
+        {
+          "id": "the-proxy-pose-theater",
+          "label": "The Proxy Pose Theater",
+          "arc": "Foundations of Perception",
+          "summary": "Monocular 6-DoF pose tracking by translating video into pose-aware proxy renderings, so object and surface motion can be followed without relying on dense manual pose labels.",
+          "source_ids": [
+            "emergentmind-2607-06555-proxypose-6-dof-pose-tracking-via-video-2026"
+          ],
+          "concept_ids": [
+            "proxypose-video-to-video-pose-tracking",
+            "proxy-rendered-pose-translation",
+            "monocular-6dof-pose-tracking"
+          ],
+          "critical_concepts": [
+            "proxypose-video-to-video-pose-tracking",
+            "monocular-6dof-pose-tracking"
+          ],
+          "prerequisite_links": [],
+          "side_retention_duels": [
+            {
+              "id": "pose-proxy-vs-direct-regression",
+              "prompt": "Why does the proxy theater help pose tracking?",
+              "left": "It converts video frames into pose-aware proxy renderings",
+              "right": "It only classifies whether any object is present",
+              "answer": "ProxyPose is routed here because the source frames pose tracking through video-to-video proxy translation rather than a simple detection label."
+            }
+          ],
+          "quiz_questions": [
+            {
+              "question": "What is the main mechanism behind ProxyPose?",
+              "choices": [
+                "It replaces pose tracking with a text-only benchmark score.",
+                "It stores every frame in a retrieval index without estimating motion.",
+                "It uses video-to-video translation to recover 6-DoF pose cues from monocular video.",
+                "It trains a language model to summarize camera metadata only."
+              ],
+              "answer_index": 2,
+              "source_ids": [
+                "emergentmind-2607-06555-proxypose-6-dof-pose-tracking-via-video-2026"
+              ]
+            }
+          ]
+        },
+        {
+          "id": "the-photoreal-sim-yards",
+          "label": "The Photoreal Sim Yards",
+          "arc": "Foundations of Perception",
+          "summary": "SPEAR is a photorealistic embodied-AI simulator aimed at training agents and generating synthetic visual data while addressing limits of existing interactive simulators.",
+          "source_ids": [
+            "emergentmind-2607-06701-spear-a-simulator-for-photorealistic-embodied-ai-2026"
+          ],
+          "concept_ids": [
+            "spear-photorealistic-embodied-ai-simulator",
+            "synthetic-visual-data-for-embodied-agents",
+            "interactive-simulation-for-embodied-ai"
+          ],
+          "critical_concepts": [
+            "spear-photorealistic-embodied-ai-simulator",
+            "interactive-simulation-for-embodied-ai"
+          ],
+          "prerequisite_links": [],
+          "side_retention_duels": [
+            {
+              "id": "static-dataset-vs-interactive-sim",
+              "prompt": "What does SPEAR add beyond a static dataset?",
+              "left": "Interactive photorealistic simulation for embodied research",
+              "right": "Only a fixed table of benchmark scores",
+              "answer": "The simulator matters because embodied learners need action-conditioned visual worlds, not just offline image folders."
+            }
+          ],
+          "quiz_questions": [
+            {
+              "question": "Why does SPEAR belong in Perception & World Models?",
+              "choices": [
+                "It provides photorealistic interactive simulation and synthetic visual data for embodied AI.",
+                "It analyzes moral wrongness ratings under implied user identities.",
+                "It proves a braid-group representation theorem in pure mathematics.",
+                "It compresses server memory by moving all DRAM into fiber links."
+              ],
+              "answer_index": 0,
+              "source_ids": [
+                "emergentmind-2607-06701-spear-a-simulator-for-photorealistic-embodied-ai-2026"
+              ]
+            }
+          ]
+        },
+        {
+          "id": "the-polyphonic-scribe-hall",
+          "label": "The Polyphonic Scribe Hall",
+          "arc": "Foundations of Perception",
+          "summary": "MuScriptor is an open model for multi-instrument music transcription, addressing complex real music mixes beyond single-instrument transcription settings.",
+          "source_ids": [
+            "emergentmind-2607-08168-muscriptor-an-open-model-for-multi-instrument-2026"
+          ],
+          "concept_ids": [
+            "muscriptor-multi-instrument-transcription",
+            "automatic-music-transcription",
+            "multi-instrument-audio-perception"
+          ],
+          "critical_concepts": [
+            "muscriptor-multi-instrument-transcription",
+            "multi-instrument-audio-perception"
+          ],
+          "prerequisite_links": [],
+          "side_retention_duels": [
+            {
+              "id": "single-instrument-vs-polyphonic-mix",
+              "prompt": "What challenge does MuScriptor face?",
+              "left": "Transcribing complex mixes with multiple instruments",
+              "right": "Classifying one isolated note from one instrument only",
+              "answer": "The paper is about richer audio perception, so the region tracks overlapping sources rather than a single clean signal."
+            }
+          ],
+          "quiz_questions": [
+            {
+              "question": "What does MuScriptor expand in music transcription?",
+              "choices": [
+                "It proves whether a braid representation is faithful for n equals four.",
+                "It stores all attention keys in NVMe without decoding audio.",
+                "It routes theorem-proving agents through tensor-network lemmas.",
+                "It targets multi-instrument transcription for complex real music mixes."
+              ],
+              "answer_index": 3,
+              "source_ids": [
+                "emergentmind-2607-08168-muscriptor-an-open-model-for-multi-instrument-2026"
+              ]
+            }
+          ]
+        },
+        {
+          "id": "the-infinite-interaction-expanse",
+          "label": "The Infinite Interaction Expanse",
+          "arc": "Foundations of Perception",
+          "summary": "LingBot-World 2.0 expands interactive world generation with versatile interactions and effectively unbounded environments for embodied or situated agents.",
+          "source_ids": [
+            "emergentmind-2607-07534-infinite-worlds-with-versatile-interactions-2026"
+          ],
+          "concept_ids": [
+            "lingbot-world-infinity",
+            "interactive-world-generation",
+            "versatile-embodied-interactions"
+          ],
+          "critical_concepts": [
+            "lingbot-world-infinity",
+            "interactive-world-generation"
+          ],
+          "prerequisite_links": [],
+          "side_retention_duels": [
+            {
+              "id": "static-scene-vs-interactive-world",
+              "prompt": "What makes LingBot-World-Infinity different from a static scene?",
+              "left": "It emphasizes versatile interactions inside extended generated worlds",
+              "right": "It only returns one still image with no action affordances",
+              "answer": "The Edokai lesson is that a world model becomes more useful when it supports interaction, not just appearance."
+            }
+          ],
+          "quiz_questions": [
+            {
+              "question": "What does LingBot-World 2.0 try to improve?",
+              "choices": [
+                "Late-interaction retrieval capacity using MaxSim scoring.",
+                "Latency-oriented CTA scheduling across multi-GPU kernels.",
+                "Generated worlds with broader, more versatile interactions.",
+                "Behavioral moral ratings under implied user identities."
+              ],
+              "answer_index": 2,
+              "source_ids": [
+                "emergentmind-2607-07534-infinite-worlds-with-versatile-interactions-2026"
+              ]
+            }
+          ]
+        },
+        {
+          "id": "the-geometry-splatting-citadel",
+          "label": "The Geometry Splatting Citadel",
+          "summary": "In the Geometry Splatting Citadel, GeoGS-SLAM asks whether dense monocular SLAM can prioritize **scene geometry** over photorealistic appearance. The plain technical term is geometry-only Gaussian Splatting for dense SLAM: learners compare 3DGS as a reconstruction engine with SLAM needs like navigation and obstacle avoidance, where accurate spatial structure matters more than novel-view rendering.",
+          "source_ids": [
+            "emergentmind-2607-07452-geogs-slam-geometry-only-gaussian-splatting-for-dense-2026"
+          ],
+          "concept_ids": [
+            "geogs-slam-geometry-only-gaussian-splatting-for",
+            "geogs-slam-geometry-only-gaussian-splatting-for-dense",
+            "geogs-slam-geometry-only-gaussian-splatting-for-dense-evidence"
+          ],
+          "critical_concepts": [
+            "geogs-slam-geometry-only-gaussian-splatting-for",
+            "geogs-slam-geometry-only-gaussian-splatting-for-dense"
+          ],
+          "prerequisite_links": [],
+          "side_retention_duels": [
+            {
+              "id": "geometry-vs-appearance-splatting",
+              "prompt": "In **GeoGS-SLAM**, what should be protected when Gaussian Splatting is used for robotic SLAM?",
+              "left": "Photorealistic appearance synthesis as the main downstream objective.",
+              "right": "Accurate scene geometry for localization, navigation, and obstacle avoidance.",
+              "answer": "The source motivates geometry-only Gaussian Splatting because dense SLAM needs reliable spatial structure more than appearance modeling."
+            }
+          ],
+          "quiz_questions": [
+            {
+              "question": "Why does GeoGS-SLAM strip the Gaussian Splatting focus down toward geometry-only reconstruction?",
+              "choices": [
+                "Because dense robotic SLAM mainly needs dependable spatial structure for navigation and obstacle avoidance.",
+                "Because the method is only a user-interface skin for viewing reconstructed scenes.",
+                "Because event-camera simulators require removing all geometric constraints from SLAM.",
+                "Because the paper replaces monocular mapping with unrelated language-model prompting."
+              ],
+              "answer_index": 0,
+              "source_ids": [
+                "emergentmind-2607-07452-geogs-slam-geometry-only-gaussian-splatting-for-dense-2026"
+              ]
+            }
+          ],
+          "arc": "Foundations of Perception"
+        },
+        {
+          "id": "the-event-camera-workshop",
+          "label": "The Event Camera Workshop",
+          "summary": "The Event Camera Workshop teaches **EVIS**, a physics-grounded event-camera plugin for NVIDIA Isaac Sim. The plain technical term is synthetic event-stream generation with labeled simulator data: learners trace log-intensity contrast events, asynchronous per-pixel updates, and why scarce real event-camera labels make simulator-grounded perception data valuable for robotics.",
+          "source_ids": [
+            "emergentmind-2607-08098-evis-a-physics-grounded-event-camera-plugin-for-2026"
+          ],
+          "concept_ids": [
+            "evis-a-physics-grounded-event-camera-plugin",
+            "evis-a-physics-grounded-event-camera-plugin-for",
+            "evis-a-physics-grounded-event-camera-plugin-for-evidence"
+          ],
+          "critical_concepts": [
+            "evis-a-physics-grounded-event-camera-plugin",
+            "evis-a-physics-grounded-event-camera-plugin-for"
+          ],
+          "prerequisite_links": [],
+          "side_retention_duels": [
+            {
+              "id": "rgb-simulator-vs-event-stream-plugin",
+              "prompt": "What does **EVIS** add to an Isaac Sim robotics pipeline?",
+              "left": "A physics-grounded event-camera stream with high-rate labels from simulation.",
+              "right": "A text-only benchmark that ignores sensor timing and robot scenes.",
+              "answer": "EVIS is useful because it turns simulated scenes into labeled event-camera data using a faithful event model, reducing dependence on expensive real labels."
+            }
+          ],
+          "quiz_questions": [
+            {
+              "question": "Why is EVIS routed under Perception & World Models rather than generic serving infrastructure?",
+              "choices": [
+                "It only schedules multi-GPU kernels for serving a language model faster.",
+                "It teaches retrieval reranking without observing images, events, or robot scenes.",
+                "It is a medical treatment protocol with no machine-learning data pathway.",
+                "It models event-camera perception signals inside a physics simulator for robotics data generation."
+              ],
+              "answer_index": 3,
+              "source_ids": [
+                "emergentmind-2607-08098-evis-a-physics-grounded-event-camera-plugin-for-2026"
+              ]
+            }
+          ],
+          "arc": "Foundations of Perception"
+        },
+        {
+          "id": "the-slam-mirror-cavern",
+          "label": "The SLAM Mirror Cavern",
+          "summary": "The SLAM Mirror Cavern examines why deep learning improves visual SLAM under hard visual conditions. The plain technical term is learned data association and uncertainty combined with differentiable geometric optimization in recurrent architectures: learners separate the learned perception components from the classical geometry they support.",
+          "source_ids": [
+            "emergentmind-2607-06023-why-does-deep-learning-improve-visual-slam-2026"
+          ],
+          "concept_ids": [
+            "why-does-deep-learning-improve-visual-slam",
+            "why-does-deep-learning-improve-visual-slam-learning",
+            "why-does-deep-learning-improve-visual-slam-evaluation"
+          ],
+          "critical_concepts": [
+            "why-does-deep-learning-improve-visual-slam",
+            "why-does-deep-learning-improve-visual-slam-learning"
+          ],
+          "prerequisite_links": [],
+          "side_retention_duels": [
+            {
+              "id": "learned-association-vs-pure-geometry",
+              "prompt": "What does the visual-SLAM source claim deep learning contributes under blur, low texture, or poor illumination?",
+              "left": "Learned 2D data association and uncertainty estimates that support geometric optimization.",
+              "right": "A replacement of all geometry with unrelated text-only prompting.",
+              "answer": "The source frames the gain as learned correspondence/uncertainty coupled with differentiable geometric optimization, not as abandoning SLAM geometry."
+            }
+          ],
+          "quiz_questions": [
+            {
+              "question": "Which component mix explains the reported gains in deep-learning visual SLAM?",
+              "choices": [
+                "Only a new UI theme for showing maps after classical SLAM has finished.",
+                "Learned 2D association and uncertainty combined with differentiable geometric optimization.",
+                "A retrieval-augmented text index that never observes camera frames or geometry.",
+                "A benchmark saturation protocol for measuring superhuman intelligence."
+              ],
+              "answer_index": 1,
+              "source_ids": [
+                "emergentmind-2607-06023-why-does-deep-learning-improve-visual-slam-2026"
+              ]
+            }
+          ],
+          "arc": "Foundations of Perception"
+        },
+        {
+          "id": "the-wherewatcher-lantern",
+          "label": "The Wherewatcher Lantern",
+          "summary": "The Wherewatcher Lantern covers **Whareformer** for long egocentric videos. The plain technical term is learning-based object-location tracking for OSNOM: learners follow an updatable memory of established tracks plus a feed-forward assignment module that keeps objects mentally located even when they leave view or become occluded.",
+          "source_ids": [
+            "emergentmind-2607-08537-whareformer-learning-to-track-what-is-where-in-2026"
+          ],
+          "concept_ids": [
+            "whareformer-learning-to-track-what-is-where",
+            "whareformer-learning-to-track-what-is-where-in",
+            "whareformer-learning-to-track-what-is-where-in-evidence"
+          ],
+          "critical_concepts": [
+            "whareformer-learning-to-track-what-is-where",
+            "whareformer-learning-to-track-what-is-where-in"
+          ],
+          "prerequisite_links": [],
+          "side_retention_duels": [
+            {
+              "id": "visible-frame-vs-updatable-track-memory",
+              "prompt": "In **Whareformer**, why is an updatable memory needed for egocentric video?",
+              "left": "Objects can leave the field of view while their locations still need to be tracked.",
+              "right": "Every object is always visible, so no track state needs to persist.",
+              "answer": "Whareformer targets OSNOM-style tracking, where the model maintains instance locations across occlusion and out-of-view intervals."
+            }
+          ],
+          "quiz_questions": [
+            {
+              "question": "What is Whareformer’s main mechanism for the OSNOM egocentric-video task?",
+              "choices": [
+                "A Gaussian Splatting renderer whose only goal is photorealistic novel-view synthesis.",
+                "A fixed human-authored exam for measuring all future model intelligence.",
+                "An updatable track memory plus assignment module for following objects across occlusion and out-of-view gaps.",
+                "A teacher-server logprob API for distilling math reasoning into a local student."
+              ],
+              "answer_index": 2,
+              "source_ids": [
+                "emergentmind-2607-08537-whareformer-learning-to-track-what-is-where-in-2026"
+              ]
+            }
+          ],
+          "arc": "Foundations of Perception"
+        },
+        {
+          "id": "the-cultural-concept-gallery",
+          "label": "The Cultural Concept Gallery",
+          "summary": "The Cultural Concept Gallery studies how visual imagination exposes hidden variation in human concepts. The plain technical term is large-scale sketch-based concept analysis: learners compare linguistic similarity with 2.6B human-made sketches from 236 countries and territories, using visual representations to reveal cultural and individual structure that words may compress away.",
+          "source_ids": [
+            "emergentmind-2607-07267-billions-of-sketches-reveal-hidden-cultural-variation-in-2026"
+          ],
+          "concept_ids": [
+            "billions-of-sketches-reveal-hidden-cultural-variation",
+            "billions-of-sketches-reveal-hidden-cultural-variation-in",
+            "billions-of-sketches-reveal-hidden-cultural-variation-in-evidence"
+          ],
+          "critical_concepts": [
+            "billions-of-sketches-reveal-hidden-cultural-variation",
+            "billions-of-sketches-reveal-hidden-cultural-variation-in"
+          ],
+          "prerequisite_links": [],
+          "side_retention_duels": [
+            {
+              "id": "words-vs-sketch-concepts",
+              "prompt": "Why does the sketch study look beyond language when comparing human concepts?",
+              "left": "Words can compress experiential variation into shared conventions.",
+              "right": "Sketches are used only to speed up LLM inference serving.",
+              "answer": "The source analyzes billions of sketches because visual imagination can reveal cultural concept differences that word similarity may hide."
+            }
+          ],
+          "quiz_questions": [
+            {
+              "question": "What mechanism makes Billions of Sketches relevant to Perception & World Models?",
+              "choices": [
+                "It analyzes billions of human sketches to study visual concept representations across cultures.",
+                "It introduces a GPU memory fabric for serving larger language-model batches.",
+                "It trains search agents through deterministic web-page reading trajectories.",
+                "It evaluates clinical outcomes from a medical intervention protocol."
+              ],
+              "answer_index": 0,
+              "source_ids": [
+                "emergentmind-2607-07267-billions-of-sketches-reveal-hidden-cultural-variation-in-2026"
+              ]
+            }
+          ],
+          "arc": "Foundations of Perception"
+        },
+        {
+          "id": "the-automation-without-understanding",
+          "label": "The Automation Without Understanding",
+          "summary": "A source-backed case board for Automation Without Understanding: learners inspect the plain technical mechanism, the evaluation signal, and where the claim fits in Edokai's perception world models world.",
+          "source_ids": [
+            "emergentmind-2607-06377-automation-without-understanding-2026"
+          ],
+          "concept_ids": [
+            "automation-without-understanding",
+            "automation-without-understanding-learning-problem",
+            "automation-without-understanding-evaluation-signal"
+          ],
+          "critical_concepts": [
+            "automation-without-understanding",
+            "automation-without-understanding-learning-problem"
+          ],
+          "prerequisite_links": [],
+          "side_retention_duels": [
+            {
+              "id": "the-automation-without-understanding-duel",
+              "prompt": "What should Edokai learners remember about **Automation Without Understanding**?",
+              "left": "Treat it as a title-only bookmark without checking the mechanism.",
+              "right": "Track the mechanism, evidence signal, and limits stated by the source.",
+              "answer": "Use the source-backed mechanism and evaluation signal; avoid inferring guarantees beyond the paper summary."
+            }
+          ],
+          "quiz_questions": [
+            {
+              "question": "In the source **Automation Without Understanding**, what is the main learner-facing mechanism Edokai should preserve?",
+              "choices": [
+                "It mainly replaces the user interface theme without changing the learning mechanism.",
+                "It is a clinical treatment protocol rather than a machine-learning research method.",
+                "It uses the source's Automation Without Understanding mechanism to address the paper's stated ML/AI problem.",
+                "It proves a pure-math theorem without a model, agent, or evaluation loop."
+              ],
+              "answer_index": 2,
+              "source_ids": [
+                "emergentmind-2607-06377-automation-without-understanding-2026"
+              ]
+            }
+          ]
+        }
+      ]
     },
     "llm-systems-serving": {
       "label": "LLM Systems & Serving",
@@ -841,14 +3421,223 @@
             {
               "question": "What makes memory agent-native in this source?",
               "choices": [
-                "It is a one-shot prompt prefix with no updates.",
-                "It removes persistent information entirely.",
-                "It spans storage, retrieval, update, consolidation, and lifecycle governance during execution.",
-                "It only stores image pixels."
+                "It is a static prompt prefix that never updates during execution.",
+                "It deletes persistent context after each tool call completes.",
+                "It manages storage, retrieval, updating, and lifecycle policy inside the agent loop.",
+                "It stores raw image pixels without retrieval or consolidation."
               ],
               "answer_index": 2,
               "source_ids": [
                 "emergentmind-2606-24775-agent-native-memory-2026"
+              ]
+            }
+          ]
+        },
+        {
+          "id": "the-weight-script-foundry",
+          "label": "The Weight-Script Foundry",
+          "summary": "Program-as-Weights treats fuzzy functions as executable behavior encoded in weights, linking programs, models, and systems interfaces.",
+          "source_ids": [
+            "emergentmind-2607-02512-program-as-weights-a-programming-paradigm-2026"
+          ],
+          "concept_ids": [
+            "program-as-weights",
+            "fuzzy-function-programming"
+          ],
+          "critical_concepts": [
+            "program-as-weights",
+            "fuzzy-function-programming"
+          ],
+          "prerequisite_links": [],
+          "side_retention_duels": [
+            {
+              "id": "symbolic-vs-fuzzy",
+              "prompt": "What kind of function is centered?",
+              "left": "Exact symbolic function only",
+              "right": "Fuzzy learned function encoded in weights",
+              "answer": "Program-as-Weights frames learned weights as a way to program fuzzy functions."
+            }
+          ],
+          "quiz_questions": [
+            {
+              "question": "What is the key programming idea in Program-as-Weights?",
+              "choices": [
+                "Use only exact symbolic sorting algorithms.",
+                "Represent fuzzy functions as behavior encoded in weights.",
+                "Replace every model with a SQL migration.",
+                "Evaluate robot contact sensors with astronomy data."
+              ],
+              "answer_index": 1,
+              "source_ids": [
+                "emergentmind-2607-02512-program-as-weights-a-programming-paradigm-2026"
+              ]
+            }
+          ]
+        },
+        {
+          "id": "the-memory-scarcity-ledger",
+          "label": "The Memory Scarcity Ledger",
+          "arc": "The Forge of Systems",
+          "summary": "Inference economics under DRAM/HBM pressure, open-weight frontier models, KV-cache compression, local runtimes, and infrastructure solvency constraints.",
+          "source_ids": [
+            "emergentmind-2607-07207-memory-scarcity-open-models-and-the-restructuring-2026"
+          ],
+          "concept_ids": [
+            "memory-scarcity-inference-economics",
+            "kv-cache-compression-economics"
+          ],
+          "critical_concepts": [
+            "memory-scarcity-inference-economics"
+          ],
+          "prerequisite_links": [],
+          "side_retention_duels": [
+            {
+              "id": "flops-vs-memory",
+              "prompt": "Which constraint does this source foreground?",
+              "left": "Memory and cache economics in inference",
+              "right": "Only pretraining FLOP totals",
+              "answer": "The scenario analyzes memory scarcity and inference efficiency as industry-shaping constraints."
+            }
+          ],
+          "quiz_questions": [
+            {
+              "question": "What serving-system pressure is central to the memory-scarcity scenario?",
+              "choices": [
+                "Only the color palette used in model documentation.",
+                "A proof that all open models require no hardware.",
+                "The cost and availability of inference memory such as DRAM/HBM and KV-cache storage.",
+                "A claim that batch size never affects deployment economics."
+              ],
+              "answer_index": 2,
+              "source_ids": [
+                "emergentmind-2607-07207-memory-scarcity-open-models-and-the-restructuring-2026"
+              ]
+            }
+          ]
+        },
+        {
+          "id": "the-factorized-drafting-grove",
+          "label": "The Factorized Drafting Grove",
+          "arc": "The Forge of Systems",
+          "summary": "Speculative decoding with autoregressive drafting and factorized priors, trading extra draft-token computation for lower interactive latency.",
+          "source_ids": [
+            "emergentmind-2607-06763-trees-from-marginals-autoregressive-drafting-with-factorized-2026"
+          ],
+          "concept_ids": [
+            "factorized-prior-speculative-drafting",
+            "autoregressive-draft-trees"
+          ],
+          "critical_concepts": [
+            "factorized-prior-speculative-drafting"
+          ],
+          "prerequisite_links": [],
+          "side_retention_duels": [
+            {
+              "id": "verify-vs-sample-one",
+              "prompt": "What does a draft tree provide?",
+              "left": "Multiple candidate continuations to verify",
+              "right": "A single mandatory final answer with no checks",
+              "answer": "Drafting trades extra proposed tokens for faster accepted generation."
+            }
+          ],
+          "quiz_questions": [
+            {
+              "question": "What is speculative decoding trying to improve here?",
+              "choices": [
+                "The molecular stability of a robotics gripper.",
+                "The number of labels in an image segmentation mask.",
+                "Interactive generation speed by drafting extra candidate tokens for verification.",
+                "The faithfulness of a braid group representation proof."
+              ],
+              "answer_index": 2,
+              "source_ids": [
+                "emergentmind-2607-06763-trees-from-marginals-autoregressive-drafting-with-factorized-2026"
+              ]
+            }
+          ]
+        },
+        {
+          "id": "the-cta-pipeline-forge",
+          "label": "The CTA Pipeline Forge",
+          "arc": "The Forge of Systems",
+          "summary": "A latency-oriented spatial scaling method for multi-GPU systems that treats CTA pipelining as a way to use tightly integrated shared-memory GPU structures more effectively.",
+          "source_ids": [
+            "emergentmind-2607-07862-cta-pipelining-a-latency-oriented-spatial-scaling-2026"
+          ],
+          "concept_ids": [
+            "cta-pipelining-multi-gpu-scaling",
+            "latency-oriented-spatial-scaling",
+            "shared-memory-multi-gpu-systems"
+          ],
+          "critical_concepts": [
+            "cta-pipelining-multi-gpu-scaling",
+            "latency-oriented-spatial-scaling"
+          ],
+          "prerequisite_links": [],
+          "side_retention_duels": [
+            {
+              "id": "throughput-only-vs-latency-pipeline",
+              "prompt": "What does CTA-Pipelining optimize for?",
+              "left": "Lower latency through spatial pipelining across GPUs",
+              "right": "Only larger offline batch throughput with no latency target",
+              "answer": "The systems lesson is that serving performance depends on latency-aware scheduling, not just adding devices."
+            }
+          ],
+          "quiz_questions": [
+            {
+              "question": "What serving-system issue does CTA-Pipelining target?",
+              "choices": [
+                "Moral value shifts caused by implied prompt identities.",
+                "Latency in multi-GPU execution through spatial CTA-level pipelining.",
+                "Video-to-video pose translation for object tracking.",
+                "Quantum entropy theorem formalization in Lean."
+              ],
+              "answer_index": 1,
+              "source_ids": [
+                "emergentmind-2607-07862-cta-pipelining-a-latency-oriented-spatial-scaling-2026"
+              ]
+            }
+          ]
+        },
+        {
+          "id": "the-fiber-memory-causeway",
+          "label": "The Fiber Memory Causeway",
+          "arc": "The Forge of Systems",
+          "summary": "A systems proposal motivated by generative AI memory pressure, asking how fiber-linked memory could relieve DRAM availability and pricing constraints.",
+          "source_ids": [
+            "emergentmind-2607-08407-who-needs-dram-we-have-fiber-2026"
+          ],
+          "concept_ids": [
+            "fiber-linked-memory-for-ai-systems",
+            "dram-pressure-from-generative-ai",
+            "memory-disaggregation-for-inference"
+          ],
+          "critical_concepts": [
+            "fiber-linked-memory-for-ai-systems",
+            "dram-pressure-from-generative-ai"
+          ],
+          "prerequisite_links": [],
+          "side_retention_duels": [
+            {
+              "id": "local-dram-vs-fiber-memory",
+              "prompt": "What bottleneck motivates the Causeway?",
+              "left": "DRAM scarcity and pricing pressure from AI memory demand",
+              "right": "A lack of moral-rating surveys for language models",
+              "answer": "The source is routed as systems infrastructure because it is about memory capacity and interconnects."
+            }
+          ],
+          "quiz_questions": [
+            {
+              "question": "Why is “Who Needs DRAM? We Have Fiber” a serving-systems concept?",
+              "choices": [
+                "It focuses on memory pressure and fiber-linked capacity for AI infrastructure.",
+                "It formalizes sandwiched Rényi relative entropy in Lean.",
+                "It trains a photorealistic embodied simulator for navigation only.",
+                "It explains concept geometry without discussing hardware constraints."
+              ],
+              "answer_index": 0,
+              "source_ids": [
+                "emergentmind-2607-08407-who-needs-dram-we-have-fiber-2026"
               ]
             }
           ]
@@ -920,10 +3709,10 @@
             {
               "question": "Why does GraphRAG outperform conventional vector RAG on questions like 'What are the main themes in this dataset?'",
               "choices": [
-                "Because GraphRAG uses a larger embedding model for similarity search.",
-                "Because vector RAG cannot read text files at all.",
-                "Because GraphRAG skips the LLM and answers from the graph directly.",
-                "Because such questions need reasoning across the whole corpus, which graph community summaries cover but a few retrieved chunks do not."
+                "It relies only on a larger embedding model for chunk similarity.",
+                "It assumes vector RAG systems cannot read ordinary text files.",
+                "It skips the language model and answers directly from graph edges.",
+                "It uses community summaries to reason across corpus-wide themes."
               ],
               "answer_index": 3,
               "source_ids": [
@@ -933,10 +3722,10 @@
             {
               "question": "What are the two stages GraphRAG uses to build its index?",
               "choices": [
-                "Derive an entity knowledge graph from source documents, then pregenerate community summaries for groups of related entities.",
-                "Fine-tune the LLM, then quantize it to 4-bit.",
-                "Crawl the web, then store embeddings in a vector database.",
-                "Translate the corpus, then deduplicate sentences."
+                "It extracts an entity graph, then summarizes related graph communities.",
+                "It fine-tunes the generator, then quantizes model weights for serving.",
+                "It crawls web pages, then stores nearest-neighbor chunk embeddings.",
+                "It translates each document, then deduplicates repeated sentences."
               ],
               "answer_index": 0,
               "source_ids": [
@@ -1000,10 +3789,10 @@
             {
               "question": "Which algorithm does GraphRAG use to partition its entity graph into nested communities?",
               "choices": [
-                "K-means over token embeddings.",
-                "Leiden community detection, applied recursively/hierarchically.",
-                "Beam search decoding.",
-                "Gradient-boosted trees."
+                "K-means clustering over sentence embedding vectors.",
+                "Leiden community detection over the entity graph hierarchy.",
+                "Beam-search decoding over candidate answer strings.",
+                "Gradient-boosted trees over tabular feature rows."
               ],
               "answer_index": 1,
               "source_ids": [
@@ -1013,10 +3802,10 @@
             {
               "question": "In GraphRAG's evaluation, what role does the 'Directness' criterion play?",
               "choices": [
-                "The primary metric GraphRAG is optimized to win.",
-                "A measure of inference latency in milliseconds.",
-                "A control criterion expected to oppose comprehensiveness and diversity, not a target to maximize.",
-                "A count of GPUs used during indexing."
+                "It is the main quality score GraphRAG tries to maximize.",
+                "It measures inference latency for each generated answer.",
+                "It is a control criterion that can trade off against broad coverage.",
+                "It counts the accelerator devices used during indexing."
               ],
               "answer_index": 2,
               "source_ids": [
@@ -1061,14 +3850,98 @@
             {
               "question": "Why does this source route Agentic RAG to Retrieval-Augmented Generation instead of generic serving?",
               "choices": [
-                "It is about low-level GPU kernel scheduling only.",
-                "It centers retrieval, indexing, reranking/compression, and non-parametric knowledge inside agent loops.",
-                "It removes retrieval from agents entirely.",
-                "It is only a UI approval pattern."
+                "It focuses only on low-level kernel scheduling for GPUs.",
+                "It centers retrieval, indexing, and non-parametric memory in agent loops.",
+                "It removes retrieval tools from the agent workflow entirely.",
+                "It describes only a human approval screen for agent UIs."
               ],
               "answer_index": 1,
               "source_ids": [
                 "arxiv-2606-24937-hitchhikers-guide-agentic-ai-2026"
+              ]
+            }
+          ]
+        },
+        {
+          "id": "the-maxsim-capacity-vault",
+          "label": "The MaxSim Capacity Vault",
+          "summary": "A theoretical study of late-interaction retrieval capacity, focusing on how MaxSim-style multi-vector retrieval can represent and expand matching behavior.",
+          "source_ids": [
+            "emergentmind-2607-05803-quantifying-and-expanding-the-theoretical-capacity-of-2026"
+          ],
+          "concept_ids": [
+            "late-interaction-retrieval-capacity",
+            "maxsim-similarity-function",
+            "multi-vector-retrieval-models"
+          ],
+          "critical_concepts": [
+            "late-interaction-retrieval-capacity",
+            "maxsim-similarity-function"
+          ],
+          "prerequisite_links": [],
+          "side_retention_duels": [
+            {
+              "id": "single-vector-vs-late-interaction",
+              "prompt": "What is preserved in late interaction?",
+              "left": "Token-level matching structure through multi-vector MaxSim scoring",
+              "right": "Only one pooled vector with no token-level comparisons",
+              "answer": "The source strengthens the RAG world because retrieval capacity changes what evidence a generator can access."
+            }
+          ],
+          "quiz_questions": [
+            {
+              "question": "Why does MaxSim belong in Retrieval-Augmented Generation?",
+              "choices": [
+                "It schedules CTA kernels across multiple GPUs for lower latency.",
+                "It formalizes quantum information entropy in Lean proof objects.",
+                "It is a late-interaction retrieval score that shapes document matching capacity.",
+                "It studies whether user identity changes moral wrongness ratings."
+              ],
+              "answer_index": 2,
+              "source_ids": [
+                "emergentmind-2607-05803-quantifying-and-expanding-the-theoretical-capacity-of-2026"
+              ]
+            }
+          ]
+        },
+        {
+          "id": "the-verifiable-search-depths",
+          "label": "The Verifiable Search Depths",
+          "summary": "The Verifiable Search Depths introduce **DeepSearch-World** and DeepSearch-Evolve for deep search agents. The plain technical term is self-distillation in a deterministic, verifiable web-agent environment: learners track why reproducible search/page-reading tools and multi-hop QA tasks give agents stronger feedback than fixed teacher trajectories or sparse long-horizon rewards alone.",
+          "source_ids": [
+            "emergentmind-2607-07820-deepsearch-world-self-distillation-for-deep-search-agents-2026"
+          ],
+          "concept_ids": [
+            "deepsearch-world-self-distillation-for-deep-search",
+            "deepsearch-world-self-distillation-for-deep-search-agents",
+            "deepsearch-world-self-distillation-for-deep-search-agents-evidence"
+          ],
+          "critical_concepts": [
+            "deepsearch-world-self-distillation-for-deep-search",
+            "deepsearch-world-self-distillation-for-deep-search-agents"
+          ],
+          "prerequisite_links": [],
+          "side_retention_duels": [
+            {
+              "id": "fixed-teacher-vs-verifiable-self-distillation",
+              "prompt": "What makes **DeepSearch-World** different from ordinary fixed-trajectory distillation for search agents?",
+              "left": "It only replays teacher demonstrations without checking search outcomes.",
+              "right": "It gives agents reproducible tools and verifiable tasks for self-distilled improvement.",
+              "answer": "DeepSearch-World is framed as a deterministic, verifiable environment so DeepSearch-Evolve can use an agent’s own search experience as training signal."
+            }
+          ],
+          "quiz_questions": [
+            {
+              "question": "What learner-facing mechanism should Edokai preserve from DeepSearch-World?",
+              "choices": [
+                "A graphics-only renderer that improves SLAM by changing image colors.",
+                "A deterministic search-and-reading environment where self-distillation can be judged by verifiable multi-hop QA outcomes.",
+                "A clinical protocol for diagnosing humans after they use web-search tools.",
+                "A pure vocabulary-compression trick with no agent actions or environment feedback."
+              ],
+              "answer_index": 1,
+              "source_ids": [
+                "emergentmind-2607-07820-deepsearch-world-self-distillation-for-deep-search-agents-2026"
               ]
             }
           ]
@@ -1282,6 +4155,485 @@
       "router_learning": "Broad agentic-stack survey sources should enhance the Agents macro world as layered regions, while RAG/Agentic RAG concepts should cross-route to Retrieval-Augmented Generation when the mechanism is retrieval/indexing/memory rather than low-level serving.",
       "manual_review": [],
       "completed_at": "2026-06-29T03:22:38Z"
+    },
+    {
+      "run_id": "daily-emergentmind-all-topics-20260706T223434Z",
+      "timestamp": "2026-07-06T22:34:34Z",
+      "event": "daily EmergentMind homepage all-topics routing",
+      "sources": [
+        "emergentmind-2606-30709-hierarchical-global-attention-2026",
+        "emergentmind-2606-30616-agents-a1-horizon-scaling-2026",
+        "emergentmind-2606-32026-adajepa-2026",
+        "emergentmind-2607-00784-levljepa-2026",
+        "emergentmind-2607-01693-mathematical-diffusion-intro-2026",
+        "emergentmind-2607-01232-single-layer-rl-adaptation-2026",
+        "emergentmind-2607-00397-neurocogmap-2026",
+        "emergentmind-2606-30534-orca-world-foundation-model-2026",
+        "emergentmind-2606-30406-mopd-2026",
+        "emergentmind-2606-29957-swe-together-2026",
+        "emergentmind-2606-30571-llm-attractor-states-2026",
+        "emergentmind-2607-01120-self-evolving-agentic-rl-systems-2026"
+      ],
+      "regions_added": 12,
+      "regions_updated": 0,
+      "router_learning": "World-model and multimodal latent sources strengthened Perception & World Models; long-context and interpretability papers strengthened Transformer Architecture; agent-horizon, evaluation, conversation, and self-evolution papers strengthened Agents. No new macro world promoted."
+    },
+    {
+      "run_id": "daily-emergentmind-all-topics-20260707T140410Z",
+      "source_ids": [
+        "emergentmind-2606-31682-habit-human-aware-behavior-and-interaction-2026",
+        "emergentmind-2607-01487-how-to-allocate-your-tokens-scaling-laws-w-2026",
+        "emergentmind-2607-01181-right-in-the-right-way-lm-training-with-ve-2026",
+        "emergentmind-2607-00527-ai-native-games-a-survey-and-roadmap-2026",
+        "emergentmind-2607-01686-warp-weight-space-analysis-for-recovering-2026",
+        "emergentmind-2606-32033-spherope-zero-shot-optimization-free-360-p-2026",
+        "emergentmind-2607-02512-program-as-weights-a-programming-paradigm-2026",
+        "emergentmind-2607-01490-don-t-let-gains-fade-breaking-down-policy-2026",
+        "emergentmind-2607-01525-mean-field-reinforcement-learning-2026",
+        "emergentmind-2607-01047-conversable-complexity-agentic-llm-collect-2026",
+        "emergentmind-2607-02375-representation-distribution-matching-for-o-2026",
+        "emergentmind-2606-31958-adapting-generalist-robot-policies-with-se-2026"
+      ],
+      "routed_concepts": [
+        "paper-2606-31682",
+        "habit-human-aware-interaction-training",
+        "human-aware-robot-manipulation",
+        "paper-2607-01487",
+        "training-step-batch-scaling-laws",
+        "token-allocation-tradeoff",
+        "paper-2607-01181",
+        "verifiable-reward-human-demo-training",
+        "right-in-the-right-way-training",
+        "paper-2607-00527",
+        "ai-native-games",
+        "gameplay-as-agent-evaluation",
+        "paper-2607-01686",
+        "warp-weight-space-analysis",
+        "training-data-portfolio-recovery",
+        "paper-2606-32033",
+        "spherical-rope",
+        "optimization-free-panorama-generation",
+        "paper-2607-02512",
+        "program-as-weights",
+        "fuzzy-function-programming",
+        "paper-2607-01490",
+        "fade-policy-gradient-weights",
+        "policy-gradient-credit-weights",
+        "paper-2607-01525",
+        "mean-field-reinforcement-learning",
+        "population-level-agent-dynamics",
+        "paper-2607-01047",
+        "conversable-complexity",
+        "agentic-llm-collectives",
+        "paper-2607-02375",
+        "representation-distribution-matching",
+        "one-step-visual-generation",
+        "paper-2606-31958",
+        "semantic-reinforcement-learning-for-robots",
+        "generalist-robot-policy-adaptation"
+      ],
+      "worlds_enhanced": [
+        "agents",
+        "generative-models",
+        "llm-systems-serving",
+        "perception-world-models",
+        "transformer-architecture"
+      ],
+      "new_worlds_created": [],
+      "manual_review": [
+        "Program-as-Weights is routed under LLM Systems & Serving as a systems/interface concept; review later if Edokai creates a programming-languages/formal-methods world."
+      ],
+      "completed_at": "2026-07-07T14:04:10Z"
+    },
+    {
+      "run_id": "daily-concept-world-builder-20260707T143144Z",
+      "completed_at": "2026-07-07T14:31:44Z",
+      "event": "daily concept-world builder quality pass",
+      "worlds_enhanced": [
+        "agents",
+        "generative-models",
+        "perception-world-models",
+        "transformer-architecture"
+      ],
+      "regions_enhanced": [
+        "horizon-scaled-agent-training",
+        "interactive-coding-agent-evaluation",
+        "multi-agent-conversation-dynamics",
+        "self-evolving-agent-rl-systems",
+        "long-context-attention-routing",
+        "localized-rl-adaptation",
+        "llm-cognitive-atlases",
+        "diffusion-math-foundations",
+        "multi-teacher-on-policy-distillation",
+        "adaptive-latent-world-models",
+        "noncontrastive-vision-language-pretraining",
+        "multimodal-world-latents"
+      ],
+      "duels_rewritten": 12,
+      "new_worlds_created": [],
+      "manual_review": [
+        "Program-as-Weights remains under LLM Systems & Serving pending future programming-languages/formal-methods umbrella review."
+      ],
+      "router_learning": "No new macro world was justified; this pass converted generated anchor duels into mechanism-specific retention contrasts while preserving source-backed routing."
+    },
+    {
+      "run_id": "daily-concept-world-builder-20260708T150343Z",
+      "completed_at": "2026-07-08T15:03:43Z",
+      "event": "daily concept-world builder no-op after upstream failure",
+      "sources_added": 0,
+      "nodes_added": 0,
+      "edges_added": 0,
+      "worlds_enhanced": [],
+      "regions_enhanced": [],
+      "duels_rewritten": 0,
+      "new_worlds_created": [],
+      "counts": {
+        "sources": 42,
+        "nodes": 124,
+        "edges": 153,
+        "macro_worlds": 6,
+        "regions": 44,
+        "quizzes": 46,
+        "duels": 48,
+        "unrouted_concepts": 0
+      },
+      "manual_review": [
+        "Upstream daily EmergentMind job failed before adding 2026-07-08 graph deltas; builder found no new unrouted concepts in durable state.",
+        "Program-as-Weights remains under LLM Systems & Serving pending future programming-languages/formal-methods umbrella review."
+      ],
+      "router_learning": "No new macro world or region change was justified because the durable graph had no unrouted/new concepts after the upstream job failure."
+    },
+    {
+      "run_id": "daily-emergentmind-all-topics-20260709T142910Z",
+      "completed_at": "2026-07-09T14:29:10Z",
+      "event": "daily EmergentMind homepage all-topics ingestion",
+      "sources_added": 12,
+      "nodes_added": 36,
+      "edges_added": 60,
+      "worlds_enhanced": [
+        "agents",
+        "generative-models",
+        "perception-world-models",
+        "transformer-architecture"
+      ],
+      "regions_enhanced": [
+        "the-verifier-scales",
+        "the-gemma-forge",
+        "the-robodojo-courtyard",
+        "the-tactile-residual-grove",
+        "the-siamese-embedding-mirror",
+        "the-deformable-orchard",
+        "the-hierarchical-landmark-pass",
+        "the-graph-policy-workshop",
+        "the-trust-region-distillery",
+        "the-selective-sampling-gate",
+        "the-privileged-fork",
+        "the-hippocampal-cache"
+      ],
+      "new_worlds_created": [],
+      "router_learning": "Current homepage concepts fit existing umbrellas: Agents for verifier and graph-policy harnesses; Transformer Architecture for Gemma, sparse attention, and HOLA; Perception & World Models for robot/world-model datasets and tactile adaptation; Generative Models for policy/self-distillation and alignment post-training.",
+      "manual_review": [
+        "Monitor whether post-training verification/distillation concepts eventually justify a dedicated reasoning-evaluation or post-training world."
+      ]
+    },
+    {
+      "run_id": "daily-concept-world-builder-20260709T143215Z",
+      "completed_at": "2026-07-09T14:32:15Z",
+      "event": "daily concept-world builder quality pass after all-topics ingestion",
+      "sources_added": 0,
+      "nodes_added": 0,
+      "edges_added": 0,
+      "worlds_enhanced": [
+        "agents",
+        "generative-models",
+        "perception-world-models",
+        "transformer-architecture"
+      ],
+      "regions_enhanced": [],
+      "duels_rewritten": 0,
+      "new_worlds_created": [],
+      "counts": {
+        "sources": 54,
+        "nodes": 160,
+        "edges": 213,
+        "macro_worlds": 6,
+        "regions": 56,
+        "quizzes": 58,
+        "duels": 60,
+        "unrouted_concepts": 0
+      },
+      "manual_review": [
+        "Builder saw the 2026-07-09 all-topics graph delta already routed into existing umbrellas; no additional macro world or quality rewrite was needed.",
+        "Program-as-Weights remains under LLM Systems & Serving pending future programming-languages/formal-methods umbrella review."
+      ],
+      "router_learning": "No new macro world was justified after the 2026-07-09 ingestion; verifier/distillation/robotics/attention concepts fit existing umbrellas."
+    },
+    {
+      "run_id": "daily-emergentmind-all-topics-20260710T140318Z",
+      "completed_at": "2026-07-10T14:03:18Z",
+      "event": "daily EmergentMind homepage all-topics ingestion",
+      "sources_added": 12,
+      "nodes_added": 36,
+      "edges_added": 48,
+      "worlds_enhanced": [
+        "agents",
+        "generative-models",
+        "llm-systems-serving",
+        "perception-world-models",
+        "transformer-architecture"
+      ],
+      "regions_enhanced": [
+        "the-hybrid-cognition-council",
+        "the-coder-workbench",
+        "the-memory-scarcity-ledger",
+        "the-streaming-imagegate",
+        "the-norm-weavers-forum",
+        "the-sparse-delta-archive",
+        "the-factorized-drafting-grove",
+        "the-turn-aware-distillery",
+        "the-flex-forcing-forge",
+        "the-asynchronous-rollout-yard",
+        "the-pixelworld-foundry",
+        "the-memorization-reuse-vault"
+      ],
+      "new_worlds_created": [],
+      "router_learning": "Current selected homepage concepts fit existing umbrellas: Agents for coding, hybrid coordination, norms, and RL; LLM Systems & Serving for memory/inference and decoding; Transformer Architecture for sparse recurrent memory; Generative Models for streaming/video/distillation/data reuse; Perception & World Models for pixel-space 3D modeling.",
+      "manual_review": [
+        "Monitor whether AI industry economics deserves a future product/systems-economics umbrella; keep it under LLM Systems & Serving for now."
+      ]
+    },
+    {
+      "run_id": "daily-concept-world-builder-20260710T143900Z",
+      "completed_at": "2026-07-10T14:31:48Z",
+      "event": "daily concept-world builder quality pass after all-topics ingestion",
+      "sources_added": 0,
+      "nodes_added": 0,
+      "edges_added": 0,
+      "worlds_enhanced": [
+        "agents",
+        "perception-world-models",
+        "transformer-architecture"
+      ],
+      "regions_enhanced": [
+        "agent-harness-context-and-tools",
+        "long-context-attention-routing",
+        "multimodal-world-latents",
+        "the-hierarchical-landmark-pass",
+        "the-hippocampal-cache",
+        "the-siamese-embedding-mirror"
+      ],
+      "duels_rewritten": 0,
+      "new_worlds_created": [],
+      "counts": {
+        "sources": 66,
+        "nodes": 196,
+        "edges": 261,
+        "macro_worlds": 6,
+        "regions": 68,
+        "quizzes": 70,
+        "duels": 72,
+        "unrouted_concepts": 0
+      },
+      "manual_review": [
+        "Builder saw the 2026-07-10 all-topics graph delta already routed into existing umbrellas; no new macro world was justified.",
+        "AI industry-economics and memory-scarcity claims remain under LLM Systems & Serving for now; clinical/medical surfaced items remain excluded pending deeper review."
+      ],
+      "router_learning": "The 2026-07-10 batch fits existing umbrellas. Sparse recurrent memory strengthens Transformer Architecture; PixelWorld and representation worlds strengthen Perception & World Models; human-AI coordination/coding/norms/RL strengthen Agents.",
+      "verification": {
+        "json_parse": "passed",
+        "content_check": "passed: 70 quizzes / 72 duels; answer positions 0:18, 1:21, 2:15, 3:16; no generic/clipped/length-tell issues; no one-case arcs",
+        "dkg_test": "passed: 6 live worlds",
+        "build": "passed: Vite built in 638ms with existing CJS API deprecation and chunk-size warnings",
+        "supabase_sync": "passed: wrote row latest with 66 sources / 196 nodes / 261 edges / 6 macro worlds",
+        "roundtrip": "passed: read back 6 rendered worlds / 68 regions / 159 concepts"
+      }
+    },
+    {
+      "run_id": "daily-emergentmind-all-topics-20260711T140129Z",
+      "completed_at": "2026-07-11T14:01:29Z",
+      "event": "daily EmergentMind homepage all-topics ingestion",
+      "sources_added": 12,
+      "nodes_added": 48,
+      "edges_added": 48,
+      "worlds_enhanced": [
+        "agents",
+        "llm-systems-serving",
+        "perception-world-models",
+        "retrieval-augmented-generation",
+        "transformer-architecture"
+      ],
+      "regions_enhanced": [
+        "the-proxy-pose-theater",
+        "the-tensor-proof-conclave",
+        "the-persona-mirror-court",
+        "the-quantum-proof-foundry",
+        "the-shared-geometry-atrium",
+        "the-photoreal-sim-yards",
+        "the-cta-pipeline-forge",
+        "the-polyphonic-scribe-hall",
+        "the-fiber-memory-causeway",
+        "the-infinite-interaction-expanse",
+        "the-mechanized-mathematics-council",
+        "the-maxsim-capacity-vault"
+      ],
+      "new_worlds_created": [],
+      "router_learning": "The 2026-07-11 batch fits existing umbrellas: theorem-proving/formalization and moral-behavior workflows strengthen Agents; pose/simulation/audio/interactive worlds strengthen Perception & World Models; hardware memory and CTA scheduling strengthen LLM Systems & Serving; concept geometry strengthens Transformer Architecture; MaxSim capacity strengthens Retrieval-Augmented Generation.",
+      "manual_review": [
+        "Moral-evaluation/user-identity claims are safety-adjacent and remain source-qualified; do not infer model values or deployment safety.",
+        "Fiber-memory and DRAM claims are routed as systems-infrastructure signals, not market predictions.",
+        "Clinical/medical surfaced homepage item 2607.06531 was intentionally skipped pending deeper safety review."
+      ],
+      "verification": {
+        "json_parse": "passed: edokai-dkg.json and concept-world-index.json parse; provenance/content checker passed with 78 sources / 244 nodes / 309 edges / 6 macro worlds / 80 regions; answer positions 0:23, 1:22, 2:19, 3:18; no missing refs or one-case arcs",
+        "dkg_test": "passed: npm run dkg:test produced 6 live worlds; new regions render in Agentworks, Attention Citadel, Worldseer Observatory, Throughput Shogunate, and Retrieval Archives",
+        "build": "passed: Vite built in 623ms with existing CJS API deprecation and chunk-size warnings",
+        "supabase_sync": "passed: wrote row latest with 78 sources / 244 nodes / 309 edges / 6 macro worlds",
+        "roundtrip": "passed: read back 6 rendered worlds / 80 regions / 195 concepts"
+      }
+    },
+    {
+      "run_id": "daily-concept-world-builder-20260711T143338Z",
+      "completed_at": "2026-07-11T14:33:38Z",
+      "event": "daily concept-world builder quality pass after all-topics ingestion",
+      "sources_added": 0,
+      "nodes_added": 0,
+      "edges_added": 0,
+      "worlds_enhanced": [
+        "agents",
+        "llm-systems-serving",
+        "retrieval-augmented-generation"
+      ],
+      "regions_enhanced": [
+        "agent-native-memory-systems",
+        "agent-safety-internals",
+        "agent-systems-foundations",
+        "agentic-rag-and-memory",
+        "graph-index-construction",
+        "graph-rag-global-sensemaking"
+      ],
+      "questions_rewritten": 8,
+      "duels_rewritten": 0,
+      "new_worlds_created": [],
+      "counts": {
+        "sources": 78,
+        "nodes": 244,
+        "edges": 309,
+        "macro_worlds": 6,
+        "regions": 80,
+        "quizzes": 82,
+        "duels": 84,
+        "unrouted_concepts": 0
+      },
+      "manual_review": [
+        "Builder saw the 2026-07-11 all-topics graph delta already routed into existing umbrellas; no new macro world was justified.",
+        "Moral-evaluation/user-identity and systems-infrastructure claims remain source-qualified; clinical/medical surfaced item 2607.06531 remains excluded pending deeper review."
+      ],
+      "router_learning": "The 2026-07-11 batch continues to fit existing umbrellas. Builder quality work focused on older answer-length tells in Agents, LLM Systems Serving, and Retrieval-Augmented Generation rather than adding new graph structure.",
+      "verification": {
+        "json_parse": "passed: edokai-dkg.json and concept-world-index.json parse; content checker passed with 82 quizzes / 84 duels; answer positions 0:23, 1:22, 2:19, 3:18; no generic or clipped questions, length tells, or one-case arcs",
+        "dkg_test": "passed: npm run dkg:test produced 6 live worlds and rendered 80 regions through the adapter",
+        "build": "passed: Vite built in 617ms with existing CJS API deprecation and chunk-size warnings",
+        "supabase_sync": "passed: npm run dkg:sync wrote row latest with 78 sources / 244 nodes / 309 edges / 6 macro worlds at 2026-07-11T14:34:32.523Z",
+        "roundtrip": "passed: read back row latest and adapted 6 rendered worlds / 80 regions / 195 concepts"
+      }
+    },
+    {
+      "run_id": "daily-emergentmind-all-topics-20260712T150002Z",
+      "completed_at": "2026-07-12T15:00:02Z",
+      "event": "daily EmergentMind homepage all-topics ingestion",
+      "sources_added": 7,
+      "nodes_added": 28,
+      "edges_added": 28,
+      "worlds_enhanced": [
+        "agents",
+        "perception-world-models",
+        "retrieval-augmented-generation"
+      ],
+      "regions_enhanced": [
+        "the-geometry-splatting-citadel",
+        "the-verifiable-search-depths",
+        "the-beyond-human-measure",
+        "the-event-camera-workshop",
+        "the-cultural-concept-gallery",
+        "the-slam-mirror-cavern",
+        "the-wherewatcher-lantern"
+      ],
+      "new_worlds_created": [],
+      "router_learning": "The 2026-07-12 homepage delta fits existing umbrellas after checker correction: visual SLAM/event-camera/egocentric-video plus sketch-based visual concept analysis strengthen Perception & World Models, DeepSearch strengthens Retrieval-Augmented Generation, and beyond-human intelligence evaluation strengthens Agents.",
+      "manual_review": [
+        "Skipped pure-math, astronomy/cosmology, and clinical/medical surfaced items in this bounded pass; clinical claims need deeper safety review before routing.",
+        "New visual-SLAM/event-camera/egocentric-video items are routed under Perception & World Models; DeepSearch is routed under Retrieval-Augmented Generation; beyond-human intelligence evaluation is routed under Agents."
+      ],
+      "verification": {
+        "json_parse": "pending",
+        "dkg_test": "pending",
+        "build": "pending",
+        "supabase_sync": "pending",
+        "roundtrip": "pending"
+      }
+    },
+    {
+      "run_id": "daily-emergentmind-all-topics-20260713T145211Z",
+      "completed_at": "2026-07-13T14:52:11Z",
+      "event": "daily EmergentMind homepage all-topics ingestion",
+      "sources_added": 2,
+      "nodes_added": 7,
+      "edges_added": 8,
+      "worlds_enhanced": [
+        "transformer-architecture",
+        "perception-world-models"
+      ],
+      "regions_enhanced": [
+        "the-gradient-based-speech-to-text",
+        "the-automation-without-understanding"
+      ],
+      "new_worlds_created": [],
+      "router_learning": "The 2026-07-13 checker kept only genuinely new homepage deltas: ASR alignment belongs in Transformer Architecture as representation/alignment mechanics, while Automation Without Understanding belongs in Agents as an agency/evaluation caution. Rediscovered papers should refresh existing source last_read_at rather than create slug-variant duplicates.",
+      "manual_review": [
+        "Maker/checker deduped 10 rediscovered arXiv IDs already represented from 2026-07-10/2026-07-11; only genuinely new homepage papers were retained as fresh graph additions.",
+        "Gradient-based speech-to-text alignment is routed under Transformer Architecture as representation/alignment mechanics; Automation Without Understanding is routed under Agents as an evaluation/agency caution.",
+        "Repeated human-AI coordination, robotics, and medical/safety-adjacent claims remain source-qualified; no deployment guarantee inferred."
+      ],
+      "verification": {
+        "json_parse": "passed",
+        "dkg_test": "passed",
+        "build": "passed",
+        "supabase_sync": "passed",
+        "roundtrip": "passed"
+      },
+      "sources_updated": 10,
+      "nodes_updated": 10,
+      "deduped_source_ids": [
+        "emergentmind-2607-07508-single-rollout-asynchronous-optimization-for-agentic-reinforcement-learning-2026",
+        "emergentmind-2607-07021-learning-social-norms-enhances-compatibility-in-dynamic-human-2026",
+        "emergentmind-2607-05804-turnopd-making-on-policy-distillation-turn-aware-for-2026",
+        "emergentmind-2607-06701-spear-a-simulator-for-photorealistic-embodied-ai-research-2026",
+        "emergentmind-2607-07605-user-identity-conditions-moral-wrongness-ratings-in-non-2026",
+        "emergentmind-2607-05373-pixworld-unifying-3d-scene-generation-and-reconstruction-in-2026",
+        "emergentmind-2607-04969-train-smarter-not-longer-memorization-guided-data-reuse-2026",
+        "emergentmind-2607-06555-proxypose-6-dof-pose-tracking-via-video-to-2026",
+        "emergentmind-2607-06763-trees-from-marginals-autoregressive-drafting-with-factorized-priors-2026",
+        "emergentmind-2607-08168-muscriptor-an-open-model-for-multi-instrument-music-2026"
+      ]
+    },
+    {
+      "run_id": "daily-concept-world-builder-20260713T162932Z",
+      "completed_at": "2026-07-13T16:29:32Z",
+      "event": "daily concept-world builder pass",
+      "upstream_run_id": "daily-emergentmind-all-topics-20260713T145211Z",
+      "sources_added": 0,
+      "nodes_added": 0,
+      "edges_added": 0,
+      "regions_added": 0,
+      "new_worlds_created": [],
+      "quality_findings": [],
+      "verification": {
+        "json_parse": "passed",
+        "dkg_test": "passed",
+        "build": "passed",
+        "supabase_sync": "passed",
+        "roundtrip": "passed"
+      }
     }
   ]
 }

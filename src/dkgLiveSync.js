@@ -325,7 +325,7 @@ function nodeToConcept(node, regionSlug, siblingSummaries, assignedQuiz, usedNam
   let label = baseLabel;
   let suffix = 2;
   while (usedNames.has(label.toLowerCase())) {
-    label = `${baseLabel} · ${regionName || `Facet ${suffix}`}`;
+    label = regionName ? `${baseLabel} · ${regionName} ${suffix}` : `${baseLabel} · Facet ${suffix}`;
     suffix += 1;
   }
   usedNames.add(label.toLowerCase());
