@@ -5,6 +5,8 @@ import ConceptdexDrawer from "./ConceptdexDrawer.jsx";
 import { withAlpha, tint, hueFor } from "./uiTheme.js";
 import RichText from "./RichText.jsx";
 
+const EDOKAI_BUILD = "dojo-repl-dex-20260713.2";
+
 /* ============================================================
    EDOKAI
    Two modes:
@@ -5010,7 +5012,7 @@ ${QUALITY_RULES}`, cfg));
         <div style={{ ...S.wrap }}>
           <Tabs />
           <h2 style={{ fontSize: 20, fontWeight: 800, margin: "14px 0 0" }}>⌨️ The Dojo</h2>
-          <span style={S.mono(10)}>code-first workthroughs · TorchLeet set · in-browser Python lab · AI review · Dojo Dex</span>
+          <span style={S.mono(10)}>code-first workthroughs · TorchLeet set · in-browser Python lab · AI review · Dojo Dex · BUILD {EDOKAI_BUILD}</span>
           <div style={{ display: "flex", gap: 8, flexWrap: "wrap", marginTop: 10 }}>
             <button onClick={() => { setDexWorld(activeWorld); setDexOpen(true); }} style={S.chip(false)}>📖 Open Conceptdex</button>
             <span style={{ ...S.mono(9, T.gold), alignSelf: "center" }}>Dojo Dex stores kata snapshots, failing test output, and AI reviews separately from concept questions.</span>
@@ -5102,6 +5104,7 @@ ${QUALITY_RULES}`, cfg));
               <div style={{ display: "flex", gap: 6, marginTop: 8, alignItems: "center" }}>
                 <span style={{ ...S.mono(12, T.reward) }}>&gt;&gt;&gt;</span>
                 <div style={{ position: "relative", flex: 1, minWidth: 0 }}>
+                  {replFocused && !repl && <span aria-hidden="true" style={{ position: "absolute", left: 12, top: "50%", transform: "translateY(-50%)", color: T.inkSoft, fontFamily: "'JetBrains Mono', monospace", fontSize: 12, pointerEvents: "none" }}>type Python here</span>}
                   <input className="replInput" value={repl} onFocus={() => setReplFocused(true)} onBlur={() => setReplFocused(false)} onChange={(e) => setRepl(e.target.value)} onKeyDown={async (e) => {
                   e.stopPropagation();
                   if (e.key === "Tab") {
@@ -5126,8 +5129,8 @@ ${QUALITY_RULES}`, cfg));
                     setLabOut((o) => o + (out ? "\n" + out.trimEnd() : ""));
                   } catch (err) { setLabOut((o) => o + "\n⚠️ " + (err.message || err)); }
                   setBusy("");
-                }} onKeyUp={(e) => e.stopPropagation()} onClick={(e) => e.stopPropagation()} placeholder="REPL — shares the session with ▶ Run (try: out.shape)" spellCheck={false} style={{ ...S.input, padding: "8px 10px", paddingRight: 24, fontSize: 12, caretColor: T.reward }} />
-                  {replFocused && !repl && <span aria-hidden="true" className="replBlinkCursor" style={{ position: "absolute", left: 12, top: "50%", transform: "translateY(-50%)", color: T.reward, fontFamily: "'JetBrains Mono', monospace", fontWeight: 800, pointerEvents: "none" }}>▌</span>}
+                }} onKeyUp={(e) => e.stopPropagation()} onClick={(e) => e.stopPropagation()} placeholder={replFocused ? "" : "REPL — shares the session with ▶ Run (try: out.shape)"} spellCheck={false} style={{ ...S.input, padding: "8px 10px", paddingRight: 24, fontSize: 12, caretColor: T.reward }} />
+                  {replFocused && !repl && <span aria-hidden="true" className="replBlinkCursor" style={{ position: "absolute", left: 112, top: "50%", transform: "translateY(-50%)", color: T.reward, fontFamily: "'JetBrains Mono', monospace", fontWeight: 900, fontSize: 15, lineHeight: 1, textShadow: `0 0 10px ${T.reward}`, pointerEvents: "none" }}>▌</span>}
                 </div>
               </div>
             )}
