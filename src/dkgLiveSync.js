@@ -9,7 +9,7 @@ export const DKG_ROW_ID = viteEnv.VITE_EDOKAI_DKG_ROW_ID || "latest";
 export const DKG_NETLIFY_FUNCTION = viteEnv.VITE_EDOKAI_DKG_FUNCTION || "/.netlify/functions/dkg-snapshot";
 export const DKG_GITHUB_OWNER = viteEnv.VITE_EDOKAI_DKG_GITHUB_OWNER || "junaidahmed361";
 export const DKG_GITHUB_REPO = viteEnv.VITE_EDOKAI_DKG_GITHUB_REPO || "edokai";
-export const DKG_GITHUB_REF = viteEnv.VITE_EDOKAI_DKG_GITHUB_REF || "fix-lore-model-fallback";
+export const DKG_GITHUB_REF = viteEnv.VITE_EDOKAI_DKG_GITHUB_REF || "main";
 export const DKG_GITHUB_RAW_BASE = (viteEnv.VITE_EDOKAI_DKG_GITHUB_RAW_BASE || `https://raw.githubusercontent.com/${DKG_GITHUB_OWNER}/${DKG_GITHUB_REPO}/${DKG_GITHUB_REF}/knowledge`).replace(/\/$/, "");
 
 let client = null;
