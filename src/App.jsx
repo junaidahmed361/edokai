@@ -5,7 +5,7 @@ import ConceptdexDrawer from "./ConceptdexDrawer.jsx";
 import { withAlpha, tint, hueFor } from "./uiTheme.js";
 import RichText from "./RichText.jsx";
 
-const EDOKAI_BUILD = "dojo-repl-dex-20260713.2";
+const EDOKAI_BUILD = "dojo-editor-cursor-20260713.1";
 
 /* ============================================================
    EDOKAI
@@ -473,7 +473,7 @@ const TOUR_STEPS = [
   { icon: "\u{1F5FA}\uFE0F", kicker: "LEARN", title: "The Atlas", target: '[data-tour="atlas"]', body: "Every **world** is a glowing hub in a living constellation, its **regions** orbiting as satellites. Click a world to focus it, click again to enter. Progress rings fill as you capture concepts, and golden threads join worlds that share sources." },
   { icon: "\u{1F9ED}", kicker: "WORLDS", title: "Case boards & arcs", target: '[data-tour="tab-home"]', body: "Inside a world, case boards are grouped into **arcs** — lore-named chapters that keep growing content organized.\n- \u2B21 **Criticals** teach a new concept and gate the path\n- \u25C7 **Sides** are retention duels that heal your HP\n- \u{1F3DB} the **Gym** awards the region badge" },
   { icon: "\u{1FAD8}", kicker: "HP & SENZU", title: "Harm, healing, and the Senzu bean", target: '[data-tour="hp"]', body: "This bar is your HP.\n- Missing a **critical** question draws a counterattack that costs HP\n- Winning **side duels** heals you back\n- When you are badly hurt, start the **\u{1FAD8} Senzu bean** quest: clear one Blind 75 kata and one ML kata in the Dojo to fully recover" },
-  { icon: "\u2328\uFE0F", kicker: "DOJO", title: "The Dojo", target: '[data-tour="tab-dojo"]', body: "Implementation katas: **Blind 75**, **TorchLeet**, ML engineering, and system design — with live in-browser Python, runnable tests, and AI review. Senzu healing quests route here." },
+  { icon: "\u2328\uFE0F", kicker: "DOJO", title: "The Dojo", target: '[data-tour="tab-dojo"]', body: "Implementation katas: **Blind 75**, **TorchLeet**, ML engineering, and system design — with a focused runnable Python workspace, visible editor cursor, tests, and AI review. Senzu healing quests route here." },
   { icon: "\u{1F33F}", kicker: "WILDS", title: "The Wilds", target: '[data-tour="tab-wildspick"]', body: "An episode generator over any world's lore. Each run forges **brand-new, verifiable questions** grounded strictly in the material — so practice never goes stale — and it biases toward the topics you miss most." },
   { icon: "\u{1F9EA}", kicker: "COACH", title: "The Coach", target: '[data-tour="tab-coach"]', body: "Every answer feeds per-concept telemetry. The Coach reads your **miss patterns** and forges targeted scenario drills that join the world's question pool — the system teaches hardest where you are weakest." },
   { icon: "\u2694\uFE0F", kicker: "GAUNTLET", title: "Trial Gauntlet", target: null, body: "The world exam, launched from any world or the Coach: **3 lives**, the entire shuffled question pool including coach-forged drills, and a weakest-topic report at the end. Run it to prove a world is truly cleared." },
@@ -3362,8 +3362,6 @@ export default function App() {
   const [gaunt, setGaunt] = useState(null);            // {pool, idx, lives, score, ord}
   const [deepLore, setDeepLore] = useState({});        // conceptId -> model-expanded lore
   const [wilds, setWilds] = useState(null);            // the knowledge RL environment
-  const [repl, setRepl] = useState("");                // REPL input line
-  const [replFocused, setReplFocused] = useState(false);
   const [darkMode, setDarkMode] = useState(true);
   const [dojoOpen, setDojoOpen] = useState({ swe: true, torchleet: true, ml: true, sys: true, custom: true });
   const [kataAttempts, setKataAttempts] = useState(0);
@@ -4125,11 +4123,32 @@ ${QUALITY_RULES}`, cfg));
   const CodeEditor = useMemo(() => {
     const StableCodeEditor = ({ value, onChange, onRun, rows = 16 }) => {
       const preRef = useRef(null);
-      const shared = { fontFamily: "'JetBrains Mono', monospace", fontSize: 12, lineHeight: 1.55, tabSize: 4 };
+      const textRef = useRef(null);
+      const [focused, setFocused] = useState(false);
+      const [cursor, setCursor] = useState({ left: 12, top: 11 });
+      const fontSize = 12;
+      const lineHeight = 18.6;
+      const paddingX = 12;
+      const paddingY = 11;
+      const charWidth = 7.25;
+      const shared = { fontFamily: "'JetBrains Mono', monospace", fontSize, lineHeight: 1.55, tabSize: 4 };
       const isolate = (e) => e.stopPropagation();
+      const syncCursor = (el = textRef.current) => {
+        if (!el) return;
+        const before = String(value || "").slice(0, el.selectionStart || 0);
+        const line = before.split("\n").length - 1;
+        const col = before.length - (before.lastIndexOf("\n") + 1);
+        setCursor({ left: paddingX + col * charWidth - el.scrollLeft, top: paddingY + line * lineHeight - el.scrollTop });
+      };
+      const syncScroll = (el) => {
+        if (preRef.current) { preRef.current.scrollTop = el.scrollTop; preRef.current.scrollLeft = el.scrollLeft; }
+        syncCursor(el);
+      };
+      useEffect(() => { if (focused) syncCursor(); }, [value, focused]);
       return <div onMouseDown={isolate} onClick={isolate} style={{ position: "relative", marginTop: 8, border: `1px solid ${T.line}`, borderRadius: 10, background: T.code, minHeight: rows * 18.6, overflow: "hidden" }}>
-        <pre ref={preRef} aria-hidden="true" style={{ ...shared, position: "absolute", inset: 0, margin: 0, padding: "11px 12px", whiteSpace: "pre-wrap", overflow: "auto", color: T.codeText, pointerEvents: "none" }}>{highlightPython(value || " ")}</pre>
-        <textarea value={value} onChange={(e) => onChange(e.target.value)} onScroll={(e) => { if (preRef.current) { preRef.current.scrollTop = e.currentTarget.scrollTop; preRef.current.scrollLeft = e.currentTarget.scrollLeft; } }} onKeyDown={(e) => { e.stopPropagation(); editorKeys(e, value, onChange, onRun); }} onKeyUp={isolate} onInput={isolate} rows={rows} spellCheck={false} autoCapitalize="off" autoCorrect="off" style={{ ...shared, position: "relative", zIndex: 1, width: "100%", boxSizing: "border-box", border: "none", borderRadius: 10, padding: "11px 12px", resize: "vertical", background: "transparent", color: "transparent", caretColor: darkMode ? "#FFFFFF" : "#111827", outline: "none", overflow: "auto" }} />
+        <pre ref={preRef} aria-hidden="true" style={{ ...shared, position: "absolute", inset: 0, margin: 0, padding: `${paddingY}px ${paddingX}px`, whiteSpace: "pre-wrap", overflow: "auto", color: T.codeText, pointerEvents: "none" }}>{highlightPython(value || " ")}</pre>
+        {focused && <span aria-hidden="true" className="editorBlinkCursor" style={{ position: "absolute", zIndex: 3, left: cursor.left, top: cursor.top, width: 2, height: lineHeight, borderRadius: 2, background: darkMode ? "#FFFFFF" : "#111827", boxShadow: darkMode ? "0 0 10px rgba(255,255,255,.65)" : "0 0 8px rgba(17,24,39,.35)", pointerEvents: "none" }} />}
+        <textarea ref={textRef} value={value} onChange={(e) => { onChange(e.target.value); requestAnimationFrame(() => syncCursor(e.target)); }} onFocus={(e) => { setFocused(true); syncCursor(e.currentTarget); }} onBlur={() => setFocused(false)} onSelect={(e) => syncCursor(e.currentTarget)} onScroll={(e) => syncScroll(e.currentTarget)} onKeyDown={(e) => { e.stopPropagation(); editorKeys(e, value, onChange, onRun); requestAnimationFrame(() => syncCursor(e.currentTarget)); }} onKeyUp={(e) => { isolate(e); syncCursor(e.currentTarget); }} onInput={(e) => { isolate(e); requestAnimationFrame(() => syncCursor(e.currentTarget)); }} onClick={(e) => { isolate(e); syncCursor(e.currentTarget); }} rows={rows} spellCheck={false} autoCapitalize="off" autoCorrect="off" style={{ ...shared, position: "relative", zIndex: 2, width: "100%", boxSizing: "border-box", border: "none", borderRadius: 10, padding: `${paddingY}px ${paddingX}px`, resize: "vertical", background: "transparent", color: "transparent", caretColor: "transparent", outline: "none", overflow: "auto" }} />
       </div>;
     };
     return StableCodeEditor;
@@ -4381,10 +4400,10 @@ ${QUALITY_RULES}`, cfg));
         <h1 style={{ fontSize: "clamp(44px, 8vw, 72px)", fontWeight: 800, letterSpacing: "0.06em", margin: "10px 0 6px", fontFamily: "'Sora','Space Grotesk',sans-serif", background: `linear-gradient(115deg, ${darkMode ? "#EEF2FF" : "#1C2442"} 25%, ${T.explore} 55%, ${T.teal} 85%)`, WebkitBackgroundClip: "text", backgroundClip: "text", color: "transparent", textShadow: "none" }}>EDOKAI</h1>
         <span style={S.mono(11, T.explore)}>CONCEPT WORLDS · TORCHLEET DOJO · SELF-IMPROVING COACH</span>
         <p style={{ color: T.inkSoft, maxWidth: 470, lineHeight: 1.65, fontSize: 15, margin: "16px auto 0" }}>
-          A living atlas of <b style={{ color: T.action }}>concept worlds</b>, a <b style={{ color: T.explore }}>Dojo</b> with runnable Python katas, per-world <b style={{ color: T.gold }}>Trial Gauntlets</b>, and a <b style={{ color: T.reward }}>Coach</b> that watches your misses and forges new drills.
+          A living atlas of <b style={{ color: T.action }}>concept worlds</b>, a <b style={{ color: T.explore }}>Dojo</b> with a focused runnable Python workspace, per-world <b style={{ color: T.gold }}>Trial Gauntlets</b>, and a <b style={{ color: T.reward }}>Coach</b> that watches your misses and forges new drills.
         </p>
         <div style={{ display: "flex", gap: 8, justifyContent: "center", flexWrap: "wrap", marginTop: 18 }}>
-          {[["🗺️", "force-directed atlas"], ["📖", "conceptdex"], ["⚔️", "gauntlets"], ["🐍", "live python"]].map(([icon, label]) => (
+          {[["🗺️", "force-directed atlas"], ["📖", "conceptdex"], ["⚔️", "gauntlets"], ["🐍", "runnable workspace"]].map(([icon, label]) => (
             <span key={label} style={{ ...S.mono(9.5, T.inkSoft), background: T.card, border: `1px solid ${T.line}`, borderRadius: 999, padding: "7px 12px", backdropFilter: "blur(10px)" }}>{icon} {label}</span>
           ))}
         </div>
@@ -5100,41 +5119,6 @@ ${QUALITY_RULES}`, cfg));
               <button onClick={() => addDojoDexEntry(review ? "review" : "snapshot")} disabled={!labCode.trim()} style={{ ...S.btn(T.gold), flex: 1, minWidth: 110 }}>＋ Dojo Dex</button>
             </div>
             {labOut && <pre style={{ ...S.pre, marginTop: 8, maxHeight: 220, overflowY: "auto", background: "#0B0F1E" }}>{labOut}</pre>}
-            {lab && (
-              <div style={{ display: "flex", gap: 6, marginTop: 8, alignItems: "center" }}>
-                <span style={{ ...S.mono(12, T.reward) }}>&gt;&gt;&gt;</span>
-                {replFocused && <span aria-hidden="true" className="replBlinkCursor" style={{ color: T.reward, fontFamily: "'JetBrains Mono', monospace", fontWeight: 900, fontSize: 15, lineHeight: 1, textShadow: `0 0 10px ${T.reward}`, pointerEvents: "none", marginLeft: -2, marginRight: -2 }}>▌</span>}
-                <div style={{ position: "relative", flex: 1, minWidth: 0 }}>
-                  {replFocused && !repl && <span aria-hidden="true" style={{ position: "absolute", zIndex: 2, left: 12, top: "50%", transform: "translateY(-50%)", color: T.inkSoft, fontFamily: "'JetBrains Mono', monospace", fontSize: 12, pointerEvents: "none" }}>type Python here</span>}
-                  <input className="replInput" value={repl} onFocus={() => setReplFocused(true)} onBlur={() => setReplFocused(false)} onChange={(e) => setRepl(e.target.value)} onKeyDown={async (e) => {
-                  e.stopPropagation();
-                  if (e.key === "Tab") {
-                    e.preventDefault();
-                    const el = e.currentTarget;
-                    const completed = completeStem(repl, el.selectionStart || repl.length, el.selectionEnd || repl.length, labCode.match(/[A-Za-z_][A-Za-z0-9_]{2,}/g) || []);
-                    if (completed) { setRepl(completed.value); requestAnimationFrame(() => { el.selectionStart = el.selectionEnd = completed.pos; }); showToast(`REPL completed: ${completed.label}`); }
-                    return;
-                  }
-                  if (e.key !== "Enter" || !repl.trim() || busy === "lab") return;
-                  e.preventDefault();
-                  const line = repl; setRepl(""); setBusy("lab");
-                  setLabOut((o) => (o ? o + "\n" : "") + ">>> " + line);
-                  try {
-                    const py = await getPyodide();
-                    let out = "";
-                    py.setStdout({ batched: (s) => { out += s + "\n"; } });
-                    py.setStderr({ batched: (s) => { out += s + "\n"; } });
-                    let val;
-                    try { val = await py.runPythonAsync(line); } catch (err) { out += `❌ Python error:\n${formatPythonError(err)}`; }
-                    if (val !== undefined && val !== null) out += String(val);
-                    setLabOut((o) => o + (out ? "\n" + out.trimEnd() : ""));
-                  } catch (err) { setLabOut((o) => o + "\n⚠️ " + (err.message || err)); }
-                  setBusy("");
-                }} onKeyUp={(e) => e.stopPropagation()} onClick={(e) => e.stopPropagation()} placeholder={replFocused ? "" : "REPL — shares the session with ▶ Run (try: out.shape)"} spellCheck={false} style={{ ...S.input, position: "relative", zIndex: 1, padding: "8px 10px", paddingRight: 24, fontSize: 12, caretColor: T.reward, background: replFocused ? "transparent" : S.input.background }} />
-                  {replFocused && !repl && <span aria-hidden="true" className="replBlinkCursor" style={{ position: "absolute", left: 112, top: "50%", transform: "translateY(-50%)", color: T.reward, fontFamily: "'JetBrains Mono', monospace", fontWeight: 900, fontSize: 15, lineHeight: 1, textShadow: `0 0 10px ${T.reward}`, pointerEvents: "none" }}>▌</span>}
-                </div>
-              </div>
-            )}
             {review && <div style={{ marginTop: 10, fontSize: 13, lineHeight: 1.6, whiteSpace: "pre-wrap", padding: "10px 12px", background: T.exploreSoft, borderRadius: 10 }}>
               {review}
               <div style={{ marginTop: 8 }}><button onClick={() => addDojoDexEntry("review")} style={{ ...S.chip(false), fontSize: 11 }}>＋ save review to Dojo Dex</button></div>
@@ -5478,9 +5462,8 @@ a { transition: color .2s ease, filter .2s ease; }
 a:hover { filter: brightness(1.15); }
 input, textarea { transition: border-color .2s ease, box-shadow .25s ease; }
 input:focus, textarea:focus { border-color: rgba(141,155,255,.65) !important; box-shadow: 0 0 0 3px rgba(141,155,255,.18); }
-.replInput { caret-color: #5BE0A2; }
-.replBlinkCursor { animation: replCaretBlink 1s steps(1,end) infinite; }
-@keyframes replCaretBlink { 0%,49% { opacity: 1; } 50%,100% { opacity: 0; } }
+.editorBlinkCursor { animation: editorCaretBlink 1s steps(1,end) infinite; }
+@keyframes editorCaretBlink { 0%,49% { opacity: 1; } 50%,100% { opacity: 0; } }
 .worldCard { transition: transform .22s cubic-bezier(.3,.7,.3,1), box-shadow .25s ease, border-color .25s ease; }
 .rt ul, .rt ol { margin: .55em 0 0; }
 @media (max-width: 640px) {

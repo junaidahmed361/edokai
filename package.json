@@ -1,8 +1,8 @@
 {
   "name": "edokai",
   "productName": "Edokai",
-  "version": "3.4.0",
-  "description": "Edokai — gamified ML learning: concept worlds, TorchLeet dojo with live Python REPL, Wilds RL environments, self-improving coach",
+  "version": "3.4.1",
+  "description": "Edokai — gamified ML learning: concept worlds, TorchLeet dojo with focused runnable Python workspace, Wilds RL environments, self-improving coach",
   "private": true,
   "main": "electron/main.cjs",
   "scripts": {
