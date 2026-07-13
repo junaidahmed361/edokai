@@ -3284,6 +3284,14 @@ async function getPyodide(onStatus) {
   }
   throw new Error("Python runtime couldn't load (" + (lastErr && lastErr.message) + "). The claude.ai sandbox blocks some CDNs — the desktop build runs it reliably.");
 }
+function formatPythonError(e) {
+  const raw = String((e && (e.stack || e.message)) || e || "Python execution failed");
+  const cleaned = raw
+    .replace(/^Error:\s*/i, "")
+    .replace(/\n?\s*at pyodideCodeRunner[^]*$/m, "")
+    .trim();
+  return cleaned || raw;
+}
 async function runPython(code, needs, onStatus) {
   const py = await getPyodide(onStatus);
   if (onStatus) onStatus("⏳ runtime ready — executing…");
@@ -3291,7 +3299,11 @@ async function runPython(code, needs, onStatus) {
   let out = "";
   py.setStdout({ batched: (s) => { out += s + "\n"; } });
   py.setStderr({ batched: (s) => { out += s + "\n"; } });
-  try { await py.runPythonAsync(code); } catch (e) { out += String(e.message || e).split("\n").slice(-6).join("\n"); }
+  try {
+    await py.runPythonAsync(code);
+  } catch (e) {
+    out += `${out ? "\n" : ""}❌ Python error:\n${formatPythonError(e)}`;
+  }
   return out || "(no output)";
 }
 
@@ -3349,6 +3361,7 @@ export default function App() {
   const [deepLore, setDeepLore] = useState({});        // conceptId -> model-expanded lore
   const [wilds, setWilds] = useState(null);            // the knowledge RL environment
   const [repl, setRepl] = useState("");                // REPL input line
+  const [replFocused, setReplFocused] = useState(false);
   const [darkMode, setDarkMode] = useState(true);
   const [dojoOpen, setDojoOpen] = useState({ swe: true, torchleet: true, ml: true, sys: true, custom: true });
   const [kataAttempts, setKataAttempts] = useState(0);
@@ -3369,8 +3382,8 @@ export default function App() {
 
   useEffect(() => {
     (async () => {
-      const s = await loadStore("ru-save", { xp: 0, hp: 100, badges: [], captured: [], sides: [], katas: {}, qstats: {}, kataHints: {}, kataAttempts: {}, learningRecords: [], dexQuestions: [], senzu: null, pet: { mood: "idle", msg: "ready" }, player: null });
-      s.sides = s.sides || []; s.katas = s.katas || {}; s.qstats = s.qstats || {}; s.kataHints = s.kataHints || {}; s.kataAttempts = s.kataAttempts || {}; s.learningRecords = s.learningRecords || []; s.dexQuestions = s.dexQuestions || []; s.senzu = s.senzu || null; s.pet = s.pet || { mood: "idle", msg: "ready" };
+      const s = await loadStore("ru-save", { xp: 0, hp: 100, badges: [], captured: [], sides: [], katas: {}, qstats: {}, kataHints: {}, kataAttempts: {}, learningRecords: [], dexQuestions: [], dojoDex: [], senzu: null, pet: { mood: "idle", msg: "ready" }, player: null });
+      s.sides = s.sides || []; s.katas = s.katas || {}; s.qstats = s.qstats || {}; s.kataHints = s.kataHints || {}; s.kataAttempts = s.kataAttempts || {}; s.learningRecords = s.learningRecords || []; s.dexQuestions = s.dexQuestions || []; s.dojoDex = s.dojoDex || []; s.senzu = s.senzu || null; s.pet = s.pet || { mood: "idle", msg: "ready" };
       if (!s.player && typeof window !== "undefined" && window.edokaiDb && window.edokaiDb.auth) {
         try { s.player = await window.edokaiDb.auth("local-player"); } catch {}
       }
@@ -3540,6 +3553,25 @@ export default function App() {
   const worldLearningRecords = (w = world) => (save.learningRecords || []).filter((r) => r.worldId === w.id);
   const capturedConceptsFor = (w = world) => w.regions.flatMap((r) => r.concepts.map((c) => ({ ...c, regionName: r.name }))).filter((c) => capturedSet.has(c.id));
   const dexQuestionsFor = (w = world) => (save.dexQuestions || []).filter((q) => q.worldId === w.id);
+  const dojoDexEntries = () => (save.dojoDex || []).slice().sort((a, b) => (b.ts || 0) - (a.ts || 0));
+  const addDojoDexEntry = (kind = "snapshot") => {
+    if (!kata) return;
+    const entry = {
+      id: `dojo:${kata.id}:${Date.now()}`,
+      kataId: kata.id,
+      kataTitle: kata.title,
+      family: kata.family,
+      framework: fw,
+      kind,
+      code: labCode,
+      review: review || "",
+      output: labOut || "",
+      ts: Date.now(),
+    };
+    persist({ ...save, dojoDex: [entry, ...(save.dojoDex || [])].slice(0, 80) });
+    showToast(kind === "review" ? "AI review saved to Dojo Dex." : "Dojo problem snapshot saved to Dojo Dex.");
+  };
+  const removeDojoDexEntry = (id) => persist({ ...save, dojoDex: (save.dojoDex || []).filter((x) => x.id !== id) });
   const addDexQuestion = (q, srcId = battleSrc, srcName = conceptName(srcId)) => {
     if (!q) return;
     const qid = `${world.id}:${srcId}:${String(q.q || "").slice(0, 80)}`;
@@ -4006,6 +4038,11 @@ ${QUALITY_RULES}`, cfg));
       if (withTests && out.includes("ALL TESTS PASSED")) {
         setKataValidated((v) => ({ ...v, [kata.id]: true }));
         showToast("Tests passed — completion unlocked.");
+      } else if (withTests) {
+        setKataValidated((v) => ({ ...v, [kata.id]: false }));
+        const hasExactError = /Traceback|AssertionError|Python error|Error|Exception/i.test(out);
+        setLabOut(`${out}${hasExactError ? "" : "\n\n❌ Tests did not report ALL TESTS PASSED. Add explicit asserts/prints in the test block or inspect the output above."}`);
+        showToast("Tests failed — exact Python traceback/output is shown in the lab output.");
       }
     }
     catch (e) { setLabOut("⚠️ " + (e.message || e)); setKataValidated((v) => ({ ...v, [kata.id]: false })); }
@@ -4234,6 +4271,9 @@ ${QUALITY_RULES}`, cfg));
         setDexWorld={setDexWorld}
         capturedSet={capturedSet}
         savedQuestions={dexQuestionsFor(allWorlds.find((w) => w.id === dexWorld) || world)}
+        dojoEntries={dojoDexEntries()}
+        onRemoveDojoEntry={removeDojoDexEntry}
+        onOpenDojoEntry={(entry) => { const k = allKatas.find((x) => x.id === entry.kataId); if (k) { openKata(k); setLabCode(entry.code || ""); setReview(entry.review || ""); setLabOut(entry.output || ""); setDexOpen(false); } }}
         onRemoveQuestion={removeDexQuestion}
         deepLore={deepLore}
         onDeepen={deepenLore}
@@ -4929,7 +4969,7 @@ ${QUALITY_RULES}`, cfg));
         <div style={{ ...S.card, marginTop: 12 }}>
           <span style={S.mono(10)}>SAVE DATA</span>
           <p style={{ fontSize: 12.5, color: T.inkSoft, margin: "6px 0 10px" }}>Player {save.player?.name || "local-player"} · UUID {save.player?.id || "pending"} · Session {save.player?.sessionId || "pending"}<br />XP {save.xp} · {save.captured.length} concepts · {save.badges.length} badges · {Object.keys(save.katas).length} katas · telemetry on {Object.keys(save.qstats).length} topics</p>
-          <button onClick={() => { persist({ xp: 0, hp: 100, badges: [], captured: [], sides: [], katas: {}, qstats: {}, kataHints: {}, kataAttempts: {}, learningRecords: [], dexQuestions: [], senzu: null, pet: { mood: "idle", msg: "ready" }, player: save.player }); persistAug({}); showToast("Save reset."); }} style={{ ...S.btn(T.penalty), padding: "8px 14px", fontSize: 12.5 }}>Reset progress</button>
+          <button onClick={() => { persist({ xp: 0, hp: 100, badges: [], captured: [], sides: [], katas: {}, qstats: {}, kataHints: {}, kataAttempts: {}, learningRecords: [], dexQuestions: [], dojoDex: [], senzu: null, pet: { mood: "idle", msg: "ready" }, player: save.player }); persistAug({}); showToast("Save reset."); }} style={{ ...S.btn(T.penalty), padding: "8px 14px", fontSize: 12.5 }}>Reset progress</button>
         </div>
       </div>
     </div>
@@ -4970,7 +5010,11 @@ ${QUALITY_RULES}`, cfg));
         <div style={{ ...S.wrap }}>
           <Tabs />
           <h2 style={{ fontSize: 20, fontWeight: 800, margin: "14px 0 0" }}>⌨️ The Dojo</h2>
-          <span style={S.mono(10)}>code-first workthroughs · TorchLeet set · in-browser Python lab · AI review</span>
+          <span style={S.mono(10)}>code-first workthroughs · TorchLeet set · in-browser Python lab · AI review · Dojo Dex</span>
+          <div style={{ display: "flex", gap: 8, flexWrap: "wrap", marginTop: 10 }}>
+            <button onClick={() => { setDexWorld(activeWorld); setDexOpen(true); }} style={S.chip(false)}>📖 Open Conceptdex</button>
+            <span style={{ ...S.mono(9, T.gold), alignSelf: "center" }}>Dojo Dex stores kata snapshots, failing test output, and AI reviews separately from concept questions.</span>
+          </div>
           <div style={{ ...S.card, marginTop: 10, background: T.rewardSoft }}>
             <div style={{ display: "flex", justifyContent: "space-between", gap: 10, alignItems: "center" }}>
               <div><b>🫘 Senzu bean recovery quest</b><p style={{ fontSize: 12.5, color: T.inkSoft, margin: "4px 0 0" }}>Started from Concept Worlds: clear both exercises here, then return healed.</p></div>
@@ -5051,12 +5095,14 @@ ${QUALITY_RULES}`, cfg));
               {(lab || kata.family === "swe") && <button onClick={() => runLab(false)} disabled={busy === "lab"} style={{ ...S.btn(S.inkBtn), flex: 1, minWidth: 90 }}>{busy === "lab" ? "Running…" : "▶ Run"}</button>}
               {(LABS[kata.id]?.test || enrichSWEKata(kata).test) && <button onClick={() => runLab(true)} disabled={busy === "lab"} style={{ ...S.btn(kataValidated[kata.id] ? T.reward : T.card, kataValidated[kata.id] ? "#fff" : T.reward), border: `1px solid ${T.reward}`, flex: 1, minWidth: 110 }}>{busy === "lab" ? "Running…" : kataValidated[kata.id] ? "✓ Tests passed" : "✓ Run tests"}</button>}
               <button onClick={doReview} disabled={busy === "review"} style={{ ...S.btn(T.explore), flex: 1, minWidth: 120 }}>{busy === "review" ? "Reviewing…" : "🔍 AI review"}</button>
+              <button onClick={() => addDojoDexEntry(review ? "review" : "snapshot")} disabled={!labCode.trim()} style={{ ...S.btn(T.gold), flex: 1, minWidth: 110 }}>＋ Dojo Dex</button>
             </div>
             {labOut && <pre style={{ ...S.pre, marginTop: 8, maxHeight: 220, overflowY: "auto", background: "#0B0F1E" }}>{labOut}</pre>}
             {lab && (
               <div style={{ display: "flex", gap: 6, marginTop: 8, alignItems: "center" }}>
                 <span style={{ ...S.mono(12, T.reward) }}>&gt;&gt;&gt;</span>
-                <input value={repl} onChange={(e) => setRepl(e.target.value)} onKeyDown={async (e) => {
+                <div style={{ position: "relative", flex: 1, minWidth: 0 }}>
+                  <input className="replInput" value={repl} onFocus={() => setReplFocused(true)} onBlur={() => setReplFocused(false)} onChange={(e) => setRepl(e.target.value)} onKeyDown={async (e) => {
                   e.stopPropagation();
                   if (e.key === "Tab") {
                     e.preventDefault();
@@ -5075,15 +5121,20 @@ ${QUALITY_RULES}`, cfg));
                     py.setStdout({ batched: (s) => { out += s + "\n"; } });
                     py.setStderr({ batched: (s) => { out += s + "\n"; } });
                     let val;
-                    try { val = await py.runPythonAsync(line); } catch (err) { out += String(err.message || err).split("\n").slice(-3).join("\n"); }
+                    try { val = await py.runPythonAsync(line); } catch (err) { out += `❌ Python error:\n${formatPythonError(err)}`; }
                     if (val !== undefined && val !== null) out += String(val);
                     setLabOut((o) => o + (out ? "\n" + out.trimEnd() : ""));
                   } catch (err) { setLabOut((o) => o + "\n⚠️ " + (err.message || err)); }
                   setBusy("");
-                }} onKeyUp={(e) => e.stopPropagation()} onClick={(e) => e.stopPropagation()} placeholder="REPL — shares the session with ▶ Run (try: out.shape)" spellCheck={false} style={{ ...S.input, flex: 1, padding: "8px 10px", fontSize: 12 }} />
+                }} onKeyUp={(e) => e.stopPropagation()} onClick={(e) => e.stopPropagation()} placeholder="REPL — shares the session with ▶ Run (try: out.shape)" spellCheck={false} style={{ ...S.input, padding: "8px 10px", paddingRight: 24, fontSize: 12, caretColor: T.reward }} />
+                  {replFocused && !repl && <span aria-hidden="true" className="replBlinkCursor" style={{ position: "absolute", left: 12, top: "50%", transform: "translateY(-50%)", color: T.reward, fontFamily: "'JetBrains Mono', monospace", fontWeight: 800, pointerEvents: "none" }}>▌</span>}
+                </div>
               </div>
             )}
-            {review && <div style={{ marginTop: 10, fontSize: 13, lineHeight: 1.6, whiteSpace: "pre-wrap", padding: "10px 12px", background: T.exploreSoft, borderRadius: 10 }}>{review}</div>}
+            {review && <div style={{ marginTop: 10, fontSize: 13, lineHeight: 1.6, whiteSpace: "pre-wrap", padding: "10px 12px", background: T.exploreSoft, borderRadius: 10 }}>
+              {review}
+              <div style={{ marginTop: 8 }}><button onClick={() => addDojoDexEntry("review")} style={{ ...S.chip(false), fontSize: 11 }}>＋ save review to Dojo Dex</button></div>
+            </div>}
           </div>
 
           {/* TODO lore / hints / solution / completion controls */}
@@ -5423,6 +5474,9 @@ a { transition: color .2s ease, filter .2s ease; }
 a:hover { filter: brightness(1.15); }
 input, textarea { transition: border-color .2s ease, box-shadow .25s ease; }
 input:focus, textarea:focus { border-color: rgba(141,155,255,.65) !important; box-shadow: 0 0 0 3px rgba(141,155,255,.18); }
+.replInput { caret-color: #5BE0A2; }
+.replBlinkCursor { animation: replCaretBlink 1s steps(1,end) infinite; }
+@keyframes replCaretBlink { 0%,49% { opacity: 1; } 50%,100% { opacity: 0; } }
 .worldCard { transition: transform .22s cubic-bezier(.3,.7,.3,1), box-shadow .25s ease, border-color .25s ease; }
 .rt ul, .rt ol { margin: .55em 0 0; }
 @media (max-width: 640px) {

@@ -17,8 +17,8 @@ const mono = (size, color = INK_SOFT) => ({ fontFamily: "'JetBrains Mono', monos
 
 export default function ConceptdexDrawer({
   open, onClose, worlds, dexWorld, setDexWorld, capturedSet,
-  savedQuestions = [], onRemoveQuestion, deepLore = {}, onDeepen, busy,
-  conceptNote,
+  savedQuestions = [], onRemoveQuestion, dojoEntries = [], onRemoveDojoEntry, onOpenDojoEntry,
+  deepLore = {}, onDeepen, busy, conceptNote,
 }) {
   const [selectedId, setSelectedId] = useState(null);
   const [deckOpen, setDeckOpen] = useState(false);
@@ -110,7 +110,7 @@ export default function ConceptdexDrawer({
           <div style={{ width: 36, height: 36, borderRadius: 12, display: "grid", placeItems: "center", fontSize: 18, background: "rgba(141,155,255,0.14)", border: "1px solid rgba(141,155,255,0.4)", boxShadow: "0 0 18px rgba(141,155,255,0.25)" }}>📖</div>
           <div style={{ flex: 1, minWidth: 0 }}>
             <div style={{ fontWeight: 800, fontSize: 16, letterSpacing: "-0.01em" }}>Conceptdex</div>
-            <div style={{ ...mono(9) }}>{got}/{total} CAPTURED · {savedQuestions.length} SAVED QUESTION{savedQuestions.length === 1 ? "" : "S"}</div>
+            <div style={{ ...mono(9) }}>{got}/{total} CAPTURED · {savedQuestions.length} SAVED QUESTION{savedQuestions.length === 1 ? "" : "S"} · {dojoEntries.length} DOJO DEX</div>
           </div>
           <button onClick={onClose} aria-label="Close Conceptdex" style={{ background: "rgba(255,255,255,0.05)", border: `1px solid ${LINE}`, color: INK_SOFT, borderRadius: 10, width: 32, height: 32, cursor: "pointer", fontSize: 14, fontFamily: "inherit" }}>✕</button>
         </div>
@@ -179,19 +179,39 @@ export default function ConceptdexDrawer({
             <span style={{ ...mono(9.5, "#8D9BFF") }}>{deckOpen ? "⌄" : "›"} SAVED QUESTION DECK · {savedQuestions.length}</span>
             <span style={{ ...mono(8.5) }}>{deckOpen ? "collapse" : "review"}</span>
           </button>
-          {deckOpen && (savedQuestions.length ? savedQuestions.map((sq) => (
-            <div key={sq.id} style={{ borderRadius: 14, padding: "11px 13px", marginTop: 8, background: "rgba(255,255,255,0.035)", border: `1px solid ${LINE}` }}>
-              <div style={{ display: "flex", justifyContent: "space-between", gap: 8, alignItems: "baseline" }}>
-                <span style={{ ...mono(8.5, "#8D9BFF") }}>{sq.sourceName || sq.src}</span>
-                {onRemoveQuestion && <button onClick={() => onRemoveQuestion(sq.id)} style={{ ...chip(false), padding: "3px 8px", fontSize: 10 }}>remove</button>}
-              </div>
-              <p style={{ fontSize: 12.8, fontWeight: 700, lineHeight: 1.5, margin: "6px 0" }}>{sq.q}</p>
-              <div style={{ display: "grid", gap: 4 }}>
-                {(sq.options || []).map((o, i) => <div key={i} style={{ fontSize: 12, color: i === sq.a ? "#5BE0A2" : INK_SOFT }}><b>{String.fromCharCode(65 + i)}.</b> {o}{i === sq.a ? " ✓" : ""}</div>)}
-              </div>
-              {sq.why && <p style={{ fontSize: 12, color: INK_SOFT, lineHeight: 1.55, margin: "6px 0 0" }}>{sq.why}</p>}
-            </div>
-          )) : <p style={{ fontSize: 12, color: INK_SOFT, lineHeight: 1.55, margin: "8px 2px 0" }}>Empty deck. During any battle or gauntlet, tap <b style={{ color: INK }}>＋ dex</b> to bank a question worth re-drilling.</p>)}
+          {deckOpen && (
+            <>
+              {savedQuestions.length ? (savedQuestions.map((sq) => (
+                <div key={sq.id} style={{ borderRadius: 14, padding: "11px 13px", marginTop: 8, background: "rgba(255,255,255,0.035)", border: `1px solid ${LINE}` }}>
+                  <div style={{ display: "flex", justifyContent: "space-between", gap: 8, alignItems: "baseline" }}>
+                    <span style={{ ...mono(8.5, "#8D9BFF") }}>{sq.sourceName || sq.src}</span>
+                    {onRemoveQuestion && <button onClick={() => onRemoveQuestion(sq.id)} style={{ ...chip(false), padding: "3px 8px", fontSize: 10 }}>remove</button>}
+                  </div>
+                  <p style={{ fontSize: 12.8, fontWeight: 700, lineHeight: 1.5, margin: "6px 0" }}>{sq.q}</p>
+                  <div style={{ display: "grid", gap: 4 }}>
+                    {(sq.options || []).map((o, i) => <div key={i} style={{ fontSize: 12, color: i === sq.a ? "#5BE0A2" : INK_SOFT }}><b>{String.fromCharCode(65 + i)}.</b> {o}{i === sq.a ? " ✓" : ""}</div>)}
+                  </div>
+                  {sq.why && <p style={{ fontSize: 12, color: INK_SOFT, lineHeight: 1.55, margin: "6px 0 0" }}>{sq.why}</p>}
+                </div>
+              ))) : (<p style={{ fontSize: 12, color: INK_SOFT, lineHeight: 1.55, margin: "8px 2px 0" }}>Empty question deck. During any battle or gauntlet, tap <b style={{ color: INK }}>＋ dex</b> to bank a question worth re-drilling.</p>)}
+
+              <div style={{ marginTop: 14, ...mono(9.5, "#F4C95D") }}>＋ DOJO DEX · SAVED PROBLEMS & AI REVIEWS</div>
+              {dojoEntries.length ? (dojoEntries.map((entry) => (
+                <div key={entry.id} style={{ borderRadius: 14, padding: "11px 13px", marginTop: 8, background: "rgba(244,201,93,0.055)", border: "1px solid rgba(244,201,93,0.24)" }}>
+                  <div style={{ display: "flex", justifyContent: "space-between", gap: 8, alignItems: "baseline" }}>
+                    <span style={{ ...mono(8.5, "#F4C95D") }}>{entry.family || "dojo"} · {entry.framework || "python"} · {entry.kind || "snapshot"}</span>
+                    <div style={{ display: "flex", gap: 5 }}>
+                      {onOpenDojoEntry && <button onClick={() => onOpenDojoEntry(entry)} style={{ ...chip(false), padding: "3px 8px", fontSize: 10 }}>open</button>}
+                      {onRemoveDojoEntry && <button onClick={() => onRemoveDojoEntry(entry.id)} style={{ ...chip(false), padding: "3px 8px", fontSize: 10 }}>remove</button>}
+                    </div>
+                  </div>
+                  <p style={{ fontSize: 12.8, fontWeight: 800, lineHeight: 1.5, margin: "6px 0" }}>{entry.kataTitle}</p>
+                  {entry.output && <pre style={{ maxHeight: 110, overflow: "auto", whiteSpace: "pre-wrap", fontSize: 11, lineHeight: 1.45, color: INK_SOFT, background: "rgba(8,12,28,0.65)", borderRadius: 10, padding: 9, margin: "6px 0" }}>{entry.output}</pre>}
+                  {entry.review && <RichText text={entry.review} style={{ fontSize: 12, color: INK_SOFT, lineHeight: 1.55, marginTop: 6 }} />}
+                </div>
+              ))) : (<p style={{ fontSize: 12, color: INK_SOFT, lineHeight: 1.55, margin: "8px 2px 0" }}>No Dojo Dex entries yet. In a kata, tap <b style={{ color: INK }}>＋ Dojo Dex</b> to save the current problem, code, test output, and AI review.</p>)}
+            </>
+          )}
 
           {(world && world.regions || []).map((r, ri) => {
             const capturedHere = (r.concepts || []).filter((c) => capturedSet.has(c.id));
