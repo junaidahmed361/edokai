@@ -4446,7 +4446,7 @@ ${QUALITY_RULES}`, cfg));
             <span style={S.mono(9, T.inkSoft)}>source: {dkgSync.source || "auto"}</span>
             {dkgSync.updatedAt && <span style={S.mono(9, T.inkSoft)}>updated: {new Date(dkgSync.updatedAt).toLocaleString()}</span>}
             {dkgSync.realtimeStatus && <span style={S.mono(9, T.inkSoft)}>realtime: {dkgSync.realtimeStatus}</span>}
-            {!dkgSync.browserSupabaseConfigured && <span style={S.mono(9, T.gold)}>browser anon key absent; using server proxy/GitHub fallback</span>}
+            {!dkgSync.browserSupabaseConfigured && <span style={S.mono(9, dkgSync.desktopBridgeConfigured ? T.reward : T.gold)}>{dkgSync.desktopBridgeConfigured ? "desktop Supabase bridge active" : "browser anon key absent; using server proxy/GitHub fallback"}</span>}
           </div>
           {!!(dkgSync.recentSources || []).length && <Collapsible id="liveDkgSources" title="RECENT LIVE INGESTS / SOURCES" color={T.inkSoft} style={{ marginTop: 10, padding: 10, background: T.card }}>
             <div style={{ display: "grid", gap: 6 }}>

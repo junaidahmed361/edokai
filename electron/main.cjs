@@ -1,5 +1,6 @@
 const { app, BrowserWindow, shell, ipcMain } = require("electron");
 const path = require("path");
+const fs = require("fs");
 const { spawn, spawnSync } = require("child_process");
 const crypto = require("crypto");
 const Database = require("better-sqlite3");
@@ -8,6 +9,26 @@ const Database = require("better-sqlite3");
 const CLAUDE_TIMEOUT_MS = 120000;
 const CODEX_TIMEOUT_MS = 120000;
 let db;
+let envLoaded = false;
+function loadEnvFile(file) {
+  try {
+    const text = fs.readFileSync(file, "utf8");
+    for (const line of text.split(/\r?\n/)) {
+      const trimmed = line.trim();
+      if (!trimmed || trimmed.startsWith("#") || !trimmed.includes("=")) continue;
+      const idx = line.indexOf("=");
+      const key = line.slice(0, idx).trim();
+      let value = line.slice(idx + 1).trim();
+      if ((value.startsWith('"') && value.endsWith('"')) || (value.startsWith("'") && value.endsWith("'"))) value = value.slice(1, -1);
+      if (key && process.env[key] === undefined) process.env[key] = value;
+    }
+  } catch {}
+}
+function loadDesktopEnv() {
+  if (envLoaded) return;
+  envLoaded = true;
+  loadEnvFile(path.join(app.getPath("home"), ".hermes", ".env"));
+}
 function edokaiDb() {
   if (db) return db;
   const dbPath = path.join(app.getPath("userData"), "edokai.sqlite");
@@ -168,6 +189,24 @@ ipcMain.handle("storage-set", async (_event, key, value) => {
 ipcMain.handle("storage-delete", async (_event, key) => {
   edokaiDb().prepare("DELETE FROM kv WHERE key=?").run(key);
   return { key, deleted: true };
+});
+ipcMain.handle("dkg-snapshot", async () => {
+  loadDesktopEnv();
+  const supabaseUrl = (process.env.EDOKAI_SUPABASE_URL || process.env.SUPABASE_URL || "https://lfnpcgcxezyjcgnpcagq.supabase.co").replace(/\/$/, "");
+  const serviceRoleKey = process.env.EDOKAI_SUPABASE_SERVICE_ROLE_KEY || process.env.SUPABASE_SERVICE_ROLE_KEY;
+  const table = process.env.EDOKAI_DKG_TABLE || "edokai_dkg_snapshots";
+  const rowId = process.env.EDOKAI_DKG_ROW_ID || "latest";
+  if (!serviceRoleKey) return { ok: false, disabled: true, source: "desktop-supabase", message: "Desktop Supabase service role key not configured." };
+  const res = await fetch(`${supabaseUrl}/rest/v1/${table}?id=eq.${encodeURIComponent(rowId)}&select=id,payload,updated_at`, {
+    headers: { apikey: serviceRoleKey, authorization: `Bearer ${serviceRoleKey}`, accept: "application/json" },
+  });
+  const text = await res.text();
+  let rows = null;
+  try { rows = text ? JSON.parse(text) : null; } catch {}
+  if (!res.ok) return { ok: false, source: "desktop-supabase", error: (rows && (rows.message || rows.error)) || `HTTP ${res.status}` };
+  const row = Array.isArray(rows) ? rows[0] : null;
+  if (!row) return { ok: true, empty: true, payload: null, updatedAt: null, source: "desktop-supabase" };
+  return { ok: true, payload: row.payload, updatedAt: row.updated_at, source: "desktop-supabase" };
 });
 
 function createWindow() {

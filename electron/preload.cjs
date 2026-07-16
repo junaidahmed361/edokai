@@ -24,3 +24,6 @@ contextBridge.exposeInMainWorld('storage', {
   set: (key, value) => ipcRenderer.invoke('storage-set', key, value),
   delete: (key) => ipcRenderer.invoke('storage-delete', key),
 });
+contextBridge.exposeInMainWorld('edokaiDkg', {
+  fetchSnapshot: () => ipcRenderer.invoke('dkg-snapshot'),
+});

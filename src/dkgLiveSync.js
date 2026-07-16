@@ -22,9 +22,11 @@ export function getDkgClient() {
 
 export function dkgSyncConfigStatus() {
   const hasBrowserSupabase = Boolean(SUPABASE_URL && SUPABASE_ANON_KEY);
+  const hasDesktopBridge = typeof window !== "undefined" && Boolean(window.edokaiDkg?.fetchSnapshot);
   return {
-    configured: hasBrowserSupabase || Boolean(DKG_NETLIFY_FUNCTION) || Boolean(DKG_GITHUB_RAW_BASE),
+    configured: hasBrowserSupabase || hasDesktopBridge || Boolean(DKG_NETLIFY_FUNCTION) || Boolean(DKG_GITHUB_RAW_BASE),
     browserSupabaseConfigured: hasBrowserSupabase,
+    desktopBridgeConfigured: hasDesktopBridge,
     url: SUPABASE_URL,
     table: DKG_TABLE,
     rowId: DKG_ROW_ID,
@@ -32,6 +34,17 @@ export function dkgSyncConfigStatus() {
     githubRawBase: DKG_GITHUB_RAW_BASE,
     githubRef: DKG_GITHUB_REF,
   };
+}
+
+async function loadDesktopDkgSnapshot() {
+  if (typeof window === "undefined" || typeof window.edokaiDkg?.fetchSnapshot !== "function") {
+    return { ok: false, disabled: true, source: "desktop-supabase", message: "Desktop DKG bridge unavailable." };
+  }
+  try {
+    return await window.edokaiDkg.fetchSnapshot();
+  } catch (e) {
+    return { ok: false, source: "desktop-supabase", error: e.message || String(e) };
+  }
 }
 
 async function loadSupabaseDkgSnapshot() {
@@ -90,7 +103,7 @@ async function loadGithubDkgSnapshot() {
 
 export async function loadDkgSnapshot({ force = false } = {}) {
   const attempts = [];
-  const sources = force ? [loadSupabaseDkgSnapshot, loadNetlifyDkgSnapshot, loadGithubDkgSnapshot] : [loadSupabaseDkgSnapshot, loadNetlifyDkgSnapshot, loadGithubDkgSnapshot];
+  const sources = force ? [loadSupabaseDkgSnapshot, loadDesktopDkgSnapshot, loadNetlifyDkgSnapshot, loadGithubDkgSnapshot] : [loadSupabaseDkgSnapshot, loadDesktopDkgSnapshot, loadNetlifyDkgSnapshot, loadGithubDkgSnapshot];
   for (const loader of sources) {
     const result = await loader();
     if (result.ok) return result;
@@ -111,7 +124,7 @@ export function subscribeDkgSnapshot(onSnapshot, onStatus = () => {}) {
     };
     refreshWithoutRealtime();
     const pollTimerNoRealtime = window.setInterval(refreshWithoutRealtime, 60000);
-    onStatus({ ok: true, realtimeStatus: "polling-fallback" });
+    onStatus({ ok: true, realtimeStatus: typeof window !== "undefined" && window.edokaiDkg?.fetchSnapshot ? "desktop-polling" : "polling-fallback" });
     return () => { cancelledNoRealtime = true; window.clearInterval(pollTimerNoRealtime); };
   }
 
