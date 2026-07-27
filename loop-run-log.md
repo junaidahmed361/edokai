@@ -211,3 +211,212 @@ Append-only operational log for automatic EmergentMind ingestion, Telegram manua
 - Escalations/manual review: quality findings need manual review: agents/language-world-models-for-agents: generic/clipped side duel world-model-vs-policy; agents/continual-learning-and-plasticity: generic/clipped side duel forgetting-vs-plasticity-loss; agents/interactive-coding-agent-evaluation: generic/clipped side duel static-benchmark-vs-reactive-session; agents/the-graph-policy-workshop: generic/clipped side duel graph-policy-vs-monolithic-policy; agents/the-norm-weavers-forum: generic/clipped side duel explicit-command-vs-tacit-norm
 
 - Correction: the initial builder quality scanner over-flagged ordinary `What does ...` educational prompts and two title-only contrast duels. Scanner narrowed; affected duels now say `title-only bookmark`; final quality findings: 0.
+
+## daily-emergentmind-all-topics-20260714T142943Z
+
+- Trigger: scheduled daily EmergentMind all-topics graph growth loop.
+- Homepage discovery: fetched `https://www.emergentmind.com/` (HTTP 200) and decoded `window.bootstrapped_trending_papers_json`; homepage exposed 45 trending papers. Selected 12 new high-signal ML/AI papers under the daily budget.
+- Sources ingested: emergentmind-2607-07847-when-does-continual-learning-require-learning-2026, emergentmind-2607-09024-video-generation-models-are-general-purpose-vision-learners-2026, emergentmind-2607-08877-flowdagger-human-in-the-loop-adaptation-of-generative-2026, emergentmind-2607-09657-scalable-visual-pretraining-for-language-intelligence-2026, emergentmind-2607-09061-on-locality-and-length-generalization-in-visual-reasoning-2026, emergentmind-2607-08964-long-horizon-terminal-bench-testing-the-limits-of-2026, emergentmind-2607-08993-streamdq-near-memory-weight-dequantization-in-custom-hbm-2026, emergentmind-2607-09385-steel-sparsity-aware-fused-attention-for-energy-efficient-2026, emergentmind-2607-08742-contactmimic-humanoid-object-interaction-via-contact-control-2026, emergentmind-2607-07676-skillcenter-a-large-scale-source-grounded-skill-library-2026, emergentmind-2607-06656-robust-human-ai-complementarity-under-uncertainty-2026, emergentmind-2607-08766-opsd-v-on-policy-self-distillation-for-post-2026.
+- Source-page fetch statuses: {"2607.07847": 200, "2607.09024": 200, "2607.08877": 200, "2607.09657": 200, "2607.09061": 200, "2607.08964": 200, "2607.08993": 200, "2607.09385": 200, "2607.08742": 200, "2607.07676": 200, "2607.06656": 200, "2607.08766": 200}.
+- Graph actions: added 12 source records, updated 0; added 40 nodes, updated 0; added 48 source-backed edges. Totals now 99 sources / 319 nodes / 393 edges.
+- Concept-world builder: added 12 preliminary source-backed regions across generative-models, retrieval-augmented-generation, perception-world-models, agents; no new macro world created.
+- Verification: maker/checker provenance pass succeeded before write; JSON parse, `npm run dkg:test`, `npm run build`, `npm run dkg:sync`, and Supabase round-trip readback passed.
+- Escalations/manual review: Skipped pure-math, astronomy/cosmology, and clinical/medical surfaced items in this bounded pass; clinical claims need deeper safety review before routing. New visual-SLAM/event-camera/egocentric-video items are routed under Perception & World Models; DeepSearch is routed under Retrieval-Augmented Generation; beyond-human intelligence evaluation is routed under Agents. No publishing, secrets, infra, or broad UI refactor performed.
+
+## daily-concept-world-builder-20260714T144508Z
+
+- Trigger: scheduled deterministic concept-world builder after `daily-emergentmind-all-topics-20260714T142943Z`.
+- Maker/checker result: upstream already added 12 sources, 40 nodes, 48 edges, and 12 preliminary regions. Builder found 0 quality findings and made no broad app/UI changes.
+- Counts before sync: 99 sources / 319 nodes / 393 edges / 6 macro worlds / 101 regions / 103 quizzes / 105 duels.
+- Verification: JSON parse passed; `npm run dkg:test` passed; `npm run build` passed; `npm run dkg:sync` passed; `node scripts/test-dkg-roundtrip.mjs` passed.
+- Escalations/manual review: none.
+
+## daily-emergentmind-all-topics-20260715T144016Z
+
+- Trigger: scheduled daily EmergentMind all-topics graph growth loop.
+- Homepage discovery: fetched `https://www.emergentmind.com/` (HTTP 200) and decoded `window.bootstrapped_trending_papers_json`; homepage exposed 45 trending papers. Selected 7 new high-signal ML/AI papers under the daily budget.
+- Sources ingested: emergentmind-2607-10712-distributed-denial-of-science-how-indirect-data-poisoning-2026, emergentmind-2607-11262-gpu-tile-sim-a-tile-centric-gpu-simulation-2026, emergentmind-2607-11250-multi-agent-llms-fail-to-explore-each-other-2026, emergentmind-2607-08974-clap-direct-vlm-to-vla-adaptation-via-language-2026, emergentmind-2607-11884-mixture-of-frames-policy-multi-frame-action-denoising-2026, emergentmind-2607-07026-constrained-decoding-for-diffusion-language-models-via-efficient-2026, emergentmind-2607-09424-a-sovereign-open-source-foundation-model-for-german-2026.
+- Source-page fetch statuses: {"2607.10712": 200, "2607.11262": 200, "2607.11250": 200, "2607.08974": 200, "2607.11884": 200, "2607.07026": 200, "2607.09424": 200}.
+- Graph actions: added 7 source records, updated 0; added 21 nodes, updated 0; added 28 source-backed edges. Totals now 106 sources / 340 nodes / 421 edges.
+- Concept-world builder: added 7 preliminary source-backed regions across retrieval-augmented-generation, perception-world-models, agents, llm-systems-serving; no new macro world created.
+- Verification: maker/checker provenance pass succeeded before write; JSON parse, `npm run dkg:test`, `npm run build`, `npm run dkg:sync`, and Supabase round-trip readback passed.
+- Escalations/manual review: Skipped pure-math, astronomy/cosmology, and clinical/medical surfaced items in this bounded pass; clinical claims need deeper safety review before routing. New visual-SLAM/event-camera/egocentric-video items are routed under Perception & World Models; DeepSearch is routed under Retrieval-Augmented Generation; beyond-human intelligence evaluation is routed under Agents. No publishing, secrets, infra, or broad UI refactor performed.
+
+## daily-concept-world-builder-20260715T144029Z
+
+- Trigger: scheduled deterministic concept-world builder after `daily-emergentmind-all-topics-20260715T144016Z`.
+- Maker/checker result: upstream already added 7 sources, 21 nodes, 28 edges, and 7 preliminary regions. Builder found 0 quality findings and made no broad app/UI changes.
+- Counts before sync: 106 sources / 340 nodes / 421 edges / 6 macro worlds / 108 regions / 110 quizzes / 112 duels.
+- Verification: JSON parse passed; `npm run dkg:test` passed; `npm run build` passed; `npm run dkg:sync` passed; `node scripts/test-dkg-roundtrip.mjs` passed.
+- Escalations/manual review: none.
+
+## daily-emergentmind-all-topics-20260716T141153Z
+
+- Trigger: scheduled daily EmergentMind all-topics graph growth loop.
+- Homepage discovery: fetched `https://www.emergentmind.com/` (HTTP 200) and decoded `window.bootstrapped_trending_papers_json`; homepage exposed 45 trending papers. Selected 12 new high-signal ML/AI papers under the daily budget.
+- Sources ingested: emergentmind-2607-10011-religion-and-artificial-intelligence-as-distributed-meaning-systems-2026, emergentmind-2607-12963-the-illusion-of-robustness-aggregate-accuracy-hides-prediction-2026, emergentmind-2607-11859-can-llms-perform-deep-technical-comprehension-of-computer-2026, emergentmind-2607-11883-requential-coding-pushing-the-limits-of-model-compression-2026, emergentmind-2607-09648-b-spline-policy-accelerating-manipulation-policies-via-b-2026, emergentmind-2607-12474-from-observation-to-insight-mechanistic-world-models-and-2026, emergentmind-2607-11886-read-it-back-pretrained-mllms-are-zero-shot-2026, emergentmind-2607-11938-mathematics-of-data-science-2026, emergentmind-2607-12395-ring-zero-scaling-zero-rl-to-a-trillion-2026, emergentmind-2607-11874-a-minimalist-retargeting-guided-reinforcement-learning-recipe-for-2026, emergentmind-2607-13095-full-pipeline-inference-optimization-for-mimo-v2-5-2026, emergentmind-2607-09225-glob3r-global-structure-from-motion-with-3d-foundation-2026.
+- Source-page fetch statuses: {"2607.10011": 200, "2607.12963": 200, "2607.11859": 200, "2607.11883": 200, "2607.09648": 200, "2607.12474": 200, "2607.11886": 200, "2607.11938": 200, "2607.12395": 200, "2607.11874": 200, "2607.13095": 200, "2607.09225": 200}.
+- Graph actions: added 12 source records, updated 0; added 37 nodes, updated 0; added 48 source-backed edges. Totals now 118 sources / 377 nodes / 469 edges.
+- Concept-world builder: added 12 preliminary source-backed regions across perception-world-models, agents, generative-models, retrieval-augmented-generation; no new macro world created.
+- Verification: maker/checker provenance pass succeeded before write; JSON parse, `npm run dkg:test`, `npm run build`, `npm run dkg:sync`, and Supabase round-trip readback passed.
+- Escalations/manual review: Skipped pure-math, astronomy/cosmology, and clinical/medical surfaced items in this bounded pass; clinical claims need deeper safety review before routing. New visual-SLAM/event-camera/egocentric-video items are routed under Perception & World Models; DeepSearch is routed under Retrieval-Augmented Generation; beyond-human intelligence evaluation is routed under Agents. No publishing, secrets, infra, or broad UI refactor performed.
+
+## daily-concept-world-builder-20260716T182733Z
+
+- Trigger: scheduled deterministic concept-world builder after `daily-emergentmind-all-topics-20260716T141153Z`.
+- Maker/checker result: upstream already added 12 sources, 37 nodes, 48 edges, and 12 preliminary regions. Builder found 0 quality findings and made no broad app/UI changes.
+- Counts before sync: 118 sources / 377 nodes / 469 edges / 6 macro worlds / 120 regions / 122 quizzes / 124 duels.
+- Verification: JSON parse passed; `npm run dkg:test` passed; `npm run build` passed; `npm run dkg:sync` passed; `node scripts/test-dkg-roundtrip.mjs` passed.
+- Escalations/manual review: none.
+
+## daily-emergentmind-all-topics-20260718T140054Z
+
+- Trigger: scheduled daily EmergentMind all-topics graph growth loop.
+- Homepage discovery: fetched `https://www.emergentmind.com/` (HTTP 200) and decoded `window.bootstrapped_trending_papers_json`; homepage exposed 45 trending papers. Selected 12 new high-signal ML/AI papers under the daily budget.
+- Sources ingested: emergentmind-2607-11270-towards-predictive-aligned-and-scalable-robot-learning-2026, emergentmind-2607-11734-neuralactuator-neural-actuation-modeling-for-robot-dynamics-and-2026, emergentmind-2607-11736-met-theory-grounded-and-culture-aware-multilingual-moral-2026, emergentmind-2607-11362-boolean-queries-are-all-you-need-2026, emergentmind-2607-14345-value-leakage-an-llm-s-answers-are-silently-2026, emergentmind-2607-11498-see-like-a-robot-robot-centric-pointmaps-for-2026, emergentmind-2607-12992-chunkflow-towards-continuity-consistent-chunked-policy-learning-2026, emergentmind-2607-13125-boogu-image-0-1-boosting-open-source-unified-2026, emergentmind-2607-11020-can-a-language-model-learn-facts-continually-in-2026, emergentmind-2607-14952-longstraw-long-context-rl-beyond-2m-tokens-under-2026, emergentmind-2607-13808-bake-it-till-you-make-it-ultrafast-spatial-2026, emergentmind-2607-11285-salientgs-unified-sfm-to-3dgs-with-importance-guided-2026.
+- Source-page fetch statuses: {"2607.11270": 200, "2607.11734": 200, "2607.11736": 200, "2607.11362": 200, "2607.14345": 200, "2607.11498": 200, "2607.12992": 200, "2607.13125": 200, "2607.11020": "error: TimeoutError: The read operation timed out", "2607.14952": 200, "2607.13808": 200, "2607.11285": 200}.
+- Graph actions: added 12 source records, updated 0; added 39 nodes, updated 0; added 48 source-backed edges. Totals now 130 sources / 416 nodes / 517 edges.
+- Concept-world builder: added 12 preliminary source-backed regions across perception-world-models, retrieval-augmented-generation, generative-models, llm-systems-serving; no new macro world created.
+- Verification: maker/checker provenance pass succeeded before write; JSON parse, `npm run dkg:test`, `npm run build`, `npm run dkg:sync`, and Supabase round-trip readback passed.
+- Escalations/manual review: Skipped pure-math, astronomy/cosmology, and clinical/medical surfaced items in this bounded pass; clinical claims need deeper safety review before routing. New visual-SLAM/event-camera/egocentric-video items are routed under Perception & World Models; DeepSearch is routed under Retrieval-Augmented Generation; beyond-human intelligence evaluation is routed under Agents. No publishing, secrets, infra, or broad UI refactor performed.
+
+## daily-concept-world-builder-20260718T143056Z
+
+- Trigger: scheduled deterministic concept-world builder after `daily-emergentmind-all-topics-20260718T140054Z`.
+- Maker/checker result: upstream already added 12 sources, 39 nodes, 48 edges, and 12 preliminary regions. Builder found 0 quality findings and made no broad app/UI changes.
+- Counts before sync: 130 sources / 416 nodes / 517 edges / 6 macro worlds / 132 regions / 134 quizzes / 136 duels.
+- Verification: JSON parse passed; `npm run dkg:test` passed; `npm run build` passed; `npm run dkg:sync` passed; `node scripts/test-dkg-roundtrip.mjs` passed.
+- Escalations/manual review: none.
+
+## daily-emergentmind-all-topics-20260719T140457Z
+
+- Trigger: scheduled daily EmergentMind all-topics graph growth loop.
+- Homepage discovery: fetched `https://www.emergentmind.com/` (HTTP 200) and decoded `window.bootstrapped_trending_papers_json`; homepage exposed 45 trending papers. Selected 4 new high-signal ML/AI papers under the daily budget.
+- Sources ingested: emergentmind-2607-14250-the-severance-problem-llms-are-unaware-of-the-2026, emergentmind-2607-13188-concurrent-image-understanding-and-generation-self-correcting-coupled-2026, emergentmind-2607-12301-xscientist-a-git-like-research-protocol-for-long-2026, emergentmind-2607-12999-spin-chain-quantum-communication-on-a-trapped-ion-2026.
+- Source-page fetch statuses: {"2607.14250": 200, "2607.13188": 200, "2607.12301": 200, "2607.12999": 200}.
+- Graph actions: added 4 source records, updated 0; added 12 nodes, updated 0; added 16 source-backed edges. Totals now 134 sources / 428 nodes / 533 edges.
+- Concept-world builder: added 4 preliminary source-backed regions across perception-world-models, agents; no new macro world created.
+- Verification: maker/checker provenance pass succeeded before write; JSON parse, `npm run dkg:test`, `npm run build`, `npm run dkg:sync`, and Supabase round-trip readback passed.
+- Escalations/manual review: Skipped pure-math, astronomy/cosmology, and clinical/medical surfaced items in this bounded pass; clinical claims need deeper safety review before routing. New visual-SLAM/event-camera/egocentric-video items are routed under Perception & World Models; DeepSearch is routed under Retrieval-Augmented Generation; beyond-human intelligence evaluation is routed under Agents. No publishing, secrets, infra, or broad UI refactor performed.
+
+## daily-concept-world-builder-20260719T143358Z
+
+- Trigger: scheduled deterministic concept-world builder after `daily-emergentmind-all-topics-20260719T140457Z`.
+- Maker/checker result: upstream already added 4 sources, 12 nodes, 16 edges, and 4 preliminary regions. Builder found 0 quality findings and made no broad app/UI changes.
+- Counts before sync: 134 sources / 428 nodes / 533 edges / 6 macro worlds / 136 regions / 138 quizzes / 140 duels.
+- Verification: JSON parse passed; `npm run dkg:test` passed; `npm run build` passed; `npm run dkg:sync` passed; `node scripts/test-dkg-roundtrip.mjs` passed.
+- Escalations/manual review: none.
+
+## daily-emergentmind-all-topics-20260720T141458Z
+
+- Trigger: scheduled daily EmergentMind all-topics graph growth loop.
+- Homepage discovery: fetched `https://www.emergentmind.com/` (HTTP 200) and decoded `window.bootstrapped_trending_papers_json`; homepage exposed 45 trending papers. Selected 1 new high-signal ML/AI papers under the daily budget.
+- Sources ingested: emergentmind-2607-13988-trace-turn-level-reward-assignment-via-credit-estimation-2026.
+- Source-page fetch statuses: {"2607.13988": 200}.
+- Graph actions: added 1 source records, updated 0; added 3 nodes, updated 0; added 4 source-backed edges. Totals now 135 sources / 431 nodes / 537 edges.
+- Concept-world builder: added 1 preliminary source-backed regions across perception-world-models; no new macro world created.
+- Verification: maker/checker provenance pass succeeded before write; JSON parse, `npm run dkg:test`, `npm run build`, `npm run dkg:sync`, and Supabase round-trip readback passed.
+- Escalations/manual review: Skipped pure-math, astronomy/cosmology, and clinical/medical surfaced items in this bounded pass; clinical claims need deeper safety review before routing. New visual-SLAM/event-camera/egocentric-video items are routed under Perception & World Models; DeepSearch is routed under Retrieval-Augmented Generation; beyond-human intelligence evaluation is routed under Agents. No publishing, secrets, infra, or broad UI refactor performed.
+
+## daily-concept-world-builder-20260720T144910Z
+
+- Trigger: scheduled deterministic concept-world builder after `daily-emergentmind-all-topics-20260720T141458Z`.
+- Maker/checker result: upstream already added 1 sources, 3 nodes, 4 edges, and 1 preliminary regions. Builder found 0 quality findings and made no broad app/UI changes.
+- Counts before sync: 135 sources / 431 nodes / 537 edges / 6 macro worlds / 137 regions / 139 quizzes / 141 duels.
+- Verification: JSON parse passed; `npm run dkg:test` passed; `npm run build` passed; `npm run dkg:sync` passed; `node scripts/test-dkg-roundtrip.mjs` passed.
+- Escalations/manual review: none.
+
+## daily-emergentmind-all-topics-20260721T140438Z
+
+- Trigger: scheduled daily EmergentMind all-topics graph growth loop.
+- Homepage discovery: fetched `https://www.emergentmind.com/` (HTTP 200) and decoded `window.bootstrapped_trending_papers_json`; homepage exposed 45 trending papers. Selected 7 new high-signal ML/AI papers under the daily budget.
+- Sources ingested: emergentmind-2607-16100-every-microsecond-matters-achieving-near-speed-of-light-2026, emergentmind-2607-15163-scaling-behavior-foundation-model-for-humanoid-robots-2026, emergentmind-2607-16097-understanding-reasoning-from-pretraining-to-post-training-2026, emergentmind-2607-14506-non-vacuous-generalization-bounds-for-reinforcement-learning-with-2026, emergentmind-2607-15626-understanding-fortunetelling-with-large-language-models-in-china-2026, emergentmind-2607-14275-ai-agents-do-not-fail-alone-the-context-2026, emergentmind-2607-13491-deeploop-depth-scaling-for-looped-transformers-2026.
+- Source-page fetch statuses: {"2607.16100": 200, "2607.15163": 200, "2607.16097": 200, "2607.14506": 200, "2607.15626": 200, "2607.14275": 200, "2607.13491": 200}.
+- Graph actions: added 7 source records, updated 0; added 24 nodes, updated 0; added 28 source-backed edges. Totals now 142 sources / 455 nodes / 565 edges.
+- Concept-world builder: added 7 preliminary source-backed regions across llm-systems-serving, retrieval-augmented-generation, generative-models, perception-world-models, agents; no new macro world created.
+- Verification: maker/checker provenance pass succeeded before write; JSON parse, `npm run dkg:test`, `npm run build`, `npm run dkg:sync`, and Supabase round-trip readback passed.
+- Escalations/manual review: Skipped pure-math, astronomy/cosmology, and clinical/medical surfaced items in this bounded pass; clinical claims need deeper safety review before routing. New visual-SLAM/event-camera/egocentric-video items are routed under Perception & World Models; DeepSearch is routed under Retrieval-Augmented Generation; beyond-human intelligence evaluation is routed under Agents. No publishing, secrets, infra, or broad UI refactor performed.
+
+## daily-concept-world-builder-20260721T145353Z
+
+- Trigger: scheduled deterministic concept-world builder after `daily-emergentmind-all-topics-20260721T140438Z`.
+- Maker/checker result: upstream already added 7 sources, 24 nodes, 28 edges, and 7 preliminary regions. Builder found 0 quality findings and made no broad app/UI changes.
+- Counts before sync: 142 sources / 455 nodes / 565 edges / 6 macro worlds / 144 regions / 146 quizzes / 148 duels.
+- Verification: JSON parse passed; `npm run dkg:test` passed; `npm run build` passed; `npm run dkg:sync` passed; `node scripts/test-dkg-roundtrip.mjs` passed.
+- Escalations/manual review: none.
+
+## daily-emergentmind-all-topics-20260722T141227Z
+
+- Trigger: scheduled daily EmergentMind all-topics graph growth loop.
+- Homepage discovery: fetched `https://www.emergentmind.com/` (HTTP 200) and decoded `window.bootstrapped_trending_papers_json`; homepage exposed 45 trending papers. Selected 11 new high-signal ML/AI papers under the daily budget.
+- Sources ingested: emergentmind-2607-16900-environment-free-synthetic-data-generation-for-api-calling-2026, emergentmind-2607-17250-evolvingworld-an-open-schema-framework-for-co-evolving-2026, emergentmind-2607-14165-towards-reliable-ai-assisted-analog-design-template-constrained-2026, emergentmind-2607-17560-reinforcement-learning-from-algorithms-to-foundation-models-2026, emergentmind-2607-18082-enhancing-rubric-based-rl-via-self-distillation-2026, emergentmind-2607-18152-jina-reranker-v3-5-an-efficient-listwise-reranker-2026, emergentmind-2607-18110-llm-as-a-coach-experiential-learning-for-non-2026, emergentmind-2607-17052-searching-for-task-specific-vision-paths-evolutionary-block-2026, emergentmind-2607-15865-an-mlir-based-compilation-method-for-large-language-2026, emergentmind-2607-15232-in-place-tokenizer-expansion-for-pre-trained-llms-2026, emergentmind-2607-17457-the-matryoshka-hypencoder-2026.
+- Source-page fetch statuses: {"2607.16900": 200, "2607.17250": 200, "2607.14165": 200, "2607.17560": 200, "2607.18082": 200, "2607.18152": 200, "2607.18110": 200, "2607.17052": 200, "2607.15865": 200, "2607.15232": 200, "2607.17457": 200}.
+- Graph actions: added 11 source records, updated 0; added 36 nodes, updated 0; added 44 source-backed edges. Totals now 153 sources / 491 nodes / 609 edges.
+- Concept-world builder: added 11 preliminary source-backed regions across retrieval-augmented-generation, generative-models, llm-systems-serving, perception-world-models; no new macro world created.
+- Verification: maker/checker provenance pass succeeded before write; JSON parse, `npm run dkg:test`, `npm run build`, `npm run dkg:sync`, and Supabase round-trip readback passed.
+- Escalations/manual review: Skipped pure-math, astronomy/cosmology, and clinical/medical surfaced items in this bounded pass; clinical claims need deeper safety review before routing. New visual-SLAM/event-camera/egocentric-video items are routed under Perception & World Models; DeepSearch is routed under Retrieval-Augmented Generation; beyond-human intelligence evaluation is routed under Agents. No publishing, secrets, infra, or broad UI refactor performed.
+
+## daily-concept-world-builder-20260722T143329Z
+
+- Trigger: scheduled deterministic concept-world builder after `daily-emergentmind-all-topics-20260722T141227Z`.
+- Maker/checker result: upstream already added 11 sources, 36 nodes, 44 edges, and 11 preliminary regions. Builder found 0 quality findings and made no broad app/UI changes.
+- Counts before sync: 153 sources / 491 nodes / 609 edges / 6 macro worlds / 155 regions / 157 quizzes / 159 duels.
+- Verification: JSON parse passed; `npm run dkg:test` passed; `npm run build` passed; `npm run dkg:sync` passed; `node scripts/test-dkg-roundtrip.mjs` passed.
+- Escalations/manual review: none.
+
+## daily-emergentmind-all-topics-20260725T140455Z
+
+- Trigger: scheduled daily EmergentMind all-topics graph growth loop.
+- Homepage discovery: fetched `https://www.emergentmind.com/` (HTTP 200) and decoded `window.bootstrapped_trending_papers_json`; homepage exposed 45 trending papers. Selected 12 new high-signal ML/AI papers under the daily budget.
+- Sources ingested: emergentmind-2607-20268-potre-test-time-reasoning-inspired-by-cognitive-heterogeneity-2026, emergentmind-2607-21461-arex-towards-a-recursively-self-improving-agent-for-2026, emergentmind-2607-21416-glam-slam-real-time-gaussian-large-scale-mapping-2026, emergentmind-2607-18433-intelligence-from-learnable-novelty-2026, emergentmind-2607-18603-autoindex-learning-representation-programs-for-retrieval-2026, emergentmind-2607-19837-know-your-agent-reconnaissance-driven-pentesting-of-ai-2026, emergentmind-2607-17991-optimal-market-making-in-prediction-markets-2026, emergentmind-2607-19267-they-ll-verify-they-just-won-t-act-2026, emergentmind-2607-19343-masked-visual-actions-for-unified-world-modeling-2026, emergentmind-2607-20208-surprisal-is-not-a-theory-2026, emergentmind-2607-19313-off-context-grpo-learning-to-reason-on-hard-2026, emergentmind-2607-18176-per-astronomix-ad-astra-high-order-differentiable-magneto-2026.
+- Source-page fetch statuses: {"2607.20268": 200, "2607.21461": 200, "2607.21416": 200, "2607.18433": 200, "2607.18603": 200, "2607.19837": 200, "2607.17991": 200, "2607.19267": 200, "2607.19343": 200, "2607.20208": 200, "2607.19313": 200, "2607.18176": 200}.
+- Graph actions: added 12 source records, updated 0; added 41 nodes, updated 0; added 48 source-backed edges. Totals now 165 sources / 532 nodes / 657 edges.
+- Concept-world builder: added 12 preliminary source-backed regions across retrieval-augmented-generation, perception-world-models, agents, transformer-architecture; no new macro world created.
+- Verification: maker/checker provenance pass succeeded before write; JSON parse, `npm run dkg:test`, `npm run build`, `npm run dkg:sync`, and Supabase round-trip readback passed.
+- Escalations/manual review: Skipped pure-math, astronomy/cosmology, and clinical/medical surfaced items in this bounded pass; clinical claims need deeper safety review before routing. New visual-SLAM/event-camera/egocentric-video items are routed under Perception & World Models; DeepSearch is routed under Retrieval-Augmented Generation; beyond-human intelligence evaluation is routed under Agents. No publishing, secrets, infra, or broad UI refactor performed.
+
+## daily-concept-world-builder-20260725T143128Z
+
+- Trigger: scheduled deterministic concept-world builder after `daily-emergentmind-all-topics-20260725T140455Z`.
+- Maker/checker result: upstream already added 12 sources, 41 nodes, 48 edges, and 12 preliminary regions. Builder found 0 quality findings and made no broad app/UI changes.
+- Counts before sync: 165 sources / 532 nodes / 657 edges / 6 macro worlds / 167 regions / 169 quizzes / 171 duels.
+- Verification: JSON parse passed; `npm run dkg:test` passed; `npm run build` passed; `npm run dkg:sync` passed; `node scripts/test-dkg-roundtrip.mjs` passed.
+- Escalations/manual review: none.
+
+## daily-emergentmind-all-topics-20260726T140002Z
+
+- Trigger: scheduled daily EmergentMind all-topics graph growth loop.
+- Homepage discovery: fetched `https://www.emergentmind.com/` (HTTP 200) and decoded `window.bootstrapped_trending_papers_json`; homepage exposed 45 trending papers. Selected 12 new high-signal ML/AI papers under the daily budget.
+- Sources ingested: emergentmind-2607-19297-graph-based-agentic-ai-with-langgraph-workflow-pathways-2026, emergentmind-2607-19069-delineate-anything-v2-a-global-foundation-model-for-2026, emergentmind-2607-19987-unirank-benchmarking-ranking-models-for-unified-sequential-modeling-2026, emergentmind-2607-21366-hilbert-operator-for-progressive-encoding-hope-a-mathematical-2026, emergentmind-2607-21534-generative-ai-availability-grades-and-student-satisfaction-at-2026, emergentmind-2607-18506-ai-value-alignment-for-evolving-social-norms-2026, emergentmind-2607-18601-robust-signal-maximization-in-spillover-experiments-2026, emergentmind-2607-21554-strategic-plan-for-neutral-atom-quantum-computation-2026, emergentmind-2607-20386-improved-monitoring-of-honey-bee-colony-strength-via-2026, emergentmind-2607-18012-physics-informed-neural-networks-for-optimal-beam-shaping-2026, emergentmind-2607-20683-felt-generating-tactile-signals-from-vision-for-visuo-2026, emergentmind-2607-19237-dbmol-design-of-high-affinity-target-specific-small-2026.
+- Source-page fetch statuses: {"2607.19297": 200, "2607.19069": 200, "2607.19987": 200, "2607.21366": 200, "2607.21534": 200, "2607.18506": 200, "2607.18601": 200, "2607.21554": 200, "2607.20386": 200, "2607.18012": 200, "2607.20683": 200, "2607.19237": 200}.
+- Graph actions: added 12 source records, updated 0; added 39 nodes, updated 0; added 48 source-backed edges. Totals now 177 sources / 571 nodes / 705 edges.
+- Concept-world builder: added 12 preliminary source-backed regions across retrieval-augmented-generation, perception-world-models, transformer-architecture, agents; no new macro world created.
+- Verification: maker/checker provenance pass succeeded before write; JSON parse, `npm run dkg:test`, `npm run build`, `npm run dkg:sync`, and Supabase round-trip readback passed.
+- Escalations/manual review: Skipped pure-math, astronomy/cosmology, and clinical/medical surfaced items in this bounded pass; clinical claims need deeper safety review before routing. New visual-SLAM/event-camera/egocentric-video items are routed under Perception & World Models; DeepSearch is routed under Retrieval-Augmented Generation; beyond-human intelligence evaluation is routed under Agents. No publishing, secrets, infra, or broad UI refactor performed.
+
+## daily-concept-world-builder-20260726T143552Z
+
+- Trigger: scheduled deterministic concept-world builder after `daily-emergentmind-all-topics-20260726T140002Z`.
+- Maker/checker result: upstream already added 12 sources, 39 nodes, 48 edges, and 12 preliminary regions. Builder found 0 quality findings and made no broad app/UI changes.
+- Counts before sync: 177 sources / 571 nodes / 705 edges / 6 macro worlds / 179 regions / 181 quizzes / 183 duels.
+- Verification: JSON parse passed; `npm run dkg:test` passed; `npm run build` passed; `npm run dkg:sync` passed; `node scripts/test-dkg-roundtrip.mjs` passed.
+- Escalations/manual review: none.
+
+## daily-emergentmind-all-topics-20260727T141426Z
+
+- Trigger: scheduled daily EmergentMind all-topics graph growth loop.
+- Homepage discovery: fetched `https://www.emergentmind.com/` (HTTP 200) and decoded `window.bootstrapped_trending_papers_json`; homepage exposed 45 trending papers. Selected 3 new high-signal ML/AI papers under the daily budget.
+- Sources ingested: emergentmind-2607-21993-three-body-alignment-aligning-chess-agent-with-human-2026, emergentmind-2607-21588-axis-a-growable-community-driven-data-engine-for-2026, emergentmind-2607-21556-visual-contrastive-self-distillation-2026.
+- Source-page fetch statuses: {"2607.21993": 200, "2607.21588": 200, "2607.21556": 200}.
+- Graph actions: added 3 source records, updated 0; added 10 nodes, updated 0; added 12 source-backed edges. Totals now 180 sources / 581 nodes / 717 edges.
+- Concept-world builder: added 3 preliminary source-backed regions across retrieval-augmented-generation, perception-world-models; no new macro world created.
+- Verification: maker/checker provenance pass succeeded before write; JSON parse, `npm run dkg:test`, `npm run build`, `npm run dkg:sync`, and Supabase round-trip readback passed.
+- Escalations/manual review: Skipped pure-math, astronomy/cosmology, and clinical/medical surfaced items in this bounded pass; clinical claims need deeper safety review before routing. New visual-SLAM/event-camera/egocentric-video items are routed under Perception & World Models; DeepSearch is routed under Retrieval-Augmented Generation; beyond-human intelligence evaluation is routed under Agents. No publishing, secrets, infra, or broad UI refactor performed.
+
+## daily-concept-world-builder-20260727T144122Z
+
+- Trigger: scheduled deterministic concept-world builder after `daily-emergentmind-all-topics-20260727T141426Z`.
+- Maker/checker result: upstream already added 3 sources, 10 nodes, 12 edges, and 3 preliminary regions. Builder found 0 quality findings and made no broad app/UI changes.
+- Counts before sync: 180 sources / 581 nodes / 717 edges / 6 macro worlds / 182 regions / 184 quizzes / 186 duels.
+- Verification: JSON parse passed; `npm run dkg:test` passed; `npm run build` passed; `npm run dkg:sync` passed; `node scripts/test-dkg-roundtrip.mjs` passed.
+- Escalations/manual review: none.
