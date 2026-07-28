@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "updated_at": "2026-07-27T14:14:26Z",
+  "updated_at": "2026-07-28T14:50:43Z",
   "macro_worlds": {
     "agents": {
       "label": "Agents",
@@ -3221,6 +3221,48 @@
               ]
             }
           ]
+        },
+        {
+          "id": "the-molt-a-scalable-pytorch-native",
+          "label": "The Molt A Scalable Pytorch",
+          "summary": "A source-backed case board for Molt: A Scalable PyTorch-Native Training Framework for Agentic Reinforcement Learning: learners inspect the plain technical mechanism, the evaluation signal, and where the claim fits in Edokai's generative models world.",
+          "source_ids": [
+            "emergentmind-2607-21653-molt-a-scalable-pytorch-native-training-framework-for-2026"
+          ],
+          "concept_ids": [
+            "molt-a-scalable-pytorch-native-training-framework",
+            "molt-a-scalable-pytorch-native-training-framework-for",
+            "molt-a-scalable-pytorch-native-training-framework-for"
+          ],
+          "critical_concepts": [
+            "molt-a-scalable-pytorch-native-training-framework",
+            "molt-a-scalable-pytorch-native-training-framework-for"
+          ],
+          "prerequisite_links": [],
+          "side_retention_duels": [
+            {
+              "id": "the-molt-a-scalable-pytorch-duel",
+              "prompt": "What should Edokai learners remember about **Molt**?",
+              "left": "Treat it as a title-only bookmark without checking the mechanism.",
+              "right": "Track the mechanism, evidence signal, and limits stated by the source.",
+              "answer": "Use the source-backed mechanism and evaluation signal; avoid inferring guarantees beyond the paper summary."
+            }
+          ],
+          "quiz_questions": [
+            {
+              "question": "In the source **Molt: A Scalable PyTorch-Native Training Framework for Agentic Reinforcement Learning**, what is the main learner-facing mechanism Edokai should preserve?",
+              "choices": [
+                "It mainly replaces the user interface theme without changing the learning mechanism.",
+                "It uses the source's Molt mechanism to address the paper's stated ML/AI problem.",
+                "It is a clinical treatment protocol rather than a machine-learning research method.",
+                "It proves a pure-math theorem without a model, agent, or evaluation loop."
+              ],
+              "answer_index": 1,
+              "source_ids": [
+                "emergentmind-2607-21653-molt-a-scalable-pytorch-native-training-framework-for-2026"
+              ]
+            }
+          ]
         }
       ]
     },
@@ -5496,6 +5538,174 @@
               ]
             }
           ]
+        },
+        {
+          "id": "the-visual-relocalization-from-sparse-views",
+          "label": "The Visual Relocalization From Sparse",
+          "summary": "A source-backed case board for Visual Relocalization from Sparse Views in Aliased and Low-Texture Environments via Novel View Synthesis: learners inspect the plain technical mechanism, the evaluation signal, and where the claim fits in Edokai's perception world models world.",
+          "source_ids": [
+            "emergentmind-2607-22147-visual-relocalization-from-sparse-views-in-aliased-and-2026"
+          ],
+          "concept_ids": [
+            "visual-relocalization-from-sparse-views-in-aliased",
+            "visual-relocalization-from-sparse-views-in-aliased-and",
+            "visual-relocalization-from-sparse-views-in-aliased-and"
+          ],
+          "critical_concepts": [
+            "visual-relocalization-from-sparse-views-in-aliased",
+            "visual-relocalization-from-sparse-views-in-aliased-and"
+          ],
+          "prerequisite_links": [],
+          "side_retention_duels": [
+            {
+              "id": "the-visual-relocalization-from-sparse-duel",
+              "prompt": "What should Edokai learners remember about **Visual Relocalization from Sparse Views in Aliased and Low-Texture Environments via Novel View Synthesis**?",
+              "left": "Treat it as a title-only bookmark without checking the mechanism.",
+              "right": "Track the mechanism, evidence signal, and limits stated by the source.",
+              "answer": "Use the source-backed mechanism and evaluation signal; avoid inferring guarantees beyond the paper summary."
+            }
+          ],
+          "quiz_questions": [
+            {
+              "question": "In the source **Visual Relocalization from Sparse Views in Aliased and Low-Texture Environments via Novel View Synthesis**, what is the main learner-facing mechanism Edokai should preserve?",
+              "choices": [
+                "It mainly replaces the user interface theme without changing the learning mechanism.",
+                "It is a clinical treatment protocol rather than a machine-learning research method.",
+                "It proves a pure-math theorem without a model, agent, or evaluation loop.",
+                "It uses the source's Visual Relocalization from Sparse Views in Aliased and Low-Texture Environments via Novel View Synthesis mechanism to address the paper's stated ML/AI problem."
+              ],
+              "answer_index": 3,
+              "source_ids": [
+                "emergentmind-2607-22147-visual-relocalization-from-sparse-views-in-aliased-and-2026"
+              ]
+            }
+          ]
+        },
+        {
+          "id": "the-deformable-triangle-splatting-flexible-primitives",
+          "label": "The Deformable Triangle Splatting Flexible",
+          "summary": "A source-backed case board for Deformable Triangle Splatting: Flexible Primitives for Real-Time Radiance Field Rendering: learners inspect the plain technical mechanism, the evaluation signal, and where the claim fits in Edokai's perception world models world.",
+          "source_ids": [
+            "emergentmind-2607-22446-deformable-triangle-splatting-flexible-primitives-for-real-time-2026"
+          ],
+          "concept_ids": [
+            "deformable-triangle-splatting-flexible-primitives-for-real",
+            "deformable-triangle-splatting-flexible-primitives-for-real-time",
+            "deformable-triangle-splatting-flexible-primitives-for-real-time"
+          ],
+          "critical_concepts": [
+            "deformable-triangle-splatting-flexible-primitives-for-real",
+            "deformable-triangle-splatting-flexible-primitives-for-real-time"
+          ],
+          "prerequisite_links": [],
+          "side_retention_duels": [
+            {
+              "id": "the-deformable-triangle-splatting-flexible-duel",
+              "prompt": "What should Edokai learners remember about **Deformable Triangle Splatting**?",
+              "left": "Treat it as a title-only bookmark without checking the mechanism.",
+              "right": "Track the mechanism, evidence signal, and limits stated by the source.",
+              "answer": "Use the source-backed mechanism and evaluation signal; avoid inferring guarantees beyond the paper summary."
+            }
+          ],
+          "quiz_questions": [
+            {
+              "question": "In the source **Deformable Triangle Splatting: Flexible Primitives for Real-Time Radiance Field Rendering**, what is the main learner-facing mechanism Edokai should preserve?",
+              "choices": [
+                "It uses the source's Deformable Triangle Splatting mechanism to address the paper's stated ML/AI problem.",
+                "It mainly replaces the user interface theme without changing the learning mechanism.",
+                "It is a clinical treatment protocol rather than a machine-learning research method.",
+                "It proves a pure-math theorem without a model, agent, or evaluation loop."
+              ],
+              "answer_index": 0,
+              "source_ids": [
+                "emergentmind-2607-22446-deformable-triangle-splatting-flexible-primitives-for-real-time-2026"
+              ]
+            }
+          ]
+        },
+        {
+          "id": "the-self-gradient-forcing-native-long",
+          "label": "The Self Gradient Forcing Native",
+          "summary": "A source-backed case board for Self Gradient Forcing: Native Long Video Extrapolation: learners inspect the plain technical mechanism, the evaluation signal, and where the claim fits in Edokai's perception world models world.",
+          "source_ids": [
+            "emergentmind-2607-20368-self-gradient-forcing-native-long-video-extrapolation-2026"
+          ],
+          "concept_ids": [
+            "self-gradient-forcing-native-long-video-extrapolation",
+            "self-gradient-forcing-native-long-video-extrapolation-learning",
+            "self-gradient-forcing-native-long-video-extrapolation-evaluation"
+          ],
+          "critical_concepts": [
+            "self-gradient-forcing-native-long-video-extrapolation",
+            "self-gradient-forcing-native-long-video-extrapolation-learning"
+          ],
+          "prerequisite_links": [],
+          "side_retention_duels": [
+            {
+              "id": "the-self-gradient-forcing-native-duel",
+              "prompt": "What should Edokai learners remember about **Self Gradient Forcing**?",
+              "left": "Treat it as a title-only bookmark without checking the mechanism.",
+              "right": "Track the mechanism, evidence signal, and limits stated by the source.",
+              "answer": "Use the source-backed mechanism and evaluation signal; avoid inferring guarantees beyond the paper summary."
+            }
+          ],
+          "quiz_questions": [
+            {
+              "question": "In the source **Self Gradient Forcing: Native Long Video Extrapolation**, what is the main learner-facing mechanism Edokai should preserve?",
+              "choices": [
+                "It mainly replaces the user interface theme without changing the learning mechanism.",
+                "It is a clinical treatment protocol rather than a machine-learning research method.",
+                "It proves a pure-math theorem without a model, agent, or evaluation loop.",
+                "It uses the source's Self Gradient Forcing mechanism to address the paper's stated ML/AI problem."
+              ],
+              "answer_index": 3,
+              "source_ids": [
+                "emergentmind-2607-20368-self-gradient-forcing-native-long-video-extrapolation-2026"
+              ]
+            }
+          ]
+        },
+        {
+          "id": "the-sm4rt-learning-structured-motion-geometry",
+          "label": "The Sm4rt Learning Structured Motion",
+          "summary": "A source-backed case board for SM4RT: Learning Structured Motion Geometry for 4D Reconstruction: learners inspect the plain technical mechanism, the evaluation signal, and where the claim fits in Edokai's perception world models world.",
+          "source_ids": [
+            "emergentmind-2607-22534-sm4rt-learning-structured-motion-geometry-for-4d-reconstruction-2026"
+          ],
+          "concept_ids": [
+            "sm4rt-learning-structured-motion-geometry-for-4d",
+            "sm4rt-learning-structured-motion-geometry-for-4d-reconstruction",
+            "sm4rt-learning-structured-motion-geometry-for-4d-reconstruction"
+          ],
+          "critical_concepts": [
+            "sm4rt-learning-structured-motion-geometry-for-4d",
+            "sm4rt-learning-structured-motion-geometry-for-4d-reconstruction"
+          ],
+          "prerequisite_links": [],
+          "side_retention_duels": [
+            {
+              "id": "the-sm4rt-learning-structured-motion-duel",
+              "prompt": "What should Edokai learners remember about **SM4RT**?",
+              "left": "Treat it as a title-only bookmark without checking the mechanism.",
+              "right": "Track the mechanism, evidence signal, and limits stated by the source.",
+              "answer": "Use the source-backed mechanism and evaluation signal; avoid inferring guarantees beyond the paper summary."
+            }
+          ],
+          "quiz_questions": [
+            {
+              "question": "In the source **SM4RT: Learning Structured Motion Geometry for 4D Reconstruction**, what is the main learner-facing mechanism Edokai should preserve?",
+              "choices": [
+                "It uses the source's SM4RT mechanism to address the paper's stated ML/AI problem.",
+                "It mainly replaces the user interface theme without changing the learning mechanism.",
+                "It is a clinical treatment protocol rather than a machine-learning research method.",
+                "It proves a pure-math theorem without a model, agent, or evaluation loop."
+              ],
+              "answer_index": 0,
+              "source_ids": [
+                "emergentmind-2607-22534-sm4rt-learning-structured-motion-geometry-for-4d-reconstruction-2026"
+              ]
+            }
+          ]
         }
       ]
     },
@@ -6200,6 +6410,90 @@
               "answer_index": 1,
               "source_ids": [
                 "emergentmind-2607-15865-an-mlir-based-compilation-method-for-large-language-2026"
+              ]
+            }
+          ]
+        },
+        {
+          "id": "the-llms-get-lost-in-evolving",
+          "label": "The Llms Get Lost In",
+          "summary": "A source-backed case board for LLMs Get Lost in Evolving User Intent: learners inspect the plain technical mechanism, the evaluation signal, and where the claim fits in Edokai's llm systems serving world.",
+          "source_ids": [
+            "emergentmind-2607-20734-llms-get-lost-in-evolving-user-intent-2026"
+          ],
+          "concept_ids": [
+            "llms-get-lost-in-evolving-user-intent",
+            "llms-get-lost-in-evolving-user-intent-learning",
+            "llms-get-lost-in-evolving-user-intent-evaluation"
+          ],
+          "critical_concepts": [
+            "llms-get-lost-in-evolving-user-intent",
+            "llms-get-lost-in-evolving-user-intent-learning"
+          ],
+          "prerequisite_links": [],
+          "side_retention_duels": [
+            {
+              "id": "the-llms-get-lost-in-duel",
+              "prompt": "What should Edokai learners remember about **LLMs Get Lost in Evolving User Intent**?",
+              "left": "Treat it as a title-only bookmark without checking the mechanism.",
+              "right": "Track the mechanism, evidence signal, and limits stated by the source.",
+              "answer": "Use the source-backed mechanism and evaluation signal; avoid inferring guarantees beyond the paper summary."
+            }
+          ],
+          "quiz_questions": [
+            {
+              "question": "In the source **LLMs Get Lost in Evolving User Intent**, what is the main learner-facing mechanism Edokai should preserve?",
+              "choices": [
+                "It mainly replaces the user interface theme without changing the learning mechanism.",
+                "It uses the source's LLMs Get Lost in Evolving User Intent mechanism to address the paper's stated ML/AI problem.",
+                "It is a clinical treatment protocol rather than a machine-learning research method.",
+                "It proves a pure-math theorem without a model, agent, or evaluation loop."
+              ],
+              "answer_index": 1,
+              "source_ids": [
+                "emergentmind-2607-20734-llms-get-lost-in-evolving-user-intent-2026"
+              ]
+            }
+          ]
+        },
+        {
+          "id": "the-characterizing-warp-divergence-from-pascal",
+          "label": "The Characterizing Warp Divergence From",
+          "summary": "A source-backed case board for Characterizing Warp Divergence from Pascal to Blackwell: learners inspect the plain technical mechanism, the evaluation signal, and where the claim fits in Edokai's llm systems serving world.",
+          "source_ids": [
+            "emergentmind-2607-23402-characterizing-warp-divergence-from-pascal-to-blackwell-2026"
+          ],
+          "concept_ids": [
+            "characterizing-warp-divergence-from-pascal-to-blackwell",
+            "characterizing-warp-divergence-from-pascal-to-blackwell-learning",
+            "characterizing-warp-divergence-from-pascal-to-blackwell-evaluation"
+          ],
+          "critical_concepts": [
+            "characterizing-warp-divergence-from-pascal-to-blackwell",
+            "characterizing-warp-divergence-from-pascal-to-blackwell-learning"
+          ],
+          "prerequisite_links": [],
+          "side_retention_duels": [
+            {
+              "id": "the-characterizing-warp-divergence-from-duel",
+              "prompt": "What should Edokai learners remember about **Characterizing Warp Divergence from Pascal to Blackwell**?",
+              "left": "Treat it as a title-only bookmark without checking the mechanism.",
+              "right": "Track the mechanism, evidence signal, and limits stated by the source.",
+              "answer": "Use the source-backed mechanism and evaluation signal; avoid inferring guarantees beyond the paper summary."
+            }
+          ],
+          "quiz_questions": [
+            {
+              "question": "In the source **Characterizing Warp Divergence from Pascal to Blackwell**, what is the main learner-facing mechanism Edokai should preserve?",
+              "choices": [
+                "It mainly replaces the user interface theme without changing the learning mechanism.",
+                "It is a clinical treatment protocol rather than a machine-learning research method.",
+                "It uses the source's Characterizing Warp Divergence from Pascal to Blackwell mechanism to address the paper's stated ML/AI problem.",
+                "It proves a pure-math theorem without a model, agent, or evaluation loop."
+              ],
+              "answer_index": 2,
+              "source_ids": [
+                "emergentmind-2607-23402-characterizing-warp-divergence-from-pascal-to-blackwell-2026"
               ]
             }
           ]
@@ -7851,6 +8145,90 @@
               ]
             }
           ]
+        },
+        {
+          "id": "the-modpack-an-extensible-teleoperation-interface",
+          "label": "The Modpack An Extensible Teleoperation",
+          "summary": "A source-backed case board for ModPack: An Extensible Teleoperation Interface for Bimanual Mobile Manipulation: learners inspect the plain technical mechanism, the evaluation signal, and where the claim fits in Edokai's retrieval augmented generation world.",
+          "source_ids": [
+            "emergentmind-2607-19479-modpack-an-extensible-teleoperation-interface-for-bimanual-mobile-2026"
+          ],
+          "concept_ids": [
+            "modpack-an-extensible-teleoperation-interface-for-bimanual",
+            "modpack-an-extensible-teleoperation-interface-for-bimanual-mobile",
+            "modpack-an-extensible-teleoperation-interface-for-bimanual-mobile"
+          ],
+          "critical_concepts": [
+            "modpack-an-extensible-teleoperation-interface-for-bimanual",
+            "modpack-an-extensible-teleoperation-interface-for-bimanual-mobile"
+          ],
+          "prerequisite_links": [],
+          "side_retention_duels": [
+            {
+              "id": "the-modpack-an-extensible-teleoperation-duel",
+              "prompt": "What should Edokai learners remember about **ModPack**?",
+              "left": "Treat it as a title-only bookmark without checking the mechanism.",
+              "right": "Track the mechanism, evidence signal, and limits stated by the source.",
+              "answer": "Use the source-backed mechanism and evaluation signal; avoid inferring guarantees beyond the paper summary."
+            }
+          ],
+          "quiz_questions": [
+            {
+              "question": "In the source **ModPack: An Extensible Teleoperation Interface for Bimanual Mobile Manipulation**, what is the main learner-facing mechanism Edokai should preserve?",
+              "choices": [
+                "It mainly replaces the user interface theme without changing the learning mechanism.",
+                "It is a clinical treatment protocol rather than a machine-learning research method.",
+                "It uses the source's ModPack mechanism to address the paper's stated ML/AI problem.",
+                "It proves a pure-math theorem without a model, agent, or evaluation loop."
+              ],
+              "answer_index": 2,
+              "source_ids": [
+                "emergentmind-2607-19479-modpack-an-extensible-teleoperation-interface-for-bimanual-mobile-2026"
+              ]
+            }
+          ]
+        },
+        {
+          "id": "the-vitacworld-scaling-visuo-tactile-world",
+          "label": "The Vitacworld Scaling Visuo Tactile",
+          "summary": "A source-backed case board for ViTacWorld: Scaling Visuo-Tactile World Models for Contact-Rich Robot Manipulation: learners inspect the plain technical mechanism, the evaluation signal, and where the claim fits in Edokai's retrieval augmented generation world.",
+          "source_ids": [
+            "emergentmind-2607-22530-vitacworld-scaling-visuo-tactile-world-models-for-contact-2026"
+          ],
+          "concept_ids": [
+            "vitacworld-scaling-visuo-tactile-world-models-for",
+            "vitacworld-scaling-visuo-tactile-world-models-for-contact",
+            "vitacworld-scaling-visuo-tactile-world-models-for-contact"
+          ],
+          "critical_concepts": [
+            "vitacworld-scaling-visuo-tactile-world-models-for",
+            "vitacworld-scaling-visuo-tactile-world-models-for-contact"
+          ],
+          "prerequisite_links": [],
+          "side_retention_duels": [
+            {
+              "id": "the-vitacworld-scaling-visuo-tactile-duel",
+              "prompt": "What should Edokai learners remember about **ViTacWorld**?",
+              "left": "Treat it as a title-only bookmark without checking the mechanism.",
+              "right": "Track the mechanism, evidence signal, and limits stated by the source.",
+              "answer": "Use the source-backed mechanism and evaluation signal; avoid inferring guarantees beyond the paper summary."
+            }
+          ],
+          "quiz_questions": [
+            {
+              "question": "In the source **ViTacWorld: Scaling Visuo-Tactile World Models for Contact-Rich Robot Manipulation**, what is the main learner-facing mechanism Edokai should preserve?",
+              "choices": [
+                "It mainly replaces the user interface theme without changing the learning mechanism.",
+                "It uses the source's ViTacWorld mechanism to address the paper's stated ML/AI problem.",
+                "It is a clinical treatment protocol rather than a machine-learning research method.",
+                "It proves a pure-math theorem without a model, agent, or evaluation loop."
+              ],
+              "answer_index": 1,
+              "source_ids": [
+                "emergentmind-2607-22530-vitacworld-scaling-visuo-tactile-world-models-for-contact-2026"
+              ]
+            }
+          ]
         }
       ]
     }
@@ -9148,6 +9526,44 @@
       "regions_added": 0,
       "new_worlds_created": [],
       "quality_findings": [],
+      "verification": {
+        "json_parse": "passed",
+        "dkg_test": "passed",
+        "build": "passed",
+        "supabase_sync": "passed",
+        "roundtrip": "passed"
+      }
+    },
+    {
+      "run_id": "daily-emergentmind-all-topics-20260728T145043Z",
+      "completed_at": "2026-07-28T14:50:43Z",
+      "event": "daily EmergentMind homepage all-topics ingestion",
+      "sources_added": 9,
+      "nodes_added": 30,
+      "edges_added": 36,
+      "worlds_enhanced": [
+        "llm-systems-serving",
+        "retrieval-augmented-generation",
+        "perception-world-models",
+        "generative-models"
+      ],
+      "regions_enhanced": [
+        "the-llms-get-lost-in-evolving",
+        "the-modpack-an-extensible-teleoperation-interface",
+        "the-visual-relocalization-from-sparse-views",
+        "the-deformable-triangle-splatting-flexible-primitives",
+        "the-vitacworld-scaling-visuo-tactile-world",
+        "the-characterizing-warp-divergence-from-pascal",
+        "the-self-gradient-forcing-native-long",
+        "the-sm4rt-learning-structured-motion-geometry",
+        "the-molt-a-scalable-pytorch-native"
+      ],
+      "new_worlds_created": [],
+      "router_learning": "The 2026-07-12 homepage delta fits existing umbrellas: SLAM/event-camera/egocentric-video strengthen Perception & World Models, DeepSearch strengthens Retrieval-Augmented Generation, and beyond-human intelligence evaluation strengthens Agents.",
+      "manual_review": [
+        "Skipped pure-math, astronomy/cosmology, and clinical/medical surfaced items in this bounded pass; clinical claims need deeper safety review before routing.",
+        "New visual-SLAM/event-camera/egocentric-video items are routed under Perception & World Models; DeepSearch is routed under Retrieval-Augmented Generation; beyond-human intelligence evaluation is routed under Agents."
+      ],
       "verification": {
         "json_parse": "passed",
         "dkg_test": "passed",

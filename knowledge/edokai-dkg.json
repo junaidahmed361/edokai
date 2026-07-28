@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "updated_at": "2026-07-27T14:14:26Z",
+  "updated_at": "2026-07-28T14:50:43Z",
   "sources": {
     "hf-space-trl-distillation-trainer-2026": {
       "id": "hf-space-trl-distillation-trainer-2026",
@@ -2908,6 +2908,150 @@
       "provenance": [
         "Discovered from https://www.emergentmind.com/ bootstrapped trending papers on 2026-07-27.",
         "EmergentMind homepage abstract metadata: On-policy self-distillation (OPSD) is promising as it removes the external teacher required by on-policy distillation (OPD), yet it still needs asymmetric information between teacher and student to ensure that the self-teacher provides a stronger learning signal than the student. Existing methods create this asymmetry either through privileged answers or visual evidence. We ask whether both can be removed, yielding a simpler form of OPSD driven purely by input conditioning. For this purpose, we propose Visual Contrastive Self-Distillation, namely VCSD, which converts image-content removal into an on-policy self-distillation signal. "
+      ],
+      "confidence": 0.86
+    },
+    "emergentmind-2607-20734-llms-get-lost-in-evolving-user-intent-2026": {
+      "id": "emergentmind-2607-20734-llms-get-lost-in-evolving-user-intent-2026",
+      "url": "https://www.emergentmind.com/papers/2607.20734",
+      "arxiv_url": "https://arxiv.org/abs/2607.20734",
+      "title": "LLMs Get Lost in Evolving User Intent",
+      "source_type": "emergentmind-trending-paper",
+      "authors": [],
+      "published": "2026-07-22",
+      "discovered_at": "2026-07-28T14:50:43Z",
+      "last_read_at": "2026-07-28T14:50:43Z",
+      "provenance": [
+        "Discovered from https://www.emergentmind.com/ bootstrapped trending papers on 2026-07-28.",
+        "EmergentMind homepage abstract metadata: As LLMs become more capable, they are increasingly deployed as collaborative agents, taking on user-delegated tasks through iterative interaction. Yet genuine interaction is inherently dynamic: users rarely specify their intent upfront, instead disclosing, revising, and reshaping it as the conversation unfolds. Despite this, LLMs are still predominantly evaluated or trained in single-turn, fully-specified settings, leaving open a fundamental question: how well do LLMs track and act on user intent as it evolves over the course of a conversation? To study this, we introduce a framework that transforms static, single-turn tasks into dy"
+      ],
+      "confidence": 0.86
+    },
+    "emergentmind-2607-19479-modpack-an-extensible-teleoperation-interface-for-bimanual-mobile-2026": {
+      "id": "emergentmind-2607-19479-modpack-an-extensible-teleoperation-interface-for-bimanual-mobile-2026",
+      "url": "https://www.emergentmind.com/papers/2607.19479",
+      "arxiv_url": "https://arxiv.org/abs/2607.19479",
+      "title": "ModPack: An Extensible Teleoperation Interface for Bimanual Mobile Manipulation",
+      "source_type": "emergentmind-trending-paper",
+      "authors": [],
+      "published": "2026-07-21",
+      "discovered_at": "2026-07-28T14:50:43Z",
+      "last_read_at": "2026-07-28T14:50:43Z",
+      "provenance": [
+        "Discovered from https://www.emergentmind.com/ bootstrapped trending papers on 2026-07-28.",
+        "EmergentMind homepage abstract metadata: Existing teleoperation systems are often tailored to specific robot hardware and task domains, limiting their scalability and adaptability. We present ModPack, a modular and extensible teleoperation system designed to support diverse robot embodiments and task requirements within a unified framework. At the core of ModPack is a self-contained wearable \"backpack\" that integrates onboard computation, power, communication, and data storage. Built on top of this shared interface, the system supports plug-and-play capability modules including joint-level teleoperation with haptic feedback, mobile manipulation, and active perception. Expe"
+      ],
+      "confidence": 0.86
+    },
+    "emergentmind-2607-22147-visual-relocalization-from-sparse-views-in-aliased-and-2026": {
+      "id": "emergentmind-2607-22147-visual-relocalization-from-sparse-views-in-aliased-and-2026",
+      "url": "https://www.emergentmind.com/papers/2607.22147",
+      "arxiv_url": "https://arxiv.org/abs/2607.22147",
+      "title": "Visual Relocalization from Sparse Views in Aliased and Low-Texture Environments via Novel View Synthesis",
+      "source_type": "emergentmind-trending-paper",
+      "authors": [],
+      "published": "2026-07-24",
+      "discovered_at": "2026-07-28T14:50:43Z",
+      "last_read_at": "2026-07-28T14:50:43Z",
+      "provenance": [
+        "Discovered from https://www.emergentmind.com/ bootstrapped trending papers on 2026-07-28.",
+        "EmergentMind homepage abstract metadata: Visual localization becomes extremely challenging in planetary-like terrains characterized by low texture, perceptual aliasing, harsh illumination, and sparse, weakly overlapping viewpoints induced by forward rover motion and unconstrained driving directions. Under these conditions, state-of-the-art image-to-image and image-to-map matching pipelines suffer significant performance degradation. In this work, we propose a visual relocalization method that departs from classical correspondence-based pipelines by directly estimating camera poses against a differentiable map representation built with 3D Gaussian Splatting (3DGS). Our key "
+      ],
+      "confidence": 0.86
+    },
+    "emergentmind-2607-22446-deformable-triangle-splatting-flexible-primitives-for-real-time-2026": {
+      "id": "emergentmind-2607-22446-deformable-triangle-splatting-flexible-primitives-for-real-time-2026",
+      "url": "https://www.emergentmind.com/papers/2607.22446",
+      "arxiv_url": "https://arxiv.org/abs/2607.22446",
+      "title": "Deformable Triangle Splatting: Flexible Primitives for Real-Time Radiance Field Rendering",
+      "source_type": "emergentmind-trending-paper",
+      "authors": [],
+      "published": "2026-07-24",
+      "discovered_at": "2026-07-28T14:50:43Z",
+      "last_read_at": "2026-07-28T14:50:43Z",
+      "provenance": [
+        "Discovered from https://www.emergentmind.com/ bootstrapped trending papers on 2026-07-28.",
+        "EmergentMind homepage abstract metadata: Recent radiance field methods represent scenes with 2D primitives that offer surface alignment and efficient rasterization, from Gaussian disks to triangles, yet all rely on convex boundaries: curved and concave structures demand excessive primitives. We introduce Deformable Triangle Splatting, which augments each triangle with $K$ control points per edge, each parameterized by a single learnable scalar displacement that shifts the boundary inward or outward, enabling non-convex shape representation while preserving the three base vertices that define the 3D plane. To render these non-convex primitives differentiably, we design a ra"
+      ],
+      "confidence": 0.86
+    },
+    "emergentmind-2607-22530-vitacworld-scaling-visuo-tactile-world-models-for-contact-2026": {
+      "id": "emergentmind-2607-22530-vitacworld-scaling-visuo-tactile-world-models-for-contact-2026",
+      "url": "https://www.emergentmind.com/papers/2607.22530",
+      "arxiv_url": "https://arxiv.org/abs/2607.22530",
+      "title": "ViTacWorld: Scaling Visuo-Tactile World Models for Contact-Rich Robot Manipulation",
+      "source_type": "emergentmind-trending-paper",
+      "authors": [],
+      "published": "2026-07-24",
+      "discovered_at": "2026-07-28T14:50:43Z",
+      "last_read_at": "2026-07-28T14:50:43Z",
+      "provenance": [
+        "Discovered from https://www.emergentmind.com/ bootstrapped trending papers on 2026-07-28.",
+        "EmergentMind homepage abstract metadata: Contact-rich robot manipulation requires physical interaction cues that are often invisible to cameras, making tactile sensing essential for robust control. However, scaling visuo-tactile robot learning remains difficult because real tactile interaction data are expensive to collect, hardware-dependent, and limited in task and scene diversity. We present ViTacWorld, an action-conditioned visuo-tactile world model for scalable contact-rich robot manipulation. ViTacWorld leverages public real tactile datasets and a constructed simulation environment to scale visuo-tactile-action data, exploiting the fact that tactile signals are direc"
+      ],
+      "confidence": 0.86
+    },
+    "emergentmind-2607-23402-characterizing-warp-divergence-from-pascal-to-blackwell-2026": {
+      "id": "emergentmind-2607-23402-characterizing-warp-divergence-from-pascal-to-blackwell-2026",
+      "url": "https://www.emergentmind.com/papers/2607.23402",
+      "arxiv_url": "https://arxiv.org/abs/2607.23402",
+      "title": "Characterizing Warp Divergence from Pascal to Blackwell",
+      "source_type": "emergentmind-trending-paper",
+      "authors": [],
+      "published": "2026-07-26",
+      "discovered_at": "2026-07-28T14:50:43Z",
+      "last_read_at": "2026-07-28T14:50:43Z",
+      "provenance": [
+        "Discovered from https://www.emergentmind.com/ bootstrapped trending papers on 2026-07-28.",
+        "EmergentMind homepage abstract metadata: Since Volta introduced Independent Thread Scheduling (ITS), NVIDIA GPUs have been widely assumed to handle warp divergence in a fixed manner. We test this assumption across Ampere, Hopper, and datacenter and consumer Blackwell GPUs, using pre-ITS Pascal as a baseline. Combining cycle-accurate microbenchmarks, hardware counters, and static analysis of compiler-generated SASS, we separate stable behavior from architectural change. Across all tested generations, divergent paths serialize linearly with the number of paths $k$, following $T(k) \\approx sk$ with no super-linear reconvergence penalty. Warp execution efficiency falls as $32/"
+      ],
+      "confidence": 0.86
+    },
+    "emergentmind-2607-20368-self-gradient-forcing-native-long-video-extrapolation-2026": {
+      "id": "emergentmind-2607-20368-self-gradient-forcing-native-long-video-extrapolation-2026",
+      "url": "https://www.emergentmind.com/papers/2607.20368",
+      "arxiv_url": "https://arxiv.org/abs/2607.20368",
+      "title": "Self Gradient Forcing: Native Long Video Extrapolation",
+      "source_type": "emergentmind-trending-paper",
+      "authors": [],
+      "published": "2026-07-22",
+      "discovered_at": "2026-07-28T14:50:43Z",
+      "last_read_at": "2026-07-28T14:50:43Z",
+      "provenance": [
+        "Discovered from https://www.emergentmind.com/ bootstrapped trending papers on 2026-07-28.",
+        "EmergentMind homepage abstract metadata: Recent autoregressive video diffusion methods are increasingly built upon Self Forcing, where the student is trained on histories produced by its own rollout rather than ground-truth video contexts. This reduces exposure bias, but the historical key-value cache is still used by future frames only as frozen rollout state. As a result, future losses cannot supervise how earlier generated latents should be written into more useful keys and values for later video-latent generation. We call this the historical context-gradient gap. We propose Self Gradient Forcing (SGF), a two-pass training strategy that restores this missing supervision"
+      ],
+      "confidence": 0.86
+    },
+    "emergentmind-2607-22534-sm4rt-learning-structured-motion-geometry-for-4d-reconstruction-2026": {
+      "id": "emergentmind-2607-22534-sm4rt-learning-structured-motion-geometry-for-4d-reconstruction-2026",
+      "url": "https://www.emergentmind.com/papers/2607.22534",
+      "arxiv_url": "https://arxiv.org/abs/2607.22534",
+      "title": "SM4RT: Learning Structured Motion Geometry for 4D Reconstruction",
+      "source_type": "emergentmind-trending-paper",
+      "authors": [],
+      "published": "2026-07-24",
+      "discovered_at": "2026-07-28T14:50:43Z",
+      "last_read_at": "2026-07-28T14:50:43Z",
+      "provenance": [
+        "Discovered from https://www.emergentmind.com/ bootstrapped trending papers on 2026-07-28.",
+        "EmergentMind homepage abstract metadata: Geometry Foundation Models (GFMs) have substantially advanced monocular 3D reconstruction, yet extending this capability to 4D dynamic understanding remains a fundamental challenge. Most existing motion perception methods (e.g., sparse tracking, dense point-wise flow) treat motion as independent point-wise displacements, ignoring the structured nature of physical motion. However, real-world objects usually obey rigid-body kinematics, and points thus usually move collectively, not in isolation. Motion itself possesses geometric structure: physical objects undergo a set of rigid-body transformations governed by SE(3), rather than unst"
+      ],
+      "confidence": 0.86
+    },
+    "emergentmind-2607-21653-molt-a-scalable-pytorch-native-training-framework-for-2026": {
+      "id": "emergentmind-2607-21653-molt-a-scalable-pytorch-native-training-framework-for-2026",
+      "url": "https://www.emergentmind.com/papers/2607.21653",
+      "arxiv_url": "https://arxiv.org/abs/2607.21653",
+      "title": "Molt: A Scalable PyTorch-Native Training Framework for Agentic Reinforcement Learning",
+      "source_type": "emergentmind-trending-paper",
+      "authors": [],
+      "published": "2026-07-22",
+      "discovered_at": "2026-07-28T14:50:43Z",
+      "last_read_at": "2026-07-28T14:50:43Z",
+      "provenance": [
+        "Discovered from https://www.emergentmind.com/ bootstrapped trending papers on 2026-07-28.",
+        "EmergentMind homepage abstract metadata: Agentic reinforcement learning research is constant algorithm modification, new estimators, new pipeline stages, new rollout schemes, and in mainstream frameworks each change threads through layers of trainer, distributed backend, and rollout glue: the cost lands on the researcher at every iteration. Molt is a PyTorch-native training framework built to keep that cost small: a codebase compact and clean enough for a researcher to hold in their head, and for an AI coding assistant to read and reason about in its entirety, so the algorithm flow can be traced and changed end to end. The agent is an ordinary program, and one asynchronous"
       ],
       "confidence": 0.86
     }
@@ -11274,6 +11418,426 @@
       "first_seen": "2026-07-27T14:14:26Z",
       "last_seen": "2026-07-27T14:14:26Z",
       "world_hint": "perception-world-models"
+    },
+    "llms-get-lost-in-evolving-user-intent": {
+      "id": "llms-get-lost-in-evolving-user-intent",
+      "label": "LLMs Get Lost in Evolving User Intent",
+      "type": "method",
+      "summary": "Source-grounded method/approach from 'LLMs Get Lost in Evolving User Intent': As LLMs become more capable, they are increasingly deployed as collaborative agents, taking on user-delegated tasks through iterative interaction. Yet genuine interaction is inherently dynamic: users rarely specify their intent upfront, instead disclosing, revising, and reshaping it as the conversation unfolds. Despite this, LLMs are still predominantly eval...",
+      "aliases": [],
+      "source_ids": [
+        "emergentmind-2607-20734-llms-get-lost-in-evolving-user-intent-2026"
+      ],
+      "confidence": 0.78,
+      "first_seen": "2026-07-28T14:50:43Z",
+      "last_seen": "2026-07-28T14:50:43Z",
+      "world_hint": "llm-systems-serving"
+    },
+    "llms-get-lost-in-evolving-user-intent-learning": {
+      "id": "llms-get-lost-in-evolving-user-intent-learning",
+      "label": "LLMs Get Lost in Evolving User Intent problem setting",
+      "type": "concept",
+      "summary": "The learning or systems problem described by the source: As LLMs become more capable, they are increasingly deployed as collaborative agents, taking on user-delegated tasks through iterative interaction. Yet genuine interaction is inherently dynamic: users rarely specify their intent upfront, instead disclosing, revising, and reshaping it as the conversation unfolds. Despite this, LLMs are still predominantly eval...",
+      "aliases": [],
+      "source_ids": [
+        "emergentmind-2607-20734-llms-get-lost-in-evolving-user-intent-2026"
+      ],
+      "confidence": 0.78,
+      "first_seen": "2026-07-28T14:50:43Z",
+      "last_seen": "2026-07-28T14:50:43Z",
+      "world_hint": "llm-systems-serving"
+    },
+    "llms-get-lost-in-evolving-user-intent-evaluation": {
+      "id": "llms-get-lost-in-evolving-user-intent-evaluation",
+      "label": "LLMs Get Lost in Evolving User Intent evaluation signal",
+      "type": "concept",
+      "summary": "The source's evaluation/benchmark signal for judging the method; Edokai keeps this claim source-qualified.",
+      "aliases": [],
+      "source_ids": [
+        "emergentmind-2607-20734-llms-get-lost-in-evolving-user-intent-2026"
+      ],
+      "confidence": 0.78,
+      "first_seen": "2026-07-28T14:50:43Z",
+      "last_seen": "2026-07-28T14:50:43Z",
+      "world_hint": "llm-systems-serving"
+    },
+    "paper-2607-20734": {
+      "id": "paper-2607-20734",
+      "label": "LLMs Get Lost in Evolving User Intent",
+      "type": "paper",
+      "summary": "EmergentMind surfaced arXiv paper 2607.20734: As LLMs become more capable, they are increasingly deployed as collaborative agents, taking on user-delegated tasks through iterative interaction. Yet genuine interaction is inherently dynamic: users rarely specify their intent upfront, instead disclosing, revising, and reshaping it as the conversation unfolds. Despite this, LLMs are still predominantly eval...",
+      "aliases": [],
+      "source_ids": [
+        "emergentmind-2607-20734-llms-get-lost-in-evolving-user-intent-2026"
+      ],
+      "confidence": 0.78,
+      "first_seen": "2026-07-28T14:50:43Z",
+      "last_seen": "2026-07-28T14:50:43Z",
+      "world_hint": "llm-systems-serving"
+    },
+    "modpack-an-extensible-teleoperation-interface-for-bimanual": {
+      "id": "modpack-an-extensible-teleoperation-interface-for-bimanual",
+      "label": "ModPack",
+      "type": "method",
+      "summary": "Source-grounded method/approach from 'ModPack: An Extensible Teleoperation Interface for Bimanual Mobile Manipulation': Existing teleoperation systems are often tailored to specific robot hardware and task domains, limiting their scalability and adaptability. We present ModPack, a modular and extensible teleoperation system designed to support diverse robot embodiments and task requirements within a unified framework. At the core of ModPack is a self-contained wearable \"backp...",
+      "aliases": [],
+      "source_ids": [
+        "emergentmind-2607-19479-modpack-an-extensible-teleoperation-interface-for-bimanual-mobile-2026"
+      ],
+      "confidence": 0.78,
+      "first_seen": "2026-07-28T14:50:43Z",
+      "last_seen": "2026-07-28T14:50:43Z",
+      "world_hint": "retrieval-augmented-generation"
+    },
+    "modpack-an-extensible-teleoperation-interface-for-bimanual-mobile": {
+      "id": "modpack-an-extensible-teleoperation-interface-for-bimanual-mobile",
+      "label": "ModPack problem setting",
+      "type": "concept",
+      "summary": "The learning or systems problem described by the source: Existing teleoperation systems are often tailored to specific robot hardware and task domains, limiting their scalability and adaptability. We present ModPack, a modular and extensible teleoperation system designed to support diverse robot embodiments and task requirements within a unified framework. At the core of ModPack is a self-contained wearable \"backp...",
+      "aliases": [],
+      "source_ids": [
+        "emergentmind-2607-19479-modpack-an-extensible-teleoperation-interface-for-bimanual-mobile-2026"
+      ],
+      "confidence": 0.78,
+      "first_seen": "2026-07-28T14:50:43Z",
+      "last_seen": "2026-07-28T14:50:43Z",
+      "world_hint": "retrieval-augmented-generation"
+    },
+    "paper-2607-19479": {
+      "id": "paper-2607-19479",
+      "label": "ModPack: An Extensible Teleoperation Interface for Bimanual Mobile Manipulation",
+      "type": "paper",
+      "summary": "EmergentMind surfaced arXiv paper 2607.19479: Existing teleoperation systems are often tailored to specific robot hardware and task domains, limiting their scalability and adaptability. We present ModPack, a modular and extensible teleoperation system designed to support diverse robot embodiments and task requirements within a unified framework. At the core of ModPack is a self-contained wearable \"backp...",
+      "aliases": [],
+      "source_ids": [
+        "emergentmind-2607-19479-modpack-an-extensible-teleoperation-interface-for-bimanual-mobile-2026"
+      ],
+      "confidence": 0.78,
+      "first_seen": "2026-07-28T14:50:43Z",
+      "last_seen": "2026-07-28T14:50:43Z",
+      "world_hint": "retrieval-augmented-generation"
+    },
+    "visual-relocalization-from-sparse-views-in-aliased": {
+      "id": "visual-relocalization-from-sparse-views-in-aliased",
+      "label": "Visual Relocalization from Sparse Views in Aliased and Low-Texture Environments via Novel View Synthesis",
+      "type": "method",
+      "summary": "Source-grounded method/approach from 'Visual Relocalization from Sparse Views in Aliased and Low-Texture Environments via Novel View Synthesis': Visual localization becomes extremely challenging in planetary-like terrains characterized by low texture, perceptual aliasing, harsh illumination, and sparse, weakly overlapping viewpoints induced by forward rover motion and unconstrained driving directions. Under these conditions, state-of-the-art image-to-image and image-to-map matching pipelines suffer s...",
+      "aliases": [],
+      "source_ids": [
+        "emergentmind-2607-22147-visual-relocalization-from-sparse-views-in-aliased-and-2026"
+      ],
+      "confidence": 0.78,
+      "first_seen": "2026-07-28T14:50:43Z",
+      "last_seen": "2026-07-28T14:50:43Z",
+      "world_hint": "perception-world-models"
+    },
+    "visual-relocalization-from-sparse-views-in-aliased-and": {
+      "id": "visual-relocalization-from-sparse-views-in-aliased-and",
+      "label": "Visual Relocalization from Sparse Views in Aliased and Low-Texture Environments via Novel View Synthesis problem setting",
+      "type": "concept",
+      "summary": "The learning or systems problem described by the source: Visual localization becomes extremely challenging in planetary-like terrains characterized by low texture, perceptual aliasing, harsh illumination, and sparse, weakly overlapping viewpoints induced by forward rover motion and unconstrained driving directions. Under these conditions, state-of-the-art image-to-image and image-to-map matching pipelines suffer s...",
+      "aliases": [],
+      "source_ids": [
+        "emergentmind-2607-22147-visual-relocalization-from-sparse-views-in-aliased-and-2026"
+      ],
+      "confidence": 0.78,
+      "first_seen": "2026-07-28T14:50:43Z",
+      "last_seen": "2026-07-28T14:50:43Z",
+      "world_hint": "perception-world-models"
+    },
+    "paper-2607-22147": {
+      "id": "paper-2607-22147",
+      "label": "Visual Relocalization from Sparse Views in Aliased and Low-Texture Environments via Novel View Synthesis",
+      "type": "paper",
+      "summary": "EmergentMind surfaced arXiv paper 2607.22147: Visual localization becomes extremely challenging in planetary-like terrains characterized by low texture, perceptual aliasing, harsh illumination, and sparse, weakly overlapping viewpoints induced by forward rover motion and unconstrained driving directions. Under these conditions, state-of-the-art image-to-image and image-to-map matching pipelines suffer s...",
+      "aliases": [],
+      "source_ids": [
+        "emergentmind-2607-22147-visual-relocalization-from-sparse-views-in-aliased-and-2026"
+      ],
+      "confidence": 0.78,
+      "first_seen": "2026-07-28T14:50:43Z",
+      "last_seen": "2026-07-28T14:50:43Z",
+      "world_hint": "perception-world-models"
+    },
+    "deformable-triangle-splatting-flexible-primitives-for-real": {
+      "id": "deformable-triangle-splatting-flexible-primitives-for-real",
+      "label": "Deformable Triangle Splatting",
+      "type": "method",
+      "summary": "Source-grounded method/approach from 'Deformable Triangle Splatting: Flexible Primitives for Real-Time Radiance Field Rendering': Recent radiance field methods represent scenes with 2D primitives that offer surface alignment and efficient rasterization, from Gaussian disks to triangles, yet all rely on convex boundaries: curved and concave structures demand excessive primitives. We introduce Deformable Triangle Splatting, which augments each triangle with $K$ control points per edge, e...",
+      "aliases": [],
+      "source_ids": [
+        "emergentmind-2607-22446-deformable-triangle-splatting-flexible-primitives-for-real-time-2026"
+      ],
+      "confidence": 0.78,
+      "first_seen": "2026-07-28T14:50:43Z",
+      "last_seen": "2026-07-28T14:50:43Z",
+      "world_hint": "perception-world-models"
+    },
+    "deformable-triangle-splatting-flexible-primitives-for-real-time": {
+      "id": "deformable-triangle-splatting-flexible-primitives-for-real-time",
+      "label": "Deformable Triangle Splatting problem setting",
+      "type": "concept",
+      "summary": "The learning or systems problem described by the source: Recent radiance field methods represent scenes with 2D primitives that offer surface alignment and efficient rasterization, from Gaussian disks to triangles, yet all rely on convex boundaries: curved and concave structures demand excessive primitives. We introduce Deformable Triangle Splatting, which augments each triangle with $K$ control points per edge, e...",
+      "aliases": [],
+      "source_ids": [
+        "emergentmind-2607-22446-deformable-triangle-splatting-flexible-primitives-for-real-time-2026"
+      ],
+      "confidence": 0.78,
+      "first_seen": "2026-07-28T14:50:43Z",
+      "last_seen": "2026-07-28T14:50:43Z",
+      "world_hint": "perception-world-models"
+    },
+    "paper-2607-22446": {
+      "id": "paper-2607-22446",
+      "label": "Deformable Triangle Splatting: Flexible Primitives for Real-Time Radiance Field Rendering",
+      "type": "paper",
+      "summary": "EmergentMind surfaced arXiv paper 2607.22446: Recent radiance field methods represent scenes with 2D primitives that offer surface alignment and efficient rasterization, from Gaussian disks to triangles, yet all rely on convex boundaries: curved and concave structures demand excessive primitives. We introduce Deformable Triangle Splatting, which augments each triangle with $K$ control points per edge, e...",
+      "aliases": [],
+      "source_ids": [
+        "emergentmind-2607-22446-deformable-triangle-splatting-flexible-primitives-for-real-time-2026"
+      ],
+      "confidence": 0.78,
+      "first_seen": "2026-07-28T14:50:43Z",
+      "last_seen": "2026-07-28T14:50:43Z",
+      "world_hint": "perception-world-models"
+    },
+    "vitacworld-scaling-visuo-tactile-world-models-for": {
+      "id": "vitacworld-scaling-visuo-tactile-world-models-for",
+      "label": "ViTacWorld",
+      "type": "method",
+      "summary": "Source-grounded method/approach from 'ViTacWorld: Scaling Visuo-Tactile World Models for Contact-Rich Robot Manipulation': Contact-rich robot manipulation requires physical interaction cues that are often invisible to cameras, making tactile sensing essential for robust control. However, scaling visuo-tactile robot learning remains difficult because real tactile interaction data are expensive to collect, hardware-dependent, and limited in task and scene diversity. We present ViT...",
+      "aliases": [],
+      "source_ids": [
+        "emergentmind-2607-22530-vitacworld-scaling-visuo-tactile-world-models-for-contact-2026"
+      ],
+      "confidence": 0.78,
+      "first_seen": "2026-07-28T14:50:43Z",
+      "last_seen": "2026-07-28T14:50:43Z",
+      "world_hint": "retrieval-augmented-generation"
+    },
+    "vitacworld-scaling-visuo-tactile-world-models-for-contact": {
+      "id": "vitacworld-scaling-visuo-tactile-world-models-for-contact",
+      "label": "ViTacWorld problem setting",
+      "type": "concept",
+      "summary": "The learning or systems problem described by the source: Contact-rich robot manipulation requires physical interaction cues that are often invisible to cameras, making tactile sensing essential for robust control. However, scaling visuo-tactile robot learning remains difficult because real tactile interaction data are expensive to collect, hardware-dependent, and limited in task and scene diversity. We present ViT...",
+      "aliases": [],
+      "source_ids": [
+        "emergentmind-2607-22530-vitacworld-scaling-visuo-tactile-world-models-for-contact-2026"
+      ],
+      "confidence": 0.78,
+      "first_seen": "2026-07-28T14:50:43Z",
+      "last_seen": "2026-07-28T14:50:43Z",
+      "world_hint": "retrieval-augmented-generation"
+    },
+    "paper-2607-22530": {
+      "id": "paper-2607-22530",
+      "label": "ViTacWorld: Scaling Visuo-Tactile World Models for Contact-Rich Robot Manipulation",
+      "type": "paper",
+      "summary": "EmergentMind surfaced arXiv paper 2607.22530: Contact-rich robot manipulation requires physical interaction cues that are often invisible to cameras, making tactile sensing essential for robust control. However, scaling visuo-tactile robot learning remains difficult because real tactile interaction data are expensive to collect, hardware-dependent, and limited in task and scene diversity. We present ViT...",
+      "aliases": [],
+      "source_ids": [
+        "emergentmind-2607-22530-vitacworld-scaling-visuo-tactile-world-models-for-contact-2026"
+      ],
+      "confidence": 0.78,
+      "first_seen": "2026-07-28T14:50:43Z",
+      "last_seen": "2026-07-28T14:50:43Z",
+      "world_hint": "retrieval-augmented-generation"
+    },
+    "characterizing-warp-divergence-from-pascal-to-blackwell": {
+      "id": "characterizing-warp-divergence-from-pascal-to-blackwell",
+      "label": "Characterizing Warp Divergence from Pascal to Blackwell",
+      "type": "method",
+      "summary": "Source-grounded method/approach from 'Characterizing Warp Divergence from Pascal to Blackwell': Since Volta introduced Independent Thread Scheduling (ITS), NVIDIA GPUs have been widely assumed to handle warp divergence in a fixed manner. We test this assumption across Ampere, Hopper, and datacenter and consumer Blackwell GPUs, using pre-ITS Pascal as a baseline. Combining cycle-accurate microbenchmarks, hardware counters, and static analysis of compile...",
+      "aliases": [],
+      "source_ids": [
+        "emergentmind-2607-23402-characterizing-warp-divergence-from-pascal-to-blackwell-2026"
+      ],
+      "confidence": 0.78,
+      "first_seen": "2026-07-28T14:50:43Z",
+      "last_seen": "2026-07-28T14:50:43Z",
+      "world_hint": "llm-systems-serving"
+    },
+    "characterizing-warp-divergence-from-pascal-to-blackwell-learning": {
+      "id": "characterizing-warp-divergence-from-pascal-to-blackwell-learning",
+      "label": "Characterizing Warp Divergence from Pascal to Blackwell problem setting",
+      "type": "concept",
+      "summary": "The learning or systems problem described by the source: Since Volta introduced Independent Thread Scheduling (ITS), NVIDIA GPUs have been widely assumed to handle warp divergence in a fixed manner. We test this assumption across Ampere, Hopper, and datacenter and consumer Blackwell GPUs, using pre-ITS Pascal as a baseline. Combining cycle-accurate microbenchmarks, hardware counters, and static analysis of compile...",
+      "aliases": [],
+      "source_ids": [
+        "emergentmind-2607-23402-characterizing-warp-divergence-from-pascal-to-blackwell-2026"
+      ],
+      "confidence": 0.78,
+      "first_seen": "2026-07-28T14:50:43Z",
+      "last_seen": "2026-07-28T14:50:43Z",
+      "world_hint": "llm-systems-serving"
+    },
+    "characterizing-warp-divergence-from-pascal-to-blackwell-evaluation": {
+      "id": "characterizing-warp-divergence-from-pascal-to-blackwell-evaluation",
+      "label": "Characterizing Warp Divergence from Pascal to Blackwell evaluation signal",
+      "type": "concept",
+      "summary": "The source's evaluation/benchmark signal for judging the method; Edokai keeps this claim source-qualified.",
+      "aliases": [],
+      "source_ids": [
+        "emergentmind-2607-23402-characterizing-warp-divergence-from-pascal-to-blackwell-2026"
+      ],
+      "confidence": 0.78,
+      "first_seen": "2026-07-28T14:50:43Z",
+      "last_seen": "2026-07-28T14:50:43Z",
+      "world_hint": "llm-systems-serving"
+    },
+    "paper-2607-23402": {
+      "id": "paper-2607-23402",
+      "label": "Characterizing Warp Divergence from Pascal to Blackwell",
+      "type": "paper",
+      "summary": "EmergentMind surfaced arXiv paper 2607.23402: Since Volta introduced Independent Thread Scheduling (ITS), NVIDIA GPUs have been widely assumed to handle warp divergence in a fixed manner. We test this assumption across Ampere, Hopper, and datacenter and consumer Blackwell GPUs, using pre-ITS Pascal as a baseline. Combining cycle-accurate microbenchmarks, hardware counters, and static analysis of compile...",
+      "aliases": [],
+      "source_ids": [
+        "emergentmind-2607-23402-characterizing-warp-divergence-from-pascal-to-blackwell-2026"
+      ],
+      "confidence": 0.78,
+      "first_seen": "2026-07-28T14:50:43Z",
+      "last_seen": "2026-07-28T14:50:43Z",
+      "world_hint": "llm-systems-serving"
+    },
+    "self-gradient-forcing-native-long-video-extrapolation": {
+      "id": "self-gradient-forcing-native-long-video-extrapolation",
+      "label": "Self Gradient Forcing",
+      "type": "method",
+      "summary": "Source-grounded method/approach from 'Self Gradient Forcing: Native Long Video Extrapolation': Recent autoregressive video diffusion methods are increasingly built upon Self Forcing, where the student is trained on histories produced by its own rollout rather than ground-truth video contexts. This reduces exposure bias, but the historical key-value cache is still used by future frames only as frozen rollout state. As a result, future losses cannot sup...",
+      "aliases": [],
+      "source_ids": [
+        "emergentmind-2607-20368-self-gradient-forcing-native-long-video-extrapolation-2026"
+      ],
+      "confidence": 0.78,
+      "first_seen": "2026-07-28T14:50:43Z",
+      "last_seen": "2026-07-28T14:50:43Z",
+      "world_hint": "perception-world-models"
+    },
+    "self-gradient-forcing-native-long-video-extrapolation-learning": {
+      "id": "self-gradient-forcing-native-long-video-extrapolation-learning",
+      "label": "Self Gradient Forcing problem setting",
+      "type": "concept",
+      "summary": "The learning or systems problem described by the source: Recent autoregressive video diffusion methods are increasingly built upon Self Forcing, where the student is trained on histories produced by its own rollout rather than ground-truth video contexts. This reduces exposure bias, but the historical key-value cache is still used by future frames only as frozen rollout state. As a result, future losses cannot sup...",
+      "aliases": [],
+      "source_ids": [
+        "emergentmind-2607-20368-self-gradient-forcing-native-long-video-extrapolation-2026"
+      ],
+      "confidence": 0.78,
+      "first_seen": "2026-07-28T14:50:43Z",
+      "last_seen": "2026-07-28T14:50:43Z",
+      "world_hint": "perception-world-models"
+    },
+    "self-gradient-forcing-native-long-video-extrapolation-evaluation": {
+      "id": "self-gradient-forcing-native-long-video-extrapolation-evaluation",
+      "label": "Self Gradient Forcing evaluation signal",
+      "type": "concept",
+      "summary": "The source's evaluation/benchmark signal for judging the method; Edokai keeps this claim source-qualified.",
+      "aliases": [],
+      "source_ids": [
+        "emergentmind-2607-20368-self-gradient-forcing-native-long-video-extrapolation-2026"
+      ],
+      "confidence": 0.78,
+      "first_seen": "2026-07-28T14:50:43Z",
+      "last_seen": "2026-07-28T14:50:43Z",
+      "world_hint": "perception-world-models"
+    },
+    "paper-2607-20368": {
+      "id": "paper-2607-20368",
+      "label": "Self Gradient Forcing: Native Long Video Extrapolation",
+      "type": "paper",
+      "summary": "EmergentMind surfaced arXiv paper 2607.20368: Recent autoregressive video diffusion methods are increasingly built upon Self Forcing, where the student is trained on histories produced by its own rollout rather than ground-truth video contexts. This reduces exposure bias, but the historical key-value cache is still used by future frames only as frozen rollout state. As a result, future losses cannot sup...",
+      "aliases": [],
+      "source_ids": [
+        "emergentmind-2607-20368-self-gradient-forcing-native-long-video-extrapolation-2026"
+      ],
+      "confidence": 0.78,
+      "first_seen": "2026-07-28T14:50:43Z",
+      "last_seen": "2026-07-28T14:50:43Z",
+      "world_hint": "perception-world-models"
+    },
+    "sm4rt-learning-structured-motion-geometry-for-4d": {
+      "id": "sm4rt-learning-structured-motion-geometry-for-4d",
+      "label": "SM4RT",
+      "type": "method",
+      "summary": "Source-grounded method/approach from 'SM4RT: Learning Structured Motion Geometry for 4D Reconstruction': Geometry Foundation Models (GFMs) have substantially advanced monocular 3D reconstruction, yet extending this capability to 4D dynamic understanding remains a fundamental challenge. Most existing motion perception methods (e.g., sparse tracking, dense point-wise flow) treat motion as independent point-wise displacements, ignoring the structured nature of phy...",
+      "aliases": [],
+      "source_ids": [
+        "emergentmind-2607-22534-sm4rt-learning-structured-motion-geometry-for-4d-reconstruction-2026"
+      ],
+      "confidence": 0.78,
+      "first_seen": "2026-07-28T14:50:43Z",
+      "last_seen": "2026-07-28T14:50:43Z",
+      "world_hint": "perception-world-models"
+    },
+    "sm4rt-learning-structured-motion-geometry-for-4d-reconstruction": {
+      "id": "sm4rt-learning-structured-motion-geometry-for-4d-reconstruction",
+      "label": "SM4RT problem setting",
+      "type": "concept",
+      "summary": "The learning or systems problem described by the source: Geometry Foundation Models (GFMs) have substantially advanced monocular 3D reconstruction, yet extending this capability to 4D dynamic understanding remains a fundamental challenge. Most existing motion perception methods (e.g., sparse tracking, dense point-wise flow) treat motion as independent point-wise displacements, ignoring the structured nature of phy...",
+      "aliases": [],
+      "source_ids": [
+        "emergentmind-2607-22534-sm4rt-learning-structured-motion-geometry-for-4d-reconstruction-2026"
+      ],
+      "confidence": 0.78,
+      "first_seen": "2026-07-28T14:50:43Z",
+      "last_seen": "2026-07-28T14:50:43Z",
+      "world_hint": "perception-world-models"
+    },
+    "paper-2607-22534": {
+      "id": "paper-2607-22534",
+      "label": "SM4RT: Learning Structured Motion Geometry for 4D Reconstruction",
+      "type": "paper",
+      "summary": "EmergentMind surfaced arXiv paper 2607.22534: Geometry Foundation Models (GFMs) have substantially advanced monocular 3D reconstruction, yet extending this capability to 4D dynamic understanding remains a fundamental challenge. Most existing motion perception methods (e.g., sparse tracking, dense point-wise flow) treat motion as independent point-wise displacements, ignoring the structured nature of phy...",
+      "aliases": [],
+      "source_ids": [
+        "emergentmind-2607-22534-sm4rt-learning-structured-motion-geometry-for-4d-reconstruction-2026"
+      ],
+      "confidence": 0.78,
+      "first_seen": "2026-07-28T14:50:43Z",
+      "last_seen": "2026-07-28T14:50:43Z",
+      "world_hint": "perception-world-models"
+    },
+    "molt-a-scalable-pytorch-native-training-framework": {
+      "id": "molt-a-scalable-pytorch-native-training-framework",
+      "label": "Molt",
+      "type": "method",
+      "summary": "Source-grounded method/approach from 'Molt: A Scalable PyTorch-Native Training Framework for Agentic Reinforcement Learning': Agentic reinforcement learning research is constant algorithm modification, new estimators, new pipeline stages, new rollout schemes, and in mainstream frameworks each change threads through layers of trainer, distributed backend, and rollout glue: the cost lands on the researcher at every iteration. Molt is a PyTorch-native training framework built to keep...",
+      "aliases": [],
+      "source_ids": [
+        "emergentmind-2607-21653-molt-a-scalable-pytorch-native-training-framework-for-2026"
+      ],
+      "confidence": 0.78,
+      "first_seen": "2026-07-28T14:50:43Z",
+      "last_seen": "2026-07-28T14:50:43Z",
+      "world_hint": "generative-models"
+    },
+    "molt-a-scalable-pytorch-native-training-framework-for": {
+      "id": "molt-a-scalable-pytorch-native-training-framework-for",
+      "label": "Molt problem setting",
+      "type": "concept",
+      "summary": "The learning or systems problem described by the source: Agentic reinforcement learning research is constant algorithm modification, new estimators, new pipeline stages, new rollout schemes, and in mainstream frameworks each change threads through layers of trainer, distributed backend, and rollout glue: the cost lands on the researcher at every iteration. Molt is a PyTorch-native training framework built to keep...",
+      "aliases": [],
+      "source_ids": [
+        "emergentmind-2607-21653-molt-a-scalable-pytorch-native-training-framework-for-2026"
+      ],
+      "confidence": 0.78,
+      "first_seen": "2026-07-28T14:50:43Z",
+      "last_seen": "2026-07-28T14:50:43Z",
+      "world_hint": "generative-models"
+    },
+    "paper-2607-21653": {
+      "id": "paper-2607-21653",
+      "label": "Molt: A Scalable PyTorch-Native Training Framework for Agentic Reinforcement Learning",
+      "type": "paper",
+      "summary": "EmergentMind surfaced arXiv paper 2607.21653: Agentic reinforcement learning research is constant algorithm modification, new estimators, new pipeline stages, new rollout schemes, and in mainstream frameworks each change threads through layers of trainer, distributed backend, and rollout glue: the cost lands on the researcher at every iteration. Molt is a PyTorch-native training framework built to keep...",
+      "aliases": [],
+      "source_ids": [
+        "emergentmind-2607-21653-molt-a-scalable-pytorch-native-training-framework-for-2026"
+      ],
+      "confidence": 0.78,
+      "first_seen": "2026-07-28T14:50:43Z",
+      "last_seen": "2026-07-28T14:50:43Z",
+      "world_hint": "generative-models"
     }
   },
   "edges": [
@@ -18457,6 +19021,366 @@
         "emergentmind-2607-21556-visual-contrastive-self-distillation-2026"
       ],
       "evidence": "Routed into The Visual Contrastive Self Distillation under perception-world-models from source title and abstract."
+    },
+    {
+      "source": "paper-2607-20734",
+      "target": "llms-get-lost-in-evolving-user-intent",
+      "relation": "paper_introduces",
+      "confidence": 0.82,
+      "source_ids": [
+        "emergentmind-2607-20734-llms-get-lost-in-evolving-user-intent-2026"
+      ],
+      "evidence": "EmergentMind homepage/page metadata identify arXiv 2607.20734, 'LLMs Get Lost in Evolving User Intent', and summarize the method/problem."
+    },
+    {
+      "source": "llms-get-lost-in-evolving-user-intent",
+      "target": "llms-get-lost-in-evolving-user-intent-learning",
+      "relation": "implements",
+      "confidence": 0.76,
+      "source_ids": [
+        "emergentmind-2607-20734-llms-get-lost-in-evolving-user-intent-2026"
+      ],
+      "evidence": "As LLMs become more capable, they are increasingly deployed as collaborative agents, taking on user-delegated tasks through iterative interaction. Yet genuine interaction is inherently dynamic: users rarely specify their intent upfront, instead disclosing, revising, and reshaping"
+    },
+    {
+      "source": "llms-get-lost-in-evolving-user-intent",
+      "target": "llms-get-lost-in-evolving-user-intent-evaluation",
+      "relation": "evaluates_on",
+      "confidence": 0.72,
+      "source_ids": [
+        "emergentmind-2607-20734-llms-get-lost-in-evolving-user-intent-2026"
+      ],
+      "evidence": "As LLMs become more capable, they are increasingly deployed as collaborative agents, taking on user-delegated tasks through iterative interaction. Yet genuine interaction is inherently dynamic: users rarely specify their intent upfront, instead disclosing, revising, and reshaping"
+    },
+    {
+      "source": "llms-get-lost-in-evolving-user-intent",
+      "target": "the-llms-get-lost-in-evolving",
+      "relation": "belongs_to_region",
+      "confidence": 0.78,
+      "source_ids": [
+        "emergentmind-2607-20734-llms-get-lost-in-evolving-user-intent-2026"
+      ],
+      "evidence": "Routed into The Llms Get Lost In under llm-systems-serving from source title and abstract."
+    },
+    {
+      "source": "paper-2607-19479",
+      "target": "modpack-an-extensible-teleoperation-interface-for-bimanual",
+      "relation": "paper_introduces",
+      "confidence": 0.82,
+      "source_ids": [
+        "emergentmind-2607-19479-modpack-an-extensible-teleoperation-interface-for-bimanual-mobile-2026"
+      ],
+      "evidence": "EmergentMind homepage/page metadata identify arXiv 2607.19479, 'ModPack: An Extensible Teleoperation Interface for Bimanual Mobile Manipulation', and summarize the method/problem."
+    },
+    {
+      "source": "modpack-an-extensible-teleoperation-interface-for-bimanual",
+      "target": "modpack-an-extensible-teleoperation-interface-for-bimanual-mobile",
+      "relation": "implements",
+      "confidence": 0.76,
+      "source_ids": [
+        "emergentmind-2607-19479-modpack-an-extensible-teleoperation-interface-for-bimanual-mobile-2026"
+      ],
+      "evidence": "Existing teleoperation systems are often tailored to specific robot hardware and task domains, limiting their scalability and adaptability. We present ModPack, a modular and extensible teleoperation system designed to support diverse robot embodiments and task requirements within"
+    },
+    {
+      "source": "modpack-an-extensible-teleoperation-interface-for-bimanual",
+      "target": "modpack-an-extensible-teleoperation-interface-for-bimanual-mobile",
+      "relation": "evaluates_on",
+      "confidence": 0.72,
+      "source_ids": [
+        "emergentmind-2607-19479-modpack-an-extensible-teleoperation-interface-for-bimanual-mobile-2026"
+      ],
+      "evidence": "Existing teleoperation systems are often tailored to specific robot hardware and task domains, limiting their scalability and adaptability. We present ModPack, a modular and extensible teleoperation system designed to support diverse robot embodiments and task requirements within"
+    },
+    {
+      "source": "modpack-an-extensible-teleoperation-interface-for-bimanual",
+      "target": "the-modpack-an-extensible-teleoperation-interface",
+      "relation": "belongs_to_region",
+      "confidence": 0.78,
+      "source_ids": [
+        "emergentmind-2607-19479-modpack-an-extensible-teleoperation-interface-for-bimanual-mobile-2026"
+      ],
+      "evidence": "Routed into The Modpack An Extensible Teleoperation under retrieval-augmented-generation from source title and abstract."
+    },
+    {
+      "source": "paper-2607-22147",
+      "target": "visual-relocalization-from-sparse-views-in-aliased",
+      "relation": "paper_introduces",
+      "confidence": 0.82,
+      "source_ids": [
+        "emergentmind-2607-22147-visual-relocalization-from-sparse-views-in-aliased-and-2026"
+      ],
+      "evidence": "EmergentMind homepage/page metadata identify arXiv 2607.22147, 'Visual Relocalization from Sparse Views in Aliased and Low-Texture Environments via Novel View Synthesis', and summarize the method/problem."
+    },
+    {
+      "source": "visual-relocalization-from-sparse-views-in-aliased",
+      "target": "visual-relocalization-from-sparse-views-in-aliased-and",
+      "relation": "implements",
+      "confidence": 0.76,
+      "source_ids": [
+        "emergentmind-2607-22147-visual-relocalization-from-sparse-views-in-aliased-and-2026"
+      ],
+      "evidence": "Visual localization becomes extremely challenging in planetary-like terrains characterized by low texture, perceptual aliasing, harsh illumination, and sparse, weakly overlapping viewpoints induced by forward rover motion and unconstrained driving directions. Under these conditio"
+    },
+    {
+      "source": "visual-relocalization-from-sparse-views-in-aliased",
+      "target": "visual-relocalization-from-sparse-views-in-aliased-and",
+      "relation": "evaluates_on",
+      "confidence": 0.72,
+      "source_ids": [
+        "emergentmind-2607-22147-visual-relocalization-from-sparse-views-in-aliased-and-2026"
+      ],
+      "evidence": "Visual localization becomes extremely challenging in planetary-like terrains characterized by low texture, perceptual aliasing, harsh illumination, and sparse, weakly overlapping viewpoints induced by forward rover motion and unconstrained driving directions. Under these conditio"
+    },
+    {
+      "source": "visual-relocalization-from-sparse-views-in-aliased",
+      "target": "the-visual-relocalization-from-sparse-views",
+      "relation": "belongs_to_region",
+      "confidence": 0.78,
+      "source_ids": [
+        "emergentmind-2607-22147-visual-relocalization-from-sparse-views-in-aliased-and-2026"
+      ],
+      "evidence": "Routed into The Visual Relocalization From Sparse under perception-world-models from source title and abstract."
+    },
+    {
+      "source": "paper-2607-22446",
+      "target": "deformable-triangle-splatting-flexible-primitives-for-real",
+      "relation": "paper_introduces",
+      "confidence": 0.82,
+      "source_ids": [
+        "emergentmind-2607-22446-deformable-triangle-splatting-flexible-primitives-for-real-time-2026"
+      ],
+      "evidence": "EmergentMind homepage/page metadata identify arXiv 2607.22446, 'Deformable Triangle Splatting: Flexible Primitives for Real-Time Radiance Field Rendering', and summarize the method/problem."
+    },
+    {
+      "source": "deformable-triangle-splatting-flexible-primitives-for-real",
+      "target": "deformable-triangle-splatting-flexible-primitives-for-real-time",
+      "relation": "implements",
+      "confidence": 0.76,
+      "source_ids": [
+        "emergentmind-2607-22446-deformable-triangle-splatting-flexible-primitives-for-real-time-2026"
+      ],
+      "evidence": "Recent radiance field methods represent scenes with 2D primitives that offer surface alignment and efficient rasterization, from Gaussian disks to triangles, yet all rely on convex boundaries: curved and concave structures demand excessive primitives. We introduce Deformable Tria"
+    },
+    {
+      "source": "deformable-triangle-splatting-flexible-primitives-for-real",
+      "target": "deformable-triangle-splatting-flexible-primitives-for-real-time",
+      "relation": "evaluates_on",
+      "confidence": 0.72,
+      "source_ids": [
+        "emergentmind-2607-22446-deformable-triangle-splatting-flexible-primitives-for-real-time-2026"
+      ],
+      "evidence": "Recent radiance field methods represent scenes with 2D primitives that offer surface alignment and efficient rasterization, from Gaussian disks to triangles, yet all rely on convex boundaries: curved and concave structures demand excessive primitives. We introduce Deformable Tria"
+    },
+    {
+      "source": "deformable-triangle-splatting-flexible-primitives-for-real",
+      "target": "the-deformable-triangle-splatting-flexible-primitives",
+      "relation": "belongs_to_region",
+      "confidence": 0.78,
+      "source_ids": [
+        "emergentmind-2607-22446-deformable-triangle-splatting-flexible-primitives-for-real-time-2026"
+      ],
+      "evidence": "Routed into The Deformable Triangle Splatting Flexible under perception-world-models from source title and abstract."
+    },
+    {
+      "source": "paper-2607-22530",
+      "target": "vitacworld-scaling-visuo-tactile-world-models-for",
+      "relation": "paper_introduces",
+      "confidence": 0.82,
+      "source_ids": [
+        "emergentmind-2607-22530-vitacworld-scaling-visuo-tactile-world-models-for-contact-2026"
+      ],
+      "evidence": "EmergentMind homepage/page metadata identify arXiv 2607.22530, 'ViTacWorld: Scaling Visuo-Tactile World Models for Contact-Rich Robot Manipulation', and summarize the method/problem."
+    },
+    {
+      "source": "vitacworld-scaling-visuo-tactile-world-models-for",
+      "target": "vitacworld-scaling-visuo-tactile-world-models-for-contact",
+      "relation": "implements",
+      "confidence": 0.76,
+      "source_ids": [
+        "emergentmind-2607-22530-vitacworld-scaling-visuo-tactile-world-models-for-contact-2026"
+      ],
+      "evidence": "Contact-rich robot manipulation requires physical interaction cues that are often invisible to cameras, making tactile sensing essential for robust control. However, scaling visuo-tactile robot learning remains difficult because real tactile interaction data are expensive to coll"
+    },
+    {
+      "source": "vitacworld-scaling-visuo-tactile-world-models-for",
+      "target": "vitacworld-scaling-visuo-tactile-world-models-for-contact",
+      "relation": "evaluates_on",
+      "confidence": 0.72,
+      "source_ids": [
+        "emergentmind-2607-22530-vitacworld-scaling-visuo-tactile-world-models-for-contact-2026"
+      ],
+      "evidence": "Contact-rich robot manipulation requires physical interaction cues that are often invisible to cameras, making tactile sensing essential for robust control. However, scaling visuo-tactile robot learning remains difficult because real tactile interaction data are expensive to coll"
+    },
+    {
+      "source": "vitacworld-scaling-visuo-tactile-world-models-for",
+      "target": "the-vitacworld-scaling-visuo-tactile-world",
+      "relation": "belongs_to_region",
+      "confidence": 0.78,
+      "source_ids": [
+        "emergentmind-2607-22530-vitacworld-scaling-visuo-tactile-world-models-for-contact-2026"
+      ],
+      "evidence": "Routed into The Vitacworld Scaling Visuo Tactile under retrieval-augmented-generation from source title and abstract."
+    },
+    {
+      "source": "paper-2607-23402",
+      "target": "characterizing-warp-divergence-from-pascal-to-blackwell",
+      "relation": "paper_introduces",
+      "confidence": 0.82,
+      "source_ids": [
+        "emergentmind-2607-23402-characterizing-warp-divergence-from-pascal-to-blackwell-2026"
+      ],
+      "evidence": "EmergentMind homepage/page metadata identify arXiv 2607.23402, 'Characterizing Warp Divergence from Pascal to Blackwell', and summarize the method/problem."
+    },
+    {
+      "source": "characterizing-warp-divergence-from-pascal-to-blackwell",
+      "target": "characterizing-warp-divergence-from-pascal-to-blackwell-learning",
+      "relation": "implements",
+      "confidence": 0.76,
+      "source_ids": [
+        "emergentmind-2607-23402-characterizing-warp-divergence-from-pascal-to-blackwell-2026"
+      ],
+      "evidence": "Since Volta introduced Independent Thread Scheduling (ITS), NVIDIA GPUs have been widely assumed to handle warp divergence in a fixed manner. We test this assumption across Ampere, Hopper, and datacenter and consumer Blackwell GPUs, using pre-ITS Pascal as a baseline. Combining c"
+    },
+    {
+      "source": "characterizing-warp-divergence-from-pascal-to-blackwell",
+      "target": "characterizing-warp-divergence-from-pascal-to-blackwell-evaluation",
+      "relation": "evaluates_on",
+      "confidence": 0.72,
+      "source_ids": [
+        "emergentmind-2607-23402-characterizing-warp-divergence-from-pascal-to-blackwell-2026"
+      ],
+      "evidence": "Since Volta introduced Independent Thread Scheduling (ITS), NVIDIA GPUs have been widely assumed to handle warp divergence in a fixed manner. We test this assumption across Ampere, Hopper, and datacenter and consumer Blackwell GPUs, using pre-ITS Pascal as a baseline. Combining c"
+    },
+    {
+      "source": "characterizing-warp-divergence-from-pascal-to-blackwell",
+      "target": "the-characterizing-warp-divergence-from-pascal",
+      "relation": "belongs_to_region",
+      "confidence": 0.78,
+      "source_ids": [
+        "emergentmind-2607-23402-characterizing-warp-divergence-from-pascal-to-blackwell-2026"
+      ],
+      "evidence": "Routed into The Characterizing Warp Divergence From under llm-systems-serving from source title and abstract."
+    },
+    {
+      "source": "paper-2607-20368",
+      "target": "self-gradient-forcing-native-long-video-extrapolation",
+      "relation": "paper_introduces",
+      "confidence": 0.82,
+      "source_ids": [
+        "emergentmind-2607-20368-self-gradient-forcing-native-long-video-extrapolation-2026"
+      ],
+      "evidence": "EmergentMind homepage/page metadata identify arXiv 2607.20368, 'Self Gradient Forcing: Native Long Video Extrapolation', and summarize the method/problem."
+    },
+    {
+      "source": "self-gradient-forcing-native-long-video-extrapolation",
+      "target": "self-gradient-forcing-native-long-video-extrapolation-learning",
+      "relation": "implements",
+      "confidence": 0.76,
+      "source_ids": [
+        "emergentmind-2607-20368-self-gradient-forcing-native-long-video-extrapolation-2026"
+      ],
+      "evidence": "Recent autoregressive video diffusion methods are increasingly built upon Self Forcing, where the student is trained on histories produced by its own rollout rather than ground-truth video contexts. This reduces exposure bias, but the historical key-value cache is still used by f"
+    },
+    {
+      "source": "self-gradient-forcing-native-long-video-extrapolation",
+      "target": "self-gradient-forcing-native-long-video-extrapolation-evaluation",
+      "relation": "evaluates_on",
+      "confidence": 0.72,
+      "source_ids": [
+        "emergentmind-2607-20368-self-gradient-forcing-native-long-video-extrapolation-2026"
+      ],
+      "evidence": "Recent autoregressive video diffusion methods are increasingly built upon Self Forcing, where the student is trained on histories produced by its own rollout rather than ground-truth video contexts. This reduces exposure bias, but the historical key-value cache is still used by f"
+    },
+    {
+      "source": "self-gradient-forcing-native-long-video-extrapolation",
+      "target": "the-self-gradient-forcing-native-long",
+      "relation": "belongs_to_region",
+      "confidence": 0.78,
+      "source_ids": [
+        "emergentmind-2607-20368-self-gradient-forcing-native-long-video-extrapolation-2026"
+      ],
+      "evidence": "Routed into The Self Gradient Forcing Native under perception-world-models from source title and abstract."
+    },
+    {
+      "source": "paper-2607-22534",
+      "target": "sm4rt-learning-structured-motion-geometry-for-4d",
+      "relation": "paper_introduces",
+      "confidence": 0.82,
+      "source_ids": [
+        "emergentmind-2607-22534-sm4rt-learning-structured-motion-geometry-for-4d-reconstruction-2026"
+      ],
+      "evidence": "EmergentMind homepage/page metadata identify arXiv 2607.22534, 'SM4RT: Learning Structured Motion Geometry for 4D Reconstruction', and summarize the method/problem."
+    },
+    {
+      "source": "sm4rt-learning-structured-motion-geometry-for-4d",
+      "target": "sm4rt-learning-structured-motion-geometry-for-4d-reconstruction",
+      "relation": "implements",
+      "confidence": 0.76,
+      "source_ids": [
+        "emergentmind-2607-22534-sm4rt-learning-structured-motion-geometry-for-4d-reconstruction-2026"
+      ],
+      "evidence": "Geometry Foundation Models (GFMs) have substantially advanced monocular 3D reconstruction, yet extending this capability to 4D dynamic understanding remains a fundamental challenge. Most existing motion perception methods (e.g., sparse tracking, dense point-wise flow) treat motio"
+    },
+    {
+      "source": "sm4rt-learning-structured-motion-geometry-for-4d",
+      "target": "sm4rt-learning-structured-motion-geometry-for-4d-reconstruction",
+      "relation": "evaluates_on",
+      "confidence": 0.72,
+      "source_ids": [
+        "emergentmind-2607-22534-sm4rt-learning-structured-motion-geometry-for-4d-reconstruction-2026"
+      ],
+      "evidence": "Geometry Foundation Models (GFMs) have substantially advanced monocular 3D reconstruction, yet extending this capability to 4D dynamic understanding remains a fundamental challenge. Most existing motion perception methods (e.g., sparse tracking, dense point-wise flow) treat motio"
+    },
+    {
+      "source": "sm4rt-learning-structured-motion-geometry-for-4d",
+      "target": "the-sm4rt-learning-structured-motion-geometry",
+      "relation": "belongs_to_region",
+      "confidence": 0.78,
+      "source_ids": [
+        "emergentmind-2607-22534-sm4rt-learning-structured-motion-geometry-for-4d-reconstruction-2026"
+      ],
+      "evidence": "Routed into The Sm4rt Learning Structured Motion under perception-world-models from source title and abstract."
+    },
+    {
+      "source": "paper-2607-21653",
+      "target": "molt-a-scalable-pytorch-native-training-framework",
+      "relation": "paper_introduces",
+      "confidence": 0.82,
+      "source_ids": [
+        "emergentmind-2607-21653-molt-a-scalable-pytorch-native-training-framework-for-2026"
+      ],
+      "evidence": "EmergentMind homepage/page metadata identify arXiv 2607.21653, 'Molt: A Scalable PyTorch-Native Training Framework for Agentic Reinforcement Learning', and summarize the method/problem."
+    },
+    {
+      "source": "molt-a-scalable-pytorch-native-training-framework",
+      "target": "molt-a-scalable-pytorch-native-training-framework-for",
+      "relation": "implements",
+      "confidence": 0.76,
+      "source_ids": [
+        "emergentmind-2607-21653-molt-a-scalable-pytorch-native-training-framework-for-2026"
+      ],
+      "evidence": "Agentic reinforcement learning research is constant algorithm modification, new estimators, new pipeline stages, new rollout schemes, and in mainstream frameworks each change threads through layers of trainer, distributed backend, and rollout glue: the cost lands on the researche"
+    },
+    {
+      "source": "molt-a-scalable-pytorch-native-training-framework",
+      "target": "molt-a-scalable-pytorch-native-training-framework-for",
+      "relation": "evaluates_on",
+      "confidence": 0.72,
+      "source_ids": [
+        "emergentmind-2607-21653-molt-a-scalable-pytorch-native-training-framework-for-2026"
+      ],
+      "evidence": "Agentic reinforcement learning research is constant algorithm modification, new estimators, new pipeline stages, new rollout schemes, and in mainstream frameworks each change threads through layers of trainer, distributed backend, and rollout glue: the cost lands on the researche"
+    },
+    {
+      "source": "molt-a-scalable-pytorch-native-training-framework",
+      "target": "the-molt-a-scalable-pytorch-native",
+      "relation": "belongs_to_region",
+      "confidence": 0.78,
+      "source_ids": [
+        "emergentmind-2607-21653-molt-a-scalable-pytorch-native-training-framework-for-2026"
+      ],
+      "evidence": "Routed into The Molt A Scalable Pytorch under generative-models from source title and abstract."
     }
   ],
   "open_questions": [
@@ -19880,6 +20804,59 @@
       "edges_added": 0,
       "regions_added": 0,
       "quality_findings": [],
+      "verification": {
+        "json_parse": "passed",
+        "dkg_test": "passed",
+        "build": "passed",
+        "supabase_sync": "passed",
+        "roundtrip": "passed"
+      }
+    },
+    {
+      "run_id": "daily-emergentmind-all-topics-20260728T145043Z",
+      "completed_at": "2026-07-28T14:50:43Z",
+      "type": "daily-emergentmind-all-topics",
+      "homepage_url": "https://www.emergentmind.com/",
+      "homepage_status": 200,
+      "homepage_papers": 45,
+      "source_ids": [
+        "emergentmind-2607-20734-llms-get-lost-in-evolving-user-intent-2026",
+        "emergentmind-2607-19479-modpack-an-extensible-teleoperation-interface-for-bimanual-mobile-2026",
+        "emergentmind-2607-22147-visual-relocalization-from-sparse-views-in-aliased-and-2026",
+        "emergentmind-2607-22446-deformable-triangle-splatting-flexible-primitives-for-real-time-2026",
+        "emergentmind-2607-22530-vitacworld-scaling-visuo-tactile-world-models-for-contact-2026",
+        "emergentmind-2607-23402-characterizing-warp-divergence-from-pascal-to-blackwell-2026",
+        "emergentmind-2607-20368-self-gradient-forcing-native-long-video-extrapolation-2026",
+        "emergentmind-2607-22534-sm4rt-learning-structured-motion-geometry-for-4d-reconstruction-2026",
+        "emergentmind-2607-21653-molt-a-scalable-pytorch-native-training-framework-for-2026"
+      ],
+      "page_status": {
+        "2607.20734": 200,
+        "2607.19479": 200,
+        "2607.22147": 200,
+        "2607.22446": 200,
+        "2607.22530": 200,
+        "2607.23402": 200,
+        "2607.20368": 200,
+        "2607.22534": 200,
+        "2607.21653": 200
+      },
+      "sources_added": 9,
+      "sources_updated": 0,
+      "nodes_added": 30,
+      "nodes_updated": 0,
+      "edges_added": 36,
+      "worlds_touched": [
+        "llm-systems-serving",
+        "retrieval-augmented-generation",
+        "perception-world-models",
+        "generative-models"
+      ],
+      "regions_added": 9,
+      "manual_review": [
+        "Skipped pure-math, astronomy/cosmology, and clinical/medical surfaced items in this bounded pass; clinical claims need deeper safety review before routing.",
+        "New visual-SLAM/event-camera/egocentric-video items are routed under Perception & World Models; DeepSearch is routed under Retrieval-Augmented Generation; beyond-human intelligence evaluation is routed under Agents."
+      ],
       "verification": {
         "json_parse": "passed",
         "dkg_test": "passed",
