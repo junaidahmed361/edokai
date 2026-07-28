@@ -9571,6 +9571,25 @@
         "supabase_sync": "passed",
         "roundtrip": "passed"
       }
+    },
+    {
+      "run_id": "daily-concept-world-builder-20260728T145057Z",
+      "completed_at": "2026-07-28T14:50:57Z",
+      "event": "daily concept-world builder pass",
+      "upstream_run_id": "daily-emergentmind-all-topics-20260728T145043Z",
+      "sources_added": 0,
+      "nodes_added": 0,
+      "edges_added": 0,
+      "regions_added": 0,
+      "new_worlds_created": [],
+      "quality_findings": [],
+      "verification": {
+        "json_parse": "passed",
+        "dkg_test": "passed",
+        "build": "passed",
+        "supabase_sync": "passed",
+        "roundtrip": "passed"
+      }
     }
   ]
 }
