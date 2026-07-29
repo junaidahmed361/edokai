@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "updated_at": "2026-07-28T14:50:43Z",
+  "updated_at": "2026-07-29T14:02:44Z",
   "sources": {
     "hf-space-trl-distillation-trainer-2026": {
       "id": "hf-space-trl-distillation-trainer-2026",
@@ -3052,6 +3052,134 @@
       "provenance": [
         "Discovered from https://www.emergentmind.com/ bootstrapped trending papers on 2026-07-28.",
         "EmergentMind homepage abstract metadata: Agentic reinforcement learning research is constant algorithm modification, new estimators, new pipeline stages, new rollout schemes, and in mainstream frameworks each change threads through layers of trainer, distributed backend, and rollout glue: the cost lands on the researcher at every iteration. Molt is a PyTorch-native training framework built to keep that cost small: a codebase compact and clean enough for a researcher to hold in their head, and for an AI coding assistant to read and reason about in its entirety, so the algorithm flow can be traced and changed end to end. The agent is an ordinary program, and one asynchronous"
+      ],
+      "confidence": 0.86
+    },
+    "emergentmind-2607-24280-from-proprietary-to-open-source-bridging-the-distribution-2026": {
+      "id": "emergentmind-2607-24280-from-proprietary-to-open-source-bridging-the-distribution-2026",
+      "url": "https://www.emergentmind.com/papers/2607.24280",
+      "arxiv_url": "https://arxiv.org/abs/2607.24280",
+      "title": "From Proprietary to Open-Source: Bridging the Distribution Gap via Multi-Agent Protocol Distillation in Agentic Search",
+      "source_type": "emergentmind-trending-paper",
+      "authors": [],
+      "published": "2026-07-27",
+      "discovered_at": "2026-07-29T14:02:44Z",
+      "last_read_at": "2026-07-29T14:02:44Z",
+      "provenance": [
+        "Discovered from https://www.emergentmind.com/ bootstrapped trending papers on 2026-07-29.",
+        "EmergentMind homepage abstract metadata: Agentic search enables large language models to solve knowledge-intensive tasks by interleaving multi-step reasoning with retrieval, yet optimizing this with outcome-based reinforcement learning (RL) provides only sparse supervision. Knowledge distillation can supply denser guidance, and advanced proprietary models with their strong reasoning capabilities are promising teachers. While distilling from proprietary models can densify this supervisory signal, conventional logit-matching is precluded by hidden logits and mismatched tokenizers, whereas raw natural language trajectory imitation transfers superficial stylistic artifacts rat"
+      ],
+      "confidence": 0.86
+    },
+    "emergentmind-2607-25886-rsibench-data-benchmarking-data-centric-research-for-recursive-2026": {
+      "id": "emergentmind-2607-25886-rsibench-data-benchmarking-data-centric-research-for-recursive-2026",
+      "url": "https://www.emergentmind.com/papers/2607.25886",
+      "arxiv_url": "https://arxiv.org/abs/2607.25886",
+      "title": "RSIBench-Data: Benchmarking Data-Centric Research for Recursive Self-Improvement",
+      "source_type": "emergentmind-trending-paper",
+      "authors": [],
+      "published": "2026-07-28",
+      "discovered_at": "2026-07-29T14:02:44Z",
+      "last_read_at": "2026-07-29T14:02:44Z",
+      "provenance": [
+        "Discovered from https://www.emergentmind.com/ bootstrapped trending papers on 2026-07-29.",
+        "EmergentMind homepage abstract metadata: Recursive self-improvement requires turning evidence of model failures into better models. Data-centric post-training research entails diagnosing capability gaps, designing and validating training-data strategies, and learning from checkpoint feedback. Can LLM agents automate this loop? Existing benchmarks entangle research decisions with optimization, serving, evaluation, and systems implementation, obscuring agents' research capability. We introduce RSIBench-Data, a controlled benchmark of LLM agents as data-centric researchers with a fixed post-training stack. Agents iteratively revise training-data strategies for a fixed target "
+      ],
+      "confidence": 0.86
+    },
+    "emergentmind-2607-24653-kimi-k3-open-frontier-intelligence-2026": {
+      "id": "emergentmind-2607-24653-kimi-k3-open-frontier-intelligence-2026",
+      "url": "https://www.emergentmind.com/papers/2607.24653",
+      "arxiv_url": "https://arxiv.org/abs/2607.24653",
+      "title": "Kimi K3: Open Frontier Intelligence",
+      "source_type": "emergentmind-trending-paper",
+      "authors": [],
+      "published": "2026-07-27",
+      "discovered_at": "2026-07-29T14:02:44Z",
+      "last_read_at": "2026-07-29T14:02:44Z",
+      "provenance": [
+        "Discovered from https://www.emergentmind.com/ bootstrapped trending papers on 2026-07-29.",
+        "EmergentMind homepage abstract metadata: We introduce Kimi K3, a 2.8T parameter Mixture-of-Experts model with 104 billion activated parameters, native vision capabilities, and a 1-million-token context window. Kimi K3 is built on Kimi Delta Attention and Attention Residuals, which improve information flow across sequence length and model depth. Together with Stable LatentMoE, which effectively activates 16 of 896 routed experts per token, and refined training and data recipes, these advances yield an approximately 2.5x improvement in overall scaling efficiency over Kimi K2. Post-training highlights reinforcement learning across general, agentic, and coding domains and mult"
+      ],
+      "confidence": 0.86
+    },
+    "emergentmind-2607-22529-skill-self-play-pushing-the-frontier-of-llm-2026": {
+      "id": "emergentmind-2607-22529-skill-self-play-pushing-the-frontier-of-llm-2026",
+      "url": "https://www.emergentmind.com/papers/2607.22529",
+      "arxiv_url": "https://arxiv.org/abs/2607.22529",
+      "title": "Skill Self-Play: Pushing the Frontier of LLM Capability with Co-Evolving Skills",
+      "source_type": "emergentmind-trending-paper",
+      "authors": [],
+      "published": "2026-07-24",
+      "discovered_at": "2026-07-29T14:02:44Z",
+      "last_read_at": "2026-07-29T14:02:44Z",
+      "provenance": [
+        "Discovered from https://www.emergentmind.com/ bootstrapped trending papers on 2026-07-29.",
+        "EmergentMind homepage abstract metadata: LLM training is shifting from manual design and annotation to interaction-driven self-evolution. However, existing self-evolutionary methods face a fundamental dilemma between task diversity and verification reliability: environment-bound methods obtain precise feedback but confine learning to narrow domains, while open-ended self-generation broadens the task space but lacks reliable verification, allowing misleading rewards to pollute the training loop. We identify agent skills as a powerful middle ground to reconcile this tension: each skill ensures deep, verifiable execution in a specific scenario, while dynamic routing across sk"
+      ],
+      "confidence": 0.86
+    },
+    "emergentmind-2607-23037-speech-signals-complement-llms-for-predicting-interpersonal-attraction-2026": {
+      "id": "emergentmind-2607-23037-speech-signals-complement-llms-for-predicting-interpersonal-attraction-2026",
+      "url": "https://www.emergentmind.com/papers/2607.23037",
+      "arxiv_url": "https://arxiv.org/abs/2607.23037",
+      "title": "Speech Signals Complement LLMs for Predicting Interpersonal Attraction in Speed Dating",
+      "source_type": "emergentmind-trending-paper",
+      "authors": [],
+      "published": "2026-07-25",
+      "discovered_at": "2026-07-29T14:02:44Z",
+      "last_read_at": "2026-07-29T14:02:44Z",
+      "provenance": [
+        "Discovered from https://www.emergentmind.com/ bootstrapped trending papers on 2026-07-29.",
+        "EmergentMind homepage abstract metadata: Large language models (LLMs) can predict interpersonal attraction from conversation transcripts, but it remains unclear what a speech predictor can add beyond transcript-only LLM prediction. Using Japanese speed-dating conversations, we combine predictions from a transcript-only LLM and a supervised speech predictor to estimate participants' reported liking of their partners. We show that speech can complement transcript-only LLM prediction, but that this complementarity is conditional rather than universal. Combining the two predictions significantly improves pairwise ranking accuracy over the transcript-only LLM alone in all evalu"
+      ],
+      "confidence": 0.86
+    },
+    "emergentmind-2607-22798-stateact-program-state-before-pixels-for-long-horizon-2026": {
+      "id": "emergentmind-2607-22798-stateact-program-state-before-pixels-for-long-horizon-2026",
+      "url": "https://www.emergentmind.com/papers/2607.22798",
+      "arxiv_url": "https://arxiv.org/abs/2607.22798",
+      "title": "StateAct: Program State, before Pixels, for Long-Horizon Computer-Use Agents",
+      "source_type": "emergentmind-trending-paper",
+      "authors": [],
+      "published": "2026-07-24",
+      "discovered_at": "2026-07-29T14:02:44Z",
+      "last_read_at": "2026-07-29T14:02:44Z",
+      "provenance": [
+        "Discovered from https://www.emergentmind.com/ bootstrapped trending papers on 2026-07-29.",
+        "EmergentMind homepage abstract metadata: Computer-use agents are usually improved by strengthening perception: better models for reading a screenshot and choosing where to click. Yet a screenshot is only a lossy rendering of the underlying program state, e.g., the files, application backends, and DOM that hold the task data. Different states can produce the same pixels, while code can inspect and modify that state directly. StateAct is a code-first, multi-agent harness built around this distinction. Its main agent works directly with program state by using code, while a dedicated GUI subagent handles screenshot-and-click interaction on the few subgoals that need it, just 2"
+      ],
+      "confidence": 0.86
+    },
+    "emergentmind-2607-22157-learning-on-the-job-continual-learning-from-deployment-2026": {
+      "id": "emergentmind-2607-22157-learning-on-the-job-continual-learning-from-deployment-2026",
+      "url": "https://www.emergentmind.com/papers/2607.22157",
+      "arxiv_url": "https://arxiv.org/abs/2607.22157",
+      "title": "Learning on the Job: Continual Learning from Deployment Feedback for Frozen-Weights Agents",
+      "source_type": "emergentmind-trending-paper",
+      "authors": [],
+      "published": "2026-07-24",
+      "discovered_at": "2026-07-29T14:02:44Z",
+      "last_read_at": "2026-07-29T14:02:44Z",
+      "provenance": [
+        "Discovered from https://www.emergentmind.com/ bootstrapped trending papers on 2026-07-29.",
+        "EmergentMind homepage abstract metadata: AI agents encounter learning opportunities in every episode they run, and discard nearly all of them: the underlying models are frozen at deployment, so an agent that resolves a difficult request today starts from zero when it recurs tomorrow. Yet ordinary operation already produces feedback, in the form of outcome verdicts and after-the-fact corrections. We show that this feedback is a sufficient signal for continual learning when the frozen model is paired with an external memory that distils each episode into retrievable natural-language rules. On the banking domain of $τ$-bench, against a static-RAG control retrieving over the c"
+      ],
+      "confidence": 0.86
+    },
+    "emergentmind-2607-23787-bitcoin-mempool-linearization-2026": {
+      "id": "emergentmind-2607-23787-bitcoin-mempool-linearization-2026",
+      "url": "https://www.emergentmind.com/papers/2607.23787",
+      "arxiv_url": "https://arxiv.org/abs/2607.23787",
+      "title": "Bitcoin Mempool Linearization",
+      "source_type": "emergentmind-trending-paper",
+      "authors": [],
+      "published": "2026-07-26",
+      "discovered_at": "2026-07-29T14:02:44Z",
+      "last_read_at": "2026-07-29T14:02:44Z",
+      "provenance": [
+        "Discovered from https://www.emergentmind.com/ bootstrapped trending papers on 2026-07-29.",
+        "EmergentMind homepage abstract metadata: In the Bitcoin system, transactions arrive continuously at miners' mempools and await inclusion in future blocks. Every non-coinbase transaction must spend one or more unspent outputs created by previous transactions, inducing dependency constraints among transactions in the mempool. At the same time, miners are economically incentivized to prioritize transactions with higher fee rates, measured as transaction fee per unit size. This paper formulates the mempool linearization problem: given a set of transactions with associated fees, sizes, and dependency relationships, compute a dependency-respecting transaction ordering that maxim"
       ],
       "confidence": 0.86
     }
@@ -11838,6 +11966,370 @@
       "first_seen": "2026-07-28T14:50:43Z",
       "last_seen": "2026-07-28T14:50:43Z",
       "world_hint": "generative-models"
+    },
+    "from-proprietary-to-open-source-bridging-the": {
+      "id": "from-proprietary-to-open-source-bridging-the",
+      "label": "From Proprietary to Open-Source",
+      "type": "method",
+      "summary": "Source-grounded method/approach from 'From Proprietary to Open-Source: Bridging the Distribution Gap via Multi-Agent Protocol Distillation in Agentic Search': Agentic search enables large language models to solve knowledge-intensive tasks by interleaving multi-step reasoning with retrieval, yet optimizing this with outcome-based reinforcement learning (RL) provides only sparse supervision. Knowledge distillation can supply denser guidance, and advanced proprietary models with their strong reasoning capabilities ar...",
+      "aliases": [],
+      "source_ids": [
+        "emergentmind-2607-24280-from-proprietary-to-open-source-bridging-the-distribution-2026"
+      ],
+      "confidence": 0.78,
+      "first_seen": "2026-07-29T14:02:44Z",
+      "last_seen": "2026-07-29T14:02:44Z",
+      "world_hint": "retrieval-augmented-generation"
+    },
+    "from-proprietary-to-open-source-bridging-the-distribution": {
+      "id": "from-proprietary-to-open-source-bridging-the-distribution",
+      "label": "From Proprietary to Open-Source problem setting",
+      "type": "concept",
+      "summary": "The learning or systems problem described by the source: Agentic search enables large language models to solve knowledge-intensive tasks by interleaving multi-step reasoning with retrieval, yet optimizing this with outcome-based reinforcement learning (RL) provides only sparse supervision. Knowledge distillation can supply denser guidance, and advanced proprietary models with their strong reasoning capabilities ar...",
+      "aliases": [],
+      "source_ids": [
+        "emergentmind-2607-24280-from-proprietary-to-open-source-bridging-the-distribution-2026"
+      ],
+      "confidence": 0.78,
+      "first_seen": "2026-07-29T14:02:44Z",
+      "last_seen": "2026-07-29T14:02:44Z",
+      "world_hint": "retrieval-augmented-generation"
+    },
+    "paper-2607-24280": {
+      "id": "paper-2607-24280",
+      "label": "From Proprietary to Open-Source: Bridging the Distribution Gap via Multi-Agent Protocol Distillation in Agentic Search",
+      "type": "paper",
+      "summary": "EmergentMind surfaced arXiv paper 2607.24280: Agentic search enables large language models to solve knowledge-intensive tasks by interleaving multi-step reasoning with retrieval, yet optimizing this with outcome-based reinforcement learning (RL) provides only sparse supervision. Knowledge distillation can supply denser guidance, and advanced proprietary models with their strong reasoning capabilities ar...",
+      "aliases": [],
+      "source_ids": [
+        "emergentmind-2607-24280-from-proprietary-to-open-source-bridging-the-distribution-2026"
+      ],
+      "confidence": 0.78,
+      "first_seen": "2026-07-29T14:02:44Z",
+      "last_seen": "2026-07-29T14:02:44Z",
+      "world_hint": "retrieval-augmented-generation"
+    },
+    "rsibench-data-benchmarking-data-centric-research-for": {
+      "id": "rsibench-data-benchmarking-data-centric-research-for",
+      "label": "RSIBench-Data",
+      "type": "method",
+      "summary": "Source-grounded method/approach from 'RSIBench-Data: Benchmarking Data-Centric Research for Recursive Self-Improvement': Recursive self-improvement requires turning evidence of model failures into better models. Data-centric post-training research entails diagnosing capability gaps, designing and validating training-data strategies, and learning from checkpoint feedback. Can LLM agents automate this loop? Existing benchmarks entangle research decisions with optimization, servi...",
+      "aliases": [],
+      "source_ids": [
+        "emergentmind-2607-25886-rsibench-data-benchmarking-data-centric-research-for-recursive-2026"
+      ],
+      "confidence": 0.78,
+      "first_seen": "2026-07-29T14:02:44Z",
+      "last_seen": "2026-07-29T14:02:44Z",
+      "world_hint": "perception-world-models"
+    },
+    "rsibench-data-benchmarking-data-centric-research-for-recursive": {
+      "id": "rsibench-data-benchmarking-data-centric-research-for-recursive",
+      "label": "RSIBench-Data problem setting",
+      "type": "concept",
+      "summary": "The learning or systems problem described by the source: Recursive self-improvement requires turning evidence of model failures into better models. Data-centric post-training research entails diagnosing capability gaps, designing and validating training-data strategies, and learning from checkpoint feedback. Can LLM agents automate this loop? Existing benchmarks entangle research decisions with optimization, servi...",
+      "aliases": [],
+      "source_ids": [
+        "emergentmind-2607-25886-rsibench-data-benchmarking-data-centric-research-for-recursive-2026"
+      ],
+      "confidence": 0.78,
+      "first_seen": "2026-07-29T14:02:44Z",
+      "last_seen": "2026-07-29T14:02:44Z",
+      "world_hint": "perception-world-models"
+    },
+    "paper-2607-25886": {
+      "id": "paper-2607-25886",
+      "label": "RSIBench-Data: Benchmarking Data-Centric Research for Recursive Self-Improvement",
+      "type": "paper",
+      "summary": "EmergentMind surfaced arXiv paper 2607.25886: Recursive self-improvement requires turning evidence of model failures into better models. Data-centric post-training research entails diagnosing capability gaps, designing and validating training-data strategies, and learning from checkpoint feedback. Can LLM agents automate this loop? Existing benchmarks entangle research decisions with optimization, servi...",
+      "aliases": [],
+      "source_ids": [
+        "emergentmind-2607-25886-rsibench-data-benchmarking-data-centric-research-for-recursive-2026"
+      ],
+      "confidence": 0.78,
+      "first_seen": "2026-07-29T14:02:44Z",
+      "last_seen": "2026-07-29T14:02:44Z",
+      "world_hint": "perception-world-models"
+    },
+    "kimi-k3-open-frontier-intelligence": {
+      "id": "kimi-k3-open-frontier-intelligence",
+      "label": "Kimi K3",
+      "type": "method",
+      "summary": "Source-grounded method/approach from 'Kimi K3: Open Frontier Intelligence': We introduce Kimi K3, a 2.8T parameter Mixture-of-Experts model with 104 billion activated parameters, native vision capabilities, and a 1-million-token context window. Kimi K3 is built on Kimi Delta Attention and Attention Residuals, which improve information flow across sequence length and model depth. Together with Stable LatentMoE, which effectively acti...",
+      "aliases": [],
+      "source_ids": [
+        "emergentmind-2607-24653-kimi-k3-open-frontier-intelligence-2026"
+      ],
+      "confidence": 0.78,
+      "first_seen": "2026-07-29T14:02:44Z",
+      "last_seen": "2026-07-29T14:02:44Z",
+      "world_hint": "perception-world-models"
+    },
+    "kimi-k3-open-frontier-intelligence-learning-problem": {
+      "id": "kimi-k3-open-frontier-intelligence-learning-problem",
+      "label": "Kimi K3 problem setting",
+      "type": "concept",
+      "summary": "The learning or systems problem described by the source: We introduce Kimi K3, a 2.8T parameter Mixture-of-Experts model with 104 billion activated parameters, native vision capabilities, and a 1-million-token context window. Kimi K3 is built on Kimi Delta Attention and Attention Residuals, which improve information flow across sequence length and model depth. Together with Stable LatentMoE, which effectively acti...",
+      "aliases": [],
+      "source_ids": [
+        "emergentmind-2607-24653-kimi-k3-open-frontier-intelligence-2026"
+      ],
+      "confidence": 0.78,
+      "first_seen": "2026-07-29T14:02:44Z",
+      "last_seen": "2026-07-29T14:02:44Z",
+      "world_hint": "perception-world-models"
+    },
+    "kimi-k3-open-frontier-intelligence-evaluation-signal": {
+      "id": "kimi-k3-open-frontier-intelligence-evaluation-signal",
+      "label": "Kimi K3 evaluation signal",
+      "type": "concept",
+      "summary": "The source's evaluation/benchmark signal for judging the method; Edokai keeps this claim source-qualified.",
+      "aliases": [],
+      "source_ids": [
+        "emergentmind-2607-24653-kimi-k3-open-frontier-intelligence-2026"
+      ],
+      "confidence": 0.78,
+      "first_seen": "2026-07-29T14:02:44Z",
+      "last_seen": "2026-07-29T14:02:44Z",
+      "world_hint": "perception-world-models"
+    },
+    "paper-2607-24653": {
+      "id": "paper-2607-24653",
+      "label": "Kimi K3: Open Frontier Intelligence",
+      "type": "paper",
+      "summary": "EmergentMind surfaced arXiv paper 2607.24653: We introduce Kimi K3, a 2.8T parameter Mixture-of-Experts model with 104 billion activated parameters, native vision capabilities, and a 1-million-token context window. Kimi K3 is built on Kimi Delta Attention and Attention Residuals, which improve information flow across sequence length and model depth. Together with Stable LatentMoE, which effectively acti...",
+      "aliases": [],
+      "source_ids": [
+        "emergentmind-2607-24653-kimi-k3-open-frontier-intelligence-2026"
+      ],
+      "confidence": 0.78,
+      "first_seen": "2026-07-29T14:02:44Z",
+      "last_seen": "2026-07-29T14:02:44Z",
+      "world_hint": "perception-world-models"
+    },
+    "skill-self-play-pushing-the-frontier-of": {
+      "id": "skill-self-play-pushing-the-frontier-of",
+      "label": "Skill Self-Play",
+      "type": "method",
+      "summary": "Source-grounded method/approach from 'Skill Self-Play: Pushing the Frontier of LLM Capability with Co-Evolving Skills': LLM training is shifting from manual design and annotation to interaction-driven self-evolution. However, existing self-evolutionary methods face a fundamental dilemma between task diversity and verification reliability: environment-bound methods obtain precise feedback but confine learning to narrow domains, while open-ended self-generation broadens the tas...",
+      "aliases": [],
+      "source_ids": [
+        "emergentmind-2607-22529-skill-self-play-pushing-the-frontier-of-llm-2026"
+      ],
+      "confidence": 0.78,
+      "first_seen": "2026-07-29T14:02:44Z",
+      "last_seen": "2026-07-29T14:02:44Z",
+      "world_hint": "retrieval-augmented-generation"
+    },
+    "skill-self-play-pushing-the-frontier-of-llm": {
+      "id": "skill-self-play-pushing-the-frontier-of-llm",
+      "label": "Skill Self-Play problem setting",
+      "type": "concept",
+      "summary": "The learning or systems problem described by the source: LLM training is shifting from manual design and annotation to interaction-driven self-evolution. However, existing self-evolutionary methods face a fundamental dilemma between task diversity and verification reliability: environment-bound methods obtain precise feedback but confine learning to narrow domains, while open-ended self-generation broadens the tas...",
+      "aliases": [],
+      "source_ids": [
+        "emergentmind-2607-22529-skill-self-play-pushing-the-frontier-of-llm-2026"
+      ],
+      "confidence": 0.78,
+      "first_seen": "2026-07-29T14:02:44Z",
+      "last_seen": "2026-07-29T14:02:44Z",
+      "world_hint": "retrieval-augmented-generation"
+    },
+    "paper-2607-22529": {
+      "id": "paper-2607-22529",
+      "label": "Skill Self-Play: Pushing the Frontier of LLM Capability with Co-Evolving Skills",
+      "type": "paper",
+      "summary": "EmergentMind surfaced arXiv paper 2607.22529: LLM training is shifting from manual design and annotation to interaction-driven self-evolution. However, existing self-evolutionary methods face a fundamental dilemma between task diversity and verification reliability: environment-bound methods obtain precise feedback but confine learning to narrow domains, while open-ended self-generation broadens the tas...",
+      "aliases": [],
+      "source_ids": [
+        "emergentmind-2607-22529-skill-self-play-pushing-the-frontier-of-llm-2026"
+      ],
+      "confidence": 0.78,
+      "first_seen": "2026-07-29T14:02:44Z",
+      "last_seen": "2026-07-29T14:02:44Z",
+      "world_hint": "retrieval-augmented-generation"
+    },
+    "speech-signals-complement-llms-for-predicting-interpersonal": {
+      "id": "speech-signals-complement-llms-for-predicting-interpersonal",
+      "label": "Speech Signals Complement LLMs for Predicting Interpersonal Attraction in Speed Dating",
+      "type": "method",
+      "summary": "Source-grounded method/approach from 'Speech Signals Complement LLMs for Predicting Interpersonal Attraction in Speed Dating': Large language models (LLMs) can predict interpersonal attraction from conversation transcripts, but it remains unclear what a speech predictor can add beyond transcript-only LLM prediction. Using Japanese speed-dating conversations, we combine predictions from a transcript-only LLM and a supervised speech predictor to estimate participants' reported liking...",
+      "aliases": [],
+      "source_ids": [
+        "emergentmind-2607-23037-speech-signals-complement-llms-for-predicting-interpersonal-attraction-2026"
+      ],
+      "confidence": 0.78,
+      "first_seen": "2026-07-29T14:02:44Z",
+      "last_seen": "2026-07-29T14:02:44Z",
+      "world_hint": "agents"
+    },
+    "speech-signals-complement-llms-for-predicting-interpersonal-attraction": {
+      "id": "speech-signals-complement-llms-for-predicting-interpersonal-attraction",
+      "label": "Speech Signals Complement LLMs for Predicting Interpersonal Attraction in Speed Dating problem setting",
+      "type": "concept",
+      "summary": "The learning or systems problem described by the source: Large language models (LLMs) can predict interpersonal attraction from conversation transcripts, but it remains unclear what a speech predictor can add beyond transcript-only LLM prediction. Using Japanese speed-dating conversations, we combine predictions from a transcript-only LLM and a supervised speech predictor to estimate participants' reported liking...",
+      "aliases": [],
+      "source_ids": [
+        "emergentmind-2607-23037-speech-signals-complement-llms-for-predicting-interpersonal-attraction-2026"
+      ],
+      "confidence": 0.78,
+      "first_seen": "2026-07-29T14:02:44Z",
+      "last_seen": "2026-07-29T14:02:44Z",
+      "world_hint": "agents"
+    },
+    "paper-2607-23037": {
+      "id": "paper-2607-23037",
+      "label": "Speech Signals Complement LLMs for Predicting Interpersonal Attraction in Speed Dating",
+      "type": "paper",
+      "summary": "EmergentMind surfaced arXiv paper 2607.23037: Large language models (LLMs) can predict interpersonal attraction from conversation transcripts, but it remains unclear what a speech predictor can add beyond transcript-only LLM prediction. Using Japanese speed-dating conversations, we combine predictions from a transcript-only LLM and a supervised speech predictor to estimate participants' reported liking...",
+      "aliases": [],
+      "source_ids": [
+        "emergentmind-2607-23037-speech-signals-complement-llms-for-predicting-interpersonal-attraction-2026"
+      ],
+      "confidence": 0.78,
+      "first_seen": "2026-07-29T14:02:44Z",
+      "last_seen": "2026-07-29T14:02:44Z",
+      "world_hint": "agents"
+    },
+    "stateact-program-state-before-pixels-for-long": {
+      "id": "stateact-program-state-before-pixels-for-long",
+      "label": "StateAct",
+      "type": "method",
+      "summary": "Source-grounded method/approach from 'StateAct: Program State, before Pixels, for Long-Horizon Computer-Use Agents': Computer-use agents are usually improved by strengthening perception: better models for reading a screenshot and choosing where to click. Yet a screenshot is only a lossy rendering of the underlying program state, e.g., the files, application backends, and DOM that hold the task data. Different states can produce the same pixels, while code can inspect and m...",
+      "aliases": [],
+      "source_ids": [
+        "emergentmind-2607-22798-stateact-program-state-before-pixels-for-long-horizon-2026"
+      ],
+      "confidence": 0.78,
+      "first_seen": "2026-07-29T14:02:44Z",
+      "last_seen": "2026-07-29T14:02:44Z",
+      "world_hint": "llm-systems-serving"
+    },
+    "stateact-program-state-before-pixels-for-long-horizon": {
+      "id": "stateact-program-state-before-pixels-for-long-horizon",
+      "label": "StateAct problem setting",
+      "type": "concept",
+      "summary": "The learning or systems problem described by the source: Computer-use agents are usually improved by strengthening perception: better models for reading a screenshot and choosing where to click. Yet a screenshot is only a lossy rendering of the underlying program state, e.g., the files, application backends, and DOM that hold the task data. Different states can produce the same pixels, while code can inspect and m...",
+      "aliases": [],
+      "source_ids": [
+        "emergentmind-2607-22798-stateact-program-state-before-pixels-for-long-horizon-2026"
+      ],
+      "confidence": 0.78,
+      "first_seen": "2026-07-29T14:02:44Z",
+      "last_seen": "2026-07-29T14:02:44Z",
+      "world_hint": "llm-systems-serving"
+    },
+    "paper-2607-22798": {
+      "id": "paper-2607-22798",
+      "label": "StateAct: Program State, before Pixels, for Long-Horizon Computer-Use Agents",
+      "type": "paper",
+      "summary": "EmergentMind surfaced arXiv paper 2607.22798: Computer-use agents are usually improved by strengthening perception: better models for reading a screenshot and choosing where to click. Yet a screenshot is only a lossy rendering of the underlying program state, e.g., the files, application backends, and DOM that hold the task data. Different states can produce the same pixels, while code can inspect and m...",
+      "aliases": [],
+      "source_ids": [
+        "emergentmind-2607-22798-stateact-program-state-before-pixels-for-long-horizon-2026"
+      ],
+      "confidence": 0.78,
+      "first_seen": "2026-07-29T14:02:44Z",
+      "last_seen": "2026-07-29T14:02:44Z",
+      "world_hint": "llm-systems-serving"
+    },
+    "learning-on-the-job-continual-learning-from": {
+      "id": "learning-on-the-job-continual-learning-from",
+      "label": "Learning on the Job",
+      "type": "method",
+      "summary": "Source-grounded method/approach from 'Learning on the Job: Continual Learning from Deployment Feedback for Frozen-Weights Agents': AI agents encounter learning opportunities in every episode they run, and discard nearly all of them: the underlying models are frozen at deployment, so an agent that resolves a difficult request today starts from zero when it recurs tomorrow. Yet ordinary operation already produces feedback, in the form of outcome verdicts and after-the-fact corrections. We...",
+      "aliases": [],
+      "source_ids": [
+        "emergentmind-2607-22157-learning-on-the-job-continual-learning-from-deployment-2026"
+      ],
+      "confidence": 0.78,
+      "first_seen": "2026-07-29T14:02:44Z",
+      "last_seen": "2026-07-29T14:02:44Z",
+      "world_hint": "retrieval-augmented-generation"
+    },
+    "learning-on-the-job-continual-learning-from-deployment": {
+      "id": "learning-on-the-job-continual-learning-from-deployment",
+      "label": "Learning on the Job problem setting",
+      "type": "concept",
+      "summary": "The learning or systems problem described by the source: AI agents encounter learning opportunities in every episode they run, and discard nearly all of them: the underlying models are frozen at deployment, so an agent that resolves a difficult request today starts from zero when it recurs tomorrow. Yet ordinary operation already produces feedback, in the form of outcome verdicts and after-the-fact corrections. We...",
+      "aliases": [],
+      "source_ids": [
+        "emergentmind-2607-22157-learning-on-the-job-continual-learning-from-deployment-2026"
+      ],
+      "confidence": 0.78,
+      "first_seen": "2026-07-29T14:02:44Z",
+      "last_seen": "2026-07-29T14:02:44Z",
+      "world_hint": "retrieval-augmented-generation"
+    },
+    "paper-2607-22157": {
+      "id": "paper-2607-22157",
+      "label": "Learning on the Job: Continual Learning from Deployment Feedback for Frozen-Weights Agents",
+      "type": "paper",
+      "summary": "EmergentMind surfaced arXiv paper 2607.22157: AI agents encounter learning opportunities in every episode they run, and discard nearly all of them: the underlying models are frozen at deployment, so an agent that resolves a difficult request today starts from zero when it recurs tomorrow. Yet ordinary operation already produces feedback, in the form of outcome verdicts and after-the-fact corrections. We...",
+      "aliases": [],
+      "source_ids": [
+        "emergentmind-2607-22157-learning-on-the-job-continual-learning-from-deployment-2026"
+      ],
+      "confidence": 0.78,
+      "first_seen": "2026-07-29T14:02:44Z",
+      "last_seen": "2026-07-29T14:02:44Z",
+      "world_hint": "retrieval-augmented-generation"
+    },
+    "bitcoin-mempool-linearization": {
+      "id": "bitcoin-mempool-linearization",
+      "label": "Bitcoin Mempool Linearization",
+      "type": "method",
+      "summary": "Source-grounded method/approach from 'Bitcoin Mempool Linearization': In the Bitcoin system, transactions arrive continuously at miners' mempools and await inclusion in future blocks. Every non-coinbase transaction must spend one or more unspent outputs created by previous transactions, inducing dependency constraints among transactions in the mempool. At the same time, miners are economically incentivized to prioritize transa...",
+      "aliases": [],
+      "source_ids": [
+        "emergentmind-2607-23787-bitcoin-mempool-linearization-2026"
+      ],
+      "confidence": 0.78,
+      "first_seen": "2026-07-29T14:02:44Z",
+      "last_seen": "2026-07-29T14:02:44Z",
+      "world_hint": "agents"
+    },
+    "bitcoin-mempool-linearization-learning-problem": {
+      "id": "bitcoin-mempool-linearization-learning-problem",
+      "label": "Bitcoin Mempool Linearization problem setting",
+      "type": "concept",
+      "summary": "The learning or systems problem described by the source: In the Bitcoin system, transactions arrive continuously at miners' mempools and await inclusion in future blocks. Every non-coinbase transaction must spend one or more unspent outputs created by previous transactions, inducing dependency constraints among transactions in the mempool. At the same time, miners are economically incentivized to prioritize transa...",
+      "aliases": [],
+      "source_ids": [
+        "emergentmind-2607-23787-bitcoin-mempool-linearization-2026"
+      ],
+      "confidence": 0.78,
+      "first_seen": "2026-07-29T14:02:44Z",
+      "last_seen": "2026-07-29T14:02:44Z",
+      "world_hint": "agents"
+    },
+    "bitcoin-mempool-linearization-evaluation-signal": {
+      "id": "bitcoin-mempool-linearization-evaluation-signal",
+      "label": "Bitcoin Mempool Linearization evaluation signal",
+      "type": "concept",
+      "summary": "The source's evaluation/benchmark signal for judging the method; Edokai keeps this claim source-qualified.",
+      "aliases": [],
+      "source_ids": [
+        "emergentmind-2607-23787-bitcoin-mempool-linearization-2026"
+      ],
+      "confidence": 0.78,
+      "first_seen": "2026-07-29T14:02:44Z",
+      "last_seen": "2026-07-29T14:02:44Z",
+      "world_hint": "agents"
+    },
+    "paper-2607-23787": {
+      "id": "paper-2607-23787",
+      "label": "Bitcoin Mempool Linearization",
+      "type": "paper",
+      "summary": "EmergentMind surfaced arXiv paper 2607.23787: In the Bitcoin system, transactions arrive continuously at miners' mempools and await inclusion in future blocks. Every non-coinbase transaction must spend one or more unspent outputs created by previous transactions, inducing dependency constraints among transactions in the mempool. At the same time, miners are economically incentivized to prioritize transa...",
+      "aliases": [],
+      "source_ids": [
+        "emergentmind-2607-23787-bitcoin-mempool-linearization-2026"
+      ],
+      "confidence": 0.78,
+      "first_seen": "2026-07-29T14:02:44Z",
+      "last_seen": "2026-07-29T14:02:44Z",
+      "world_hint": "agents"
     }
   },
   "edges": [
@@ -19381,6 +19873,326 @@
         "emergentmind-2607-21653-molt-a-scalable-pytorch-native-training-framework-for-2026"
       ],
       "evidence": "Routed into The Molt A Scalable Pytorch under generative-models from source title and abstract."
+    },
+    {
+      "source": "paper-2607-24280",
+      "target": "from-proprietary-to-open-source-bridging-the",
+      "relation": "paper_introduces",
+      "confidence": 0.82,
+      "source_ids": [
+        "emergentmind-2607-24280-from-proprietary-to-open-source-bridging-the-distribution-2026"
+      ],
+      "evidence": "EmergentMind homepage/page metadata identify arXiv 2607.24280, 'From Proprietary to Open-Source: Bridging the Distribution Gap via Multi-Agent Protocol Distillation in Agentic Search', and summarize the method/problem."
+    },
+    {
+      "source": "from-proprietary-to-open-source-bridging-the",
+      "target": "from-proprietary-to-open-source-bridging-the-distribution",
+      "relation": "implements",
+      "confidence": 0.76,
+      "source_ids": [
+        "emergentmind-2607-24280-from-proprietary-to-open-source-bridging-the-distribution-2026"
+      ],
+      "evidence": "Agentic search enables large language models to solve knowledge-intensive tasks by interleaving multi-step reasoning with retrieval, yet optimizing this with outcome-based reinforcement learning (RL) provides only sparse supervision. Knowledge distillation can supply denser guida"
+    },
+    {
+      "source": "from-proprietary-to-open-source-bridging-the",
+      "target": "from-proprietary-to-open-source-bridging-the-distribution",
+      "relation": "evaluates_on",
+      "confidence": 0.72,
+      "source_ids": [
+        "emergentmind-2607-24280-from-proprietary-to-open-source-bridging-the-distribution-2026"
+      ],
+      "evidence": "Agentic search enables large language models to solve knowledge-intensive tasks by interleaving multi-step reasoning with retrieval, yet optimizing this with outcome-based reinforcement learning (RL) provides only sparse supervision. Knowledge distillation can supply denser guida"
+    },
+    {
+      "source": "from-proprietary-to-open-source-bridging-the",
+      "target": "the-from-proprietary-to-open-source",
+      "relation": "belongs_to_region",
+      "confidence": 0.78,
+      "source_ids": [
+        "emergentmind-2607-24280-from-proprietary-to-open-source-bridging-the-distribution-2026"
+      ],
+      "evidence": "Routed into The From Proprietary To Open under retrieval-augmented-generation from source title and abstract."
+    },
+    {
+      "source": "paper-2607-25886",
+      "target": "rsibench-data-benchmarking-data-centric-research-for",
+      "relation": "paper_introduces",
+      "confidence": 0.82,
+      "source_ids": [
+        "emergentmind-2607-25886-rsibench-data-benchmarking-data-centric-research-for-recursive-2026"
+      ],
+      "evidence": "EmergentMind homepage/page metadata identify arXiv 2607.25886, 'RSIBench-Data: Benchmarking Data-Centric Research for Recursive Self-Improvement', and summarize the method/problem."
+    },
+    {
+      "source": "rsibench-data-benchmarking-data-centric-research-for",
+      "target": "rsibench-data-benchmarking-data-centric-research-for-recursive",
+      "relation": "implements",
+      "confidence": 0.76,
+      "source_ids": [
+        "emergentmind-2607-25886-rsibench-data-benchmarking-data-centric-research-for-recursive-2026"
+      ],
+      "evidence": "Recursive self-improvement requires turning evidence of model failures into better models. Data-centric post-training research entails diagnosing capability gaps, designing and validating training-data strategies, and learning from checkpoint feedback. Can LLM agents automate thi"
+    },
+    {
+      "source": "rsibench-data-benchmarking-data-centric-research-for",
+      "target": "rsibench-data-benchmarking-data-centric-research-for-recursive",
+      "relation": "evaluates_on",
+      "confidence": 0.72,
+      "source_ids": [
+        "emergentmind-2607-25886-rsibench-data-benchmarking-data-centric-research-for-recursive-2026"
+      ],
+      "evidence": "Recursive self-improvement requires turning evidence of model failures into better models. Data-centric post-training research entails diagnosing capability gaps, designing and validating training-data strategies, and learning from checkpoint feedback. Can LLM agents automate thi"
+    },
+    {
+      "source": "rsibench-data-benchmarking-data-centric-research-for",
+      "target": "the-rsibench-data-benchmarking-data-centric",
+      "relation": "belongs_to_region",
+      "confidence": 0.78,
+      "source_ids": [
+        "emergentmind-2607-25886-rsibench-data-benchmarking-data-centric-research-for-recursive-2026"
+      ],
+      "evidence": "Routed into The Rsibench Data Benchmarking Data under perception-world-models from source title and abstract."
+    },
+    {
+      "source": "paper-2607-24653",
+      "target": "kimi-k3-open-frontier-intelligence",
+      "relation": "paper_introduces",
+      "confidence": 0.82,
+      "source_ids": [
+        "emergentmind-2607-24653-kimi-k3-open-frontier-intelligence-2026"
+      ],
+      "evidence": "EmergentMind homepage/page metadata identify arXiv 2607.24653, 'Kimi K3: Open Frontier Intelligence', and summarize the method/problem."
+    },
+    {
+      "source": "kimi-k3-open-frontier-intelligence",
+      "target": "kimi-k3-open-frontier-intelligence-learning-problem",
+      "relation": "implements",
+      "confidence": 0.76,
+      "source_ids": [
+        "emergentmind-2607-24653-kimi-k3-open-frontier-intelligence-2026"
+      ],
+      "evidence": "We introduce Kimi K3, a 2.8T parameter Mixture-of-Experts model with 104 billion activated parameters, native vision capabilities, and a 1-million-token context window. Kimi K3 is built on Kimi Delta Attention and Attention Residuals, which improve information flow across sequenc"
+    },
+    {
+      "source": "kimi-k3-open-frontier-intelligence",
+      "target": "kimi-k3-open-frontier-intelligence-evaluation-signal",
+      "relation": "evaluates_on",
+      "confidence": 0.72,
+      "source_ids": [
+        "emergentmind-2607-24653-kimi-k3-open-frontier-intelligence-2026"
+      ],
+      "evidence": "We introduce Kimi K3, a 2.8T parameter Mixture-of-Experts model with 104 billion activated parameters, native vision capabilities, and a 1-million-token context window. Kimi K3 is built on Kimi Delta Attention and Attention Residuals, which improve information flow across sequenc"
+    },
+    {
+      "source": "kimi-k3-open-frontier-intelligence",
+      "target": "the-kimi-k3-open-frontier-intelligence",
+      "relation": "belongs_to_region",
+      "confidence": 0.78,
+      "source_ids": [
+        "emergentmind-2607-24653-kimi-k3-open-frontier-intelligence-2026"
+      ],
+      "evidence": "Routed into The Kimi K3 Open Frontier under perception-world-models from source title and abstract."
+    },
+    {
+      "source": "paper-2607-22529",
+      "target": "skill-self-play-pushing-the-frontier-of",
+      "relation": "paper_introduces",
+      "confidence": 0.82,
+      "source_ids": [
+        "emergentmind-2607-22529-skill-self-play-pushing-the-frontier-of-llm-2026"
+      ],
+      "evidence": "EmergentMind homepage/page metadata identify arXiv 2607.22529, 'Skill Self-Play: Pushing the Frontier of LLM Capability with Co-Evolving Skills', and summarize the method/problem."
+    },
+    {
+      "source": "skill-self-play-pushing-the-frontier-of",
+      "target": "skill-self-play-pushing-the-frontier-of-llm",
+      "relation": "implements",
+      "confidence": 0.76,
+      "source_ids": [
+        "emergentmind-2607-22529-skill-self-play-pushing-the-frontier-of-llm-2026"
+      ],
+      "evidence": "LLM training is shifting from manual design and annotation to interaction-driven self-evolution. However, existing self-evolutionary methods face a fundamental dilemma between task diversity and verification reliability: environment-bound methods obtain precise feedback but confi"
+    },
+    {
+      "source": "skill-self-play-pushing-the-frontier-of",
+      "target": "skill-self-play-pushing-the-frontier-of-llm",
+      "relation": "evaluates_on",
+      "confidence": 0.72,
+      "source_ids": [
+        "emergentmind-2607-22529-skill-self-play-pushing-the-frontier-of-llm-2026"
+      ],
+      "evidence": "LLM training is shifting from manual design and annotation to interaction-driven self-evolution. However, existing self-evolutionary methods face a fundamental dilemma between task diversity and verification reliability: environment-bound methods obtain precise feedback but confi"
+    },
+    {
+      "source": "skill-self-play-pushing-the-frontier-of",
+      "target": "the-skill-self-play-pushing-the",
+      "relation": "belongs_to_region",
+      "confidence": 0.78,
+      "source_ids": [
+        "emergentmind-2607-22529-skill-self-play-pushing-the-frontier-of-llm-2026"
+      ],
+      "evidence": "Routed into The Skill Self Play Pushing under retrieval-augmented-generation from source title and abstract."
+    },
+    {
+      "source": "paper-2607-23037",
+      "target": "speech-signals-complement-llms-for-predicting-interpersonal",
+      "relation": "paper_introduces",
+      "confidence": 0.82,
+      "source_ids": [
+        "emergentmind-2607-23037-speech-signals-complement-llms-for-predicting-interpersonal-attraction-2026"
+      ],
+      "evidence": "EmergentMind homepage/page metadata identify arXiv 2607.23037, 'Speech Signals Complement LLMs for Predicting Interpersonal Attraction in Speed Dating', and summarize the method/problem."
+    },
+    {
+      "source": "speech-signals-complement-llms-for-predicting-interpersonal",
+      "target": "speech-signals-complement-llms-for-predicting-interpersonal-attraction",
+      "relation": "implements",
+      "confidence": 0.76,
+      "source_ids": [
+        "emergentmind-2607-23037-speech-signals-complement-llms-for-predicting-interpersonal-attraction-2026"
+      ],
+      "evidence": "Large language models (LLMs) can predict interpersonal attraction from conversation transcripts, but it remains unclear what a speech predictor can add beyond transcript-only LLM prediction. Using Japanese speed-dating conversations, we combine predictions from a transcript-only "
+    },
+    {
+      "source": "speech-signals-complement-llms-for-predicting-interpersonal",
+      "target": "speech-signals-complement-llms-for-predicting-interpersonal-attraction",
+      "relation": "evaluates_on",
+      "confidence": 0.72,
+      "source_ids": [
+        "emergentmind-2607-23037-speech-signals-complement-llms-for-predicting-interpersonal-attraction-2026"
+      ],
+      "evidence": "Large language models (LLMs) can predict interpersonal attraction from conversation transcripts, but it remains unclear what a speech predictor can add beyond transcript-only LLM prediction. Using Japanese speed-dating conversations, we combine predictions from a transcript-only "
+    },
+    {
+      "source": "speech-signals-complement-llms-for-predicting-interpersonal",
+      "target": "the-speech-signals-complement-llms-for",
+      "relation": "belongs_to_region",
+      "confidence": 0.78,
+      "source_ids": [
+        "emergentmind-2607-23037-speech-signals-complement-llms-for-predicting-interpersonal-attraction-2026"
+      ],
+      "evidence": "Routed into The Speech Signals Complement Llms under agents from source title and abstract."
+    },
+    {
+      "source": "paper-2607-22798",
+      "target": "stateact-program-state-before-pixels-for-long",
+      "relation": "paper_introduces",
+      "confidence": 0.82,
+      "source_ids": [
+        "emergentmind-2607-22798-stateact-program-state-before-pixels-for-long-horizon-2026"
+      ],
+      "evidence": "EmergentMind homepage/page metadata identify arXiv 2607.22798, 'StateAct: Program State, before Pixels, for Long-Horizon Computer-Use Agents', and summarize the method/problem."
+    },
+    {
+      "source": "stateact-program-state-before-pixels-for-long",
+      "target": "stateact-program-state-before-pixels-for-long-horizon",
+      "relation": "implements",
+      "confidence": 0.76,
+      "source_ids": [
+        "emergentmind-2607-22798-stateact-program-state-before-pixels-for-long-horizon-2026"
+      ],
+      "evidence": "Computer-use agents are usually improved by strengthening perception: better models for reading a screenshot and choosing where to click. Yet a screenshot is only a lossy rendering of the underlying program state, e.g., the files, application backends, and DOM that hold the task "
+    },
+    {
+      "source": "stateact-program-state-before-pixels-for-long",
+      "target": "stateact-program-state-before-pixels-for-long-horizon",
+      "relation": "evaluates_on",
+      "confidence": 0.72,
+      "source_ids": [
+        "emergentmind-2607-22798-stateact-program-state-before-pixels-for-long-horizon-2026"
+      ],
+      "evidence": "Computer-use agents are usually improved by strengthening perception: better models for reading a screenshot and choosing where to click. Yet a screenshot is only a lossy rendering of the underlying program state, e.g., the files, application backends, and DOM that hold the task "
+    },
+    {
+      "source": "stateact-program-state-before-pixels-for-long",
+      "target": "the-stateact-program-state-before-pixels",
+      "relation": "belongs_to_region",
+      "confidence": 0.78,
+      "source_ids": [
+        "emergentmind-2607-22798-stateact-program-state-before-pixels-for-long-horizon-2026"
+      ],
+      "evidence": "Routed into The Stateact Program State Before under llm-systems-serving from source title and abstract."
+    },
+    {
+      "source": "paper-2607-22157",
+      "target": "learning-on-the-job-continual-learning-from",
+      "relation": "paper_introduces",
+      "confidence": 0.82,
+      "source_ids": [
+        "emergentmind-2607-22157-learning-on-the-job-continual-learning-from-deployment-2026"
+      ],
+      "evidence": "EmergentMind homepage/page metadata identify arXiv 2607.22157, 'Learning on the Job: Continual Learning from Deployment Feedback for Frozen-Weights Agents', and summarize the method/problem."
+    },
+    {
+      "source": "learning-on-the-job-continual-learning-from",
+      "target": "learning-on-the-job-continual-learning-from-deployment",
+      "relation": "implements",
+      "confidence": 0.76,
+      "source_ids": [
+        "emergentmind-2607-22157-learning-on-the-job-continual-learning-from-deployment-2026"
+      ],
+      "evidence": "AI agents encounter learning opportunities in every episode they run, and discard nearly all of them: the underlying models are frozen at deployment, so an agent that resolves a difficult request today starts from zero when it recurs tomorrow. Yet ordinary operation already produ"
+    },
+    {
+      "source": "learning-on-the-job-continual-learning-from",
+      "target": "learning-on-the-job-continual-learning-from-deployment",
+      "relation": "evaluates_on",
+      "confidence": 0.72,
+      "source_ids": [
+        "emergentmind-2607-22157-learning-on-the-job-continual-learning-from-deployment-2026"
+      ],
+      "evidence": "AI agents encounter learning opportunities in every episode they run, and discard nearly all of them: the underlying models are frozen at deployment, so an agent that resolves a difficult request today starts from zero when it recurs tomorrow. Yet ordinary operation already produ"
+    },
+    {
+      "source": "learning-on-the-job-continual-learning-from",
+      "target": "the-learning-on-the-job-continual",
+      "relation": "belongs_to_region",
+      "confidence": 0.78,
+      "source_ids": [
+        "emergentmind-2607-22157-learning-on-the-job-continual-learning-from-deployment-2026"
+      ],
+      "evidence": "Routed into The Learning On The Job under retrieval-augmented-generation from source title and abstract."
+    },
+    {
+      "source": "paper-2607-23787",
+      "target": "bitcoin-mempool-linearization",
+      "relation": "paper_introduces",
+      "confidence": 0.82,
+      "source_ids": [
+        "emergentmind-2607-23787-bitcoin-mempool-linearization-2026"
+      ],
+      "evidence": "EmergentMind homepage/page metadata identify arXiv 2607.23787, 'Bitcoin Mempool Linearization', and summarize the method/problem."
+    },
+    {
+      "source": "bitcoin-mempool-linearization",
+      "target": "bitcoin-mempool-linearization-learning-problem",
+      "relation": "implements",
+      "confidence": 0.76,
+      "source_ids": [
+        "emergentmind-2607-23787-bitcoin-mempool-linearization-2026"
+      ],
+      "evidence": "In the Bitcoin system, transactions arrive continuously at miners' mempools and await inclusion in future blocks. Every non-coinbase transaction must spend one or more unspent outputs created by previous transactions, inducing dependency constraints among transactions in the memp"
+    },
+    {
+      "source": "bitcoin-mempool-linearization",
+      "target": "bitcoin-mempool-linearization-evaluation-signal",
+      "relation": "evaluates_on",
+      "confidence": 0.72,
+      "source_ids": [
+        "emergentmind-2607-23787-bitcoin-mempool-linearization-2026"
+      ],
+      "evidence": "In the Bitcoin system, transactions arrive continuously at miners' mempools and await inclusion in future blocks. Every non-coinbase transaction must spend one or more unspent outputs created by previous transactions, inducing dependency constraints among transactions in the memp"
+    },
+    {
+      "source": "bitcoin-mempool-linearization",
+      "target": "the-bitcoin-mempool-linearization",
+      "relation": "belongs_to_region",
+      "confidence": 0.78,
+      "source_ids": [
+        "emergentmind-2607-23787-bitcoin-mempool-linearization-2026"
+      ],
+      "evidence": "Routed into The Bitcoin Mempool Linearization under agents from source title and abstract."
     }
   ],
   "open_questions": [
@@ -20875,6 +21687,57 @@
       "edges_added": 0,
       "regions_added": 0,
       "quality_findings": [],
+      "verification": {
+        "json_parse": "passed",
+        "dkg_test": "passed",
+        "build": "passed",
+        "supabase_sync": "passed",
+        "roundtrip": "passed"
+      }
+    },
+    {
+      "run_id": "daily-emergentmind-all-topics-20260729T140244Z",
+      "completed_at": "2026-07-29T14:02:44Z",
+      "type": "daily-emergentmind-all-topics",
+      "homepage_url": "https://www.emergentmind.com/",
+      "homepage_status": 200,
+      "homepage_papers": 45,
+      "source_ids": [
+        "emergentmind-2607-24280-from-proprietary-to-open-source-bridging-the-distribution-2026",
+        "emergentmind-2607-25886-rsibench-data-benchmarking-data-centric-research-for-recursive-2026",
+        "emergentmind-2607-24653-kimi-k3-open-frontier-intelligence-2026",
+        "emergentmind-2607-22529-skill-self-play-pushing-the-frontier-of-llm-2026",
+        "emergentmind-2607-23037-speech-signals-complement-llms-for-predicting-interpersonal-attraction-2026",
+        "emergentmind-2607-22798-stateact-program-state-before-pixels-for-long-horizon-2026",
+        "emergentmind-2607-22157-learning-on-the-job-continual-learning-from-deployment-2026",
+        "emergentmind-2607-23787-bitcoin-mempool-linearization-2026"
+      ],
+      "page_status": {
+        "2607.24280": 200,
+        "2607.25886": 200,
+        "2607.24653": 200,
+        "2607.22529": 200,
+        "2607.23037": 200,
+        "2607.22798": 200,
+        "2607.22157": 200,
+        "2607.23787": 200
+      },
+      "sources_added": 8,
+      "sources_updated": 0,
+      "nodes_added": 26,
+      "nodes_updated": 0,
+      "edges_added": 32,
+      "worlds_touched": [
+        "retrieval-augmented-generation",
+        "perception-world-models",
+        "agents",
+        "llm-systems-serving"
+      ],
+      "regions_added": 8,
+      "manual_review": [
+        "Skipped pure-math, astronomy/cosmology, and clinical/medical surfaced items in this bounded pass; clinical claims need deeper safety review before routing.",
+        "New visual-SLAM/event-camera/egocentric-video items are routed under Perception & World Models; DeepSearch is routed under Retrieval-Augmented Generation; beyond-human intelligence evaluation is routed under Agents."
+      ],
       "verification": {
         "json_parse": "passed",
         "dkg_test": "passed",

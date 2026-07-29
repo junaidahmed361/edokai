@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "updated_at": "2026-07-28T14:50:43Z",
+  "updated_at": "2026-07-29T14:02:44Z",
   "macro_worlds": {
     "agents": {
       "label": "Agents",
@@ -1715,6 +1715,90 @@
               "answer_index": 2,
               "source_ids": [
                 "emergentmind-2607-18506-ai-value-alignment-for-evolving-social-norms-2026"
+              ]
+            }
+          ]
+        },
+        {
+          "id": "the-speech-signals-complement-llms-for",
+          "label": "The Speech Signals Complement Llms",
+          "summary": "A source-backed case board for Speech Signals Complement LLMs for Predicting Interpersonal Attraction in Speed Dating: learners inspect the plain technical mechanism, the evaluation signal, and where the claim fits in Edokai's agents world.",
+          "source_ids": [
+            "emergentmind-2607-23037-speech-signals-complement-llms-for-predicting-interpersonal-attraction-2026"
+          ],
+          "concept_ids": [
+            "speech-signals-complement-llms-for-predicting-interpersonal",
+            "speech-signals-complement-llms-for-predicting-interpersonal-attraction",
+            "speech-signals-complement-llms-for-predicting-interpersonal-attraction"
+          ],
+          "critical_concepts": [
+            "speech-signals-complement-llms-for-predicting-interpersonal",
+            "speech-signals-complement-llms-for-predicting-interpersonal-attraction"
+          ],
+          "prerequisite_links": [],
+          "side_retention_duels": [
+            {
+              "id": "the-speech-signals-complement-llms-duel",
+              "prompt": "What should Edokai learners remember about **Speech Signals Complement LLMs for Predicting Interpersonal Attraction in Speed Dating**?",
+              "left": "Treat it as a title-only bookmark without checking the mechanism.",
+              "right": "Track the mechanism, evidence signal, and limits stated by the source.",
+              "answer": "Use the source-backed mechanism and evaluation signal; avoid inferring guarantees beyond the paper summary."
+            }
+          ],
+          "quiz_questions": [
+            {
+              "question": "In the source **Speech Signals Complement LLMs for Predicting Interpersonal Attraction in Speed Dating**, what is the main learner-facing mechanism Edokai should preserve?",
+              "choices": [
+                "It mainly replaces the user interface theme without changing the learning mechanism.",
+                "It uses the source's Speech Signals Complement LLMs for Predicting Interpersonal Attraction in Speed Dating mechanism to address the paper's stated ML/AI problem.",
+                "It is a clinical treatment protocol rather than a machine-learning research method.",
+                "It proves a pure-math theorem without a model, agent, or evaluation loop."
+              ],
+              "answer_index": 1,
+              "source_ids": [
+                "emergentmind-2607-23037-speech-signals-complement-llms-for-predicting-interpersonal-attraction-2026"
+              ]
+            }
+          ]
+        },
+        {
+          "id": "the-bitcoin-mempool-linearization",
+          "label": "The Bitcoin Mempool Linearization",
+          "summary": "A source-backed case board for Bitcoin Mempool Linearization: learners inspect the plain technical mechanism, the evaluation signal, and where the claim fits in Edokai's agents world.",
+          "source_ids": [
+            "emergentmind-2607-23787-bitcoin-mempool-linearization-2026"
+          ],
+          "concept_ids": [
+            "bitcoin-mempool-linearization",
+            "bitcoin-mempool-linearization-learning-problem",
+            "bitcoin-mempool-linearization-evaluation-signal"
+          ],
+          "critical_concepts": [
+            "bitcoin-mempool-linearization",
+            "bitcoin-mempool-linearization-learning-problem"
+          ],
+          "prerequisite_links": [],
+          "side_retention_duels": [
+            {
+              "id": "the-bitcoin-mempool-linearization-duel",
+              "prompt": "What should Edokai learners remember about **Bitcoin Mempool Linearization**?",
+              "left": "Treat it as a title-only bookmark without checking the mechanism.",
+              "right": "Track the mechanism, evidence signal, and limits stated by the source.",
+              "answer": "Use the source-backed mechanism and evaluation signal; avoid inferring guarantees beyond the paper summary."
+            }
+          ],
+          "quiz_questions": [
+            {
+              "question": "In the source **Bitcoin Mempool Linearization**, what is the main learner-facing mechanism Edokai should preserve?",
+              "choices": [
+                "It uses the source's Bitcoin Mempool Linearization mechanism to address the paper's stated ML/AI problem.",
+                "It mainly replaces the user interface theme without changing the learning mechanism.",
+                "It is a clinical treatment protocol rather than a machine-learning research method.",
+                "It proves a pure-math theorem without a model, agent, or evaluation loop."
+              ],
+              "answer_index": 0,
+              "source_ids": [
+                "emergentmind-2607-23787-bitcoin-mempool-linearization-2026"
               ]
             }
           ]
@@ -5706,6 +5790,90 @@
               ]
             }
           ]
+        },
+        {
+          "id": "the-rsibench-data-benchmarking-data-centric",
+          "label": "The Rsibench Data Benchmarking Data",
+          "summary": "A source-backed case board for RSIBench-Data: Benchmarking Data-Centric Research for Recursive Self-Improvement: learners inspect the plain technical mechanism, the evaluation signal, and where the claim fits in Edokai's perception world models world.",
+          "source_ids": [
+            "emergentmind-2607-25886-rsibench-data-benchmarking-data-centric-research-for-recursive-2026"
+          ],
+          "concept_ids": [
+            "rsibench-data-benchmarking-data-centric-research-for",
+            "rsibench-data-benchmarking-data-centric-research-for-recursive",
+            "rsibench-data-benchmarking-data-centric-research-for-recursive"
+          ],
+          "critical_concepts": [
+            "rsibench-data-benchmarking-data-centric-research-for",
+            "rsibench-data-benchmarking-data-centric-research-for-recursive"
+          ],
+          "prerequisite_links": [],
+          "side_retention_duels": [
+            {
+              "id": "the-rsibench-data-benchmarking-data-duel",
+              "prompt": "What should Edokai learners remember about **RSIBench-Data**?",
+              "left": "Treat it as a title-only bookmark without checking the mechanism.",
+              "right": "Track the mechanism, evidence signal, and limits stated by the source.",
+              "answer": "Use the source-backed mechanism and evaluation signal; avoid inferring guarantees beyond the paper summary."
+            }
+          ],
+          "quiz_questions": [
+            {
+              "question": "In the source **RSIBench-Data: Benchmarking Data-Centric Research for Recursive Self-Improvement**, what is the main learner-facing mechanism Edokai should preserve?",
+              "choices": [
+                "It mainly replaces the user interface theme without changing the learning mechanism.",
+                "It is a clinical treatment protocol rather than a machine-learning research method.",
+                "It uses the source's RSIBench-Data mechanism to address the paper's stated ML/AI problem.",
+                "It proves a pure-math theorem without a model, agent, or evaluation loop."
+              ],
+              "answer_index": 2,
+              "source_ids": [
+                "emergentmind-2607-25886-rsibench-data-benchmarking-data-centric-research-for-recursive-2026"
+              ]
+            }
+          ]
+        },
+        {
+          "id": "the-kimi-k3-open-frontier-intelligence",
+          "label": "The Kimi K3 Open Frontier",
+          "summary": "A source-backed case board for Kimi K3: Open Frontier Intelligence: learners inspect the plain technical mechanism, the evaluation signal, and where the claim fits in Edokai's perception world models world.",
+          "source_ids": [
+            "emergentmind-2607-24653-kimi-k3-open-frontier-intelligence-2026"
+          ],
+          "concept_ids": [
+            "kimi-k3-open-frontier-intelligence",
+            "kimi-k3-open-frontier-intelligence-learning-problem",
+            "kimi-k3-open-frontier-intelligence-evaluation-signal"
+          ],
+          "critical_concepts": [
+            "kimi-k3-open-frontier-intelligence",
+            "kimi-k3-open-frontier-intelligence-learning-problem"
+          ],
+          "prerequisite_links": [],
+          "side_retention_duels": [
+            {
+              "id": "the-kimi-k3-open-frontier-duel",
+              "prompt": "What should Edokai learners remember about **Kimi K3**?",
+              "left": "Treat it as a title-only bookmark without checking the mechanism.",
+              "right": "Track the mechanism, evidence signal, and limits stated by the source.",
+              "answer": "Use the source-backed mechanism and evaluation signal; avoid inferring guarantees beyond the paper summary."
+            }
+          ],
+          "quiz_questions": [
+            {
+              "question": "In the source **Kimi K3: Open Frontier Intelligence**, what is the main learner-facing mechanism Edokai should preserve?",
+              "choices": [
+                "It mainly replaces the user interface theme without changing the learning mechanism.",
+                "It is a clinical treatment protocol rather than a machine-learning research method.",
+                "It proves a pure-math theorem without a model, agent, or evaluation loop.",
+                "It uses the source's Kimi K3 mechanism to address the paper's stated ML/AI problem."
+              ],
+              "answer_index": 3,
+              "source_ids": [
+                "emergentmind-2607-24653-kimi-k3-open-frontier-intelligence-2026"
+              ]
+            }
+          ]
         }
       ]
     },
@@ -6494,6 +6662,48 @@
               "answer_index": 2,
               "source_ids": [
                 "emergentmind-2607-23402-characterizing-warp-divergence-from-pascal-to-blackwell-2026"
+              ]
+            }
+          ]
+        },
+        {
+          "id": "the-stateact-program-state-before-pixels",
+          "label": "The Stateact Program State Before",
+          "summary": "A source-backed case board for StateAct: Program State, before Pixels, for Long-Horizon Computer-Use Agents: learners inspect the plain technical mechanism, the evaluation signal, and where the claim fits in Edokai's llm systems serving world.",
+          "source_ids": [
+            "emergentmind-2607-22798-stateact-program-state-before-pixels-for-long-horizon-2026"
+          ],
+          "concept_ids": [
+            "stateact-program-state-before-pixels-for-long",
+            "stateact-program-state-before-pixels-for-long-horizon",
+            "stateact-program-state-before-pixels-for-long-horizon"
+          ],
+          "critical_concepts": [
+            "stateact-program-state-before-pixels-for-long",
+            "stateact-program-state-before-pixels-for-long-horizon"
+          ],
+          "prerequisite_links": [],
+          "side_retention_duels": [
+            {
+              "id": "the-stateact-program-state-before-duel",
+              "prompt": "What should Edokai learners remember about **StateAct**?",
+              "left": "Treat it as a title-only bookmark without checking the mechanism.",
+              "right": "Track the mechanism, evidence signal, and limits stated by the source.",
+              "answer": "Use the source-backed mechanism and evaluation signal; avoid inferring guarantees beyond the paper summary."
+            }
+          ],
+          "quiz_questions": [
+            {
+              "question": "In the source **StateAct: Program State, before Pixels, for Long-Horizon Computer-Use Agents**, what is the main learner-facing mechanism Edokai should preserve?",
+              "choices": [
+                "It mainly replaces the user interface theme without changing the learning mechanism.",
+                "It is a clinical treatment protocol rather than a machine-learning research method.",
+                "It uses the source's StateAct mechanism to address the paper's stated ML/AI problem.",
+                "It proves a pure-math theorem without a model, agent, or evaluation loop."
+              ],
+              "answer_index": 2,
+              "source_ids": [
+                "emergentmind-2607-22798-stateact-program-state-before-pixels-for-long-horizon-2026"
               ]
             }
           ]
@@ -8229,6 +8439,132 @@
               ]
             }
           ]
+        },
+        {
+          "id": "the-from-proprietary-to-open-source",
+          "label": "The From Proprietary To Open",
+          "summary": "A source-backed case board for From Proprietary to Open-Source: Bridging the Distribution Gap via Multi-Agent Protocol Distillation in Agentic Search: learners inspect the plain technical mechanism, the evaluation signal, and where the claim fits in Edokai's retrieval augmented generation world.",
+          "source_ids": [
+            "emergentmind-2607-24280-from-proprietary-to-open-source-bridging-the-distribution-2026"
+          ],
+          "concept_ids": [
+            "from-proprietary-to-open-source-bridging-the",
+            "from-proprietary-to-open-source-bridging-the-distribution",
+            "from-proprietary-to-open-source-bridging-the-distribution"
+          ],
+          "critical_concepts": [
+            "from-proprietary-to-open-source-bridging-the",
+            "from-proprietary-to-open-source-bridging-the-distribution"
+          ],
+          "prerequisite_links": [],
+          "side_retention_duels": [
+            {
+              "id": "the-from-proprietary-to-open-duel",
+              "prompt": "What should Edokai learners remember about **From Proprietary to Open-Source**?",
+              "left": "Treat it as a title-only bookmark without checking the mechanism.",
+              "right": "Track the mechanism, evidence signal, and limits stated by the source.",
+              "answer": "Use the source-backed mechanism and evaluation signal; avoid inferring guarantees beyond the paper summary."
+            }
+          ],
+          "quiz_questions": [
+            {
+              "question": "In the source **From Proprietary to Open-Source: Bridging the Distribution Gap via Multi-Agent Protocol Distillation in Agentic Search**, what is the main learner-facing mechanism Edokai should preserve?",
+              "choices": [
+                "It mainly replaces the user interface theme without changing the learning mechanism.",
+                "It uses the source's From Proprietary to Open-Source mechanism to address the paper's stated ML/AI problem.",
+                "It is a clinical treatment protocol rather than a machine-learning research method.",
+                "It proves a pure-math theorem without a model, agent, or evaluation loop."
+              ],
+              "answer_index": 1,
+              "source_ids": [
+                "emergentmind-2607-24280-from-proprietary-to-open-source-bridging-the-distribution-2026"
+              ]
+            }
+          ]
+        },
+        {
+          "id": "the-skill-self-play-pushing-the",
+          "label": "The Skill Self Play Pushing",
+          "summary": "A source-backed case board for Skill Self-Play: Pushing the Frontier of LLM Capability with Co-Evolving Skills: learners inspect the plain technical mechanism, the evaluation signal, and where the claim fits in Edokai's retrieval augmented generation world.",
+          "source_ids": [
+            "emergentmind-2607-22529-skill-self-play-pushing-the-frontier-of-llm-2026"
+          ],
+          "concept_ids": [
+            "skill-self-play-pushing-the-frontier-of",
+            "skill-self-play-pushing-the-frontier-of-llm",
+            "skill-self-play-pushing-the-frontier-of-llm"
+          ],
+          "critical_concepts": [
+            "skill-self-play-pushing-the-frontier-of",
+            "skill-self-play-pushing-the-frontier-of-llm"
+          ],
+          "prerequisite_links": [],
+          "side_retention_duels": [
+            {
+              "id": "the-skill-self-play-pushing-duel",
+              "prompt": "What should Edokai learners remember about **Skill Self-Play**?",
+              "left": "Treat it as a title-only bookmark without checking the mechanism.",
+              "right": "Track the mechanism, evidence signal, and limits stated by the source.",
+              "answer": "Use the source-backed mechanism and evaluation signal; avoid inferring guarantees beyond the paper summary."
+            }
+          ],
+          "quiz_questions": [
+            {
+              "question": "In the source **Skill Self-Play: Pushing the Frontier of LLM Capability with Co-Evolving Skills**, what is the main learner-facing mechanism Edokai should preserve?",
+              "choices": [
+                "It uses the source's Skill Self-Play mechanism to address the paper's stated ML/AI problem.",
+                "It mainly replaces the user interface theme without changing the learning mechanism.",
+                "It is a clinical treatment protocol rather than a machine-learning research method.",
+                "It proves a pure-math theorem without a model, agent, or evaluation loop."
+              ],
+              "answer_index": 0,
+              "source_ids": [
+                "emergentmind-2607-22529-skill-self-play-pushing-the-frontier-of-llm-2026"
+              ]
+            }
+          ]
+        },
+        {
+          "id": "the-learning-on-the-job-continual",
+          "label": "The Learning On The Job",
+          "summary": "A source-backed case board for Learning on the Job: Continual Learning from Deployment Feedback for Frozen-Weights Agents: learners inspect the plain technical mechanism, the evaluation signal, and where the claim fits in Edokai's retrieval augmented generation world.",
+          "source_ids": [
+            "emergentmind-2607-22157-learning-on-the-job-continual-learning-from-deployment-2026"
+          ],
+          "concept_ids": [
+            "learning-on-the-job-continual-learning-from",
+            "learning-on-the-job-continual-learning-from-deployment",
+            "learning-on-the-job-continual-learning-from-deployment"
+          ],
+          "critical_concepts": [
+            "learning-on-the-job-continual-learning-from",
+            "learning-on-the-job-continual-learning-from-deployment"
+          ],
+          "prerequisite_links": [],
+          "side_retention_duels": [
+            {
+              "id": "the-learning-on-the-job-duel",
+              "prompt": "What should Edokai learners remember about **Learning on the Job**?",
+              "left": "Treat it as a title-only bookmark without checking the mechanism.",
+              "right": "Track the mechanism, evidence signal, and limits stated by the source.",
+              "answer": "Use the source-backed mechanism and evaluation signal; avoid inferring guarantees beyond the paper summary."
+            }
+          ],
+          "quiz_questions": [
+            {
+              "question": "In the source **Learning on the Job: Continual Learning from Deployment Feedback for Frozen-Weights Agents**, what is the main learner-facing mechanism Edokai should preserve?",
+              "choices": [
+                "It mainly replaces the user interface theme without changing the learning mechanism.",
+                "It is a clinical treatment protocol rather than a machine-learning research method.",
+                "It proves a pure-math theorem without a model, agent, or evaluation loop.",
+                "It uses the source's Learning on the Job mechanism to address the paper's stated ML/AI problem."
+              ],
+              "answer_index": 3,
+              "source_ids": [
+                "emergentmind-2607-22157-learning-on-the-job-continual-learning-from-deployment-2026"
+              ]
+            }
+          ]
         }
       ]
     }
@@ -9583,6 +9919,43 @@
       "regions_added": 0,
       "new_worlds_created": [],
       "quality_findings": [],
+      "verification": {
+        "json_parse": "passed",
+        "dkg_test": "passed",
+        "build": "passed",
+        "supabase_sync": "passed",
+        "roundtrip": "passed"
+      }
+    },
+    {
+      "run_id": "daily-emergentmind-all-topics-20260729T140244Z",
+      "completed_at": "2026-07-29T14:02:44Z",
+      "event": "daily EmergentMind homepage all-topics ingestion",
+      "sources_added": 8,
+      "nodes_added": 26,
+      "edges_added": 32,
+      "worlds_enhanced": [
+        "retrieval-augmented-generation",
+        "perception-world-models",
+        "agents",
+        "llm-systems-serving"
+      ],
+      "regions_enhanced": [
+        "the-from-proprietary-to-open-source",
+        "the-rsibench-data-benchmarking-data-centric",
+        "the-kimi-k3-open-frontier-intelligence",
+        "the-skill-self-play-pushing-the",
+        "the-speech-signals-complement-llms-for",
+        "the-stateact-program-state-before-pixels",
+        "the-learning-on-the-job-continual",
+        "the-bitcoin-mempool-linearization"
+      ],
+      "new_worlds_created": [],
+      "router_learning": "The 2026-07-12 homepage delta fits existing umbrellas: SLAM/event-camera/egocentric-video strengthen Perception & World Models, DeepSearch strengthens Retrieval-Augmented Generation, and beyond-human intelligence evaluation strengthens Agents.",
+      "manual_review": [
+        "Skipped pure-math, astronomy/cosmology, and clinical/medical surfaced items in this bounded pass; clinical claims need deeper safety review before routing.",
+        "New visual-SLAM/event-camera/egocentric-video items are routed under Perception & World Models; DeepSearch is routed under Retrieval-Augmented Generation; beyond-human intelligence evaluation is routed under Agents."
+      ],
       "verification": {
         "json_parse": "passed",
         "dkg_test": "passed",
