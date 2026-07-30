@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "updated_at": "2026-07-29T14:02:44Z",
+  "updated_at": "2026-07-30T14:01:21Z",
   "macro_worlds": {
     "agents": {
       "label": "Agents",
@@ -1799,6 +1799,48 @@
               "answer_index": 0,
               "source_ids": [
                 "emergentmind-2607-23787-bitcoin-mempool-linearization-2026"
+              ]
+            }
+          ]
+        },
+        {
+          "id": "the-quantum-information-decoupling-beyond-finite",
+          "label": "The Quantum Information Decoupling Beyond",
+          "summary": "A source-backed case board for Quantum Information Decoupling Beyond Finite Dimensions: learners inspect the plain technical mechanism, the evaluation signal, and where the claim fits in Edokai's agents world.",
+          "source_ids": [
+            "emergentmind-2607-26123-quantum-information-decoupling-beyond-finite-dimensions-2026"
+          ],
+          "concept_ids": [
+            "quantum-information-decoupling-beyond-finite-dimensions",
+            "quantum-information-decoupling-beyond-finite-dimensions-learning-problem",
+            "quantum-information-decoupling-beyond-finite-dimensions-evaluation-signal"
+          ],
+          "critical_concepts": [
+            "quantum-information-decoupling-beyond-finite-dimensions",
+            "quantum-information-decoupling-beyond-finite-dimensions-learning-problem"
+          ],
+          "prerequisite_links": [],
+          "side_retention_duels": [
+            {
+              "id": "the-quantum-information-decoupling-beyond-duel",
+              "prompt": "What should Edokai learners remember about **Quantum Information Decoupling Beyond Finite Dimensions**?",
+              "left": "Treat it as a title-only bookmark without checking the mechanism.",
+              "right": "Track the mechanism, evidence signal, and limits stated by the source.",
+              "answer": "Use the source-backed mechanism and evaluation signal; avoid inferring guarantees beyond the paper summary."
+            }
+          ],
+          "quiz_questions": [
+            {
+              "question": "In the source **Quantum Information Decoupling Beyond Finite Dimensions**, what is the main learner-facing mechanism Edokai should preserve?",
+              "choices": [
+                "It mainly replaces the user interface theme without changing the learning mechanism.",
+                "It is a clinical treatment protocol rather than a machine-learning research method.",
+                "It proves a pure-math theorem without a model, agent, or evaluation loop.",
+                "It uses the source's Quantum Information Decoupling Beyond Finite Dimensions mechanism to address the paper's stated ML/AI problem."
+              ],
+              "answer_index": 3,
+              "source_ids": [
+                "emergentmind-2607-26123-quantum-information-decoupling-beyond-finite-dimensions-2026"
               ]
             }
           ]
@@ -5874,6 +5916,90 @@
               ]
             }
           ]
+        },
+        {
+          "id": "the-hifi-umi-learning-deployable-manipulation",
+          "label": "The Hifi Umi Learning Deployable",
+          "summary": "A source-backed case board for HiFi-UMI: Learning Deployable Manipulation Policies from High-Fidelity UMI Data Alone: learners inspect the plain technical mechanism, the evaluation signal, and where the claim fits in Edokai's perception world models world.",
+          "source_ids": [
+            "emergentmind-2607-25895-hifi-umi-learning-deployable-manipulation-policies-from-high-2026"
+          ],
+          "concept_ids": [
+            "hifi-umi-learning-deployable-manipulation-policies-from",
+            "hifi-umi-learning-deployable-manipulation-policies-from-high",
+            "hifi-umi-learning-deployable-manipulation-policies-from-high"
+          ],
+          "critical_concepts": [
+            "hifi-umi-learning-deployable-manipulation-policies-from",
+            "hifi-umi-learning-deployable-manipulation-policies-from-high"
+          ],
+          "prerequisite_links": [],
+          "side_retention_duels": [
+            {
+              "id": "the-hifi-umi-learning-deployable-duel",
+              "prompt": "What should Edokai learners remember about **HiFi-UMI**?",
+              "left": "Treat it as a title-only bookmark without checking the mechanism.",
+              "right": "Track the mechanism, evidence signal, and limits stated by the source.",
+              "answer": "Use the source-backed mechanism and evaluation signal; avoid inferring guarantees beyond the paper summary."
+            }
+          ],
+          "quiz_questions": [
+            {
+              "question": "In the source **HiFi-UMI: Learning Deployable Manipulation Policies from High-Fidelity UMI Data Alone**, what is the main learner-facing mechanism Edokai should preserve?",
+              "choices": [
+                "It mainly replaces the user interface theme without changing the learning mechanism.",
+                "It uses the source's HiFi-UMI mechanism to address the paper's stated ML/AI problem.",
+                "It is a clinical treatment protocol rather than a machine-learning research method.",
+                "It proves a pure-math theorem without a model, agent, or evaluation loop."
+              ],
+              "answer_index": 1,
+              "source_ids": [
+                "emergentmind-2607-25895-hifi-umi-learning-deployable-manipulation-policies-from-high-2026"
+              ]
+            }
+          ]
+        },
+        {
+          "id": "the-generative-artificial-intelligence-in-scientific",
+          "label": "The Generative Artificial Intelligence In",
+          "summary": "A source-backed case board for Generative Artificial Intelligence in Scientific Research: Individual Benefits, Collective Risks, and a Framework for Responsible Research with AI: learners inspect the plain technical mechanism, the evaluation signal, and where the claim fits in Edokai's perception world models world.",
+          "source_ids": [
+            "emergentmind-2607-24879-generative-artificial-intelligence-in-scientific-research-individual-benefits-2026"
+          ],
+          "concept_ids": [
+            "generative-artificial-intelligence-in-scientific-research-individual",
+            "generative-artificial-intelligence-in-scientific-research-individual-benefits",
+            "generative-artificial-intelligence-in-scientific-research-individual-benefits"
+          ],
+          "critical_concepts": [
+            "generative-artificial-intelligence-in-scientific-research-individual",
+            "generative-artificial-intelligence-in-scientific-research-individual-benefits"
+          ],
+          "prerequisite_links": [],
+          "side_retention_duels": [
+            {
+              "id": "the-generative-artificial-intelligence-in-duel",
+              "prompt": "What should Edokai learners remember about **Generative Artificial Intelligence in Scientific Research**?",
+              "left": "Treat it as a title-only bookmark without checking the mechanism.",
+              "right": "Track the mechanism, evidence signal, and limits stated by the source.",
+              "answer": "Use the source-backed mechanism and evaluation signal; avoid inferring guarantees beyond the paper summary."
+            }
+          ],
+          "quiz_questions": [
+            {
+              "question": "In the source **Generative Artificial Intelligence in Scientific Research: Individual Benefits, Collective Risks, and a Framework for Responsible Research with AI**, what is the main learner-facing mechanism Edokai should preserve?",
+              "choices": [
+                "It uses the source's Generative Artificial Intelligence in Scientific Research mechanism to address the paper's stated ML/AI problem.",
+                "It mainly replaces the user interface theme without changing the learning mechanism.",
+                "It is a clinical treatment protocol rather than a machine-learning research method.",
+                "It proves a pure-math theorem without a model, agent, or evaluation loop."
+              ],
+              "answer_index": 0,
+              "source_ids": [
+                "emergentmind-2607-24879-generative-artificial-intelligence-in-scientific-research-individual-benefits-2026"
+              ]
+            }
+          ]
         }
       ]
     },
@@ -6704,6 +6830,48 @@
               "answer_index": 2,
               "source_ids": [
                 "emergentmind-2607-22798-stateact-program-state-before-pixels-for-long-horizon-2026"
+              ]
+            }
+          ]
+        },
+        {
+          "id": "the-parallel-decoding-distillation-for-fast",
+          "label": "The Parallel Decoding Distillation For",
+          "summary": "A source-backed case board for Parallel Decoding Distillation for Fast Image and Video Generation: learners inspect the plain technical mechanism, the evaluation signal, and where the claim fits in Edokai's llm systems serving world.",
+          "source_ids": [
+            "emergentmind-2607-26004-parallel-decoding-distillation-for-fast-image-and-video-2026"
+          ],
+          "concept_ids": [
+            "parallel-decoding-distillation-for-fast-image-and",
+            "parallel-decoding-distillation-for-fast-image-and-video",
+            "parallel-decoding-distillation-for-fast-image-and-video"
+          ],
+          "critical_concepts": [
+            "parallel-decoding-distillation-for-fast-image-and",
+            "parallel-decoding-distillation-for-fast-image-and-video"
+          ],
+          "prerequisite_links": [],
+          "side_retention_duels": [
+            {
+              "id": "the-parallel-decoding-distillation-for-duel",
+              "prompt": "What should Edokai learners remember about **Parallel Decoding Distillation for Fast Image and Video Generation**?",
+              "left": "Treat it as a title-only bookmark without checking the mechanism.",
+              "right": "Track the mechanism, evidence signal, and limits stated by the source.",
+              "answer": "Use the source-backed mechanism and evaluation signal; avoid inferring guarantees beyond the paper summary."
+            }
+          ],
+          "quiz_questions": [
+            {
+              "question": "In the source **Parallel Decoding Distillation for Fast Image and Video Generation**, what is the main learner-facing mechanism Edokai should preserve?",
+              "choices": [
+                "It mainly replaces the user interface theme without changing the learning mechanism.",
+                "It uses the source's Parallel Decoding Distillation for Fast Image and Video Generation mechanism to address the paper's stated ML/AI problem.",
+                "It is a clinical treatment protocol rather than a machine-learning research method.",
+                "It proves a pure-math theorem without a model, agent, or evaluation loop."
+              ],
+              "answer_index": 1,
+              "source_ids": [
+                "emergentmind-2607-26004-parallel-decoding-distillation-for-fast-image-and-video-2026"
               ]
             }
           ]
@@ -8565,6 +8733,174 @@
               ]
             }
           ]
+        },
+        {
+          "id": "the-a-new-role-for-relevance",
+          "label": "The A New Role For",
+          "summary": "A source-backed case board for A New Role for Relevance: Guiding Corpus Interaction in Agentic Search: learners inspect the plain technical mechanism, the evaluation signal, and where the claim fits in Edokai's retrieval augmented generation world.",
+          "source_ids": [
+            "emergentmind-2607-24223-a-new-role-for-relevance-guiding-corpus-interaction-2026"
+          ],
+          "concept_ids": [
+            "a-new-role-for-relevance-guiding-corpus",
+            "a-new-role-for-relevance-guiding-corpus-interaction",
+            "a-new-role-for-relevance-guiding-corpus-interaction"
+          ],
+          "critical_concepts": [
+            "a-new-role-for-relevance-guiding-corpus",
+            "a-new-role-for-relevance-guiding-corpus-interaction"
+          ],
+          "prerequisite_links": [],
+          "side_retention_duels": [
+            {
+              "id": "the-a-new-role-for-duel",
+              "prompt": "What should Edokai learners remember about **A New Role for Relevance**?",
+              "left": "Treat it as a title-only bookmark without checking the mechanism.",
+              "right": "Track the mechanism, evidence signal, and limits stated by the source.",
+              "answer": "Use the source-backed mechanism and evaluation signal; avoid inferring guarantees beyond the paper summary."
+            }
+          ],
+          "quiz_questions": [
+            {
+              "question": "In the source **A New Role for Relevance: Guiding Corpus Interaction in Agentic Search**, what is the main learner-facing mechanism Edokai should preserve?",
+              "choices": [
+                "It mainly replaces the user interface theme without changing the learning mechanism.",
+                "It is a clinical treatment protocol rather than a machine-learning research method.",
+                "It uses the source's A New Role for Relevance mechanism to address the paper's stated ML/AI problem.",
+                "It proves a pure-math theorem without a model, agent, or evaluation loop."
+              ],
+              "answer_index": 2,
+              "source_ids": [
+                "emergentmind-2607-24223-a-new-role-for-relevance-guiding-corpus-interaction-2026"
+              ]
+            }
+          ]
+        },
+        {
+          "id": "the-face-age-verification-vulnerabilities-under",
+          "label": "The Face Age Verification Vulnerabilities",
+          "summary": "A source-backed case board for Face Age Verification Vulnerabilities Under Simple Appearance Manipulations: learners inspect the plain technical mechanism, the evaluation signal, and where the claim fits in Edokai's retrieval augmented generation world.",
+          "source_ids": [
+            "emergentmind-2607-24194-face-age-verification-vulnerabilities-under-simple-appearance-manipulations-2026"
+          ],
+          "concept_ids": [
+            "face-age-verification-vulnerabilities-under-simple-appearance",
+            "face-age-verification-vulnerabilities-under-simple-appearance-manipulations",
+            "face-age-verification-vulnerabilities-under-simple-appearance-manipulations"
+          ],
+          "critical_concepts": [
+            "face-age-verification-vulnerabilities-under-simple-appearance",
+            "face-age-verification-vulnerabilities-under-simple-appearance-manipulations"
+          ],
+          "prerequisite_links": [],
+          "side_retention_duels": [
+            {
+              "id": "the-face-age-verification-vulnerabilities-duel",
+              "prompt": "What should Edokai learners remember about **Face Age Verification Vulnerabilities Under Simple Appearance Manipulations**?",
+              "left": "Treat it as a title-only bookmark without checking the mechanism.",
+              "right": "Track the mechanism, evidence signal, and limits stated by the source.",
+              "answer": "Use the source-backed mechanism and evaluation signal; avoid inferring guarantees beyond the paper summary."
+            }
+          ],
+          "quiz_questions": [
+            {
+              "question": "In the source **Face Age Verification Vulnerabilities Under Simple Appearance Manipulations**, what is the main learner-facing mechanism Edokai should preserve?",
+              "choices": [
+                "It mainly replaces the user interface theme without changing the learning mechanism.",
+                "It is a clinical treatment protocol rather than a machine-learning research method.",
+                "It proves a pure-math theorem without a model, agent, or evaluation loop.",
+                "It uses the source's Face Age Verification Vulnerabilities Under Simple Appearance Manipulations mechanism to address the paper's stated ML/AI problem."
+              ],
+              "answer_index": 3,
+              "source_ids": [
+                "emergentmind-2607-24194-face-age-verification-vulnerabilities-under-simple-appearance-manipulations-2026"
+              ]
+            }
+          ]
+        },
+        {
+          "id": "the-angelspec-towards-real-world-high",
+          "label": "The Angelspec Towards Real World",
+          "summary": "A source-backed case board for AngelSpec: Towards Real-World High Performance Inference with Speculative Decoding: learners inspect the plain technical mechanism, the evaluation signal, and where the claim fits in Edokai's retrieval augmented generation world.",
+          "source_ids": [
+            "emergentmind-2607-25852-angelspec-towards-real-world-high-performance-inference-with-2026"
+          ],
+          "concept_ids": [
+            "angelspec-towards-real-world-high-performance-inference",
+            "angelspec-towards-real-world-high-performance-inference-with",
+            "angelspec-towards-real-world-high-performance-inference-with"
+          ],
+          "critical_concepts": [
+            "angelspec-towards-real-world-high-performance-inference",
+            "angelspec-towards-real-world-high-performance-inference-with"
+          ],
+          "prerequisite_links": [],
+          "side_retention_duels": [
+            {
+              "id": "the-angelspec-towards-real-world-duel",
+              "prompt": "What should Edokai learners remember about **AngelSpec**?",
+              "left": "Treat it as a title-only bookmark without checking the mechanism.",
+              "right": "Track the mechanism, evidence signal, and limits stated by the source.",
+              "answer": "Use the source-backed mechanism and evaluation signal; avoid inferring guarantees beyond the paper summary."
+            }
+          ],
+          "quiz_questions": [
+            {
+              "question": "In the source **AngelSpec: Towards Real-World High Performance Inference with Speculative Decoding**, what is the main learner-facing mechanism Edokai should preserve?",
+              "choices": [
+                "It uses the source's AngelSpec mechanism to address the paper's stated ML/AI problem.",
+                "It mainly replaces the user interface theme without changing the learning mechanism.",
+                "It is a clinical treatment protocol rather than a machine-learning research method.",
+                "It proves a pure-math theorem without a model, agent, or evaluation loop."
+              ],
+              "answer_index": 0,
+              "source_ids": [
+                "emergentmind-2607-25852-angelspec-towards-real-world-high-performance-inference-with-2026"
+              ]
+            }
+          ]
+        },
+        {
+          "id": "the-vidmap-exploiting-temporal-structure-for",
+          "label": "The Vidmap Exploiting Temporal Structure",
+          "summary": "A source-backed case board for VidMap: Exploiting Temporal Structure for Video-Based Structure-from-Motion: learners inspect the plain technical mechanism, the evaluation signal, and where the claim fits in Edokai's retrieval augmented generation world.",
+          "source_ids": [
+            "emergentmind-2607-27194-vidmap-exploiting-temporal-structure-for-video-based-structure-2026"
+          ],
+          "concept_ids": [
+            "vidmap-exploiting-temporal-structure-for-video-based",
+            "vidmap-exploiting-temporal-structure-for-video-based-structure",
+            "vidmap-exploiting-temporal-structure-for-video-based-structure"
+          ],
+          "critical_concepts": [
+            "vidmap-exploiting-temporal-structure-for-video-based",
+            "vidmap-exploiting-temporal-structure-for-video-based-structure"
+          ],
+          "prerequisite_links": [],
+          "side_retention_duels": [
+            {
+              "id": "the-vidmap-exploiting-temporal-structure-duel",
+              "prompt": "What should Edokai learners remember about **VidMap**?",
+              "left": "Treat it as a title-only bookmark without checking the mechanism.",
+              "right": "Track the mechanism, evidence signal, and limits stated by the source.",
+              "answer": "Use the source-backed mechanism and evaluation signal; avoid inferring guarantees beyond the paper summary."
+            }
+          ],
+          "quiz_questions": [
+            {
+              "question": "In the source **VidMap: Exploiting Temporal Structure for Video-Based Structure-from-Motion**, what is the main learner-facing mechanism Edokai should preserve?",
+              "choices": [
+                "It mainly replaces the user interface theme without changing the learning mechanism.",
+                "It is a clinical treatment protocol rather than a machine-learning research method.",
+                "It uses the source's VidMap mechanism to address the paper's stated ML/AI problem.",
+                "It proves a pure-math theorem without a model, agent, or evaluation loop."
+              ],
+              "answer_index": 2,
+              "source_ids": [
+                "emergentmind-2607-27194-vidmap-exploiting-temporal-structure-for-video-based-structure-2026"
+              ]
+            }
+          ]
         }
       ]
     }
@@ -9949,6 +10285,43 @@
         "the-stateact-program-state-before-pixels",
         "the-learning-on-the-job-continual",
         "the-bitcoin-mempool-linearization"
+      ],
+      "new_worlds_created": [],
+      "router_learning": "The 2026-07-12 homepage delta fits existing umbrellas: SLAM/event-camera/egocentric-video strengthen Perception & World Models, DeepSearch strengthens Retrieval-Augmented Generation, and beyond-human intelligence evaluation strengthens Agents.",
+      "manual_review": [
+        "Skipped pure-math, astronomy/cosmology, and clinical/medical surfaced items in this bounded pass; clinical claims need deeper safety review before routing.",
+        "New visual-SLAM/event-camera/egocentric-video items are routed under Perception & World Models; DeepSearch is routed under Retrieval-Augmented Generation; beyond-human intelligence evaluation is routed under Agents."
+      ],
+      "verification": {
+        "json_parse": "passed",
+        "dkg_test": "passed",
+        "build": "passed",
+        "supabase_sync": "passed",
+        "roundtrip": "passed"
+      }
+    },
+    {
+      "run_id": "daily-emergentmind-all-topics-20260730T140121Z",
+      "completed_at": "2026-07-30T14:01:21Z",
+      "event": "daily EmergentMind homepage all-topics ingestion",
+      "sources_added": 8,
+      "nodes_added": 25,
+      "edges_added": 32,
+      "worlds_enhanced": [
+        "perception-world-models",
+        "retrieval-augmented-generation",
+        "llm-systems-serving",
+        "agents"
+      ],
+      "regions_enhanced": [
+        "the-hifi-umi-learning-deployable-manipulation",
+        "the-a-new-role-for-relevance",
+        "the-face-age-verification-vulnerabilities-under",
+        "the-angelspec-towards-real-world-high",
+        "the-parallel-decoding-distillation-for-fast",
+        "the-vidmap-exploiting-temporal-structure-for",
+        "the-quantum-information-decoupling-beyond-finite",
+        "the-generative-artificial-intelligence-in-scientific"
       ],
       "new_worlds_created": [],
       "router_learning": "The 2026-07-12 homepage delta fits existing umbrellas: SLAM/event-camera/egocentric-video strengthen Perception & World Models, DeepSearch strengthens Retrieval-Augmented Generation, and beyond-human intelligence evaluation strengthens Agents.",

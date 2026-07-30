@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "updated_at": "2026-07-29T14:02:44Z",
+  "updated_at": "2026-07-30T14:01:21Z",
   "sources": {
     "hf-space-trl-distillation-trainer-2026": {
       "id": "hf-space-trl-distillation-trainer-2026",
@@ -3180,6 +3180,134 @@
       "provenance": [
         "Discovered from https://www.emergentmind.com/ bootstrapped trending papers on 2026-07-29.",
         "EmergentMind homepage abstract metadata: In the Bitcoin system, transactions arrive continuously at miners' mempools and await inclusion in future blocks. Every non-coinbase transaction must spend one or more unspent outputs created by previous transactions, inducing dependency constraints among transactions in the mempool. At the same time, miners are economically incentivized to prioritize transactions with higher fee rates, measured as transaction fee per unit size. This paper formulates the mempool linearization problem: given a set of transactions with associated fees, sizes, and dependency relationships, compute a dependency-respecting transaction ordering that maxim"
+      ],
+      "confidence": 0.86
+    },
+    "emergentmind-2607-25895-hifi-umi-learning-deployable-manipulation-policies-from-high-2026": {
+      "id": "emergentmind-2607-25895-hifi-umi-learning-deployable-manipulation-policies-from-high-2026",
+      "url": "https://www.emergentmind.com/papers/2607.25895",
+      "arxiv_url": "https://arxiv.org/abs/2607.25895",
+      "title": "HiFi-UMI: Learning Deployable Manipulation Policies from High-Fidelity UMI Data Alone",
+      "source_type": "emergentmind-trending-paper",
+      "authors": [],
+      "published": "2026-07-28",
+      "discovered_at": "2026-07-30T14:01:21Z",
+      "last_read_at": "2026-07-30T14:01:21Z",
+      "provenance": [
+        "Discovered from https://www.emergentmind.com/ bootstrapped trending papers on 2026-07-30.",
+        "EmergentMind homepage abstract metadata: Learning deployable manipulation policies is bottlenecked by the scarcity of data that is both high-fidelity and scalable. Real-robot teleoperation is accurate but costly to scale; robot-free UMI capture scales readily, and current practice uses the resulting data mainly for pre-training, adding a small real-robot \"anchor\" at post-training. We ask whether raising the fidelity of robot-free UMI data, rather than shrinking the real-robot fraction, can remove that anchor. We present HiFi-UMI, a portable UMI data-production system co-designed for trajectory accuracy, inter-gripper relative pose, synchronization, and field of view: head-"
+      ],
+      "confidence": 0.86
+    },
+    "emergentmind-2607-24223-a-new-role-for-relevance-guiding-corpus-interaction-2026": {
+      "id": "emergentmind-2607-24223-a-new-role-for-relevance-guiding-corpus-interaction-2026",
+      "url": "https://www.emergentmind.com/papers/2607.24223",
+      "arxiv_url": "https://arxiv.org/abs/2607.24223",
+      "title": "A New Role for Relevance: Guiding Corpus Interaction in Agentic Search",
+      "source_type": "emergentmind-trending-paper",
+      "authors": [],
+      "published": "2026-07-27",
+      "discovered_at": "2026-07-30T14:01:21Z",
+      "last_read_at": "2026-07-30T14:01:21Z",
+      "provenance": [
+        "Discovered from https://www.emergentmind.com/ bootstrapped trending papers on 2026-07-30.",
+        "EmergentMind homepage abstract metadata: Relevance is a query-dependent estimate of whether a document or excerpt contains useful evidence. Existing retrieval agents use relevance to select top-$k$ content, but document relevance alone cannot localize, compose, or verify the evidence required by complex questions. Direct Corpus Interaction (DCI) enables such fine-grained operations through grep-style exploration, but its relevance-agnostic search can expose useful clues late and delay convergence. Recent advances use relevance to narrow the corpus into a working space for interaction. Once interaction begins, however, relevance still does not directly guide which documents"
+      ],
+      "confidence": 0.86
+    },
+    "emergentmind-2607-24194-face-age-verification-vulnerabilities-under-simple-appearance-manipulations-2026": {
+      "id": "emergentmind-2607-24194-face-age-verification-vulnerabilities-under-simple-appearance-manipulations-2026",
+      "url": "https://www.emergentmind.com/papers/2607.24194",
+      "arxiv_url": "https://arxiv.org/abs/2607.24194",
+      "title": "Face Age Verification Vulnerabilities Under Simple Appearance Manipulations",
+      "source_type": "emergentmind-trending-paper",
+      "authors": [],
+      "published": "2026-07-27",
+      "discovered_at": "2026-07-30T14:01:21Z",
+      "last_read_at": "2026-07-30T14:01:21Z",
+      "provenance": [
+        "Discovered from https://www.emergentmind.com/ bootstrapped trending papers on 2026-07-30.",
+        "EmergentMind homepage abstract metadata: Online platforms increasingly rely on automated age estimation systems to enforce minimum-age policies. Focusing on vision-based models designed for this task, concerns arise regarding their robustness to simple appearance changes that underage individuals may use to bypass such systems, such as drawing a mustache or applying lipstick. In this work, we present a systematic study of age verification robustness by simulating visual alterations that can be easily achieved by underage individuals. We evaluate seven models, including vision, vision-language, and multimodal large language models, across three datasets and four manipulatio"
+      ],
+      "confidence": 0.86
+    },
+    "emergentmind-2607-25852-angelspec-towards-real-world-high-performance-inference-with-2026": {
+      "id": "emergentmind-2607-25852-angelspec-towards-real-world-high-performance-inference-with-2026",
+      "url": "https://www.emergentmind.com/papers/2607.25852",
+      "arxiv_url": "https://arxiv.org/abs/2607.25852",
+      "title": "AngelSpec: Towards Real-World High Performance Inference with Speculative Decoding",
+      "source_type": "emergentmind-trending-paper",
+      "authors": [],
+      "published": "2026-07-28",
+      "discovered_at": "2026-07-30T14:01:21Z",
+      "last_read_at": "2026-07-30T14:01:21Z",
+      "provenance": [
+        "Discovered from https://www.emergentmind.com/ bootstrapped trending papers on 2026-07-30.",
+        "EmergentMind homepage abstract metadata: Speculative decoding accelerates large language model inference without changing the target distribution, but no single drafting structure performs best across real-world workloads. Autoregressive multi-token prediction (MTP) is a lightweight, stable proposal mechanism, whereas block-parallel diffusion amortizes drafting latency over much longer candidate sequences; the better choice depends strongly on the output distribution. We present AngelSpec, a unified training framework for MTP and block-parallel speculative decoding that addresses this heterogeneity at three levels. At the training level, rather than fitting one universal d"
+      ],
+      "confidence": 0.86
+    },
+    "emergentmind-2607-26004-parallel-decoding-distillation-for-fast-image-and-video-2026": {
+      "id": "emergentmind-2607-26004-parallel-decoding-distillation-for-fast-image-and-video-2026",
+      "url": "https://www.emergentmind.com/papers/2607.26004",
+      "arxiv_url": "https://arxiv.org/abs/2607.26004",
+      "title": "Parallel Decoding Distillation for Fast Image and Video Generation",
+      "source_type": "emergentmind-trending-paper",
+      "authors": [],
+      "published": "2026-07-28",
+      "discovered_at": "2026-07-30T14:01:21Z",
+      "last_read_at": "2026-07-30T14:01:21Z",
+      "provenance": [
+        "Discovered from https://www.emergentmind.com/ bootstrapped trending papers on 2026-07-30.",
+        "EmergentMind homepage abstract metadata: Generation in video diffusion or flow models is computationally expensive due to the slow and iterative sampling process. Current state-of-the-art (SOTA) acceleration methods heavily rely on variational score distillation (VSD) and adversarial losses to distill diffusion models into few-step generators. Albeit achieving high-quality video generation, these training losses are notoriously hard to optimize and suffer from mode collapse, leading to loss of video diversity and lack of motion. In this paper, we introduce Parallel Decoding Distillation (PDD), a simplified and scalable trajectory-based distillation method for fast inferenc"
+      ],
+      "confidence": 0.86
+    },
+    "emergentmind-2607-27194-vidmap-exploiting-temporal-structure-for-video-based-structure-2026": {
+      "id": "emergentmind-2607-27194-vidmap-exploiting-temporal-structure-for-video-based-structure-2026",
+      "url": "https://www.emergentmind.com/papers/2607.27194",
+      "arxiv_url": "https://arxiv.org/abs/2607.27194",
+      "title": "VidMap: Exploiting Temporal Structure for Video-Based Structure-from-Motion",
+      "source_type": "emergentmind-trending-paper",
+      "authors": [],
+      "published": "2026-07-29",
+      "discovered_at": "2026-07-30T14:01:21Z",
+      "last_read_at": "2026-07-30T14:01:21Z",
+      "provenance": [
+        "Discovered from https://www.emergentmind.com/ bootstrapped trending papers on 2026-07-30.",
+        "EmergentMind homepage abstract metadata: Accurately recovering the camera's calibration and metric poses for any unconstrained video would unlock large-scale training data for navigation and scene understanding. The dominant approaches to this problem are severely limited: Simultaneous Localization and Mapping (SLAM) is sensitive to initialization and transient failures due to its causal, incremental nature; it is often over-optimized for real-time operation and generally requires known camera calibration; while Structure-from-Motion (SfM) typically forgoes any image ordering, enabling optimal initialization and global optimization, but lacks robustness to visual symmetrie"
+      ],
+      "confidence": 0.86
+    },
+    "emergentmind-2607-26123-quantum-information-decoupling-beyond-finite-dimensions-2026": {
+      "id": "emergentmind-2607-26123-quantum-information-decoupling-beyond-finite-dimensions-2026",
+      "url": "https://www.emergentmind.com/papers/2607.26123",
+      "arxiv_url": "https://arxiv.org/abs/2607.26123",
+      "title": "Quantum Information Decoupling Beyond Finite Dimensions",
+      "source_type": "emergentmind-trending-paper",
+      "authors": [],
+      "published": "2026-07-28",
+      "discovered_at": "2026-07-30T14:01:21Z",
+      "last_read_at": "2026-07-30T14:01:21Z",
+      "provenance": [
+        "Discovered from https://www.emergentmind.com/ bootstrapped trending papers on 2026-07-30.",
+        "EmergentMind homepage abstract metadata: Quantum information decoupling is a pillar of quantum information theory, underlying quantum communication, error correction, and information recovery. However, its existing formulations rely on random unitary operations tied to finite-dimensional assumptions on quantum systems. Here we establish a decoupling framework for arbitrary separable, possibly infinite-dimensional systems. For finite-dimensional inputs and arbitrary separable reference/output systems, we derive error bounds on one-shot decoupling for completely positive maps in terms of sandwiched Rényi conditional entropies. For partial-trace decoupling with finite-dimensi"
+      ],
+      "confidence": 0.86
+    },
+    "emergentmind-2607-24879-generative-artificial-intelligence-in-scientific-research-individual-benefits-2026": {
+      "id": "emergentmind-2607-24879-generative-artificial-intelligence-in-scientific-research-individual-benefits-2026",
+      "url": "https://www.emergentmind.com/papers/2607.24879",
+      "arxiv_url": "https://arxiv.org/abs/2607.24879",
+      "title": "Generative Artificial Intelligence in Scientific Research: Individual Benefits, Collective Risks, and a Framework for Responsible Research with AI",
+      "source_type": "emergentmind-trending-paper",
+      "authors": [],
+      "published": "2026-07-27",
+      "discovered_at": "2026-07-30T14:01:21Z",
+      "last_read_at": "2026-07-30T14:01:21Z",
+      "provenance": [
+        "Discovered from https://www.emergentmind.com/ bootstrapped trending papers on 2026-07-30.",
+        "EmergentMind homepage abstract metadata: This paper examines the tension between the benefits of generative artificial intelligence (AI) for scientific research and the unresolved governance questions that accompany its rapid adoption. Drawing on an academic roundtable held at the AI for Science and Innovation Workshop (Scuola IMT Alti Studi Lucca, April 2026) and on a fast-expanding empirical literature, it maps the disagreement within the research community across four stages of the research process: funding, research tasks, publication and peer review, and use and uptake. The empirical case for AI's productivity, augmentation, and democratization effects has strengthene"
       ],
       "confidence": 0.86
     }
@@ -12330,6 +12458,356 @@
       "first_seen": "2026-07-29T14:02:44Z",
       "last_seen": "2026-07-29T14:02:44Z",
       "world_hint": "agents"
+    },
+    "hifi-umi-learning-deployable-manipulation-policies-from": {
+      "id": "hifi-umi-learning-deployable-manipulation-policies-from",
+      "label": "HiFi-UMI",
+      "type": "method",
+      "summary": "Source-grounded method/approach from 'HiFi-UMI: Learning Deployable Manipulation Policies from High-Fidelity UMI Data Alone': Learning deployable manipulation policies is bottlenecked by the scarcity of data that is both high-fidelity and scalable. Real-robot teleoperation is accurate but costly to scale; robot-free UMI capture scales readily, and current practice uses the resulting data mainly for pre-training, adding a small real-robot \"anchor\" at post-training. We ask whether ra...",
+      "aliases": [],
+      "source_ids": [
+        "emergentmind-2607-25895-hifi-umi-learning-deployable-manipulation-policies-from-high-2026"
+      ],
+      "confidence": 0.78,
+      "first_seen": "2026-07-30T14:01:21Z",
+      "last_seen": "2026-07-30T14:01:21Z",
+      "world_hint": "perception-world-models"
+    },
+    "hifi-umi-learning-deployable-manipulation-policies-from-high": {
+      "id": "hifi-umi-learning-deployable-manipulation-policies-from-high",
+      "label": "HiFi-UMI problem setting",
+      "type": "concept",
+      "summary": "The learning or systems problem described by the source: Learning deployable manipulation policies is bottlenecked by the scarcity of data that is both high-fidelity and scalable. Real-robot teleoperation is accurate but costly to scale; robot-free UMI capture scales readily, and current practice uses the resulting data mainly for pre-training, adding a small real-robot \"anchor\" at post-training. We ask whether ra...",
+      "aliases": [],
+      "source_ids": [
+        "emergentmind-2607-25895-hifi-umi-learning-deployable-manipulation-policies-from-high-2026"
+      ],
+      "confidence": 0.78,
+      "first_seen": "2026-07-30T14:01:21Z",
+      "last_seen": "2026-07-30T14:01:21Z",
+      "world_hint": "perception-world-models"
+    },
+    "paper-2607-25895": {
+      "id": "paper-2607-25895",
+      "label": "HiFi-UMI: Learning Deployable Manipulation Policies from High-Fidelity UMI Data Alone",
+      "type": "paper",
+      "summary": "EmergentMind surfaced arXiv paper 2607.25895: Learning deployable manipulation policies is bottlenecked by the scarcity of data that is both high-fidelity and scalable. Real-robot teleoperation is accurate but costly to scale; robot-free UMI capture scales readily, and current practice uses the resulting data mainly for pre-training, adding a small real-robot \"anchor\" at post-training. We ask whether ra...",
+      "aliases": [],
+      "source_ids": [
+        "emergentmind-2607-25895-hifi-umi-learning-deployable-manipulation-policies-from-high-2026"
+      ],
+      "confidence": 0.78,
+      "first_seen": "2026-07-30T14:01:21Z",
+      "last_seen": "2026-07-30T14:01:21Z",
+      "world_hint": "perception-world-models"
+    },
+    "a-new-role-for-relevance-guiding-corpus": {
+      "id": "a-new-role-for-relevance-guiding-corpus",
+      "label": "A New Role for Relevance",
+      "type": "method",
+      "summary": "Source-grounded method/approach from 'A New Role for Relevance: Guiding Corpus Interaction in Agentic Search': Relevance is a query-dependent estimate of whether a document or excerpt contains useful evidence. Existing retrieval agents use relevance to select top-$k$ content, but document relevance alone cannot localize, compose, or verify the evidence required by complex questions. Direct Corpus Interaction (DCI) enables such fine-grained operations through grep-sty...",
+      "aliases": [],
+      "source_ids": [
+        "emergentmind-2607-24223-a-new-role-for-relevance-guiding-corpus-interaction-2026"
+      ],
+      "confidence": 0.78,
+      "first_seen": "2026-07-30T14:01:21Z",
+      "last_seen": "2026-07-30T14:01:21Z",
+      "world_hint": "retrieval-augmented-generation"
+    },
+    "a-new-role-for-relevance-guiding-corpus-interaction": {
+      "id": "a-new-role-for-relevance-guiding-corpus-interaction",
+      "label": "A New Role for Relevance problem setting",
+      "type": "concept",
+      "summary": "The learning or systems problem described by the source: Relevance is a query-dependent estimate of whether a document or excerpt contains useful evidence. Existing retrieval agents use relevance to select top-$k$ content, but document relevance alone cannot localize, compose, or verify the evidence required by complex questions. Direct Corpus Interaction (DCI) enables such fine-grained operations through grep-sty...",
+      "aliases": [],
+      "source_ids": [
+        "emergentmind-2607-24223-a-new-role-for-relevance-guiding-corpus-interaction-2026"
+      ],
+      "confidence": 0.78,
+      "first_seen": "2026-07-30T14:01:21Z",
+      "last_seen": "2026-07-30T14:01:21Z",
+      "world_hint": "retrieval-augmented-generation"
+    },
+    "paper-2607-24223": {
+      "id": "paper-2607-24223",
+      "label": "A New Role for Relevance: Guiding Corpus Interaction in Agentic Search",
+      "type": "paper",
+      "summary": "EmergentMind surfaced arXiv paper 2607.24223: Relevance is a query-dependent estimate of whether a document or excerpt contains useful evidence. Existing retrieval agents use relevance to select top-$k$ content, but document relevance alone cannot localize, compose, or verify the evidence required by complex questions. Direct Corpus Interaction (DCI) enables such fine-grained operations through grep-sty...",
+      "aliases": [],
+      "source_ids": [
+        "emergentmind-2607-24223-a-new-role-for-relevance-guiding-corpus-interaction-2026"
+      ],
+      "confidence": 0.78,
+      "first_seen": "2026-07-30T14:01:21Z",
+      "last_seen": "2026-07-30T14:01:21Z",
+      "world_hint": "retrieval-augmented-generation"
+    },
+    "face-age-verification-vulnerabilities-under-simple-appearance": {
+      "id": "face-age-verification-vulnerabilities-under-simple-appearance",
+      "label": "Face Age Verification Vulnerabilities Under Simple Appearance Manipulations",
+      "type": "method",
+      "summary": "Source-grounded method/approach from 'Face Age Verification Vulnerabilities Under Simple Appearance Manipulations': Online platforms increasingly rely on automated age estimation systems to enforce minimum-age policies. Focusing on vision-based models designed for this task, concerns arise regarding their robustness to simple appearance changes that underage individuals may use to bypass such systems, such as drawing a mustache or applying lipstick. In this work, we prese...",
+      "aliases": [],
+      "source_ids": [
+        "emergentmind-2607-24194-face-age-verification-vulnerabilities-under-simple-appearance-manipulations-2026"
+      ],
+      "confidence": 0.78,
+      "first_seen": "2026-07-30T14:01:21Z",
+      "last_seen": "2026-07-30T14:01:21Z",
+      "world_hint": "retrieval-augmented-generation"
+    },
+    "face-age-verification-vulnerabilities-under-simple-appearance-manipulations": {
+      "id": "face-age-verification-vulnerabilities-under-simple-appearance-manipulations",
+      "label": "Face Age Verification Vulnerabilities Under Simple Appearance Manipulations problem setting",
+      "type": "concept",
+      "summary": "The learning or systems problem described by the source: Online platforms increasingly rely on automated age estimation systems to enforce minimum-age policies. Focusing on vision-based models designed for this task, concerns arise regarding their robustness to simple appearance changes that underage individuals may use to bypass such systems, such as drawing a mustache or applying lipstick. In this work, we prese...",
+      "aliases": [],
+      "source_ids": [
+        "emergentmind-2607-24194-face-age-verification-vulnerabilities-under-simple-appearance-manipulations-2026"
+      ],
+      "confidence": 0.78,
+      "first_seen": "2026-07-30T14:01:21Z",
+      "last_seen": "2026-07-30T14:01:21Z",
+      "world_hint": "retrieval-augmented-generation"
+    },
+    "paper-2607-24194": {
+      "id": "paper-2607-24194",
+      "label": "Face Age Verification Vulnerabilities Under Simple Appearance Manipulations",
+      "type": "paper",
+      "summary": "EmergentMind surfaced arXiv paper 2607.24194: Online platforms increasingly rely on automated age estimation systems to enforce minimum-age policies. Focusing on vision-based models designed for this task, concerns arise regarding their robustness to simple appearance changes that underage individuals may use to bypass such systems, such as drawing a mustache or applying lipstick. In this work, we prese...",
+      "aliases": [],
+      "source_ids": [
+        "emergentmind-2607-24194-face-age-verification-vulnerabilities-under-simple-appearance-manipulations-2026"
+      ],
+      "confidence": 0.78,
+      "first_seen": "2026-07-30T14:01:21Z",
+      "last_seen": "2026-07-30T14:01:21Z",
+      "world_hint": "retrieval-augmented-generation"
+    },
+    "angelspec-towards-real-world-high-performance-inference": {
+      "id": "angelspec-towards-real-world-high-performance-inference",
+      "label": "AngelSpec",
+      "type": "method",
+      "summary": "Source-grounded method/approach from 'AngelSpec: Towards Real-World High Performance Inference with Speculative Decoding': Speculative decoding accelerates large language model inference without changing the target distribution, but no single drafting structure performs best across real-world workloads. Autoregressive multi-token prediction (MTP) is a lightweight, stable proposal mechanism, whereas block-parallel diffusion amortizes drafting latency over much longer candidate se...",
+      "aliases": [],
+      "source_ids": [
+        "emergentmind-2607-25852-angelspec-towards-real-world-high-performance-inference-with-2026"
+      ],
+      "confidence": 0.78,
+      "first_seen": "2026-07-30T14:01:21Z",
+      "last_seen": "2026-07-30T14:01:21Z",
+      "world_hint": "retrieval-augmented-generation"
+    },
+    "angelspec-towards-real-world-high-performance-inference-with": {
+      "id": "angelspec-towards-real-world-high-performance-inference-with",
+      "label": "AngelSpec problem setting",
+      "type": "concept",
+      "summary": "The learning or systems problem described by the source: Speculative decoding accelerates large language model inference without changing the target distribution, but no single drafting structure performs best across real-world workloads. Autoregressive multi-token prediction (MTP) is a lightweight, stable proposal mechanism, whereas block-parallel diffusion amortizes drafting latency over much longer candidate se...",
+      "aliases": [],
+      "source_ids": [
+        "emergentmind-2607-25852-angelspec-towards-real-world-high-performance-inference-with-2026"
+      ],
+      "confidence": 0.78,
+      "first_seen": "2026-07-30T14:01:21Z",
+      "last_seen": "2026-07-30T14:01:21Z",
+      "world_hint": "retrieval-augmented-generation"
+    },
+    "paper-2607-25852": {
+      "id": "paper-2607-25852",
+      "label": "AngelSpec: Towards Real-World High Performance Inference with Speculative Decoding",
+      "type": "paper",
+      "summary": "EmergentMind surfaced arXiv paper 2607.25852: Speculative decoding accelerates large language model inference without changing the target distribution, but no single drafting structure performs best across real-world workloads. Autoregressive multi-token prediction (MTP) is a lightweight, stable proposal mechanism, whereas block-parallel diffusion amortizes drafting latency over much longer candidate se...",
+      "aliases": [],
+      "source_ids": [
+        "emergentmind-2607-25852-angelspec-towards-real-world-high-performance-inference-with-2026"
+      ],
+      "confidence": 0.78,
+      "first_seen": "2026-07-30T14:01:21Z",
+      "last_seen": "2026-07-30T14:01:21Z",
+      "world_hint": "retrieval-augmented-generation"
+    },
+    "parallel-decoding-distillation-for-fast-image-and": {
+      "id": "parallel-decoding-distillation-for-fast-image-and",
+      "label": "Parallel Decoding Distillation for Fast Image and Video Generation",
+      "type": "method",
+      "summary": "Source-grounded method/approach from 'Parallel Decoding Distillation for Fast Image and Video Generation': Generation in video diffusion or flow models is computationally expensive due to the slow and iterative sampling process. Current state-of-the-art (SOTA) acceleration methods heavily rely on variational score distillation (VSD) and adversarial losses to distill diffusion models into few-step generators. Albeit achieving high-quality video generation, these t...",
+      "aliases": [],
+      "source_ids": [
+        "emergentmind-2607-26004-parallel-decoding-distillation-for-fast-image-and-video-2026"
+      ],
+      "confidence": 0.78,
+      "first_seen": "2026-07-30T14:01:21Z",
+      "last_seen": "2026-07-30T14:01:21Z",
+      "world_hint": "llm-systems-serving"
+    },
+    "parallel-decoding-distillation-for-fast-image-and-video": {
+      "id": "parallel-decoding-distillation-for-fast-image-and-video",
+      "label": "Parallel Decoding Distillation for Fast Image and Video Generation problem setting",
+      "type": "concept",
+      "summary": "The learning or systems problem described by the source: Generation in video diffusion or flow models is computationally expensive due to the slow and iterative sampling process. Current state-of-the-art (SOTA) acceleration methods heavily rely on variational score distillation (VSD) and adversarial losses to distill diffusion models into few-step generators. Albeit achieving high-quality video generation, these t...",
+      "aliases": [],
+      "source_ids": [
+        "emergentmind-2607-26004-parallel-decoding-distillation-for-fast-image-and-video-2026"
+      ],
+      "confidence": 0.78,
+      "first_seen": "2026-07-30T14:01:21Z",
+      "last_seen": "2026-07-30T14:01:21Z",
+      "world_hint": "llm-systems-serving"
+    },
+    "paper-2607-26004": {
+      "id": "paper-2607-26004",
+      "label": "Parallel Decoding Distillation for Fast Image and Video Generation",
+      "type": "paper",
+      "summary": "EmergentMind surfaced arXiv paper 2607.26004: Generation in video diffusion or flow models is computationally expensive due to the slow and iterative sampling process. Current state-of-the-art (SOTA) acceleration methods heavily rely on variational score distillation (VSD) and adversarial losses to distill diffusion models into few-step generators. Albeit achieving high-quality video generation, these t...",
+      "aliases": [],
+      "source_ids": [
+        "emergentmind-2607-26004-parallel-decoding-distillation-for-fast-image-and-video-2026"
+      ],
+      "confidence": 0.78,
+      "first_seen": "2026-07-30T14:01:21Z",
+      "last_seen": "2026-07-30T14:01:21Z",
+      "world_hint": "llm-systems-serving"
+    },
+    "vidmap-exploiting-temporal-structure-for-video-based": {
+      "id": "vidmap-exploiting-temporal-structure-for-video-based",
+      "label": "VidMap",
+      "type": "method",
+      "summary": "Source-grounded method/approach from 'VidMap: Exploiting Temporal Structure for Video-Based Structure-from-Motion': Accurately recovering the camera's calibration and metric poses for any unconstrained video would unlock large-scale training data for navigation and scene understanding. The dominant approaches to this problem are severely limited: Simultaneous Localization and Mapping (SLAM) is sensitive to initialization and transient failures due to its causal, increment...",
+      "aliases": [],
+      "source_ids": [
+        "emergentmind-2607-27194-vidmap-exploiting-temporal-structure-for-video-based-structure-2026"
+      ],
+      "confidence": 0.78,
+      "first_seen": "2026-07-30T14:01:21Z",
+      "last_seen": "2026-07-30T14:01:21Z",
+      "world_hint": "retrieval-augmented-generation"
+    },
+    "vidmap-exploiting-temporal-structure-for-video-based-structure": {
+      "id": "vidmap-exploiting-temporal-structure-for-video-based-structure",
+      "label": "VidMap problem setting",
+      "type": "concept",
+      "summary": "The learning or systems problem described by the source: Accurately recovering the camera's calibration and metric poses for any unconstrained video would unlock large-scale training data for navigation and scene understanding. The dominant approaches to this problem are severely limited: Simultaneous Localization and Mapping (SLAM) is sensitive to initialization and transient failures due to its causal, increment...",
+      "aliases": [],
+      "source_ids": [
+        "emergentmind-2607-27194-vidmap-exploiting-temporal-structure-for-video-based-structure-2026"
+      ],
+      "confidence": 0.78,
+      "first_seen": "2026-07-30T14:01:21Z",
+      "last_seen": "2026-07-30T14:01:21Z",
+      "world_hint": "retrieval-augmented-generation"
+    },
+    "paper-2607-27194": {
+      "id": "paper-2607-27194",
+      "label": "VidMap: Exploiting Temporal Structure for Video-Based Structure-from-Motion",
+      "type": "paper",
+      "summary": "EmergentMind surfaced arXiv paper 2607.27194: Accurately recovering the camera's calibration and metric poses for any unconstrained video would unlock large-scale training data for navigation and scene understanding. The dominant approaches to this problem are severely limited: Simultaneous Localization and Mapping (SLAM) is sensitive to initialization and transient failures due to its causal, increment...",
+      "aliases": [],
+      "source_ids": [
+        "emergentmind-2607-27194-vidmap-exploiting-temporal-structure-for-video-based-structure-2026"
+      ],
+      "confidence": 0.78,
+      "first_seen": "2026-07-30T14:01:21Z",
+      "last_seen": "2026-07-30T14:01:21Z",
+      "world_hint": "retrieval-augmented-generation"
+    },
+    "quantum-information-decoupling-beyond-finite-dimensions": {
+      "id": "quantum-information-decoupling-beyond-finite-dimensions",
+      "label": "Quantum Information Decoupling Beyond Finite Dimensions",
+      "type": "method",
+      "summary": "Source-grounded method/approach from 'Quantum Information Decoupling Beyond Finite Dimensions': Quantum information decoupling is a pillar of quantum information theory, underlying quantum communication, error correction, and information recovery. However, its existing formulations rely on random unitary operations tied to finite-dimensional assumptions on quantum systems. Here we establish a decoupling framework for arbitrary separable, possibly infin...",
+      "aliases": [],
+      "source_ids": [
+        "emergentmind-2607-26123-quantum-information-decoupling-beyond-finite-dimensions-2026"
+      ],
+      "confidence": 0.78,
+      "first_seen": "2026-07-30T14:01:21Z",
+      "last_seen": "2026-07-30T14:01:21Z",
+      "world_hint": "agents"
+    },
+    "quantum-information-decoupling-beyond-finite-dimensions-learning-problem": {
+      "id": "quantum-information-decoupling-beyond-finite-dimensions-learning-problem",
+      "label": "Quantum Information Decoupling Beyond Finite Dimensions problem setting",
+      "type": "concept",
+      "summary": "The learning or systems problem described by the source: Quantum information decoupling is a pillar of quantum information theory, underlying quantum communication, error correction, and information recovery. However, its existing formulations rely on random unitary operations tied to finite-dimensional assumptions on quantum systems. Here we establish a decoupling framework for arbitrary separable, possibly infin...",
+      "aliases": [],
+      "source_ids": [
+        "emergentmind-2607-26123-quantum-information-decoupling-beyond-finite-dimensions-2026"
+      ],
+      "confidence": 0.78,
+      "first_seen": "2026-07-30T14:01:21Z",
+      "last_seen": "2026-07-30T14:01:21Z",
+      "world_hint": "agents"
+    },
+    "quantum-information-decoupling-beyond-finite-dimensions-evaluation-signal": {
+      "id": "quantum-information-decoupling-beyond-finite-dimensions-evaluation-signal",
+      "label": "Quantum Information Decoupling Beyond Finite Dimensions evaluation signal",
+      "type": "concept",
+      "summary": "The source's evaluation/benchmark signal for judging the method; Edokai keeps this claim source-qualified.",
+      "aliases": [],
+      "source_ids": [
+        "emergentmind-2607-26123-quantum-information-decoupling-beyond-finite-dimensions-2026"
+      ],
+      "confidence": 0.78,
+      "first_seen": "2026-07-30T14:01:21Z",
+      "last_seen": "2026-07-30T14:01:21Z",
+      "world_hint": "agents"
+    },
+    "paper-2607-26123": {
+      "id": "paper-2607-26123",
+      "label": "Quantum Information Decoupling Beyond Finite Dimensions",
+      "type": "paper",
+      "summary": "EmergentMind surfaced arXiv paper 2607.26123: Quantum information decoupling is a pillar of quantum information theory, underlying quantum communication, error correction, and information recovery. However, its existing formulations rely on random unitary operations tied to finite-dimensional assumptions on quantum systems. Here we establish a decoupling framework for arbitrary separable, possibly infin...",
+      "aliases": [],
+      "source_ids": [
+        "emergentmind-2607-26123-quantum-information-decoupling-beyond-finite-dimensions-2026"
+      ],
+      "confidence": 0.78,
+      "first_seen": "2026-07-30T14:01:21Z",
+      "last_seen": "2026-07-30T14:01:21Z",
+      "world_hint": "agents"
+    },
+    "generative-artificial-intelligence-in-scientific-research-individual": {
+      "id": "generative-artificial-intelligence-in-scientific-research-individual",
+      "label": "Generative Artificial Intelligence in Scientific Research",
+      "type": "method",
+      "summary": "Source-grounded method/approach from 'Generative Artificial Intelligence in Scientific Research: Individual Benefits, Collective Risks, and a Framework for Responsible Research with AI': This paper examines the tension between the benefits of generative artificial intelligence (AI) for scientific research and the unresolved governance questions that accompany its rapid adoption. Drawing on an academic roundtable held at the AI for Science and Innovation Workshop (Scuola IMT Alti Studi Lucca, April 2026) and on a fast-expanding empirical lite...",
+      "aliases": [],
+      "source_ids": [
+        "emergentmind-2607-24879-generative-artificial-intelligence-in-scientific-research-individual-benefits-2026"
+      ],
+      "confidence": 0.78,
+      "first_seen": "2026-07-30T14:01:21Z",
+      "last_seen": "2026-07-30T14:01:21Z",
+      "world_hint": "perception-world-models"
+    },
+    "generative-artificial-intelligence-in-scientific-research-individual-benefits": {
+      "id": "generative-artificial-intelligence-in-scientific-research-individual-benefits",
+      "label": "Generative Artificial Intelligence in Scientific Research problem setting",
+      "type": "concept",
+      "summary": "The learning or systems problem described by the source: This paper examines the tension between the benefits of generative artificial intelligence (AI) for scientific research and the unresolved governance questions that accompany its rapid adoption. Drawing on an academic roundtable held at the AI for Science and Innovation Workshop (Scuola IMT Alti Studi Lucca, April 2026) and on a fast-expanding empirical lite...",
+      "aliases": [],
+      "source_ids": [
+        "emergentmind-2607-24879-generative-artificial-intelligence-in-scientific-research-individual-benefits-2026"
+      ],
+      "confidence": 0.78,
+      "first_seen": "2026-07-30T14:01:21Z",
+      "last_seen": "2026-07-30T14:01:21Z",
+      "world_hint": "perception-world-models"
+    },
+    "paper-2607-24879": {
+      "id": "paper-2607-24879",
+      "label": "Generative Artificial Intelligence in Scientific Research: Individual Benefits, Collective Risks, and a Framework for Responsible Research with AI",
+      "type": "paper",
+      "summary": "EmergentMind surfaced arXiv paper 2607.24879: This paper examines the tension between the benefits of generative artificial intelligence (AI) for scientific research and the unresolved governance questions that accompany its rapid adoption. Drawing on an academic roundtable held at the AI for Science and Innovation Workshop (Scuola IMT Alti Studi Lucca, April 2026) and on a fast-expanding empirical lite...",
+      "aliases": [],
+      "source_ids": [
+        "emergentmind-2607-24879-generative-artificial-intelligence-in-scientific-research-individual-benefits-2026"
+      ],
+      "confidence": 0.78,
+      "first_seen": "2026-07-30T14:01:21Z",
+      "last_seen": "2026-07-30T14:01:21Z",
+      "world_hint": "perception-world-models"
     }
   },
   "edges": [
@@ -20193,6 +20671,326 @@
         "emergentmind-2607-23787-bitcoin-mempool-linearization-2026"
       ],
       "evidence": "Routed into The Bitcoin Mempool Linearization under agents from source title and abstract."
+    },
+    {
+      "source": "paper-2607-25895",
+      "target": "hifi-umi-learning-deployable-manipulation-policies-from",
+      "relation": "paper_introduces",
+      "confidence": 0.82,
+      "source_ids": [
+        "emergentmind-2607-25895-hifi-umi-learning-deployable-manipulation-policies-from-high-2026"
+      ],
+      "evidence": "EmergentMind homepage/page metadata identify arXiv 2607.25895, 'HiFi-UMI: Learning Deployable Manipulation Policies from High-Fidelity UMI Data Alone', and summarize the method/problem."
+    },
+    {
+      "source": "hifi-umi-learning-deployable-manipulation-policies-from",
+      "target": "hifi-umi-learning-deployable-manipulation-policies-from-high",
+      "relation": "implements",
+      "confidence": 0.76,
+      "source_ids": [
+        "emergentmind-2607-25895-hifi-umi-learning-deployable-manipulation-policies-from-high-2026"
+      ],
+      "evidence": "Learning deployable manipulation policies is bottlenecked by the scarcity of data that is both high-fidelity and scalable. Real-robot teleoperation is accurate but costly to scale; robot-free UMI capture scales readily, and current practice uses the resulting data mainly for pre-"
+    },
+    {
+      "source": "hifi-umi-learning-deployable-manipulation-policies-from",
+      "target": "hifi-umi-learning-deployable-manipulation-policies-from-high",
+      "relation": "evaluates_on",
+      "confidence": 0.72,
+      "source_ids": [
+        "emergentmind-2607-25895-hifi-umi-learning-deployable-manipulation-policies-from-high-2026"
+      ],
+      "evidence": "Learning deployable manipulation policies is bottlenecked by the scarcity of data that is both high-fidelity and scalable. Real-robot teleoperation is accurate but costly to scale; robot-free UMI capture scales readily, and current practice uses the resulting data mainly for pre-"
+    },
+    {
+      "source": "hifi-umi-learning-deployable-manipulation-policies-from",
+      "target": "the-hifi-umi-learning-deployable-manipulation",
+      "relation": "belongs_to_region",
+      "confidence": 0.78,
+      "source_ids": [
+        "emergentmind-2607-25895-hifi-umi-learning-deployable-manipulation-policies-from-high-2026"
+      ],
+      "evidence": "Routed into The Hifi Umi Learning Deployable under perception-world-models from source title and abstract."
+    },
+    {
+      "source": "paper-2607-24223",
+      "target": "a-new-role-for-relevance-guiding-corpus",
+      "relation": "paper_introduces",
+      "confidence": 0.82,
+      "source_ids": [
+        "emergentmind-2607-24223-a-new-role-for-relevance-guiding-corpus-interaction-2026"
+      ],
+      "evidence": "EmergentMind homepage/page metadata identify arXiv 2607.24223, 'A New Role for Relevance: Guiding Corpus Interaction in Agentic Search', and summarize the method/problem."
+    },
+    {
+      "source": "a-new-role-for-relevance-guiding-corpus",
+      "target": "a-new-role-for-relevance-guiding-corpus-interaction",
+      "relation": "implements",
+      "confidence": 0.76,
+      "source_ids": [
+        "emergentmind-2607-24223-a-new-role-for-relevance-guiding-corpus-interaction-2026"
+      ],
+      "evidence": "Relevance is a query-dependent estimate of whether a document or excerpt contains useful evidence. Existing retrieval agents use relevance to select top-$k$ content, but document relevance alone cannot localize, compose, or verify the evidence required by complex questions. Direc"
+    },
+    {
+      "source": "a-new-role-for-relevance-guiding-corpus",
+      "target": "a-new-role-for-relevance-guiding-corpus-interaction",
+      "relation": "evaluates_on",
+      "confidence": 0.72,
+      "source_ids": [
+        "emergentmind-2607-24223-a-new-role-for-relevance-guiding-corpus-interaction-2026"
+      ],
+      "evidence": "Relevance is a query-dependent estimate of whether a document or excerpt contains useful evidence. Existing retrieval agents use relevance to select top-$k$ content, but document relevance alone cannot localize, compose, or verify the evidence required by complex questions. Direc"
+    },
+    {
+      "source": "a-new-role-for-relevance-guiding-corpus",
+      "target": "the-a-new-role-for-relevance",
+      "relation": "belongs_to_region",
+      "confidence": 0.78,
+      "source_ids": [
+        "emergentmind-2607-24223-a-new-role-for-relevance-guiding-corpus-interaction-2026"
+      ],
+      "evidence": "Routed into The A New Role For under retrieval-augmented-generation from source title and abstract."
+    },
+    {
+      "source": "paper-2607-24194",
+      "target": "face-age-verification-vulnerabilities-under-simple-appearance",
+      "relation": "paper_introduces",
+      "confidence": 0.82,
+      "source_ids": [
+        "emergentmind-2607-24194-face-age-verification-vulnerabilities-under-simple-appearance-manipulations-2026"
+      ],
+      "evidence": "EmergentMind homepage/page metadata identify arXiv 2607.24194, 'Face Age Verification Vulnerabilities Under Simple Appearance Manipulations', and summarize the method/problem."
+    },
+    {
+      "source": "face-age-verification-vulnerabilities-under-simple-appearance",
+      "target": "face-age-verification-vulnerabilities-under-simple-appearance-manipulations",
+      "relation": "implements",
+      "confidence": 0.76,
+      "source_ids": [
+        "emergentmind-2607-24194-face-age-verification-vulnerabilities-under-simple-appearance-manipulations-2026"
+      ],
+      "evidence": "Online platforms increasingly rely on automated age estimation systems to enforce minimum-age policies. Focusing on vision-based models designed for this task, concerns arise regarding their robustness to simple appearance changes that underage individuals may use to bypass such "
+    },
+    {
+      "source": "face-age-verification-vulnerabilities-under-simple-appearance",
+      "target": "face-age-verification-vulnerabilities-under-simple-appearance-manipulations",
+      "relation": "evaluates_on",
+      "confidence": 0.72,
+      "source_ids": [
+        "emergentmind-2607-24194-face-age-verification-vulnerabilities-under-simple-appearance-manipulations-2026"
+      ],
+      "evidence": "Online platforms increasingly rely on automated age estimation systems to enforce minimum-age policies. Focusing on vision-based models designed for this task, concerns arise regarding their robustness to simple appearance changes that underage individuals may use to bypass such "
+    },
+    {
+      "source": "face-age-verification-vulnerabilities-under-simple-appearance",
+      "target": "the-face-age-verification-vulnerabilities-under",
+      "relation": "belongs_to_region",
+      "confidence": 0.78,
+      "source_ids": [
+        "emergentmind-2607-24194-face-age-verification-vulnerabilities-under-simple-appearance-manipulations-2026"
+      ],
+      "evidence": "Routed into The Face Age Verification Vulnerabilities under retrieval-augmented-generation from source title and abstract."
+    },
+    {
+      "source": "paper-2607-25852",
+      "target": "angelspec-towards-real-world-high-performance-inference",
+      "relation": "paper_introduces",
+      "confidence": 0.82,
+      "source_ids": [
+        "emergentmind-2607-25852-angelspec-towards-real-world-high-performance-inference-with-2026"
+      ],
+      "evidence": "EmergentMind homepage/page metadata identify arXiv 2607.25852, 'AngelSpec: Towards Real-World High Performance Inference with Speculative Decoding', and summarize the method/problem."
+    },
+    {
+      "source": "angelspec-towards-real-world-high-performance-inference",
+      "target": "angelspec-towards-real-world-high-performance-inference-with",
+      "relation": "implements",
+      "confidence": 0.76,
+      "source_ids": [
+        "emergentmind-2607-25852-angelspec-towards-real-world-high-performance-inference-with-2026"
+      ],
+      "evidence": "Speculative decoding accelerates large language model inference without changing the target distribution, but no single drafting structure performs best across real-world workloads. Autoregressive multi-token prediction (MTP) is a lightweight, stable proposal mechanism, whereas b"
+    },
+    {
+      "source": "angelspec-towards-real-world-high-performance-inference",
+      "target": "angelspec-towards-real-world-high-performance-inference-with",
+      "relation": "evaluates_on",
+      "confidence": 0.72,
+      "source_ids": [
+        "emergentmind-2607-25852-angelspec-towards-real-world-high-performance-inference-with-2026"
+      ],
+      "evidence": "Speculative decoding accelerates large language model inference without changing the target distribution, but no single drafting structure performs best across real-world workloads. Autoregressive multi-token prediction (MTP) is a lightweight, stable proposal mechanism, whereas b"
+    },
+    {
+      "source": "angelspec-towards-real-world-high-performance-inference",
+      "target": "the-angelspec-towards-real-world-high",
+      "relation": "belongs_to_region",
+      "confidence": 0.78,
+      "source_ids": [
+        "emergentmind-2607-25852-angelspec-towards-real-world-high-performance-inference-with-2026"
+      ],
+      "evidence": "Routed into The Angelspec Towards Real World under retrieval-augmented-generation from source title and abstract."
+    },
+    {
+      "source": "paper-2607-26004",
+      "target": "parallel-decoding-distillation-for-fast-image-and",
+      "relation": "paper_introduces",
+      "confidence": 0.82,
+      "source_ids": [
+        "emergentmind-2607-26004-parallel-decoding-distillation-for-fast-image-and-video-2026"
+      ],
+      "evidence": "EmergentMind homepage/page metadata identify arXiv 2607.26004, 'Parallel Decoding Distillation for Fast Image and Video Generation', and summarize the method/problem."
+    },
+    {
+      "source": "parallel-decoding-distillation-for-fast-image-and",
+      "target": "parallel-decoding-distillation-for-fast-image-and-video",
+      "relation": "implements",
+      "confidence": 0.76,
+      "source_ids": [
+        "emergentmind-2607-26004-parallel-decoding-distillation-for-fast-image-and-video-2026"
+      ],
+      "evidence": "Generation in video diffusion or flow models is computationally expensive due to the slow and iterative sampling process. Current state-of-the-art (SOTA) acceleration methods heavily rely on variational score distillation (VSD) and adversarial losses to distill diffusion models i"
+    },
+    {
+      "source": "parallel-decoding-distillation-for-fast-image-and",
+      "target": "parallel-decoding-distillation-for-fast-image-and-video",
+      "relation": "evaluates_on",
+      "confidence": 0.72,
+      "source_ids": [
+        "emergentmind-2607-26004-parallel-decoding-distillation-for-fast-image-and-video-2026"
+      ],
+      "evidence": "Generation in video diffusion or flow models is computationally expensive due to the slow and iterative sampling process. Current state-of-the-art (SOTA) acceleration methods heavily rely on variational score distillation (VSD) and adversarial losses to distill diffusion models i"
+    },
+    {
+      "source": "parallel-decoding-distillation-for-fast-image-and",
+      "target": "the-parallel-decoding-distillation-for-fast",
+      "relation": "belongs_to_region",
+      "confidence": 0.78,
+      "source_ids": [
+        "emergentmind-2607-26004-parallel-decoding-distillation-for-fast-image-and-video-2026"
+      ],
+      "evidence": "Routed into The Parallel Decoding Distillation For under llm-systems-serving from source title and abstract."
+    },
+    {
+      "source": "paper-2607-27194",
+      "target": "vidmap-exploiting-temporal-structure-for-video-based",
+      "relation": "paper_introduces",
+      "confidence": 0.82,
+      "source_ids": [
+        "emergentmind-2607-27194-vidmap-exploiting-temporal-structure-for-video-based-structure-2026"
+      ],
+      "evidence": "EmergentMind homepage/page metadata identify arXiv 2607.27194, 'VidMap: Exploiting Temporal Structure for Video-Based Structure-from-Motion', and summarize the method/problem."
+    },
+    {
+      "source": "vidmap-exploiting-temporal-structure-for-video-based",
+      "target": "vidmap-exploiting-temporal-structure-for-video-based-structure",
+      "relation": "implements",
+      "confidence": 0.76,
+      "source_ids": [
+        "emergentmind-2607-27194-vidmap-exploiting-temporal-structure-for-video-based-structure-2026"
+      ],
+      "evidence": "Accurately recovering the camera's calibration and metric poses for any unconstrained video would unlock large-scale training data for navigation and scene understanding. The dominant approaches to this problem are severely limited: Simultaneous Localization and Mapping (SLAM) is"
+    },
+    {
+      "source": "vidmap-exploiting-temporal-structure-for-video-based",
+      "target": "vidmap-exploiting-temporal-structure-for-video-based-structure",
+      "relation": "evaluates_on",
+      "confidence": 0.72,
+      "source_ids": [
+        "emergentmind-2607-27194-vidmap-exploiting-temporal-structure-for-video-based-structure-2026"
+      ],
+      "evidence": "Accurately recovering the camera's calibration and metric poses for any unconstrained video would unlock large-scale training data for navigation and scene understanding. The dominant approaches to this problem are severely limited: Simultaneous Localization and Mapping (SLAM) is"
+    },
+    {
+      "source": "vidmap-exploiting-temporal-structure-for-video-based",
+      "target": "the-vidmap-exploiting-temporal-structure-for",
+      "relation": "belongs_to_region",
+      "confidence": 0.78,
+      "source_ids": [
+        "emergentmind-2607-27194-vidmap-exploiting-temporal-structure-for-video-based-structure-2026"
+      ],
+      "evidence": "Routed into The Vidmap Exploiting Temporal Structure under retrieval-augmented-generation from source title and abstract."
+    },
+    {
+      "source": "paper-2607-26123",
+      "target": "quantum-information-decoupling-beyond-finite-dimensions",
+      "relation": "paper_introduces",
+      "confidence": 0.82,
+      "source_ids": [
+        "emergentmind-2607-26123-quantum-information-decoupling-beyond-finite-dimensions-2026"
+      ],
+      "evidence": "EmergentMind homepage/page metadata identify arXiv 2607.26123, 'Quantum Information Decoupling Beyond Finite Dimensions', and summarize the method/problem."
+    },
+    {
+      "source": "quantum-information-decoupling-beyond-finite-dimensions",
+      "target": "quantum-information-decoupling-beyond-finite-dimensions-learning-problem",
+      "relation": "implements",
+      "confidence": 0.76,
+      "source_ids": [
+        "emergentmind-2607-26123-quantum-information-decoupling-beyond-finite-dimensions-2026"
+      ],
+      "evidence": "Quantum information decoupling is a pillar of quantum information theory, underlying quantum communication, error correction, and information recovery. However, its existing formulations rely on random unitary operations tied to finite-dimensional assumptions on quantum systems. "
+    },
+    {
+      "source": "quantum-information-decoupling-beyond-finite-dimensions",
+      "target": "quantum-information-decoupling-beyond-finite-dimensions-evaluation-signal",
+      "relation": "evaluates_on",
+      "confidence": 0.72,
+      "source_ids": [
+        "emergentmind-2607-26123-quantum-information-decoupling-beyond-finite-dimensions-2026"
+      ],
+      "evidence": "Quantum information decoupling is a pillar of quantum information theory, underlying quantum communication, error correction, and information recovery. However, its existing formulations rely on random unitary operations tied to finite-dimensional assumptions on quantum systems. "
+    },
+    {
+      "source": "quantum-information-decoupling-beyond-finite-dimensions",
+      "target": "the-quantum-information-decoupling-beyond-finite",
+      "relation": "belongs_to_region",
+      "confidence": 0.78,
+      "source_ids": [
+        "emergentmind-2607-26123-quantum-information-decoupling-beyond-finite-dimensions-2026"
+      ],
+      "evidence": "Routed into The Quantum Information Decoupling Beyond under agents from source title and abstract."
+    },
+    {
+      "source": "paper-2607-24879",
+      "target": "generative-artificial-intelligence-in-scientific-research-individual",
+      "relation": "paper_introduces",
+      "confidence": 0.82,
+      "source_ids": [
+        "emergentmind-2607-24879-generative-artificial-intelligence-in-scientific-research-individual-benefits-2026"
+      ],
+      "evidence": "EmergentMind homepage/page metadata identify arXiv 2607.24879, 'Generative Artificial Intelligence in Scientific Research: Individual Benefits, Collective Risks, and a Framework for Responsible Research with AI', and summarize the method/problem."
+    },
+    {
+      "source": "generative-artificial-intelligence-in-scientific-research-individual",
+      "target": "generative-artificial-intelligence-in-scientific-research-individual-benefits",
+      "relation": "implements",
+      "confidence": 0.76,
+      "source_ids": [
+        "emergentmind-2607-24879-generative-artificial-intelligence-in-scientific-research-individual-benefits-2026"
+      ],
+      "evidence": "This paper examines the tension between the benefits of generative artificial intelligence (AI) for scientific research and the unresolved governance questions that accompany its rapid adoption. Drawing on an academic roundtable held at the AI for Science and Innovation Workshop "
+    },
+    {
+      "source": "generative-artificial-intelligence-in-scientific-research-individual",
+      "target": "generative-artificial-intelligence-in-scientific-research-individual-benefits",
+      "relation": "evaluates_on",
+      "confidence": 0.72,
+      "source_ids": [
+        "emergentmind-2607-24879-generative-artificial-intelligence-in-scientific-research-individual-benefits-2026"
+      ],
+      "evidence": "This paper examines the tension between the benefits of generative artificial intelligence (AI) for scientific research and the unresolved governance questions that accompany its rapid adoption. Drawing on an academic roundtable held at the AI for Science and Innovation Workshop "
+    },
+    {
+      "source": "generative-artificial-intelligence-in-scientific-research-individual",
+      "target": "the-generative-artificial-intelligence-in-scientific",
+      "relation": "belongs_to_region",
+      "confidence": 0.78,
+      "source_ids": [
+        "emergentmind-2607-24879-generative-artificial-intelligence-in-scientific-research-individual-benefits-2026"
+      ],
+      "evidence": "Routed into The Generative Artificial Intelligence In under perception-world-models from source title and abstract."
     }
   ],
   "open_questions": [
@@ -21732,6 +22530,57 @@
         "perception-world-models",
         "agents",
         "llm-systems-serving"
+      ],
+      "regions_added": 8,
+      "manual_review": [
+        "Skipped pure-math, astronomy/cosmology, and clinical/medical surfaced items in this bounded pass; clinical claims need deeper safety review before routing.",
+        "New visual-SLAM/event-camera/egocentric-video items are routed under Perception & World Models; DeepSearch is routed under Retrieval-Augmented Generation; beyond-human intelligence evaluation is routed under Agents."
+      ],
+      "verification": {
+        "json_parse": "passed",
+        "dkg_test": "passed",
+        "build": "passed",
+        "supabase_sync": "passed",
+        "roundtrip": "passed"
+      }
+    },
+    {
+      "run_id": "daily-emergentmind-all-topics-20260730T140121Z",
+      "completed_at": "2026-07-30T14:01:21Z",
+      "type": "daily-emergentmind-all-topics",
+      "homepage_url": "https://www.emergentmind.com/",
+      "homepage_status": 200,
+      "homepage_papers": 45,
+      "source_ids": [
+        "emergentmind-2607-25895-hifi-umi-learning-deployable-manipulation-policies-from-high-2026",
+        "emergentmind-2607-24223-a-new-role-for-relevance-guiding-corpus-interaction-2026",
+        "emergentmind-2607-24194-face-age-verification-vulnerabilities-under-simple-appearance-manipulations-2026",
+        "emergentmind-2607-25852-angelspec-towards-real-world-high-performance-inference-with-2026",
+        "emergentmind-2607-26004-parallel-decoding-distillation-for-fast-image-and-video-2026",
+        "emergentmind-2607-27194-vidmap-exploiting-temporal-structure-for-video-based-structure-2026",
+        "emergentmind-2607-26123-quantum-information-decoupling-beyond-finite-dimensions-2026",
+        "emergentmind-2607-24879-generative-artificial-intelligence-in-scientific-research-individual-benefits-2026"
+      ],
+      "page_status": {
+        "2607.25895": 200,
+        "2607.24223": 200,
+        "2607.24194": 200,
+        "2607.25852": 200,
+        "2607.26004": 200,
+        "2607.27194": 200,
+        "2607.26123": 200,
+        "2607.24879": 200
+      },
+      "sources_added": 8,
+      "sources_updated": 0,
+      "nodes_added": 25,
+      "nodes_updated": 0,
+      "edges_added": 32,
+      "worlds_touched": [
+        "perception-world-models",
+        "retrieval-augmented-generation",
+        "llm-systems-serving",
+        "agents"
       ],
       "regions_added": 8,
       "manual_review": [
