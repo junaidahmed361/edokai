@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "updated_at": "2026-07-30T14:01:21Z",
+  "updated_at": "2026-07-31T14:41:24Z",
   "macro_worlds": {
     "agents": {
       "label": "Agents",
@@ -2487,6 +2487,48 @@
               ]
             }
           ]
+        },
+        {
+          "id": "the-cognitive-convergence-deep-similarities-between",
+          "label": "The Cognitive Convergence Deep Similarities",
+          "summary": "A source-backed case board for Cognitive Convergence: Deep Similarities Between Large Language Models and Human Cognition: learners inspect the plain technical mechanism, the evaluation signal, and where the claim fits in Edokai's transformer architecture world.",
+          "source_ids": [
+            "emergentmind-2607-26179-cognitive-convergence-deep-similarities-between-large-language-models-2026"
+          ],
+          "concept_ids": [
+            "cognitive-convergence-deep-similarities-between-large-language",
+            "cognitive-convergence-deep-similarities-between-large-language-models",
+            "cognitive-convergence-deep-similarities-between-large-language-models"
+          ],
+          "critical_concepts": [
+            "cognitive-convergence-deep-similarities-between-large-language",
+            "cognitive-convergence-deep-similarities-between-large-language-models"
+          ],
+          "prerequisite_links": [],
+          "side_retention_duels": [
+            {
+              "id": "the-cognitive-convergence-deep-similarities-duel",
+              "prompt": "What should Edokai learners remember about **Cognitive Convergence**?",
+              "left": "Treat it as a title-only bookmark without checking the mechanism.",
+              "right": "Track the mechanism, evidence signal, and limits stated by the source.",
+              "answer": "Use the source-backed mechanism and evaluation signal; avoid inferring guarantees beyond the paper summary."
+            }
+          ],
+          "quiz_questions": [
+            {
+              "question": "In the source **Cognitive Convergence: Deep Similarities Between Large Language Models and Human Cognition**, what is the main learner-facing mechanism Edokai should preserve?",
+              "choices": [
+                "It mainly replaces the user interface theme without changing the learning mechanism.",
+                "It is a clinical treatment protocol rather than a machine-learning research method.",
+                "It proves a pure-math theorem without a model, agent, or evaluation loop.",
+                "It uses the source's Cognitive Convergence mechanism to address the paper's stated ML/AI problem."
+              ],
+              "answer_index": 3,
+              "source_ids": [
+                "emergentmind-2607-26179-cognitive-convergence-deep-similarities-between-large-language-models-2026"
+              ]
+            }
+          ]
         }
       ]
     },
@@ -3386,6 +3428,48 @@
               "answer_index": 1,
               "source_ids": [
                 "emergentmind-2607-21653-molt-a-scalable-pytorch-native-training-framework-for-2026"
+              ]
+            }
+          ]
+        },
+        {
+          "id": "the-gpt-red-automated-red-teaming",
+          "label": "The Gpt Red Automated Red",
+          "summary": "A source-backed case board for GPT-Red: Automated Red Teaming via Self-Play at Scale: learners inspect the plain technical mechanism, the evaluation signal, and where the claim fits in Edokai's generative models world.",
+          "source_ids": [
+            "emergentmind-2607-26115-gpt-red-automated-red-teaming-via-self-play-2026"
+          ],
+          "concept_ids": [
+            "gpt-red-automated-red-teaming-via-self",
+            "gpt-red-automated-red-teaming-via-self-play",
+            "gpt-red-automated-red-teaming-via-self-play"
+          ],
+          "critical_concepts": [
+            "gpt-red-automated-red-teaming-via-self",
+            "gpt-red-automated-red-teaming-via-self-play"
+          ],
+          "prerequisite_links": [],
+          "side_retention_duels": [
+            {
+              "id": "the-gpt-red-automated-red-duel",
+              "prompt": "What should Edokai learners remember about **GPT-Red**?",
+              "left": "Treat it as a title-only bookmark without checking the mechanism.",
+              "right": "Track the mechanism, evidence signal, and limits stated by the source.",
+              "answer": "Use the source-backed mechanism and evaluation signal; avoid inferring guarantees beyond the paper summary."
+            }
+          ],
+          "quiz_questions": [
+            {
+              "question": "In the source **GPT-Red: Automated Red Teaming via Self-Play at Scale**, what is the main learner-facing mechanism Edokai should preserve?",
+              "choices": [
+                "It mainly replaces the user interface theme without changing the learning mechanism.",
+                "It is a clinical treatment protocol rather than a machine-learning research method.",
+                "It proves a pure-math theorem without a model, agent, or evaluation loop.",
+                "It uses the source's GPT-Red mechanism to address the paper's stated ML/AI problem."
+              ],
+              "answer_index": 3,
+              "source_ids": [
+                "emergentmind-2607-26115-gpt-red-automated-red-teaming-via-self-play-2026"
               ]
             }
           ]
@@ -5997,6 +6081,132 @@
               "answer_index": 0,
               "source_ids": [
                 "emergentmind-2607-24879-generative-artificial-intelligence-in-scientific-research-individual-benefits-2026"
+              ]
+            }
+          ]
+        },
+        {
+          "id": "the-inverse-rl-helps-align-ai",
+          "label": "The Inverse Rl Helps Align",
+          "summary": "A source-backed case board for Inverse RL Helps Align AI by Imitating Humans: learners inspect the plain technical mechanism, the evaluation signal, and where the claim fits in Edokai's perception world models world.",
+          "source_ids": [
+            "emergentmind-2607-24900-inverse-rl-helps-align-ai-by-imitating-humans-2026"
+          ],
+          "concept_ids": [
+            "inverse-rl-helps-align-ai-by-imitating",
+            "inverse-rl-helps-align-ai-by-imitating-humans",
+            "inverse-rl-helps-align-ai-by-imitating-humans"
+          ],
+          "critical_concepts": [
+            "inverse-rl-helps-align-ai-by-imitating",
+            "inverse-rl-helps-align-ai-by-imitating-humans"
+          ],
+          "prerequisite_links": [],
+          "side_retention_duels": [
+            {
+              "id": "the-inverse-rl-helps-align-duel",
+              "prompt": "What should Edokai learners remember about **Inverse RL Helps Align AI by Imitating Humans**?",
+              "left": "Treat it as a title-only bookmark without checking the mechanism.",
+              "right": "Track the mechanism, evidence signal, and limits stated by the source.",
+              "answer": "Use the source-backed mechanism and evaluation signal; avoid inferring guarantees beyond the paper summary."
+            }
+          ],
+          "quiz_questions": [
+            {
+              "question": "In the source **Inverse RL Helps Align AI by Imitating Humans**, what is the main learner-facing mechanism Edokai should preserve?",
+              "choices": [
+                "It uses the source's Inverse RL Helps Align AI by Imitating Humans mechanism to address the paper's stated ML/AI problem.",
+                "It mainly replaces the user interface theme without changing the learning mechanism.",
+                "It is a clinical treatment protocol rather than a machine-learning research method.",
+                "It proves a pure-math theorem without a model, agent, or evaluation loop."
+              ],
+              "answer_index": 0,
+              "source_ids": [
+                "emergentmind-2607-24900-inverse-rl-helps-align-ai-by-imitating-humans-2026"
+              ]
+            }
+          ]
+        },
+        {
+          "id": "the-id-v2v-identity-preserving-video",
+          "label": "The Id V2v Identity Preserving",
+          "summary": "A source-backed case board for ID-V2V: Identity-Preserving Video Restylization: learners inspect the plain technical mechanism, the evaluation signal, and where the claim fits in Edokai's perception world models world.",
+          "source_ids": [
+            "emergentmind-2607-22830-id-v2v-identity-preserving-video-restylization-2026"
+          ],
+          "concept_ids": [
+            "id-v2v-identity-preserving-video-restylization",
+            "id-v2v-identity-preserving-video-restylization-learning-problem",
+            "id-v2v-identity-preserving-video-restylization-evaluation-signal"
+          ],
+          "critical_concepts": [
+            "id-v2v-identity-preserving-video-restylization",
+            "id-v2v-identity-preserving-video-restylization-learning-problem"
+          ],
+          "prerequisite_links": [],
+          "side_retention_duels": [
+            {
+              "id": "the-id-v2v-identity-preserving-duel",
+              "prompt": "What should Edokai learners remember about **ID-V2V**?",
+              "left": "Treat it as a title-only bookmark without checking the mechanism.",
+              "right": "Track the mechanism, evidence signal, and limits stated by the source.",
+              "answer": "Use the source-backed mechanism and evaluation signal; avoid inferring guarantees beyond the paper summary."
+            }
+          ],
+          "quiz_questions": [
+            {
+              "question": "In the source **ID-V2V: Identity-Preserving Video Restylization**, what is the main learner-facing mechanism Edokai should preserve?",
+              "choices": [
+                "It mainly replaces the user interface theme without changing the learning mechanism.",
+                "It uses the source's ID-V2V mechanism to address the paper's stated ML/AI problem.",
+                "It is a clinical treatment protocol rather than a machine-learning research method.",
+                "It proves a pure-math theorem without a model, agent, or evaluation loop."
+              ],
+              "answer_index": 1,
+              "source_ids": [
+                "emergentmind-2607-22830-id-v2v-identity-preserving-video-restylization-2026"
+              ]
+            }
+          ]
+        },
+        {
+          "id": "the-prism-polynomial-representations-for-interaction",
+          "label": "The Prism Polynomial Representations For",
+          "summary": "A source-backed case board for PRISM: Polynomial Representations for Interaction-Structured Motor Control: learners inspect the plain technical mechanism, the evaluation signal, and where the claim fits in Edokai's perception world models world.",
+          "source_ids": [
+            "emergentmind-2607-23473-prism-polynomial-representations-for-interaction-structured-motor-control-2026"
+          ],
+          "concept_ids": [
+            "prism-polynomial-representations-for-interaction-structured-motor",
+            "prism-polynomial-representations-for-interaction-structured-motor-control",
+            "prism-polynomial-representations-for-interaction-structured-motor-control"
+          ],
+          "critical_concepts": [
+            "prism-polynomial-representations-for-interaction-structured-motor",
+            "prism-polynomial-representations-for-interaction-structured-motor-control"
+          ],
+          "prerequisite_links": [],
+          "side_retention_duels": [
+            {
+              "id": "the-prism-polynomial-representations-for-duel",
+              "prompt": "What should Edokai learners remember about **PRISM**?",
+              "left": "Treat it as a title-only bookmark without checking the mechanism.",
+              "right": "Track the mechanism, evidence signal, and limits stated by the source.",
+              "answer": "Use the source-backed mechanism and evaluation signal; avoid inferring guarantees beyond the paper summary."
+            }
+          ],
+          "quiz_questions": [
+            {
+              "question": "In the source **PRISM: Polynomial Representations for Interaction-Structured Motor Control**, what is the main learner-facing mechanism Edokai should preserve?",
+              "choices": [
+                "It mainly replaces the user interface theme without changing the learning mechanism.",
+                "It is a clinical treatment protocol rather than a machine-learning research method.",
+                "It uses the source's PRISM mechanism to address the paper's stated ML/AI problem.",
+                "It proves a pure-math theorem without a model, agent, or evaluation loop."
+              ],
+              "answer_index": 2,
+              "source_ids": [
+                "emergentmind-2607-23473-prism-polynomial-representations-for-interaction-structured-motor-control-2026"
               ]
             }
           ]
@@ -8901,6 +9111,258 @@
               ]
             }
           ]
+        },
+        {
+          "id": "the-a-few-words-go-a",
+          "label": "The A Few Words Go",
+          "summary": "A source-backed case board for A Few Words Go a Long Way: Language Guided Robot Policy Synthesis: learners inspect the plain technical mechanism, the evaluation signal, and where the claim fits in Edokai's retrieval augmented generation world.",
+          "source_ids": [
+            "emergentmind-2607-23784-a-few-words-go-a-long-way-language-2026"
+          ],
+          "concept_ids": [
+            "a-few-words-go-a-long-way",
+            "a-few-words-go-a-long-way-language",
+            "a-few-words-go-a-long-way-language"
+          ],
+          "critical_concepts": [
+            "a-few-words-go-a-long-way",
+            "a-few-words-go-a-long-way-language"
+          ],
+          "prerequisite_links": [],
+          "side_retention_duels": [
+            {
+              "id": "the-a-few-words-go-duel",
+              "prompt": "What should Edokai learners remember about **A Few Words Go a Long Way**?",
+              "left": "Treat it as a title-only bookmark without checking the mechanism.",
+              "right": "Track the mechanism, evidence signal, and limits stated by the source.",
+              "answer": "Use the source-backed mechanism and evaluation signal; avoid inferring guarantees beyond the paper summary."
+            }
+          ],
+          "quiz_questions": [
+            {
+              "question": "In the source **A Few Words Go a Long Way: Language Guided Robot Policy Synthesis**, what is the main learner-facing mechanism Edokai should preserve?",
+              "choices": [
+                "It mainly replaces the user interface theme without changing the learning mechanism.",
+                "It uses the source's A Few Words Go a Long Way mechanism to address the paper's stated ML/AI problem.",
+                "It is a clinical treatment protocol rather than a machine-learning research method.",
+                "It proves a pure-math theorem without a model, agent, or evaluation loop."
+              ],
+              "answer_index": 1,
+              "source_ids": [
+                "emergentmind-2607-23784-a-few-words-go-a-long-way-language-2026"
+              ]
+            }
+          ]
+        },
+        {
+          "id": "the-turbovla-real-time-vision-language",
+          "label": "The Turbovla Real Time Vision",
+          "summary": "A source-backed case board for TurboVLA: Real-Time Vision-Language-Action Model at 32 Hz on an RTX 4090 with <1 GB VRAM: learners inspect the plain technical mechanism, the evaluation signal, and where the claim fits in Edokai's retrieval augmented generation world.",
+          "source_ids": [
+            "emergentmind-2607-27205-turbovla-real-time-vision-language-action-model-at-2026"
+          ],
+          "concept_ids": [
+            "turbovla-real-time-vision-language-action-model",
+            "turbovla-real-time-vision-language-action-model-at",
+            "turbovla-real-time-vision-language-action-model-at"
+          ],
+          "critical_concepts": [
+            "turbovla-real-time-vision-language-action-model",
+            "turbovla-real-time-vision-language-action-model-at"
+          ],
+          "prerequisite_links": [],
+          "side_retention_duels": [
+            {
+              "id": "the-turbovla-real-time-vision-duel",
+              "prompt": "What should Edokai learners remember about **TurboVLA**?",
+              "left": "Treat it as a title-only bookmark without checking the mechanism.",
+              "right": "Track the mechanism, evidence signal, and limits stated by the source.",
+              "answer": "Use the source-backed mechanism and evaluation signal; avoid inferring guarantees beyond the paper summary."
+            }
+          ],
+          "quiz_questions": [
+            {
+              "question": "In the source **TurboVLA: Real-Time Vision-Language-Action Model at 32 Hz on an RTX 4090 with <1 GB VRAM**, what is the main learner-facing mechanism Edokai should preserve?",
+              "choices": [
+                "It mainly replaces the user interface theme without changing the learning mechanism.",
+                "It is a clinical treatment protocol rather than a machine-learning research method.",
+                "It uses the source's TurboVLA mechanism to address the paper's stated ML/AI problem.",
+                "It proves a pure-math theorem without a model, agent, or evaluation loop."
+              ],
+              "answer_index": 2,
+              "source_ids": [
+                "emergentmind-2607-27205-turbovla-real-time-vision-language-action-model-at-2026"
+              ]
+            }
+          ]
+        },
+        {
+          "id": "the-denseon-with-the-lateon-fully",
+          "label": "The Denseon With The Lateon",
+          "summary": "A source-backed case board for DenseOn with the LateOn: Fully Open Dense and Late-Interaction Models for Multilingual, Long-Context, and Code Search: learners inspect the plain technical mechanism, the evaluation signal, and where the claim fits in Edokai's retrieval augmented generation world.",
+          "source_ids": [
+            "emergentmind-2607-27178-denseon-with-the-lateon-fully-open-dense-and-2026"
+          ],
+          "concept_ids": [
+            "denseon-with-the-lateon-fully-open-dense",
+            "denseon-with-the-lateon-fully-open-dense-and",
+            "denseon-with-the-lateon-fully-open-dense-and"
+          ],
+          "critical_concepts": [
+            "denseon-with-the-lateon-fully-open-dense",
+            "denseon-with-the-lateon-fully-open-dense-and"
+          ],
+          "prerequisite_links": [],
+          "side_retention_duels": [
+            {
+              "id": "the-denseon-with-the-lateon-duel",
+              "prompt": "What should Edokai learners remember about **DenseOn with the LateOn**?",
+              "left": "Treat it as a title-only bookmark without checking the mechanism.",
+              "right": "Track the mechanism, evidence signal, and limits stated by the source.",
+              "answer": "Use the source-backed mechanism and evaluation signal; avoid inferring guarantees beyond the paper summary."
+            }
+          ],
+          "quiz_questions": [
+            {
+              "question": "In the source **DenseOn with the LateOn: Fully Open Dense and Late-Interaction Models for Multilingual, Long-Context, and Code Search**, what is the main learner-facing mechanism Edokai should preserve?",
+              "choices": [
+                "It uses the source's DenseOn with the LateOn mechanism to address the paper's stated ML/AI problem.",
+                "It mainly replaces the user interface theme without changing the learning mechanism.",
+                "It is a clinical treatment protocol rather than a machine-learning research method.",
+                "It proves a pure-math theorem without a model, agent, or evaluation loop."
+              ],
+              "answer_index": 0,
+              "source_ids": [
+                "emergentmind-2607-27178-denseon-with-the-lateon-fully-open-dense-and-2026"
+              ]
+            }
+          ]
+        },
+        {
+          "id": "the-not-all-llm-reasoning-is",
+          "label": "The Not All Llm Reasoning",
+          "summary": "A source-backed case board for Not All LLM Reasoning is Visible in the Chain-of-Thought: learners inspect the plain technical mechanism, the evaluation signal, and where the claim fits in Edokai's retrieval augmented generation world.",
+          "source_ids": [
+            "emergentmind-2607-22925-not-all-llm-reasoning-is-visible-in-the-2026"
+          ],
+          "concept_ids": [
+            "not-all-llm-reasoning-is-visible-in",
+            "not-all-llm-reasoning-is-visible-in-the",
+            "not-all-llm-reasoning-is-visible-in-the"
+          ],
+          "critical_concepts": [
+            "not-all-llm-reasoning-is-visible-in",
+            "not-all-llm-reasoning-is-visible-in-the"
+          ],
+          "prerequisite_links": [],
+          "side_retention_duels": [
+            {
+              "id": "the-not-all-llm-reasoning-duel",
+              "prompt": "What should Edokai learners remember about **Not All LLM Reasoning is Visible in the Chain-of-Thought**?",
+              "left": "Treat it as a title-only bookmark without checking the mechanism.",
+              "right": "Track the mechanism, evidence signal, and limits stated by the source.",
+              "answer": "Use the source-backed mechanism and evaluation signal; avoid inferring guarantees beyond the paper summary."
+            }
+          ],
+          "quiz_questions": [
+            {
+              "question": "In the source **Not All LLM Reasoning is Visible in the Chain-of-Thought**, what is the main learner-facing mechanism Edokai should preserve?",
+              "choices": [
+                "It mainly replaces the user interface theme without changing the learning mechanism.",
+                "It uses the source's Not All LLM Reasoning is Visible in the Chain-of-Thought mechanism to address the paper's stated ML/AI problem.",
+                "It is a clinical treatment protocol rather than a machine-learning research method.",
+                "It proves a pure-math theorem without a model, agent, or evaluation loop."
+              ],
+              "answer_index": 1,
+              "source_ids": [
+                "emergentmind-2607-22925-not-all-llm-reasoning-is-visible-in-the-2026"
+              ]
+            }
+          ]
+        },
+        {
+          "id": "the-frontis-ma1-training-an-ai4ai",
+          "label": "The Frontis Ma1 Training An",
+          "summary": "A source-backed case board for Frontis-MA1: Training an AI4AI Model towards Recursive Self-Improvement in Machine Learning Engineering: learners inspect the plain technical mechanism, the evaluation signal, and where the claim fits in Edokai's retrieval augmented generation world.",
+          "source_ids": [
+            "emergentmind-2607-28568-frontis-ma1-training-an-ai4ai-model-towards-recursive-2026"
+          ],
+          "concept_ids": [
+            "frontis-ma1-training-an-ai4ai-model-towards",
+            "frontis-ma1-training-an-ai4ai-model-towards-recursive",
+            "frontis-ma1-training-an-ai4ai-model-towards-recursive"
+          ],
+          "critical_concepts": [
+            "frontis-ma1-training-an-ai4ai-model-towards",
+            "frontis-ma1-training-an-ai4ai-model-towards-recursive"
+          ],
+          "prerequisite_links": [],
+          "side_retention_duels": [
+            {
+              "id": "the-frontis-ma1-training-an-duel",
+              "prompt": "What should Edokai learners remember about **Frontis-MA1**?",
+              "left": "Treat it as a title-only bookmark without checking the mechanism.",
+              "right": "Track the mechanism, evidence signal, and limits stated by the source.",
+              "answer": "Use the source-backed mechanism and evaluation signal; avoid inferring guarantees beyond the paper summary."
+            }
+          ],
+          "quiz_questions": [
+            {
+              "question": "In the source **Frontis-MA1: Training an AI4AI Model towards Recursive Self-Improvement in Machine Learning Engineering**, what is the main learner-facing mechanism Edokai should preserve?",
+              "choices": [
+                "It mainly replaces the user interface theme without changing the learning mechanism.",
+                "It is a clinical treatment protocol rather than a machine-learning research method.",
+                "It uses the source's Frontis-MA1 mechanism to address the paper's stated ML/AI problem.",
+                "It proves a pure-math theorem without a model, agent, or evaluation loop."
+              ],
+              "answer_index": 2,
+              "source_ids": [
+                "emergentmind-2607-28568-frontis-ma1-training-an-ai4ai-model-towards-recursive-2026"
+              ]
+            }
+          ]
+        },
+        {
+          "id": "the-stateplay-state-aware-game-world",
+          "label": "The Stateplay State Aware Game",
+          "summary": "A source-backed case board for StatePlay: State-Aware Game World Models for Mechanics-Consistent Generation: learners inspect the plain technical mechanism, the evaluation signal, and where the claim fits in Edokai's retrieval augmented generation world.",
+          "source_ids": [
+            "emergentmind-2607-26754-stateplay-state-aware-game-world-models-for-mechanics-2026"
+          ],
+          "concept_ids": [
+            "stateplay-state-aware-game-world-models-for",
+            "stateplay-state-aware-game-world-models-for-mechanics",
+            "stateplay-state-aware-game-world-models-for-mechanics"
+          ],
+          "critical_concepts": [
+            "stateplay-state-aware-game-world-models-for",
+            "stateplay-state-aware-game-world-models-for-mechanics"
+          ],
+          "prerequisite_links": [],
+          "side_retention_duels": [
+            {
+              "id": "the-stateplay-state-aware-game-duel",
+              "prompt": "What should Edokai learners remember about **StatePlay**?",
+              "left": "Treat it as a title-only bookmark without checking the mechanism.",
+              "right": "Track the mechanism, evidence signal, and limits stated by the source.",
+              "answer": "Use the source-backed mechanism and evaluation signal; avoid inferring guarantees beyond the paper summary."
+            }
+          ],
+          "quiz_questions": [
+            {
+              "question": "In the source **StatePlay: State-Aware Game World Models for Mechanics-Consistent Generation**, what is the main learner-facing mechanism Edokai should preserve?",
+              "choices": [
+                "It mainly replaces the user interface theme without changing the learning mechanism.",
+                "It is a clinical treatment protocol rather than a machine-learning research method.",
+                "It proves a pure-math theorem without a model, agent, or evaluation loop.",
+                "It uses the source's StatePlay mechanism to address the paper's stated ML/AI problem."
+              ],
+              "answer_index": 3,
+              "source_ids": [
+                "emergentmind-2607-26754-stateplay-state-aware-game-world-models-for-mechanics-2026"
+              ]
+            }
+          ]
         }
       ]
     }
@@ -10348,6 +10810,46 @@
       "regions_added": 0,
       "new_worlds_created": [],
       "quality_findings": [],
+      "verification": {
+        "json_parse": "passed",
+        "dkg_test": "passed",
+        "build": "passed",
+        "supabase_sync": "passed",
+        "roundtrip": "passed"
+      }
+    },
+    {
+      "run_id": "daily-emergentmind-all-topics-20260731T144124Z",
+      "completed_at": "2026-07-31T14:41:24Z",
+      "event": "daily EmergentMind homepage all-topics ingestion",
+      "sources_added": 11,
+      "nodes_added": 34,
+      "edges_added": 44,
+      "worlds_enhanced": [
+        "retrieval-augmented-generation",
+        "transformer-architecture",
+        "generative-models",
+        "perception-world-models"
+      ],
+      "regions_enhanced": [
+        "the-a-few-words-go-a",
+        "the-turbovla-real-time-vision-language",
+        "the-cognitive-convergence-deep-similarities-between",
+        "the-denseon-with-the-lateon-fully",
+        "the-not-all-llm-reasoning-is",
+        "the-frontis-ma1-training-an-ai4ai",
+        "the-gpt-red-automated-red-teaming",
+        "the-inverse-rl-helps-align-ai",
+        "the-id-v2v-identity-preserving-video",
+        "the-prism-polynomial-representations-for-interaction",
+        "the-stateplay-state-aware-game-world"
+      ],
+      "new_worlds_created": [],
+      "router_learning": "The 2026-07-12 homepage delta fits existing umbrellas: SLAM/event-camera/egocentric-video strengthen Perception & World Models, DeepSearch strengthens Retrieval-Augmented Generation, and beyond-human intelligence evaluation strengthens Agents.",
+      "manual_review": [
+        "Skipped pure-math, astronomy/cosmology, and clinical/medical surfaced items in this bounded pass; clinical claims need deeper safety review before routing.",
+        "New visual-SLAM/event-camera/egocentric-video items are routed under Perception & World Models; DeepSearch is routed under Retrieval-Augmented Generation; beyond-human intelligence evaluation is routed under Agents."
+      ],
       "verification": {
         "json_parse": "passed",
         "dkg_test": "passed",
