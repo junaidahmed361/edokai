@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "updated_at": "2026-07-31T14:41:24Z",
+  "updated_at": "2026-08-01T15:01:27Z",
   "sources": {
     "hf-space-trl-distillation-trainer-2026": {
       "id": "hf-space-trl-distillation-trainer-2026",
@@ -3484,6 +3484,150 @@
       "provenance": [
         "Discovered from https://www.emergentmind.com/ bootstrapped trending papers on 2026-07-31.",
         "EmergentMind homepage abstract metadata: Recent game world models can generate visually realistic and interactive environments conditioned on player actions. However, games are not defined by pixels alone; they are governed by explicit mechanics, namely state-dependent rules that control health reduction, skill activation, and game termination. These mechanics depend on precise internal states, such as health points, skill meters, and timers, which are tightly coupled with visual observations and determine how gameplay evolves. Without modeling these state dynamics, existing game world models may generate visually plausible rollouts but violate the underlying game rules. I"
+      ],
+      "confidence": 0.86
+    },
+    "emergentmind-2607-27180-humanclaw-can-vision-language-models-act-through-a-2026": {
+      "id": "emergentmind-2607-27180-humanclaw-can-vision-language-models-act-through-a-2026",
+      "url": "https://www.emergentmind.com/papers/2607.27180",
+      "arxiv_url": "https://arxiv.org/abs/2607.27180",
+      "title": "HumanCLAW: Can Vision-Language Models Act Through a Body?",
+      "source_type": "emergentmind-trending-paper",
+      "authors": [],
+      "published": "2026-07-29",
+      "discovered_at": "2026-08-01T15:01:27Z",
+      "last_read_at": "2026-08-01T15:01:27Z",
+      "provenance": [
+        "Discovered from https://www.emergentmind.com/ bootstrapped trending papers on 2026-08-01.",
+        "EmergentMind homepage abstract metadata: Evaluating whether a vision-language model (VLM) can act through a physical body is challenging. The outcome of an action couples the VLM's decision with motor control. When a task fails, it is hard to tell whether the VLM made a bad choice or the motor controller simply failed to execute it, e.g., losing balance and falling. In this work, we introduce HumanCLAW, an evaluation framework that decouples action decision-making from low-level execution. At every step, a harnessed, off-the-shelf VLM issues an atomic skill command, and the command is translated into a sub-second chunk of continuous full-body motion with real physical cons"
+      ],
+      "confidence": 0.86
+    },
+    "emergentmind-2607-28227-qwen-ui-agent-technical-report-toward-next-generation-2026": {
+      "id": "emergentmind-2607-28227-qwen-ui-agent-technical-report-toward-next-generation-2026",
+      "url": "https://www.emergentmind.com/papers/2607.28227",
+      "arxiv_url": "https://arxiv.org/abs/2607.28227",
+      "title": "Qwen-UI-Agent Technical Report: Toward Next-Generation Real-World Centric Foundation GUI Agents",
+      "source_type": "emergentmind-trending-paper",
+      "authors": [],
+      "published": "2026-07-30",
+      "discovered_at": "2026-08-01T15:01:27Z",
+      "last_read_at": "2026-08-01T15:01:27Z",
+      "provenance": [
+        "Discovered from https://www.emergentmind.com/ bootstrapped trending papers on 2026-08-01.",
+        "EmergentMind homepage abstract metadata: GUI agents have the potential to become a general purpose executor over existing digital devices. To advance them toward real-world use, we envision agents that operate reliably on real devices, execute workflows across platforms, combine GUI interaction with CLI execution, complete long-horizon tasks, proactively initiate useful services, and autonomously improve their capabilities with minimal human effort. Guided by this vision, we present Qwen-UI-Agent, a real-world centric foundation GUI agent spanning mobile, computer-use, web, and DeepSearch environments. Qwen-UI-Agent combines diverse sandbox environments with a large-scale "
+      ],
+      "confidence": 0.86
+    },
+    "emergentmind-2607-28229-embl-ai-librarian-life-sciences-knowledge-layer-for-2026": {
+      "id": "emergentmind-2607-28229-embl-ai-librarian-life-sciences-knowledge-layer-for-2026",
+      "url": "https://www.emergentmind.com/papers/2607.28229",
+      "arxiv_url": "https://arxiv.org/abs/2607.28229",
+      "title": "EMBL AI Librarian: Life-Sciences Knowledge Layer for AI Agents",
+      "source_type": "emergentmind-trending-paper",
+      "authors": [],
+      "published": "2026-07-30",
+      "discovered_at": "2026-08-01T15:01:27Z",
+      "last_read_at": "2026-08-01T15:01:27Z",
+      "provenance": [
+        "Discovered from https://www.emergentmind.com/ bootstrapped trending papers on 2026-08-01.",
+        "EmergentMind homepage abstract metadata: The web is increasingly accessed by AI agents rather than humans. Every agent needs knowledge, especially in the life-sciences, where agentic pipelines are growing fast. Access to the literature is a crucial part of that need, and resources such as Europe PMC, with over 40M indexed records, are widely used to meet it. Yet these resources were not built for AI agents: they take keywords and complex syntax and return whole papers, so every agent must learn the syntax, issue several searches, and read full papers to find the evidence it needs. We introduce EMBL AI Librarian, a knowledge layer that upgrades the Europe PMC interface for "
+      ],
+      "confidence": 0.86
+    },
+    "emergentmind-2607-28545-orca-bench-how-ready-are-language-model-agents-2026": {
+      "id": "emergentmind-2607-28545-orca-bench-how-ready-are-language-model-agents-2026",
+      "url": "https://www.emergentmind.com/papers/2607.28545",
+      "arxiv_url": "https://arxiv.org/abs/2607.28545",
+      "title": "ORCA-bench: How Ready Are Language Model Agents for Oncall?",
+      "source_type": "emergentmind-trending-paper",
+      "authors": [],
+      "published": "2026-07-30",
+      "discovered_at": "2026-08-01T15:01:27Z",
+      "last_read_at": "2026-08-01T15:01:27Z",
+      "provenance": [
+        "Discovered from https://www.emergentmind.com/ bootstrapped trending papers on 2026-08-01.",
+        "EmergentMind homepage abstract metadata: Large language models can write, patch, and search code, but oncall root cause analysis (RCA) demands something different: reasoning over noisy metrics, logs, traces, and source code, starting from ambiguous user-facing reports, often hours after the incident began. We introduce ORCA-bench, a benchmark that puts general-purpose coding agents in a production-fidelity oncall setting. ORCA-bench pairs a live OpenTelemetry-instrumented microservice system--exposing six days of metrics, logs, and traces through real telemetry interfaces (Prometheus, Jaeger, and OpenSearch via Grafana) and full source-code access--with 1,079 RCA tasks tha"
+      ],
+      "confidence": 0.86
+    },
+    "emergentmind-2607-27652-harness-g-a-graph-structured-harness-for-search-2026": {
+      "id": "emergentmind-2607-27652-harness-g-a-graph-structured-harness-for-search-2026",
+      "url": "https://www.emergentmind.com/papers/2607.27652",
+      "arxiv_url": "https://arxiv.org/abs/2607.27652",
+      "title": "Harness-G: A Graph-Structured Harness for Search Agents",
+      "source_type": "emergentmind-trending-paper",
+      "authors": [],
+      "published": "2026-07-30",
+      "discovered_at": "2026-08-01T15:01:27Z",
+      "last_read_at": "2026-08-01T15:01:27Z",
+      "provenance": [
+        "Discovered from https://www.emergentmind.com/ bootstrapped trending papers on 2026-08-01.",
+        "EmergentMind homepage abstract metadata: Reinforcement learning (RL) search agents commonly model retrieval as free-form natural-language query generation and optimize multi-turn interactions using final-answer rewards. Current studies mainly improve training with denser or more structured credit signals, but rarely examine whether retrieval is properly formulated at the policy-environment interface. We observe pronounced retrieval aliasing during Search-R1 training: rollouts for the same question continue to generate distinct query strings, yet their accumulated evidence sets increasingly overlap. We call this phenomenon retrieval-equivalence collapse; in this regime, tra"
+      ],
+      "confidence": 0.86
+    },
+    "emergentmind-2607-28250-causal-architecture-dynamics-prior-to-arrival-of-self-2026": {
+      "id": "emergentmind-2607-28250-causal-architecture-dynamics-prior-to-arrival-of-self-2026",
+      "url": "https://www.emergentmind.com/papers/2607.28250",
+      "arxiv_url": "https://arxiv.org/abs/2607.28250",
+      "title": "Causal Architecture Dynamics Prior to Arrival of Self-replicators in a Model of Catalytic Networks Relevant to Origin-of-Life",
+      "source_type": "emergentmind-trending-paper",
+      "authors": [],
+      "published": "2026-07-30",
+      "discovered_at": "2026-08-01T15:01:27Z",
+      "last_read_at": "2026-08-01T15:01:27Z",
+      "provenance": [
+        "Discovered from https://www.emergentmind.com/ bootstrapped trending papers on 2026-08-01.",
+        "EmergentMind homepage abstract metadata: Agents that exert causal power in the world are thought to be the product of selection among diverse replicators; what is the causal structure of a medium before replicators appear, and evolution takes hold? We studied information-theoretic dynamics of the popular GARD model that captures several dynamics thought to be important at life's origin and found that causal emergence predicted the initial appearance of self-replication. Moreover, interventions that drove causal emergence up increased the longevity of self-replicators, while interventions that drove causal emergence down decreased the abundance of these self-replicators, su"
+      ],
+      "confidence": 0.86
+    },
+    "emergentmind-2607-28109-beyond-rephrasing-book-level-organization-improves-synthetic-textbook-2026": {
+      "id": "emergentmind-2607-28109-beyond-rephrasing-book-level-organization-improves-synthetic-textbook-2026",
+      "url": "https://www.emergentmind.com/papers/2607.28109",
+      "arxiv_url": "https://arxiv.org/abs/2607.28109",
+      "title": "Beyond Rephrasing: Book-Level Organization Improves Synthetic Textbook Data for Mid-Training",
+      "source_type": "emergentmind-trending-paper",
+      "authors": [],
+      "published": "2026-07-30",
+      "discovered_at": "2026-08-01T15:01:27Z",
+      "last_read_at": "2026-08-01T15:01:27Z",
+      "provenance": [
+        "Discovered from https://www.emergentmind.com/ bootstrapped trending papers on 2026-08-01.",
+        "EmergentMind homepage abstract metadata: Synthetic textbook data has improved language model pre-training, but prior work largely treats the benefit as a property of generated content or local rewriting style. We study a different factor: whether related content is organized into coherent book-level documents. We contribute both a scalable synthesis pipeline and controlled evidence that this organization matters. The pipeline retrieves source material from a pre-training corpus, clusters it into topical units, plans hierarchical tables of contents, and assembles source-grounded sections into complete books (our Full setting), yielding 686K textbooks (32B tokens) across 15,"
+      ],
+      "confidence": 0.86
+    },
+    "emergentmind-2607-27790-semantic-aligned-structural-abstraction-for-multimodal-sentiment-analysis-2026": {
+      "id": "emergentmind-2607-27790-semantic-aligned-structural-abstraction-for-multimodal-sentiment-analysis-2026",
+      "url": "https://www.emergentmind.com/papers/2607.27790",
+      "arxiv_url": "https://arxiv.org/abs/2607.27790",
+      "title": "Semantic-Aligned Structural Abstraction for Multimodal Sentiment Analysis",
+      "source_type": "emergentmind-trending-paper",
+      "authors": [],
+      "published": "2026-07-30",
+      "discovered_at": "2026-08-01T15:01:27Z",
+      "last_read_at": "2026-08-01T15:01:27Z",
+      "provenance": [
+        "Discovered from https://www.emergentmind.com/ bootstrapped trending papers on 2026-08-01.",
+        "EmergentMind homepage abstract metadata: Multimodal Sentiment Analysis (MSA) aims to interpret complex human emotions by integrating natural language with non-verbal modalities. Non-verbal modalities share a structural isomorphism with natural language, as both can be viewed as feature sequences evolving over time. This isomorphism enables the transformation of non-verbal modalities into text-like tokens for unified semantic reasoning. Large Language Models (LLMs), designed to understand and generate sequential data, can thus be utilized to interpret complex affective sequences. However, existing LLM-based methods primarily capture low-level superficial features, failing t"
+      ],
+      "confidence": 0.86
+    },
+    "emergentmind-2607-26760-metis-memory-foundation-model-2026": {
+      "id": "emergentmind-2607-26760-metis-memory-foundation-model-2026",
+      "url": "https://www.emergentmind.com/papers/2607.26760",
+      "arxiv_url": "https://arxiv.org/abs/2607.26760",
+      "title": "Metis: Memory Foundation Model",
+      "source_type": "emergentmind-trending-paper",
+      "authors": [],
+      "published": "2026-07-29",
+      "discovered_at": "2026-08-01T15:01:27Z",
+      "last_read_at": "2026-08-01T15:01:27Z",
+      "provenance": [
+        "Discovered from https://www.emergentmind.com/ bootstrapped trending papers on 2026-08-01.",
+        "EmergentMind homepage abstract metadata: Recent advances in AI agents have increasingly internalized native capabilities into their underlying foundation models, giving rise to multimodal foundation models and large reasoning models. However, agent memory is still primarily implemented through external modules, leaving the native memory capability largely unexplored. In this paper, we take a first step toward this direction by introducing memory foundation models, which empower foundation models with native memory capabilities. We formalize native memory from two perspectives: a persistent and dynamically evolving memory state within the backbone, and native memory procedu"
       ],
       "confidence": 0.86
     }
@@ -13460,6 +13604,398 @@
       "first_seen": "2026-07-31T14:41:24Z",
       "last_seen": "2026-07-31T14:41:24Z",
       "world_hint": "retrieval-augmented-generation"
+    },
+    "humanclaw-can-vision-language-models-act-through": {
+      "id": "humanclaw-can-vision-language-models-act-through",
+      "label": "HumanCLAW",
+      "type": "method",
+      "summary": "Source-grounded method/approach from 'HumanCLAW: Can Vision-Language Models Act Through a Body?': Evaluating whether a vision-language model (VLM) can act through a physical body is challenging. The outcome of an action couples the VLM's decision with motor control. When a task fails, it is hard to tell whether the VLM made a bad choice or the motor controller simply failed to execute it, e.g., losing balance and falling. In this work, we introduce Human...",
+      "aliases": [],
+      "source_ids": [
+        "emergentmind-2607-27180-humanclaw-can-vision-language-models-act-through-a-2026"
+      ],
+      "confidence": 0.78,
+      "first_seen": "2026-08-01T15:01:27Z",
+      "last_seen": "2026-08-01T15:01:27Z",
+      "world_hint": "perception-world-models"
+    },
+    "humanclaw-can-vision-language-models-act-through-a": {
+      "id": "humanclaw-can-vision-language-models-act-through-a",
+      "label": "HumanCLAW problem setting",
+      "type": "concept",
+      "summary": "The learning or systems problem described by the source: Evaluating whether a vision-language model (VLM) can act through a physical body is challenging. The outcome of an action couples the VLM's decision with motor control. When a task fails, it is hard to tell whether the VLM made a bad choice or the motor controller simply failed to execute it, e.g., losing balance and falling. In this work, we introduce Human...",
+      "aliases": [],
+      "source_ids": [
+        "emergentmind-2607-27180-humanclaw-can-vision-language-models-act-through-a-2026"
+      ],
+      "confidence": 0.78,
+      "first_seen": "2026-08-01T15:01:27Z",
+      "last_seen": "2026-08-01T15:01:27Z",
+      "world_hint": "perception-world-models"
+    },
+    "paper-2607-27180": {
+      "id": "paper-2607-27180",
+      "label": "HumanCLAW: Can Vision-Language Models Act Through a Body?",
+      "type": "paper",
+      "summary": "EmergentMind surfaced arXiv paper 2607.27180: Evaluating whether a vision-language model (VLM) can act through a physical body is challenging. The outcome of an action couples the VLM's decision with motor control. When a task fails, it is hard to tell whether the VLM made a bad choice or the motor controller simply failed to execute it, e.g., losing balance and falling. In this work, we introduce Human...",
+      "aliases": [],
+      "source_ids": [
+        "emergentmind-2607-27180-humanclaw-can-vision-language-models-act-through-a-2026"
+      ],
+      "confidence": 0.78,
+      "first_seen": "2026-08-01T15:01:27Z",
+      "last_seen": "2026-08-01T15:01:27Z",
+      "world_hint": "perception-world-models"
+    },
+    "qwen-ui-agent-technical-report-toward-next": {
+      "id": "qwen-ui-agent-technical-report-toward-next",
+      "label": "Qwen-UI-Agent Technical Report",
+      "type": "method",
+      "summary": "Source-grounded method/approach from 'Qwen-UI-Agent Technical Report: Toward Next-Generation Real-World Centric Foundation GUI Agents': GUI agents have the potential to become a general purpose executor over existing digital devices. To advance them toward real-world use, we envision agents that operate reliably on real devices, execute workflows across platforms, combine GUI interaction with CLI execution, complete long-horizon tasks, proactively initiate useful services, and autonomously i...",
+      "aliases": [],
+      "source_ids": [
+        "emergentmind-2607-28227-qwen-ui-agent-technical-report-toward-next-generation-2026"
+      ],
+      "confidence": 0.78,
+      "first_seen": "2026-08-01T15:01:27Z",
+      "last_seen": "2026-08-01T15:01:27Z",
+      "world_hint": "perception-world-models"
+    },
+    "qwen-ui-agent-technical-report-toward-next-generation": {
+      "id": "qwen-ui-agent-technical-report-toward-next-generation",
+      "label": "Qwen-UI-Agent Technical Report problem setting",
+      "type": "concept",
+      "summary": "The learning or systems problem described by the source: GUI agents have the potential to become a general purpose executor over existing digital devices. To advance them toward real-world use, we envision agents that operate reliably on real devices, execute workflows across platforms, combine GUI interaction with CLI execution, complete long-horizon tasks, proactively initiate useful services, and autonomously i...",
+      "aliases": [],
+      "source_ids": [
+        "emergentmind-2607-28227-qwen-ui-agent-technical-report-toward-next-generation-2026"
+      ],
+      "confidence": 0.78,
+      "first_seen": "2026-08-01T15:01:27Z",
+      "last_seen": "2026-08-01T15:01:27Z",
+      "world_hint": "perception-world-models"
+    },
+    "paper-2607-28227": {
+      "id": "paper-2607-28227",
+      "label": "Qwen-UI-Agent Technical Report: Toward Next-Generation Real-World Centric Foundation GUI Agents",
+      "type": "paper",
+      "summary": "EmergentMind surfaced arXiv paper 2607.28227: GUI agents have the potential to become a general purpose executor over existing digital devices. To advance them toward real-world use, we envision agents that operate reliably on real devices, execute workflows across platforms, combine GUI interaction with CLI execution, complete long-horizon tasks, proactively initiate useful services, and autonomously i...",
+      "aliases": [],
+      "source_ids": [
+        "emergentmind-2607-28227-qwen-ui-agent-technical-report-toward-next-generation-2026"
+      ],
+      "confidence": 0.78,
+      "first_seen": "2026-08-01T15:01:27Z",
+      "last_seen": "2026-08-01T15:01:27Z",
+      "world_hint": "perception-world-models"
+    },
+    "embl-ai-librarian-life-sciences-knowledge-layer": {
+      "id": "embl-ai-librarian-life-sciences-knowledge-layer",
+      "label": "EMBL AI Librarian",
+      "type": "method",
+      "summary": "Source-grounded method/approach from 'EMBL AI Librarian: Life-Sciences Knowledge Layer for AI Agents': The web is increasingly accessed by AI agents rather than humans. Every agent needs knowledge, especially in the life-sciences, where agentic pipelines are growing fast. Access to the literature is a crucial part of that need, and resources such as Europe PMC, with over 40M indexed records, are widely used to meet it. Yet these resources were not built for A...",
+      "aliases": [],
+      "source_ids": [
+        "emergentmind-2607-28229-embl-ai-librarian-life-sciences-knowledge-layer-for-2026"
+      ],
+      "confidence": 0.78,
+      "first_seen": "2026-08-01T15:01:27Z",
+      "last_seen": "2026-08-01T15:01:27Z",
+      "world_hint": "retrieval-augmented-generation"
+    },
+    "embl-ai-librarian-life-sciences-knowledge-layer-for": {
+      "id": "embl-ai-librarian-life-sciences-knowledge-layer-for",
+      "label": "EMBL AI Librarian problem setting",
+      "type": "concept",
+      "summary": "The learning or systems problem described by the source: The web is increasingly accessed by AI agents rather than humans. Every agent needs knowledge, especially in the life-sciences, where agentic pipelines are growing fast. Access to the literature is a crucial part of that need, and resources such as Europe PMC, with over 40M indexed records, are widely used to meet it. Yet these resources were not built for A...",
+      "aliases": [],
+      "source_ids": [
+        "emergentmind-2607-28229-embl-ai-librarian-life-sciences-knowledge-layer-for-2026"
+      ],
+      "confidence": 0.78,
+      "first_seen": "2026-08-01T15:01:27Z",
+      "last_seen": "2026-08-01T15:01:27Z",
+      "world_hint": "retrieval-augmented-generation"
+    },
+    "paper-2607-28229": {
+      "id": "paper-2607-28229",
+      "label": "EMBL AI Librarian: Life-Sciences Knowledge Layer for AI Agents",
+      "type": "paper",
+      "summary": "EmergentMind surfaced arXiv paper 2607.28229: The web is increasingly accessed by AI agents rather than humans. Every agent needs knowledge, especially in the life-sciences, where agentic pipelines are growing fast. Access to the literature is a crucial part of that need, and resources such as Europe PMC, with over 40M indexed records, are widely used to meet it. Yet these resources were not built for A...",
+      "aliases": [],
+      "source_ids": [
+        "emergentmind-2607-28229-embl-ai-librarian-life-sciences-knowledge-layer-for-2026"
+      ],
+      "confidence": 0.78,
+      "first_seen": "2026-08-01T15:01:27Z",
+      "last_seen": "2026-08-01T15:01:27Z",
+      "world_hint": "retrieval-augmented-generation"
+    },
+    "orca-bench-how-ready-are-language-model": {
+      "id": "orca-bench-how-ready-are-language-model",
+      "label": "ORCA-bench",
+      "type": "method",
+      "summary": "Source-grounded method/approach from 'ORCA-bench: How Ready Are Language Model Agents for Oncall?': Large language models can write, patch, and search code, but oncall root cause analysis (RCA) demands something different: reasoning over noisy metrics, logs, traces, and source code, starting from ambiguous user-facing reports, often hours after the incident began. We introduce ORCA-bench, a benchmark that puts general-purpose coding agents in a production-...",
+      "aliases": [],
+      "source_ids": [
+        "emergentmind-2607-28545-orca-bench-how-ready-are-language-model-agents-2026"
+      ],
+      "confidence": 0.78,
+      "first_seen": "2026-08-01T15:01:27Z",
+      "last_seen": "2026-08-01T15:01:27Z",
+      "world_hint": "perception-world-models"
+    },
+    "orca-bench-how-ready-are-language-model-agents": {
+      "id": "orca-bench-how-ready-are-language-model-agents",
+      "label": "ORCA-bench problem setting",
+      "type": "concept",
+      "summary": "The learning or systems problem described by the source: Large language models can write, patch, and search code, but oncall root cause analysis (RCA) demands something different: reasoning over noisy metrics, logs, traces, and source code, starting from ambiguous user-facing reports, often hours after the incident began. We introduce ORCA-bench, a benchmark that puts general-purpose coding agents in a production-...",
+      "aliases": [],
+      "source_ids": [
+        "emergentmind-2607-28545-orca-bench-how-ready-are-language-model-agents-2026"
+      ],
+      "confidence": 0.78,
+      "first_seen": "2026-08-01T15:01:27Z",
+      "last_seen": "2026-08-01T15:01:27Z",
+      "world_hint": "perception-world-models"
+    },
+    "paper-2607-28545": {
+      "id": "paper-2607-28545",
+      "label": "ORCA-bench: How Ready Are Language Model Agents for Oncall?",
+      "type": "paper",
+      "summary": "EmergentMind surfaced arXiv paper 2607.28545: Large language models can write, patch, and search code, but oncall root cause analysis (RCA) demands something different: reasoning over noisy metrics, logs, traces, and source code, starting from ambiguous user-facing reports, often hours after the incident began. We introduce ORCA-bench, a benchmark that puts general-purpose coding agents in a production-...",
+      "aliases": [],
+      "source_ids": [
+        "emergentmind-2607-28545-orca-bench-how-ready-are-language-model-agents-2026"
+      ],
+      "confidence": 0.78,
+      "first_seen": "2026-08-01T15:01:27Z",
+      "last_seen": "2026-08-01T15:01:27Z",
+      "world_hint": "perception-world-models"
+    },
+    "harness-g-a-graph-structured-harness-for": {
+      "id": "harness-g-a-graph-structured-harness-for",
+      "label": "Harness-G",
+      "type": "method",
+      "summary": "Source-grounded method/approach from 'Harness-G: A Graph-Structured Harness for Search Agents': Reinforcement learning (RL) search agents commonly model retrieval as free-form natural-language query generation and optimize multi-turn interactions using final-answer rewards. Current studies mainly improve training with denser or more structured credit signals, but rarely examine whether retrieval is properly formulated at the policy-environment interfac...",
+      "aliases": [],
+      "source_ids": [
+        "emergentmind-2607-27652-harness-g-a-graph-structured-harness-for-search-2026"
+      ],
+      "confidence": 0.78,
+      "first_seen": "2026-08-01T15:01:27Z",
+      "last_seen": "2026-08-01T15:01:27Z",
+      "world_hint": "retrieval-augmented-generation"
+    },
+    "harness-g-a-graph-structured-harness-for-search": {
+      "id": "harness-g-a-graph-structured-harness-for-search",
+      "label": "Harness-G problem setting",
+      "type": "concept",
+      "summary": "The learning or systems problem described by the source: Reinforcement learning (RL) search agents commonly model retrieval as free-form natural-language query generation and optimize multi-turn interactions using final-answer rewards. Current studies mainly improve training with denser or more structured credit signals, but rarely examine whether retrieval is properly formulated at the policy-environment interfac...",
+      "aliases": [],
+      "source_ids": [
+        "emergentmind-2607-27652-harness-g-a-graph-structured-harness-for-search-2026"
+      ],
+      "confidence": 0.78,
+      "first_seen": "2026-08-01T15:01:27Z",
+      "last_seen": "2026-08-01T15:01:27Z",
+      "world_hint": "retrieval-augmented-generation"
+    },
+    "paper-2607-27652": {
+      "id": "paper-2607-27652",
+      "label": "Harness-G: A Graph-Structured Harness for Search Agents",
+      "type": "paper",
+      "summary": "EmergentMind surfaced arXiv paper 2607.27652: Reinforcement learning (RL) search agents commonly model retrieval as free-form natural-language query generation and optimize multi-turn interactions using final-answer rewards. Current studies mainly improve training with denser or more structured credit signals, but rarely examine whether retrieval is properly formulated at the policy-environment interfac...",
+      "aliases": [],
+      "source_ids": [
+        "emergentmind-2607-27652-harness-g-a-graph-structured-harness-for-search-2026"
+      ],
+      "confidence": 0.78,
+      "first_seen": "2026-08-01T15:01:27Z",
+      "last_seen": "2026-08-01T15:01:27Z",
+      "world_hint": "retrieval-augmented-generation"
+    },
+    "causal-architecture-dynamics-prior-to-arrival-of": {
+      "id": "causal-architecture-dynamics-prior-to-arrival-of",
+      "label": "Causal Architecture Dynamics Prior to Arrival of Self-replicators in a Model of Catalytic Networks Relevant to Origin-of-Life",
+      "type": "method",
+      "summary": "Source-grounded method/approach from 'Causal Architecture Dynamics Prior to Arrival of Self-replicators in a Model of Catalytic Networks Relevant to Origin-of-Life': Agents that exert causal power in the world are thought to be the product of selection among diverse replicators; what is the causal structure of a medium before replicators appear, and evolution takes hold? We studied information-theoretic dynamics of the popular GARD model that captures several dynamics thought to be important at life's origin and found th...",
+      "aliases": [],
+      "source_ids": [
+        "emergentmind-2607-28250-causal-architecture-dynamics-prior-to-arrival-of-self-2026"
+      ],
+      "confidence": 0.78,
+      "first_seen": "2026-08-01T15:01:27Z",
+      "last_seen": "2026-08-01T15:01:27Z",
+      "world_hint": "agents"
+    },
+    "causal-architecture-dynamics-prior-to-arrival-of-self": {
+      "id": "causal-architecture-dynamics-prior-to-arrival-of-self",
+      "label": "Causal Architecture Dynamics Prior to Arrival of Self-replicators in a Model of Catalytic Networks Relevant to Origin-of-Life problem setting",
+      "type": "concept",
+      "summary": "The learning or systems problem described by the source: Agents that exert causal power in the world are thought to be the product of selection among diverse replicators; what is the causal structure of a medium before replicators appear, and evolution takes hold? We studied information-theoretic dynamics of the popular GARD model that captures several dynamics thought to be important at life's origin and found th...",
+      "aliases": [],
+      "source_ids": [
+        "emergentmind-2607-28250-causal-architecture-dynamics-prior-to-arrival-of-self-2026"
+      ],
+      "confidence": 0.78,
+      "first_seen": "2026-08-01T15:01:27Z",
+      "last_seen": "2026-08-01T15:01:27Z",
+      "world_hint": "agents"
+    },
+    "paper-2607-28250": {
+      "id": "paper-2607-28250",
+      "label": "Causal Architecture Dynamics Prior to Arrival of Self-replicators in a Model of Catalytic Networks Relevant to Origin-of-Life",
+      "type": "paper",
+      "summary": "EmergentMind surfaced arXiv paper 2607.28250: Agents that exert causal power in the world are thought to be the product of selection among diverse replicators; what is the causal structure of a medium before replicators appear, and evolution takes hold? We studied information-theoretic dynamics of the popular GARD model that captures several dynamics thought to be important at life's origin and found th...",
+      "aliases": [],
+      "source_ids": [
+        "emergentmind-2607-28250-causal-architecture-dynamics-prior-to-arrival-of-self-2026"
+      ],
+      "confidence": 0.78,
+      "first_seen": "2026-08-01T15:01:27Z",
+      "last_seen": "2026-08-01T15:01:27Z",
+      "world_hint": "agents"
+    },
+    "beyond-rephrasing-book-level-organization-improves-synthetic": {
+      "id": "beyond-rephrasing-book-level-organization-improves-synthetic",
+      "label": "Beyond Rephrasing",
+      "type": "method",
+      "summary": "Source-grounded method/approach from 'Beyond Rephrasing: Book-Level Organization Improves Synthetic Textbook Data for Mid-Training': Synthetic textbook data has improved language model pre-training, but prior work largely treats the benefit as a property of generated content or local rewriting style. We study a different factor: whether related content is organized into coherent book-level documents. We contribute both a scalable synthesis pipeline and controlled evidence that this organi...",
+      "aliases": [],
+      "source_ids": [
+        "emergentmind-2607-28109-beyond-rephrasing-book-level-organization-improves-synthetic-textbook-2026"
+      ],
+      "confidence": 0.78,
+      "first_seen": "2026-08-01T15:01:27Z",
+      "last_seen": "2026-08-01T15:01:27Z",
+      "world_hint": "retrieval-augmented-generation"
+    },
+    "beyond-rephrasing-book-level-organization-improves-synthetic-textbook": {
+      "id": "beyond-rephrasing-book-level-organization-improves-synthetic-textbook",
+      "label": "Beyond Rephrasing problem setting",
+      "type": "concept",
+      "summary": "The learning or systems problem described by the source: Synthetic textbook data has improved language model pre-training, but prior work largely treats the benefit as a property of generated content or local rewriting style. We study a different factor: whether related content is organized into coherent book-level documents. We contribute both a scalable synthesis pipeline and controlled evidence that this organi...",
+      "aliases": [],
+      "source_ids": [
+        "emergentmind-2607-28109-beyond-rephrasing-book-level-organization-improves-synthetic-textbook-2026"
+      ],
+      "confidence": 0.78,
+      "first_seen": "2026-08-01T15:01:27Z",
+      "last_seen": "2026-08-01T15:01:27Z",
+      "world_hint": "retrieval-augmented-generation"
+    },
+    "paper-2607-28109": {
+      "id": "paper-2607-28109",
+      "label": "Beyond Rephrasing: Book-Level Organization Improves Synthetic Textbook Data for Mid-Training",
+      "type": "paper",
+      "summary": "EmergentMind surfaced arXiv paper 2607.28109: Synthetic textbook data has improved language model pre-training, but prior work largely treats the benefit as a property of generated content or local rewriting style. We study a different factor: whether related content is organized into coherent book-level documents. We contribute both a scalable synthesis pipeline and controlled evidence that this organi...",
+      "aliases": [],
+      "source_ids": [
+        "emergentmind-2607-28109-beyond-rephrasing-book-level-organization-improves-synthetic-textbook-2026"
+      ],
+      "confidence": 0.78,
+      "first_seen": "2026-08-01T15:01:27Z",
+      "last_seen": "2026-08-01T15:01:27Z",
+      "world_hint": "retrieval-augmented-generation"
+    },
+    "semantic-aligned-structural-abstraction-for-multimodal-sentiment": {
+      "id": "semantic-aligned-structural-abstraction-for-multimodal-sentiment",
+      "label": "Semantic-Aligned Structural Abstraction for Multimodal Sentiment Analysis",
+      "type": "method",
+      "summary": "Source-grounded method/approach from 'Semantic-Aligned Structural Abstraction for Multimodal Sentiment Analysis': Multimodal Sentiment Analysis (MSA) aims to interpret complex human emotions by integrating natural language with non-verbal modalities. Non-verbal modalities share a structural isomorphism with natural language, as both can be viewed as feature sequences evolving over time. This isomorphism enables the transformation of non-verbal modalities into text-like...",
+      "aliases": [],
+      "source_ids": [
+        "emergentmind-2607-27790-semantic-aligned-structural-abstraction-for-multimodal-sentiment-analysis-2026"
+      ],
+      "confidence": 0.78,
+      "first_seen": "2026-08-01T15:01:27Z",
+      "last_seen": "2026-08-01T15:01:27Z",
+      "world_hint": "retrieval-augmented-generation"
+    },
+    "semantic-aligned-structural-abstraction-for-multimodal-sentiment-analysis": {
+      "id": "semantic-aligned-structural-abstraction-for-multimodal-sentiment-analysis",
+      "label": "Semantic-Aligned Structural Abstraction for Multimodal Sentiment Analysis problem setting",
+      "type": "concept",
+      "summary": "The learning or systems problem described by the source: Multimodal Sentiment Analysis (MSA) aims to interpret complex human emotions by integrating natural language with non-verbal modalities. Non-verbal modalities share a structural isomorphism with natural language, as both can be viewed as feature sequences evolving over time. This isomorphism enables the transformation of non-verbal modalities into text-like...",
+      "aliases": [],
+      "source_ids": [
+        "emergentmind-2607-27790-semantic-aligned-structural-abstraction-for-multimodal-sentiment-analysis-2026"
+      ],
+      "confidence": 0.78,
+      "first_seen": "2026-08-01T15:01:27Z",
+      "last_seen": "2026-08-01T15:01:27Z",
+      "world_hint": "retrieval-augmented-generation"
+    },
+    "paper-2607-27790": {
+      "id": "paper-2607-27790",
+      "label": "Semantic-Aligned Structural Abstraction for Multimodal Sentiment Analysis",
+      "type": "paper",
+      "summary": "EmergentMind surfaced arXiv paper 2607.27790: Multimodal Sentiment Analysis (MSA) aims to interpret complex human emotions by integrating natural language with non-verbal modalities. Non-verbal modalities share a structural isomorphism with natural language, as both can be viewed as feature sequences evolving over time. This isomorphism enables the transformation of non-verbal modalities into text-like...",
+      "aliases": [],
+      "source_ids": [
+        "emergentmind-2607-27790-semantic-aligned-structural-abstraction-for-multimodal-sentiment-analysis-2026"
+      ],
+      "confidence": 0.78,
+      "first_seen": "2026-08-01T15:01:27Z",
+      "last_seen": "2026-08-01T15:01:27Z",
+      "world_hint": "retrieval-augmented-generation"
+    },
+    "metis-memory-foundation-model": {
+      "id": "metis-memory-foundation-model",
+      "label": "Metis",
+      "type": "method",
+      "summary": "Source-grounded method/approach from 'Metis: Memory Foundation Model': Recent advances in AI agents have increasingly internalized native capabilities into their underlying foundation models, giving rise to multimodal foundation models and large reasoning models. However, agent memory is still primarily implemented through external modules, leaving the native memory capability largely unexplored. In this paper, we take a first...",
+      "aliases": [],
+      "source_ids": [
+        "emergentmind-2607-26760-metis-memory-foundation-model-2026"
+      ],
+      "confidence": 0.78,
+      "first_seen": "2026-08-01T15:01:27Z",
+      "last_seen": "2026-08-01T15:01:27Z",
+      "world_hint": "perception-world-models"
+    },
+    "metis-memory-foundation-model-learning-problem": {
+      "id": "metis-memory-foundation-model-learning-problem",
+      "label": "Metis problem setting",
+      "type": "concept",
+      "summary": "The learning or systems problem described by the source: Recent advances in AI agents have increasingly internalized native capabilities into their underlying foundation models, giving rise to multimodal foundation models and large reasoning models. However, agent memory is still primarily implemented through external modules, leaving the native memory capability largely unexplored. In this paper, we take a first...",
+      "aliases": [],
+      "source_ids": [
+        "emergentmind-2607-26760-metis-memory-foundation-model-2026"
+      ],
+      "confidence": 0.78,
+      "first_seen": "2026-08-01T15:01:27Z",
+      "last_seen": "2026-08-01T15:01:27Z",
+      "world_hint": "perception-world-models"
+    },
+    "metis-memory-foundation-model-evaluation-signal": {
+      "id": "metis-memory-foundation-model-evaluation-signal",
+      "label": "Metis evaluation signal",
+      "type": "concept",
+      "summary": "The source's evaluation/benchmark signal for judging the method; Edokai keeps this claim source-qualified.",
+      "aliases": [],
+      "source_ids": [
+        "emergentmind-2607-26760-metis-memory-foundation-model-2026"
+      ],
+      "confidence": 0.78,
+      "first_seen": "2026-08-01T15:01:27Z",
+      "last_seen": "2026-08-01T15:01:27Z",
+      "world_hint": "perception-world-models"
+    },
+    "paper-2607-26760": {
+      "id": "paper-2607-26760",
+      "label": "Metis: Memory Foundation Model",
+      "type": "paper",
+      "summary": "EmergentMind surfaced arXiv paper 2607.26760: Recent advances in AI agents have increasingly internalized native capabilities into their underlying foundation models, giving rise to multimodal foundation models and large reasoning models. However, agent memory is still primarily implemented through external modules, leaving the native memory capability largely unexplored. In this paper, we take a first...",
+      "aliases": [],
+      "source_ids": [
+        "emergentmind-2607-26760-metis-memory-foundation-model-2026"
+      ],
+      "confidence": 0.78,
+      "first_seen": "2026-08-01T15:01:27Z",
+      "last_seen": "2026-08-01T15:01:27Z",
+      "world_hint": "perception-world-models"
     }
   },
   "edges": [
@@ -22083,6 +22619,366 @@
         "emergentmind-2607-26754-stateplay-state-aware-game-world-models-for-mechanics-2026"
       ],
       "evidence": "Routed into The Stateplay State Aware Game under retrieval-augmented-generation from source title and abstract."
+    },
+    {
+      "source": "paper-2607-27180",
+      "target": "humanclaw-can-vision-language-models-act-through",
+      "relation": "paper_introduces",
+      "confidence": 0.82,
+      "source_ids": [
+        "emergentmind-2607-27180-humanclaw-can-vision-language-models-act-through-a-2026"
+      ],
+      "evidence": "EmergentMind homepage/page metadata identify arXiv 2607.27180, 'HumanCLAW: Can Vision-Language Models Act Through a Body?', and summarize the method/problem."
+    },
+    {
+      "source": "humanclaw-can-vision-language-models-act-through",
+      "target": "humanclaw-can-vision-language-models-act-through-a",
+      "relation": "implements",
+      "confidence": 0.76,
+      "source_ids": [
+        "emergentmind-2607-27180-humanclaw-can-vision-language-models-act-through-a-2026"
+      ],
+      "evidence": "Evaluating whether a vision-language model (VLM) can act through a physical body is challenging. The outcome of an action couples the VLM's decision with motor control. When a task fails, it is hard to tell whether the VLM made a bad choice or the motor controller simply failed t"
+    },
+    {
+      "source": "humanclaw-can-vision-language-models-act-through",
+      "target": "humanclaw-can-vision-language-models-act-through-a",
+      "relation": "evaluates_on",
+      "confidence": 0.72,
+      "source_ids": [
+        "emergentmind-2607-27180-humanclaw-can-vision-language-models-act-through-a-2026"
+      ],
+      "evidence": "Evaluating whether a vision-language model (VLM) can act through a physical body is challenging. The outcome of an action couples the VLM's decision with motor control. When a task fails, it is hard to tell whether the VLM made a bad choice or the motor controller simply failed t"
+    },
+    {
+      "source": "humanclaw-can-vision-language-models-act-through",
+      "target": "the-humanclaw-can-vision-language-models",
+      "relation": "belongs_to_region",
+      "confidence": 0.78,
+      "source_ids": [
+        "emergentmind-2607-27180-humanclaw-can-vision-language-models-act-through-a-2026"
+      ],
+      "evidence": "Routed into The Humanclaw Can Vision Language under perception-world-models from source title and abstract."
+    },
+    {
+      "source": "paper-2607-28227",
+      "target": "qwen-ui-agent-technical-report-toward-next",
+      "relation": "paper_introduces",
+      "confidence": 0.82,
+      "source_ids": [
+        "emergentmind-2607-28227-qwen-ui-agent-technical-report-toward-next-generation-2026"
+      ],
+      "evidence": "EmergentMind homepage/page metadata identify arXiv 2607.28227, 'Qwen-UI-Agent Technical Report: Toward Next-Generation Real-World Centric Foundation GUI Agents', and summarize the method/problem."
+    },
+    {
+      "source": "qwen-ui-agent-technical-report-toward-next",
+      "target": "qwen-ui-agent-technical-report-toward-next-generation",
+      "relation": "implements",
+      "confidence": 0.76,
+      "source_ids": [
+        "emergentmind-2607-28227-qwen-ui-agent-technical-report-toward-next-generation-2026"
+      ],
+      "evidence": "GUI agents have the potential to become a general purpose executor over existing digital devices. To advance them toward real-world use, we envision agents that operate reliably on real devices, execute workflows across platforms, combine GUI interaction with CLI execution, compl"
+    },
+    {
+      "source": "qwen-ui-agent-technical-report-toward-next",
+      "target": "qwen-ui-agent-technical-report-toward-next-generation",
+      "relation": "evaluates_on",
+      "confidence": 0.72,
+      "source_ids": [
+        "emergentmind-2607-28227-qwen-ui-agent-technical-report-toward-next-generation-2026"
+      ],
+      "evidence": "GUI agents have the potential to become a general purpose executor over existing digital devices. To advance them toward real-world use, we envision agents that operate reliably on real devices, execute workflows across platforms, combine GUI interaction with CLI execution, compl"
+    },
+    {
+      "source": "qwen-ui-agent-technical-report-toward-next",
+      "target": "the-qwen-ui-agent-technical-report",
+      "relation": "belongs_to_region",
+      "confidence": 0.78,
+      "source_ids": [
+        "emergentmind-2607-28227-qwen-ui-agent-technical-report-toward-next-generation-2026"
+      ],
+      "evidence": "Routed into The Qwen Ui Agent Technical under perception-world-models from source title and abstract."
+    },
+    {
+      "source": "paper-2607-28229",
+      "target": "embl-ai-librarian-life-sciences-knowledge-layer",
+      "relation": "paper_introduces",
+      "confidence": 0.82,
+      "source_ids": [
+        "emergentmind-2607-28229-embl-ai-librarian-life-sciences-knowledge-layer-for-2026"
+      ],
+      "evidence": "EmergentMind homepage/page metadata identify arXiv 2607.28229, 'EMBL AI Librarian: Life-Sciences Knowledge Layer for AI Agents', and summarize the method/problem."
+    },
+    {
+      "source": "embl-ai-librarian-life-sciences-knowledge-layer",
+      "target": "embl-ai-librarian-life-sciences-knowledge-layer-for",
+      "relation": "implements",
+      "confidence": 0.76,
+      "source_ids": [
+        "emergentmind-2607-28229-embl-ai-librarian-life-sciences-knowledge-layer-for-2026"
+      ],
+      "evidence": "The web is increasingly accessed by AI agents rather than humans. Every agent needs knowledge, especially in the life-sciences, where agentic pipelines are growing fast. Access to the literature is a crucial part of that need, and resources such as Europe PMC, with over 40M index"
+    },
+    {
+      "source": "embl-ai-librarian-life-sciences-knowledge-layer",
+      "target": "embl-ai-librarian-life-sciences-knowledge-layer-for",
+      "relation": "evaluates_on",
+      "confidence": 0.72,
+      "source_ids": [
+        "emergentmind-2607-28229-embl-ai-librarian-life-sciences-knowledge-layer-for-2026"
+      ],
+      "evidence": "The web is increasingly accessed by AI agents rather than humans. Every agent needs knowledge, especially in the life-sciences, where agentic pipelines are growing fast. Access to the literature is a crucial part of that need, and resources such as Europe PMC, with over 40M index"
+    },
+    {
+      "source": "embl-ai-librarian-life-sciences-knowledge-layer",
+      "target": "the-embl-ai-librarian-life-sciences",
+      "relation": "belongs_to_region",
+      "confidence": 0.78,
+      "source_ids": [
+        "emergentmind-2607-28229-embl-ai-librarian-life-sciences-knowledge-layer-for-2026"
+      ],
+      "evidence": "Routed into The Embl Ai Librarian Life under retrieval-augmented-generation from source title and abstract."
+    },
+    {
+      "source": "paper-2607-28545",
+      "target": "orca-bench-how-ready-are-language-model",
+      "relation": "paper_introduces",
+      "confidence": 0.82,
+      "source_ids": [
+        "emergentmind-2607-28545-orca-bench-how-ready-are-language-model-agents-2026"
+      ],
+      "evidence": "EmergentMind homepage/page metadata identify arXiv 2607.28545, 'ORCA-bench: How Ready Are Language Model Agents for Oncall?', and summarize the method/problem."
+    },
+    {
+      "source": "orca-bench-how-ready-are-language-model",
+      "target": "orca-bench-how-ready-are-language-model-agents",
+      "relation": "implements",
+      "confidence": 0.76,
+      "source_ids": [
+        "emergentmind-2607-28545-orca-bench-how-ready-are-language-model-agents-2026"
+      ],
+      "evidence": "Large language models can write, patch, and search code, but oncall root cause analysis (RCA) demands something different: reasoning over noisy metrics, logs, traces, and source code, starting from ambiguous user-facing reports, often hours after the incident began. We introduce "
+    },
+    {
+      "source": "orca-bench-how-ready-are-language-model",
+      "target": "orca-bench-how-ready-are-language-model-agents",
+      "relation": "evaluates_on",
+      "confidence": 0.72,
+      "source_ids": [
+        "emergentmind-2607-28545-orca-bench-how-ready-are-language-model-agents-2026"
+      ],
+      "evidence": "Large language models can write, patch, and search code, but oncall root cause analysis (RCA) demands something different: reasoning over noisy metrics, logs, traces, and source code, starting from ambiguous user-facing reports, often hours after the incident began. We introduce "
+    },
+    {
+      "source": "orca-bench-how-ready-are-language-model",
+      "target": "the-orca-bench-how-ready-are",
+      "relation": "belongs_to_region",
+      "confidence": 0.78,
+      "source_ids": [
+        "emergentmind-2607-28545-orca-bench-how-ready-are-language-model-agents-2026"
+      ],
+      "evidence": "Routed into The Orca Bench How Ready under perception-world-models from source title and abstract."
+    },
+    {
+      "source": "paper-2607-27652",
+      "target": "harness-g-a-graph-structured-harness-for",
+      "relation": "paper_introduces",
+      "confidence": 0.82,
+      "source_ids": [
+        "emergentmind-2607-27652-harness-g-a-graph-structured-harness-for-search-2026"
+      ],
+      "evidence": "EmergentMind homepage/page metadata identify arXiv 2607.27652, 'Harness-G: A Graph-Structured Harness for Search Agents', and summarize the method/problem."
+    },
+    {
+      "source": "harness-g-a-graph-structured-harness-for",
+      "target": "harness-g-a-graph-structured-harness-for-search",
+      "relation": "implements",
+      "confidence": 0.76,
+      "source_ids": [
+        "emergentmind-2607-27652-harness-g-a-graph-structured-harness-for-search-2026"
+      ],
+      "evidence": "Reinforcement learning (RL) search agents commonly model retrieval as free-form natural-language query generation and optimize multi-turn interactions using final-answer rewards. Current studies mainly improve training with denser or more structured credit signals, but rarely exa"
+    },
+    {
+      "source": "harness-g-a-graph-structured-harness-for",
+      "target": "harness-g-a-graph-structured-harness-for-search",
+      "relation": "evaluates_on",
+      "confidence": 0.72,
+      "source_ids": [
+        "emergentmind-2607-27652-harness-g-a-graph-structured-harness-for-search-2026"
+      ],
+      "evidence": "Reinforcement learning (RL) search agents commonly model retrieval as free-form natural-language query generation and optimize multi-turn interactions using final-answer rewards. Current studies mainly improve training with denser or more structured credit signals, but rarely exa"
+    },
+    {
+      "source": "harness-g-a-graph-structured-harness-for",
+      "target": "the-harness-g-a-graph-structured",
+      "relation": "belongs_to_region",
+      "confidence": 0.78,
+      "source_ids": [
+        "emergentmind-2607-27652-harness-g-a-graph-structured-harness-for-search-2026"
+      ],
+      "evidence": "Routed into The Harness G A Graph under retrieval-augmented-generation from source title and abstract."
+    },
+    {
+      "source": "paper-2607-28250",
+      "target": "causal-architecture-dynamics-prior-to-arrival-of",
+      "relation": "paper_introduces",
+      "confidence": 0.82,
+      "source_ids": [
+        "emergentmind-2607-28250-causal-architecture-dynamics-prior-to-arrival-of-self-2026"
+      ],
+      "evidence": "EmergentMind homepage/page metadata identify arXiv 2607.28250, 'Causal Architecture Dynamics Prior to Arrival of Self-replicators in a Model of Catalytic Networks Relevant to Origin-of-Life', and summarize the method/problem."
+    },
+    {
+      "source": "causal-architecture-dynamics-prior-to-arrival-of",
+      "target": "causal-architecture-dynamics-prior-to-arrival-of-self",
+      "relation": "implements",
+      "confidence": 0.76,
+      "source_ids": [
+        "emergentmind-2607-28250-causal-architecture-dynamics-prior-to-arrival-of-self-2026"
+      ],
+      "evidence": "Agents that exert causal power in the world are thought to be the product of selection among diverse replicators; what is the causal structure of a medium before replicators appear, and evolution takes hold? We studied information-theoretic dynamics of the popular GARD model that"
+    },
+    {
+      "source": "causal-architecture-dynamics-prior-to-arrival-of",
+      "target": "causal-architecture-dynamics-prior-to-arrival-of-self",
+      "relation": "evaluates_on",
+      "confidence": 0.72,
+      "source_ids": [
+        "emergentmind-2607-28250-causal-architecture-dynamics-prior-to-arrival-of-self-2026"
+      ],
+      "evidence": "Agents that exert causal power in the world are thought to be the product of selection among diverse replicators; what is the causal structure of a medium before replicators appear, and evolution takes hold? We studied information-theoretic dynamics of the popular GARD model that"
+    },
+    {
+      "source": "causal-architecture-dynamics-prior-to-arrival-of",
+      "target": "the-causal-architecture-dynamics-prior-to",
+      "relation": "belongs_to_region",
+      "confidence": 0.78,
+      "source_ids": [
+        "emergentmind-2607-28250-causal-architecture-dynamics-prior-to-arrival-of-self-2026"
+      ],
+      "evidence": "Routed into The Causal Architecture Dynamics Prior under agents from source title and abstract."
+    },
+    {
+      "source": "paper-2607-28109",
+      "target": "beyond-rephrasing-book-level-organization-improves-synthetic",
+      "relation": "paper_introduces",
+      "confidence": 0.82,
+      "source_ids": [
+        "emergentmind-2607-28109-beyond-rephrasing-book-level-organization-improves-synthetic-textbook-2026"
+      ],
+      "evidence": "EmergentMind homepage/page metadata identify arXiv 2607.28109, 'Beyond Rephrasing: Book-Level Organization Improves Synthetic Textbook Data for Mid-Training', and summarize the method/problem."
+    },
+    {
+      "source": "beyond-rephrasing-book-level-organization-improves-synthetic",
+      "target": "beyond-rephrasing-book-level-organization-improves-synthetic-textbook",
+      "relation": "implements",
+      "confidence": 0.76,
+      "source_ids": [
+        "emergentmind-2607-28109-beyond-rephrasing-book-level-organization-improves-synthetic-textbook-2026"
+      ],
+      "evidence": "Synthetic textbook data has improved language model pre-training, but prior work largely treats the benefit as a property of generated content or local rewriting style. We study a different factor: whether related content is organized into coherent book-level documents. We contri"
+    },
+    {
+      "source": "beyond-rephrasing-book-level-organization-improves-synthetic",
+      "target": "beyond-rephrasing-book-level-organization-improves-synthetic-textbook",
+      "relation": "evaluates_on",
+      "confidence": 0.72,
+      "source_ids": [
+        "emergentmind-2607-28109-beyond-rephrasing-book-level-organization-improves-synthetic-textbook-2026"
+      ],
+      "evidence": "Synthetic textbook data has improved language model pre-training, but prior work largely treats the benefit as a property of generated content or local rewriting style. We study a different factor: whether related content is organized into coherent book-level documents. We contri"
+    },
+    {
+      "source": "beyond-rephrasing-book-level-organization-improves-synthetic",
+      "target": "the-beyond-rephrasing-book-level-organization",
+      "relation": "belongs_to_region",
+      "confidence": 0.78,
+      "source_ids": [
+        "emergentmind-2607-28109-beyond-rephrasing-book-level-organization-improves-synthetic-textbook-2026"
+      ],
+      "evidence": "Routed into The Beyond Rephrasing Book Level under retrieval-augmented-generation from source title and abstract."
+    },
+    {
+      "source": "paper-2607-27790",
+      "target": "semantic-aligned-structural-abstraction-for-multimodal-sentiment",
+      "relation": "paper_introduces",
+      "confidence": 0.82,
+      "source_ids": [
+        "emergentmind-2607-27790-semantic-aligned-structural-abstraction-for-multimodal-sentiment-analysis-2026"
+      ],
+      "evidence": "EmergentMind homepage/page metadata identify arXiv 2607.27790, 'Semantic-Aligned Structural Abstraction for Multimodal Sentiment Analysis', and summarize the method/problem."
+    },
+    {
+      "source": "semantic-aligned-structural-abstraction-for-multimodal-sentiment",
+      "target": "semantic-aligned-structural-abstraction-for-multimodal-sentiment-analysis",
+      "relation": "implements",
+      "confidence": 0.76,
+      "source_ids": [
+        "emergentmind-2607-27790-semantic-aligned-structural-abstraction-for-multimodal-sentiment-analysis-2026"
+      ],
+      "evidence": "Multimodal Sentiment Analysis (MSA) aims to interpret complex human emotions by integrating natural language with non-verbal modalities. Non-verbal modalities share a structural isomorphism with natural language, as both can be viewed as feature sequences evolving over time. This"
+    },
+    {
+      "source": "semantic-aligned-structural-abstraction-for-multimodal-sentiment",
+      "target": "semantic-aligned-structural-abstraction-for-multimodal-sentiment-analysis",
+      "relation": "evaluates_on",
+      "confidence": 0.72,
+      "source_ids": [
+        "emergentmind-2607-27790-semantic-aligned-structural-abstraction-for-multimodal-sentiment-analysis-2026"
+      ],
+      "evidence": "Multimodal Sentiment Analysis (MSA) aims to interpret complex human emotions by integrating natural language with non-verbal modalities. Non-verbal modalities share a structural isomorphism with natural language, as both can be viewed as feature sequences evolving over time. This"
+    },
+    {
+      "source": "semantic-aligned-structural-abstraction-for-multimodal-sentiment",
+      "target": "the-semantic-aligned-structural-abstraction-for",
+      "relation": "belongs_to_region",
+      "confidence": 0.78,
+      "source_ids": [
+        "emergentmind-2607-27790-semantic-aligned-structural-abstraction-for-multimodal-sentiment-analysis-2026"
+      ],
+      "evidence": "Routed into The Semantic Aligned Structural Abstraction under retrieval-augmented-generation from source title and abstract."
+    },
+    {
+      "source": "paper-2607-26760",
+      "target": "metis-memory-foundation-model",
+      "relation": "paper_introduces",
+      "confidence": 0.82,
+      "source_ids": [
+        "emergentmind-2607-26760-metis-memory-foundation-model-2026"
+      ],
+      "evidence": "EmergentMind homepage/page metadata identify arXiv 2607.26760, 'Metis: Memory Foundation Model', and summarize the method/problem."
+    },
+    {
+      "source": "metis-memory-foundation-model",
+      "target": "metis-memory-foundation-model-learning-problem",
+      "relation": "implements",
+      "confidence": 0.76,
+      "source_ids": [
+        "emergentmind-2607-26760-metis-memory-foundation-model-2026"
+      ],
+      "evidence": "Recent advances in AI agents have increasingly internalized native capabilities into their underlying foundation models, giving rise to multimodal foundation models and large reasoning models. However, agent memory is still primarily implemented through external modules, leaving "
+    },
+    {
+      "source": "metis-memory-foundation-model",
+      "target": "metis-memory-foundation-model-evaluation-signal",
+      "relation": "evaluates_on",
+      "confidence": 0.72,
+      "source_ids": [
+        "emergentmind-2607-26760-metis-memory-foundation-model-2026"
+      ],
+      "evidence": "Recent advances in AI agents have increasingly internalized native capabilities into their underlying foundation models, giving rise to multimodal foundation models and large reasoning models. However, agent memory is still primarily implemented through external modules, leaving "
+    },
+    {
+      "source": "metis-memory-foundation-model",
+      "target": "the-metis-memory-foundation-model",
+      "relation": "belongs_to_region",
+      "confidence": 0.78,
+      "source_ids": [
+        "emergentmind-2607-26760-metis-memory-foundation-model-2026"
+      ],
+      "evidence": "Routed into The Metis Memory Foundation Model under perception-world-models from source title and abstract."
     }
   ],
   "open_questions": [
@@ -23772,6 +24668,58 @@
       "edges_added": 0,
       "regions_added": 0,
       "quality_findings": [],
+      "verification": {
+        "json_parse": "passed",
+        "dkg_test": "passed",
+        "build": "passed",
+        "supabase_sync": "passed",
+        "roundtrip": "passed"
+      }
+    },
+    {
+      "run_id": "daily-emergentmind-all-topics-20260801T150127Z",
+      "completed_at": "2026-08-01T15:01:27Z",
+      "type": "daily-emergentmind-all-topics",
+      "homepage_url": "https://www.emergentmind.com/",
+      "homepage_status": 200,
+      "homepage_papers": 45,
+      "source_ids": [
+        "emergentmind-2607-27180-humanclaw-can-vision-language-models-act-through-a-2026",
+        "emergentmind-2607-28227-qwen-ui-agent-technical-report-toward-next-generation-2026",
+        "emergentmind-2607-28229-embl-ai-librarian-life-sciences-knowledge-layer-for-2026",
+        "emergentmind-2607-28545-orca-bench-how-ready-are-language-model-agents-2026",
+        "emergentmind-2607-27652-harness-g-a-graph-structured-harness-for-search-2026",
+        "emergentmind-2607-28250-causal-architecture-dynamics-prior-to-arrival-of-self-2026",
+        "emergentmind-2607-28109-beyond-rephrasing-book-level-organization-improves-synthetic-textbook-2026",
+        "emergentmind-2607-27790-semantic-aligned-structural-abstraction-for-multimodal-sentiment-analysis-2026",
+        "emergentmind-2607-26760-metis-memory-foundation-model-2026"
+      ],
+      "page_status": {
+        "2607.27180": 200,
+        "2607.28227": 200,
+        "2607.28229": 200,
+        "2607.28545": 200,
+        "2607.27652": 200,
+        "2607.28250": 200,
+        "2607.28109": 200,
+        "2607.27790": 200,
+        "2607.26760": 200
+      },
+      "sources_added": 9,
+      "sources_updated": 0,
+      "nodes_added": 28,
+      "nodes_updated": 0,
+      "edges_added": 36,
+      "worlds_touched": [
+        "perception-world-models",
+        "retrieval-augmented-generation",
+        "agents"
+      ],
+      "regions_added": 9,
+      "manual_review": [
+        "Skipped pure-math, astronomy/cosmology, and clinical/medical surfaced items in this bounded pass; clinical claims need deeper safety review before routing.",
+        "New visual-SLAM/event-camera/egocentric-video items are routed under Perception & World Models; DeepSearch is routed under Retrieval-Augmented Generation; beyond-human intelligence evaluation is routed under Agents."
+      ],
       "verification": {
         "json_parse": "passed",
         "dkg_test": "passed",

@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "updated_at": "2026-07-31T14:41:24Z",
+  "updated_at": "2026-08-01T15:01:27Z",
   "macro_worlds": {
     "agents": {
       "label": "Agents",
@@ -1841,6 +1841,48 @@
               "answer_index": 3,
               "source_ids": [
                 "emergentmind-2607-26123-quantum-information-decoupling-beyond-finite-dimensions-2026"
+              ]
+            }
+          ]
+        },
+        {
+          "id": "the-causal-architecture-dynamics-prior-to",
+          "label": "The Causal Architecture Dynamics Prior",
+          "summary": "A source-backed case board for Causal Architecture Dynamics Prior to Arrival of Self-replicators in a Model of Catalytic Networks Relevant to Origin-of-Life: learners inspect the plain technical mechanism, the evaluation signal, and where the claim fits in Edokai's agents world.",
+          "source_ids": [
+            "emergentmind-2607-28250-causal-architecture-dynamics-prior-to-arrival-of-self-2026"
+          ],
+          "concept_ids": [
+            "causal-architecture-dynamics-prior-to-arrival-of",
+            "causal-architecture-dynamics-prior-to-arrival-of-self",
+            "causal-architecture-dynamics-prior-to-arrival-of-self"
+          ],
+          "critical_concepts": [
+            "causal-architecture-dynamics-prior-to-arrival-of",
+            "causal-architecture-dynamics-prior-to-arrival-of-self"
+          ],
+          "prerequisite_links": [],
+          "side_retention_duels": [
+            {
+              "id": "the-causal-architecture-dynamics-prior-duel",
+              "prompt": "What should Edokai learners remember about **Causal Architecture Dynamics Prior to Arrival of Self-replicators in a Model of Catalytic Networks Relevant to Origin-of-Life**?",
+              "left": "Treat it as a title-only bookmark without checking the mechanism.",
+              "right": "Track the mechanism, evidence signal, and limits stated by the source.",
+              "answer": "Use the source-backed mechanism and evaluation signal; avoid inferring guarantees beyond the paper summary."
+            }
+          ],
+          "quiz_questions": [
+            {
+              "question": "In the source **Causal Architecture Dynamics Prior to Arrival of Self-replicators in a Model of Catalytic Networks Relevant to Origin-of-Life**, what is the main learner-facing mechanism Edokai should preserve?",
+              "choices": [
+                "It mainly replaces the user interface theme without changing the learning mechanism.",
+                "It is a clinical treatment protocol rather than a machine-learning research method.",
+                "It uses the source's Causal Architecture Dynamics Prior to Arrival of Self-replicators in a Model of Catalytic Networks Relevant to Origin-of-Life mechanism to address the paper's stated ML/AI problem.",
+                "It proves a pure-math theorem without a model, agent, or evaluation loop."
+              ],
+              "answer_index": 2,
+              "source_ids": [
+                "emergentmind-2607-28250-causal-architecture-dynamics-prior-to-arrival-of-self-2026"
               ]
             }
           ]
@@ -6210,6 +6252,174 @@
               ]
             }
           ]
+        },
+        {
+          "id": "the-humanclaw-can-vision-language-models",
+          "label": "The Humanclaw Can Vision Language",
+          "summary": "A source-backed case board for HumanCLAW: Can Vision-Language Models Act Through a Body?: learners inspect the plain technical mechanism, the evaluation signal, and where the claim fits in Edokai's perception world models world.",
+          "source_ids": [
+            "emergentmind-2607-27180-humanclaw-can-vision-language-models-act-through-a-2026"
+          ],
+          "concept_ids": [
+            "humanclaw-can-vision-language-models-act-through",
+            "humanclaw-can-vision-language-models-act-through-a",
+            "humanclaw-can-vision-language-models-act-through-a"
+          ],
+          "critical_concepts": [
+            "humanclaw-can-vision-language-models-act-through",
+            "humanclaw-can-vision-language-models-act-through-a"
+          ],
+          "prerequisite_links": [],
+          "side_retention_duels": [
+            {
+              "id": "the-humanclaw-can-vision-language-duel",
+              "prompt": "What should Edokai learners remember about **HumanCLAW**?",
+              "left": "Treat it as a title-only bookmark without checking the mechanism.",
+              "right": "Track the mechanism, evidence signal, and limits stated by the source.",
+              "answer": "Use the source-backed mechanism and evaluation signal; avoid inferring guarantees beyond the paper summary."
+            }
+          ],
+          "quiz_questions": [
+            {
+              "question": "In the source **HumanCLAW: Can Vision-Language Models Act Through a Body?**, what is the main learner-facing mechanism Edokai should preserve?",
+              "choices": [
+                "It mainly replaces the user interface theme without changing the learning mechanism.",
+                "It uses the source's HumanCLAW mechanism to address the paper's stated ML/AI problem.",
+                "It is a clinical treatment protocol rather than a machine-learning research method.",
+                "It proves a pure-math theorem without a model, agent, or evaluation loop."
+              ],
+              "answer_index": 1,
+              "source_ids": [
+                "emergentmind-2607-27180-humanclaw-can-vision-language-models-act-through-a-2026"
+              ]
+            }
+          ]
+        },
+        {
+          "id": "the-qwen-ui-agent-technical-report",
+          "label": "The Qwen Ui Agent Technical",
+          "summary": "A source-backed case board for Qwen-UI-Agent Technical Report: Toward Next-Generation Real-World Centric Foundation GUI Agents: learners inspect the plain technical mechanism, the evaluation signal, and where the claim fits in Edokai's perception world models world.",
+          "source_ids": [
+            "emergentmind-2607-28227-qwen-ui-agent-technical-report-toward-next-generation-2026"
+          ],
+          "concept_ids": [
+            "qwen-ui-agent-technical-report-toward-next",
+            "qwen-ui-agent-technical-report-toward-next-generation",
+            "qwen-ui-agent-technical-report-toward-next-generation"
+          ],
+          "critical_concepts": [
+            "qwen-ui-agent-technical-report-toward-next",
+            "qwen-ui-agent-technical-report-toward-next-generation"
+          ],
+          "prerequisite_links": [],
+          "side_retention_duels": [
+            {
+              "id": "the-qwen-ui-agent-technical-duel",
+              "prompt": "What should Edokai learners remember about **Qwen-UI-Agent Technical Report**?",
+              "left": "Treat it as a title-only bookmark without checking the mechanism.",
+              "right": "Track the mechanism, evidence signal, and limits stated by the source.",
+              "answer": "Use the source-backed mechanism and evaluation signal; avoid inferring guarantees beyond the paper summary."
+            }
+          ],
+          "quiz_questions": [
+            {
+              "question": "In the source **Qwen-UI-Agent Technical Report: Toward Next-Generation Real-World Centric Foundation GUI Agents**, what is the main learner-facing mechanism Edokai should preserve?",
+              "choices": [
+                "It mainly replaces the user interface theme without changing the learning mechanism.",
+                "It is a clinical treatment protocol rather than a machine-learning research method.",
+                "It uses the source's Qwen-UI-Agent Technical Report mechanism to address the paper's stated ML/AI problem.",
+                "It proves a pure-math theorem without a model, agent, or evaluation loop."
+              ],
+              "answer_index": 2,
+              "source_ids": [
+                "emergentmind-2607-28227-qwen-ui-agent-technical-report-toward-next-generation-2026"
+              ]
+            }
+          ]
+        },
+        {
+          "id": "the-orca-bench-how-ready-are",
+          "label": "The Orca Bench How Ready",
+          "summary": "A source-backed case board for ORCA-bench: How Ready Are Language Model Agents for Oncall?: learners inspect the plain technical mechanism, the evaluation signal, and where the claim fits in Edokai's perception world models world.",
+          "source_ids": [
+            "emergentmind-2607-28545-orca-bench-how-ready-are-language-model-agents-2026"
+          ],
+          "concept_ids": [
+            "orca-bench-how-ready-are-language-model",
+            "orca-bench-how-ready-are-language-model-agents",
+            "orca-bench-how-ready-are-language-model-agents"
+          ],
+          "critical_concepts": [
+            "orca-bench-how-ready-are-language-model",
+            "orca-bench-how-ready-are-language-model-agents"
+          ],
+          "prerequisite_links": [],
+          "side_retention_duels": [
+            {
+              "id": "the-orca-bench-how-ready-duel",
+              "prompt": "What should Edokai learners remember about **ORCA-bench**?",
+              "left": "Treat it as a title-only bookmark without checking the mechanism.",
+              "right": "Track the mechanism, evidence signal, and limits stated by the source.",
+              "answer": "Use the source-backed mechanism and evaluation signal; avoid inferring guarantees beyond the paper summary."
+            }
+          ],
+          "quiz_questions": [
+            {
+              "question": "In the source **ORCA-bench: How Ready Are Language Model Agents for Oncall?**, what is the main learner-facing mechanism Edokai should preserve?",
+              "choices": [
+                "It uses the source's ORCA-bench mechanism to address the paper's stated ML/AI problem.",
+                "It mainly replaces the user interface theme without changing the learning mechanism.",
+                "It is a clinical treatment protocol rather than a machine-learning research method.",
+                "It proves a pure-math theorem without a model, agent, or evaluation loop."
+              ],
+              "answer_index": 0,
+              "source_ids": [
+                "emergentmind-2607-28545-orca-bench-how-ready-are-language-model-agents-2026"
+              ]
+            }
+          ]
+        },
+        {
+          "id": "the-metis-memory-foundation-model",
+          "label": "The Metis Memory Foundation Model",
+          "summary": "A source-backed case board for Metis: Memory Foundation Model: learners inspect the plain technical mechanism, the evaluation signal, and where the claim fits in Edokai's perception world models world.",
+          "source_ids": [
+            "emergentmind-2607-26760-metis-memory-foundation-model-2026"
+          ],
+          "concept_ids": [
+            "metis-memory-foundation-model",
+            "metis-memory-foundation-model-learning-problem",
+            "metis-memory-foundation-model-evaluation-signal"
+          ],
+          "critical_concepts": [
+            "metis-memory-foundation-model",
+            "metis-memory-foundation-model-learning-problem"
+          ],
+          "prerequisite_links": [],
+          "side_retention_duels": [
+            {
+              "id": "the-metis-memory-foundation-model-duel",
+              "prompt": "What should Edokai learners remember about **Metis**?",
+              "left": "Treat it as a title-only bookmark without checking the mechanism.",
+              "right": "Track the mechanism, evidence signal, and limits stated by the source.",
+              "answer": "Use the source-backed mechanism and evaluation signal; avoid inferring guarantees beyond the paper summary."
+            }
+          ],
+          "quiz_questions": [
+            {
+              "question": "In the source **Metis: Memory Foundation Model**, what is the main learner-facing mechanism Edokai should preserve?",
+              "choices": [
+                "It mainly replaces the user interface theme without changing the learning mechanism.",
+                "It uses the source's Metis mechanism to address the paper's stated ML/AI problem.",
+                "It is a clinical treatment protocol rather than a machine-learning research method.",
+                "It proves a pure-math theorem without a model, agent, or evaluation loop."
+              ],
+              "answer_index": 1,
+              "source_ids": [
+                "emergentmind-2607-26760-metis-memory-foundation-model-2026"
+              ]
+            }
+          ]
         }
       ]
     },
@@ -9363,6 +9573,174 @@
               ]
             }
           ]
+        },
+        {
+          "id": "the-embl-ai-librarian-life-sciences",
+          "label": "The Embl Ai Librarian Life",
+          "summary": "A source-backed case board for EMBL AI Librarian: Life-Sciences Knowledge Layer for AI Agents: learners inspect the plain technical mechanism, the evaluation signal, and where the claim fits in Edokai's retrieval augmented generation world.",
+          "source_ids": [
+            "emergentmind-2607-28229-embl-ai-librarian-life-sciences-knowledge-layer-for-2026"
+          ],
+          "concept_ids": [
+            "embl-ai-librarian-life-sciences-knowledge-layer",
+            "embl-ai-librarian-life-sciences-knowledge-layer-for",
+            "embl-ai-librarian-life-sciences-knowledge-layer-for"
+          ],
+          "critical_concepts": [
+            "embl-ai-librarian-life-sciences-knowledge-layer",
+            "embl-ai-librarian-life-sciences-knowledge-layer-for"
+          ],
+          "prerequisite_links": [],
+          "side_retention_duels": [
+            {
+              "id": "the-embl-ai-librarian-life-duel",
+              "prompt": "What should Edokai learners remember about **EMBL AI Librarian**?",
+              "left": "Treat it as a title-only bookmark without checking the mechanism.",
+              "right": "Track the mechanism, evidence signal, and limits stated by the source.",
+              "answer": "Use the source-backed mechanism and evaluation signal; avoid inferring guarantees beyond the paper summary."
+            }
+          ],
+          "quiz_questions": [
+            {
+              "question": "In the source **EMBL AI Librarian: Life-Sciences Knowledge Layer for AI Agents**, what is the main learner-facing mechanism Edokai should preserve?",
+              "choices": [
+                "It mainly replaces the user interface theme without changing the learning mechanism.",
+                "It is a clinical treatment protocol rather than a machine-learning research method.",
+                "It proves a pure-math theorem without a model, agent, or evaluation loop.",
+                "It uses the source's EMBL AI Librarian mechanism to address the paper's stated ML/AI problem."
+              ],
+              "answer_index": 3,
+              "source_ids": [
+                "emergentmind-2607-28229-embl-ai-librarian-life-sciences-knowledge-layer-for-2026"
+              ]
+            }
+          ]
+        },
+        {
+          "id": "the-harness-g-a-graph-structured",
+          "label": "The Harness G A Graph",
+          "summary": "A source-backed case board for Harness-G: A Graph-Structured Harness for Search Agents: learners inspect the plain technical mechanism, the evaluation signal, and where the claim fits in Edokai's retrieval augmented generation world.",
+          "source_ids": [
+            "emergentmind-2607-27652-harness-g-a-graph-structured-harness-for-search-2026"
+          ],
+          "concept_ids": [
+            "harness-g-a-graph-structured-harness-for",
+            "harness-g-a-graph-structured-harness-for-search",
+            "harness-g-a-graph-structured-harness-for-search"
+          ],
+          "critical_concepts": [
+            "harness-g-a-graph-structured-harness-for",
+            "harness-g-a-graph-structured-harness-for-search"
+          ],
+          "prerequisite_links": [],
+          "side_retention_duels": [
+            {
+              "id": "the-harness-g-a-graph-duel",
+              "prompt": "What should Edokai learners remember about **Harness-G**?",
+              "left": "Treat it as a title-only bookmark without checking the mechanism.",
+              "right": "Track the mechanism, evidence signal, and limits stated by the source.",
+              "answer": "Use the source-backed mechanism and evaluation signal; avoid inferring guarantees beyond the paper summary."
+            }
+          ],
+          "quiz_questions": [
+            {
+              "question": "In the source **Harness-G: A Graph-Structured Harness for Search Agents**, what is the main learner-facing mechanism Edokai should preserve?",
+              "choices": [
+                "It mainly replaces the user interface theme without changing the learning mechanism.",
+                "It uses the source's Harness-G mechanism to address the paper's stated ML/AI problem.",
+                "It is a clinical treatment protocol rather than a machine-learning research method.",
+                "It proves a pure-math theorem without a model, agent, or evaluation loop."
+              ],
+              "answer_index": 1,
+              "source_ids": [
+                "emergentmind-2607-27652-harness-g-a-graph-structured-harness-for-search-2026"
+              ]
+            }
+          ]
+        },
+        {
+          "id": "the-beyond-rephrasing-book-level-organization",
+          "label": "The Beyond Rephrasing Book Level",
+          "summary": "A source-backed case board for Beyond Rephrasing: Book-Level Organization Improves Synthetic Textbook Data for Mid-Training: learners inspect the plain technical mechanism, the evaluation signal, and where the claim fits in Edokai's retrieval augmented generation world.",
+          "source_ids": [
+            "emergentmind-2607-28109-beyond-rephrasing-book-level-organization-improves-synthetic-textbook-2026"
+          ],
+          "concept_ids": [
+            "beyond-rephrasing-book-level-organization-improves-synthetic",
+            "beyond-rephrasing-book-level-organization-improves-synthetic-textbook",
+            "beyond-rephrasing-book-level-organization-improves-synthetic-textbook"
+          ],
+          "critical_concepts": [
+            "beyond-rephrasing-book-level-organization-improves-synthetic",
+            "beyond-rephrasing-book-level-organization-improves-synthetic-textbook"
+          ],
+          "prerequisite_links": [],
+          "side_retention_duels": [
+            {
+              "id": "the-beyond-rephrasing-book-level-duel",
+              "prompt": "What should Edokai learners remember about **Beyond Rephrasing**?",
+              "left": "Treat it as a title-only bookmark without checking the mechanism.",
+              "right": "Track the mechanism, evidence signal, and limits stated by the source.",
+              "answer": "Use the source-backed mechanism and evaluation signal; avoid inferring guarantees beyond the paper summary."
+            }
+          ],
+          "quiz_questions": [
+            {
+              "question": "In the source **Beyond Rephrasing: Book-Level Organization Improves Synthetic Textbook Data for Mid-Training**, what is the main learner-facing mechanism Edokai should preserve?",
+              "choices": [
+                "It mainly replaces the user interface theme without changing the learning mechanism.",
+                "It is a clinical treatment protocol rather than a machine-learning research method.",
+                "It proves a pure-math theorem without a model, agent, or evaluation loop.",
+                "It uses the source's Beyond Rephrasing mechanism to address the paper's stated ML/AI problem."
+              ],
+              "answer_index": 3,
+              "source_ids": [
+                "emergentmind-2607-28109-beyond-rephrasing-book-level-organization-improves-synthetic-textbook-2026"
+              ]
+            }
+          ]
+        },
+        {
+          "id": "the-semantic-aligned-structural-abstraction-for",
+          "label": "The Semantic Aligned Structural Abstraction",
+          "summary": "A source-backed case board for Semantic-Aligned Structural Abstraction for Multimodal Sentiment Analysis: learners inspect the plain technical mechanism, the evaluation signal, and where the claim fits in Edokai's retrieval augmented generation world.",
+          "source_ids": [
+            "emergentmind-2607-27790-semantic-aligned-structural-abstraction-for-multimodal-sentiment-analysis-2026"
+          ],
+          "concept_ids": [
+            "semantic-aligned-structural-abstraction-for-multimodal-sentiment",
+            "semantic-aligned-structural-abstraction-for-multimodal-sentiment-analysis",
+            "semantic-aligned-structural-abstraction-for-multimodal-sentiment-analysis"
+          ],
+          "critical_concepts": [
+            "semantic-aligned-structural-abstraction-for-multimodal-sentiment",
+            "semantic-aligned-structural-abstraction-for-multimodal-sentiment-analysis"
+          ],
+          "prerequisite_links": [],
+          "side_retention_duels": [
+            {
+              "id": "the-semantic-aligned-structural-abstraction-duel",
+              "prompt": "What should Edokai learners remember about **Semantic-Aligned Structural Abstraction for Multimodal Sentiment Analysis**?",
+              "left": "Treat it as a title-only bookmark without checking the mechanism.",
+              "right": "Track the mechanism, evidence signal, and limits stated by the source.",
+              "answer": "Use the source-backed mechanism and evaluation signal; avoid inferring guarantees beyond the paper summary."
+            }
+          ],
+          "quiz_questions": [
+            {
+              "question": "In the source **Semantic-Aligned Structural Abstraction for Multimodal Sentiment Analysis**, what is the main learner-facing mechanism Edokai should preserve?",
+              "choices": [
+                "It uses the source's Semantic-Aligned Structural Abstraction for Multimodal Sentiment Analysis mechanism to address the paper's stated ML/AI problem.",
+                "It mainly replaces the user interface theme without changing the learning mechanism.",
+                "It is a clinical treatment protocol rather than a machine-learning research method.",
+                "It proves a pure-math theorem without a model, agent, or evaluation loop."
+              ],
+              "answer_index": 0,
+              "source_ids": [
+                "emergentmind-2607-27790-semantic-aligned-structural-abstraction-for-multimodal-sentiment-analysis-2026"
+              ]
+            }
+          ]
         }
       ]
     }
@@ -10869,6 +11247,43 @@
       "regions_added": 0,
       "new_worlds_created": [],
       "quality_findings": [],
+      "verification": {
+        "json_parse": "passed",
+        "dkg_test": "passed",
+        "build": "passed",
+        "supabase_sync": "passed",
+        "roundtrip": "passed"
+      }
+    },
+    {
+      "run_id": "daily-emergentmind-all-topics-20260801T150127Z",
+      "completed_at": "2026-08-01T15:01:27Z",
+      "event": "daily EmergentMind homepage all-topics ingestion",
+      "sources_added": 9,
+      "nodes_added": 28,
+      "edges_added": 36,
+      "worlds_enhanced": [
+        "perception-world-models",
+        "retrieval-augmented-generation",
+        "agents"
+      ],
+      "regions_enhanced": [
+        "the-humanclaw-can-vision-language-models",
+        "the-qwen-ui-agent-technical-report",
+        "the-embl-ai-librarian-life-sciences",
+        "the-orca-bench-how-ready-are",
+        "the-harness-g-a-graph-structured",
+        "the-causal-architecture-dynamics-prior-to",
+        "the-beyond-rephrasing-book-level-organization",
+        "the-semantic-aligned-structural-abstraction-for",
+        "the-metis-memory-foundation-model"
+      ],
+      "new_worlds_created": [],
+      "router_learning": "The 2026-07-12 homepage delta fits existing umbrellas: SLAM/event-camera/egocentric-video strengthen Perception & World Models, DeepSearch strengthens Retrieval-Augmented Generation, and beyond-human intelligence evaluation strengthens Agents.",
+      "manual_review": [
+        "Skipped pure-math, astronomy/cosmology, and clinical/medical surfaced items in this bounded pass; clinical claims need deeper safety review before routing.",
+        "New visual-SLAM/event-camera/egocentric-video items are routed under Perception & World Models; DeepSearch is routed under Retrieval-Augmented Generation; beyond-human intelligence evaluation is routed under Agents."
+      ],
       "verification": {
         "json_parse": "passed",
         "dkg_test": "passed",

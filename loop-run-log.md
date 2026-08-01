@@ -488,3 +488,14 @@ Append-only operational log for automatic EmergentMind ingestion, Telegram manua
 - Counts before sync: 216 sources / 696 nodes / 861 edges / 6 macro worlds / 218 regions / 220 quizzes / 222 duels.
 - Verification: JSON parse passed; `npm run dkg:test` passed; `npm run build` passed; `npm run dkg:sync` passed; `node scripts/test-dkg-roundtrip.mjs` passed.
 - Escalations/manual review: none.
+
+## daily-emergentmind-all-topics-20260801T150127Z
+
+- Trigger: scheduled daily EmergentMind all-topics graph growth loop.
+- Homepage discovery: fetched `https://www.emergentmind.com/` (HTTP 200) and decoded `window.bootstrapped_trending_papers_json`; homepage exposed 45 trending papers. Selected 9 new high-signal ML/AI papers under the daily budget.
+- Sources ingested: emergentmind-2607-27180-humanclaw-can-vision-language-models-act-through-a-2026, emergentmind-2607-28227-qwen-ui-agent-technical-report-toward-next-generation-2026, emergentmind-2607-28229-embl-ai-librarian-life-sciences-knowledge-layer-for-2026, emergentmind-2607-28545-orca-bench-how-ready-are-language-model-agents-2026, emergentmind-2607-27652-harness-g-a-graph-structured-harness-for-search-2026, emergentmind-2607-28250-causal-architecture-dynamics-prior-to-arrival-of-self-2026, emergentmind-2607-28109-beyond-rephrasing-book-level-organization-improves-synthetic-textbook-2026, emergentmind-2607-27790-semantic-aligned-structural-abstraction-for-multimodal-sentiment-analysis-2026, emergentmind-2607-26760-metis-memory-foundation-model-2026.
+- Source-page fetch statuses: {"2607.27180": 200, "2607.28227": 200, "2607.28229": 200, "2607.28545": 200, "2607.27652": 200, "2607.28250": 200, "2607.28109": 200, "2607.27790": 200, "2607.26760": 200}.
+- Graph actions: added 9 source records, updated 0; added 28 nodes, updated 0; added 36 source-backed edges. Totals now 225 sources / 724 nodes / 897 edges.
+- Concept-world builder: added 9 preliminary source-backed regions across perception-world-models, retrieval-augmented-generation, agents; no new macro world created.
+- Verification: maker/checker provenance pass succeeded before write; JSON parse, `npm run dkg:test`, `npm run build`, `npm run dkg:sync`, and Supabase round-trip readback passed.
+- Escalations/manual review: Skipped pure-math, astronomy/cosmology, and clinical/medical surfaced items in this bounded pass; clinical claims need deeper safety review before routing. New visual-SLAM/event-camera/egocentric-video items are routed under Perception & World Models; DeepSearch is routed under Retrieval-Augmented Generation; beyond-human intelligence evaluation is routed under Agents. No publishing, secrets, infra, or broad UI refactor performed.
