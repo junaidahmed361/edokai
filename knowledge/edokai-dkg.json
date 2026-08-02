@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "updated_at": "2026-08-01T15:01:27Z",
+  "updated_at": "2026-08-02T14:03:27Z",
   "sources": {
     "hf-space-trl-distillation-trainer-2026": {
       "id": "hf-space-trl-distillation-trainer-2026",
@@ -3628,6 +3628,54 @@
       "provenance": [
         "Discovered from https://www.emergentmind.com/ bootstrapped trending papers on 2026-08-01.",
         "EmergentMind homepage abstract metadata: Recent advances in AI agents have increasingly internalized native capabilities into their underlying foundation models, giving rise to multimodal foundation models and large reasoning models. However, agent memory is still primarily implemented through external modules, leaving the native memory capability largely unexplored. In this paper, we take a first step toward this direction by introducing memory foundation models, which empower foundation models with native memory capabilities. We formalize native memory from two perspectives: a persistent and dynamically evolving memory state within the backbone, and native memory procedu"
+      ],
+      "confidence": 0.86
+    },
+    "emergentmind-2607-28033-dataclaweval-a-benchmark-for-data-engineering-agents-in-2026": {
+      "id": "emergentmind-2607-28033-dataclaweval-a-benchmark-for-data-engineering-agents-in-2026",
+      "url": "https://www.emergentmind.com/papers/2607.28033",
+      "arxiv_url": "https://arxiv.org/abs/2607.28033",
+      "title": "DataClawEval: A Benchmark for Data Engineering Agents in Real Industrial Harness",
+      "source_type": "emergentmind-trending-paper",
+      "authors": [],
+      "published": "2026-07-30",
+      "discovered_at": "2026-08-02T14:03:27Z",
+      "last_read_at": "2026-08-02T14:03:27Z",
+      "provenance": [
+        "Discovered from https://www.emergentmind.com/ bootstrapped trending papers on 2026-08-02.",
+        "EmergentMind homepage abstract metadata: Large language models (LLMs) and LLM-based agents are increasingly being deployed to automate complex workflows, promising to revolutionize data management and processing. However, existing benchmarks predominantly focus on simplified Text-to-SQL translation or data analysis, leaving the critical and complex domain of end-to-end data engineering largely unexplored. To bridge this gap, we introduce DataClawEval, the first comprehensive benchmark designed specifically to evaluate the end-to-end task completion capabilities of autonomous agents in real-world data engineering scenarios. Built upon production-grade code authored by profe"
+      ],
+      "confidence": 0.86
+    },
+    "emergentmind-2607-26853-from-representations-to-behaviors-exploring-the-person-situation-2026": {
+      "id": "emergentmind-2607-26853-from-representations-to-behaviors-exploring-the-person-situation-2026",
+      "url": "https://www.emergentmind.com/papers/2607.26853",
+      "arxiv_url": "https://arxiv.org/abs/2607.26853",
+      "title": "From Representations to Behaviors: Exploring the Person-Situation-Behavior Triad in LLMs",
+      "source_type": "emergentmind-trending-paper",
+      "authors": [],
+      "published": "2026-07-29",
+      "discovered_at": "2026-08-02T14:03:27Z",
+      "last_read_at": "2026-08-02T14:03:27Z",
+      "provenance": [
+        "Discovered from https://www.emergentmind.com/ bootstrapped trending papers on 2026-08-02.",
+        "EmergentMind homepage abstract metadata: Human personality theories characterize traits not as isolated attributes captured by a single score, but as stable individual tendencies expressed through the interplay among persons, situations, and behaviors. Existing studies of personality-related behavior in LLMs have primarily focused on outputs elicited under personality conditioning, characterizing observable trait-related expressions while lacking mechanistic evidence for the existence of internal personality-related representations, their cross-situational expression, and how these representations shape specific behaviors. Building on Funder's personality triad framework, "
+      ],
+      "confidence": 0.86
+    },
+    "emergentmind-2607-28022-flux-opd-on-policy-distillation-with-evolving-contexts-2026": {
+      "id": "emergentmind-2607-28022-flux-opd-on-policy-distillation-with-evolving-contexts-2026",
+      "url": "https://www.emergentmind.com/papers/2607.28022",
+      "arxiv_url": "https://arxiv.org/abs/2607.28022",
+      "title": "Flux-OPD: On-Policy Distillation with Evolving Contexts",
+      "source_type": "emergentmind-trending-paper",
+      "authors": [],
+      "published": "2026-07-30",
+      "discovered_at": "2026-08-02T14:03:27Z",
+      "last_read_at": "2026-08-02T14:03:27Z",
+      "provenance": [
+        "Discovered from https://www.emergentmind.com/ bootstrapped trending papers on 2026-08-02.",
+        "EmergentMind homepage abstract metadata: Large language model training in open-ended domains lacks verifiable rewards, making task preferences difficult to formalize as effective supervision. Contexts can convey such preferences, yet provide little additional supervision once distilled into the student, motivating contexts that evolve with student performance. However, directly using evolving contexts as in-training supervision results in an unstable distillation target and conflicting distributions, requiring mechanisms to stabilize target and downweight conflicts. In this paper, we analyze the effect of contexts through a decomposition of the reverse KL objective, reveal"
       ],
       "confidence": 0.86
     }
@@ -13996,6 +14044,132 @@
       "first_seen": "2026-08-01T15:01:27Z",
       "last_seen": "2026-08-01T15:01:27Z",
       "world_hint": "perception-world-models"
+    },
+    "dataclaweval-a-benchmark-for-data-engineering-agents": {
+      "id": "dataclaweval-a-benchmark-for-data-engineering-agents",
+      "label": "DataClawEval",
+      "type": "method",
+      "summary": "Source-grounded method/approach from 'DataClawEval: A Benchmark for Data Engineering Agents in Real Industrial Harness': Large language models (LLMs) and LLM-based agents are increasingly being deployed to automate complex workflows, promising to revolutionize data management and processing. However, existing benchmarks predominantly focus on simplified Text-to-SQL translation or data analysis, leaving the critical and complex domain of end-to-end data engineering largely unex...",
+      "aliases": [],
+      "source_ids": [
+        "emergentmind-2607-28033-dataclaweval-a-benchmark-for-data-engineering-agents-in-2026"
+      ],
+      "confidence": 0.78,
+      "first_seen": "2026-08-02T14:03:27Z",
+      "last_seen": "2026-08-02T14:03:27Z",
+      "world_hint": "perception-world-models"
+    },
+    "dataclaweval-a-benchmark-for-data-engineering-agents-in": {
+      "id": "dataclaweval-a-benchmark-for-data-engineering-agents-in",
+      "label": "DataClawEval problem setting",
+      "type": "concept",
+      "summary": "The learning or systems problem described by the source: Large language models (LLMs) and LLM-based agents are increasingly being deployed to automate complex workflows, promising to revolutionize data management and processing. However, existing benchmarks predominantly focus on simplified Text-to-SQL translation or data analysis, leaving the critical and complex domain of end-to-end data engineering largely unex...",
+      "aliases": [],
+      "source_ids": [
+        "emergentmind-2607-28033-dataclaweval-a-benchmark-for-data-engineering-agents-in-2026"
+      ],
+      "confidence": 0.78,
+      "first_seen": "2026-08-02T14:03:27Z",
+      "last_seen": "2026-08-02T14:03:27Z",
+      "world_hint": "perception-world-models"
+    },
+    "paper-2607-28033": {
+      "id": "paper-2607-28033",
+      "label": "DataClawEval: A Benchmark for Data Engineering Agents in Real Industrial Harness",
+      "type": "paper",
+      "summary": "EmergentMind surfaced arXiv paper 2607.28033: Large language models (LLMs) and LLM-based agents are increasingly being deployed to automate complex workflows, promising to revolutionize data management and processing. However, existing benchmarks predominantly focus on simplified Text-to-SQL translation or data analysis, leaving the critical and complex domain of end-to-end data engineering largely unex...",
+      "aliases": [],
+      "source_ids": [
+        "emergentmind-2607-28033-dataclaweval-a-benchmark-for-data-engineering-agents-in-2026"
+      ],
+      "confidence": 0.78,
+      "first_seen": "2026-08-02T14:03:27Z",
+      "last_seen": "2026-08-02T14:03:27Z",
+      "world_hint": "perception-world-models"
+    },
+    "from-representations-to-behaviors-exploring-the-person": {
+      "id": "from-representations-to-behaviors-exploring-the-person",
+      "label": "From Representations to Behaviors",
+      "type": "method",
+      "summary": "Source-grounded method/approach from 'From Representations to Behaviors: Exploring the Person-Situation-Behavior Triad in LLMs': Human personality theories characterize traits not as isolated attributes captured by a single score, but as stable individual tendencies expressed through the interplay among persons, situations, and behaviors. Existing studies of personality-related behavior in LLMs have primarily focused on outputs elicited under personality conditioning, characterizing o...",
+      "aliases": [],
+      "source_ids": [
+        "emergentmind-2607-26853-from-representations-to-behaviors-exploring-the-person-situation-2026"
+      ],
+      "confidence": 0.78,
+      "first_seen": "2026-08-02T14:03:27Z",
+      "last_seen": "2026-08-02T14:03:27Z",
+      "world_hint": "llm-systems-serving"
+    },
+    "from-representations-to-behaviors-exploring-the-person-situation": {
+      "id": "from-representations-to-behaviors-exploring-the-person-situation",
+      "label": "From Representations to Behaviors problem setting",
+      "type": "concept",
+      "summary": "The learning or systems problem described by the source: Human personality theories characterize traits not as isolated attributes captured by a single score, but as stable individual tendencies expressed through the interplay among persons, situations, and behaviors. Existing studies of personality-related behavior in LLMs have primarily focused on outputs elicited under personality conditioning, characterizing o...",
+      "aliases": [],
+      "source_ids": [
+        "emergentmind-2607-26853-from-representations-to-behaviors-exploring-the-person-situation-2026"
+      ],
+      "confidence": 0.78,
+      "first_seen": "2026-08-02T14:03:27Z",
+      "last_seen": "2026-08-02T14:03:27Z",
+      "world_hint": "llm-systems-serving"
+    },
+    "paper-2607-26853": {
+      "id": "paper-2607-26853",
+      "label": "From Representations to Behaviors: Exploring the Person-Situation-Behavior Triad in LLMs",
+      "type": "paper",
+      "summary": "EmergentMind surfaced arXiv paper 2607.26853: Human personality theories characterize traits not as isolated attributes captured by a single score, but as stable individual tendencies expressed through the interplay among persons, situations, and behaviors. Existing studies of personality-related behavior in LLMs have primarily focused on outputs elicited under personality conditioning, characterizing o...",
+      "aliases": [],
+      "source_ids": [
+        "emergentmind-2607-26853-from-representations-to-behaviors-exploring-the-person-situation-2026"
+      ],
+      "confidence": 0.78,
+      "first_seen": "2026-08-02T14:03:27Z",
+      "last_seen": "2026-08-02T14:03:27Z",
+      "world_hint": "llm-systems-serving"
+    },
+    "flux-opd-on-policy-distillation-with-evolving": {
+      "id": "flux-opd-on-policy-distillation-with-evolving",
+      "label": "Flux-OPD",
+      "type": "method",
+      "summary": "Source-grounded method/approach from 'Flux-OPD: On-Policy Distillation with Evolving Contexts': Large language model training in open-ended domains lacks verifiable rewards, making task preferences difficult to formalize as effective supervision. Contexts can convey such preferences, yet provide little additional supervision once distilled into the student, motivating contexts that evolve with student performance. However, directly using evolving conte...",
+      "aliases": [],
+      "source_ids": [
+        "emergentmind-2607-28022-flux-opd-on-policy-distillation-with-evolving-contexts-2026"
+      ],
+      "confidence": 0.78,
+      "first_seen": "2026-08-02T14:03:27Z",
+      "last_seen": "2026-08-02T14:03:27Z",
+      "world_hint": "perception-world-models"
+    },
+    "flux-opd-on-policy-distillation-with-evolving-contexts": {
+      "id": "flux-opd-on-policy-distillation-with-evolving-contexts",
+      "label": "Flux-OPD problem setting",
+      "type": "concept",
+      "summary": "The learning or systems problem described by the source: Large language model training in open-ended domains lacks verifiable rewards, making task preferences difficult to formalize as effective supervision. Contexts can convey such preferences, yet provide little additional supervision once distilled into the student, motivating contexts that evolve with student performance. However, directly using evolving conte...",
+      "aliases": [],
+      "source_ids": [
+        "emergentmind-2607-28022-flux-opd-on-policy-distillation-with-evolving-contexts-2026"
+      ],
+      "confidence": 0.78,
+      "first_seen": "2026-08-02T14:03:27Z",
+      "last_seen": "2026-08-02T14:03:27Z",
+      "world_hint": "perception-world-models"
+    },
+    "paper-2607-28022": {
+      "id": "paper-2607-28022",
+      "label": "Flux-OPD: On-Policy Distillation with Evolving Contexts",
+      "type": "paper",
+      "summary": "EmergentMind surfaced arXiv paper 2607.28022: Large language model training in open-ended domains lacks verifiable rewards, making task preferences difficult to formalize as effective supervision. Contexts can convey such preferences, yet provide little additional supervision once distilled into the student, motivating contexts that evolve with student performance. However, directly using evolving conte...",
+      "aliases": [],
+      "source_ids": [
+        "emergentmind-2607-28022-flux-opd-on-policy-distillation-with-evolving-contexts-2026"
+      ],
+      "confidence": 0.78,
+      "first_seen": "2026-08-02T14:03:27Z",
+      "last_seen": "2026-08-02T14:03:27Z",
+      "world_hint": "perception-world-models"
     }
   },
   "edges": [
@@ -22979,6 +23153,126 @@
         "emergentmind-2607-26760-metis-memory-foundation-model-2026"
       ],
       "evidence": "Routed into The Metis Memory Foundation Model under perception-world-models from source title and abstract."
+    },
+    {
+      "source": "paper-2607-28033",
+      "target": "dataclaweval-a-benchmark-for-data-engineering-agents",
+      "relation": "paper_introduces",
+      "confidence": 0.82,
+      "source_ids": [
+        "emergentmind-2607-28033-dataclaweval-a-benchmark-for-data-engineering-agents-in-2026"
+      ],
+      "evidence": "EmergentMind homepage/page metadata identify arXiv 2607.28033, 'DataClawEval: A Benchmark for Data Engineering Agents in Real Industrial Harness', and summarize the method/problem."
+    },
+    {
+      "source": "dataclaweval-a-benchmark-for-data-engineering-agents",
+      "target": "dataclaweval-a-benchmark-for-data-engineering-agents-in",
+      "relation": "implements",
+      "confidence": 0.76,
+      "source_ids": [
+        "emergentmind-2607-28033-dataclaweval-a-benchmark-for-data-engineering-agents-in-2026"
+      ],
+      "evidence": "Large language models (LLMs) and LLM-based agents are increasingly being deployed to automate complex workflows, promising to revolutionize data management and processing. However, existing benchmarks predominantly focus on simplified Text-to-SQL translation or data analysis, lea"
+    },
+    {
+      "source": "dataclaweval-a-benchmark-for-data-engineering-agents",
+      "target": "dataclaweval-a-benchmark-for-data-engineering-agents-in",
+      "relation": "evaluates_on",
+      "confidence": 0.72,
+      "source_ids": [
+        "emergentmind-2607-28033-dataclaweval-a-benchmark-for-data-engineering-agents-in-2026"
+      ],
+      "evidence": "Large language models (LLMs) and LLM-based agents are increasingly being deployed to automate complex workflows, promising to revolutionize data management and processing. However, existing benchmarks predominantly focus on simplified Text-to-SQL translation or data analysis, lea"
+    },
+    {
+      "source": "dataclaweval-a-benchmark-for-data-engineering-agents",
+      "target": "the-dataclaweval-a-benchmark-for-data",
+      "relation": "belongs_to_region",
+      "confidence": 0.78,
+      "source_ids": [
+        "emergentmind-2607-28033-dataclaweval-a-benchmark-for-data-engineering-agents-in-2026"
+      ],
+      "evidence": "Routed into The Dataclaweval A Benchmark For under perception-world-models from source title and abstract."
+    },
+    {
+      "source": "paper-2607-26853",
+      "target": "from-representations-to-behaviors-exploring-the-person",
+      "relation": "paper_introduces",
+      "confidence": 0.82,
+      "source_ids": [
+        "emergentmind-2607-26853-from-representations-to-behaviors-exploring-the-person-situation-2026"
+      ],
+      "evidence": "EmergentMind homepage/page metadata identify arXiv 2607.26853, 'From Representations to Behaviors: Exploring the Person-Situation-Behavior Triad in LLMs', and summarize the method/problem."
+    },
+    {
+      "source": "from-representations-to-behaviors-exploring-the-person",
+      "target": "from-representations-to-behaviors-exploring-the-person-situation",
+      "relation": "implements",
+      "confidence": 0.76,
+      "source_ids": [
+        "emergentmind-2607-26853-from-representations-to-behaviors-exploring-the-person-situation-2026"
+      ],
+      "evidence": "Human personality theories characterize traits not as isolated attributes captured by a single score, but as stable individual tendencies expressed through the interplay among persons, situations, and behaviors. Existing studies of personality-related behavior in LLMs have primar"
+    },
+    {
+      "source": "from-representations-to-behaviors-exploring-the-person",
+      "target": "from-representations-to-behaviors-exploring-the-person-situation",
+      "relation": "evaluates_on",
+      "confidence": 0.72,
+      "source_ids": [
+        "emergentmind-2607-26853-from-representations-to-behaviors-exploring-the-person-situation-2026"
+      ],
+      "evidence": "Human personality theories characterize traits not as isolated attributes captured by a single score, but as stable individual tendencies expressed through the interplay among persons, situations, and behaviors. Existing studies of personality-related behavior in LLMs have primar"
+    },
+    {
+      "source": "from-representations-to-behaviors-exploring-the-person",
+      "target": "the-from-representations-to-behaviors-exploring",
+      "relation": "belongs_to_region",
+      "confidence": 0.78,
+      "source_ids": [
+        "emergentmind-2607-26853-from-representations-to-behaviors-exploring-the-person-situation-2026"
+      ],
+      "evidence": "Routed into The From Representations To Behaviors under llm-systems-serving from source title and abstract."
+    },
+    {
+      "source": "paper-2607-28022",
+      "target": "flux-opd-on-policy-distillation-with-evolving",
+      "relation": "paper_introduces",
+      "confidence": 0.82,
+      "source_ids": [
+        "emergentmind-2607-28022-flux-opd-on-policy-distillation-with-evolving-contexts-2026"
+      ],
+      "evidence": "EmergentMind homepage/page metadata identify arXiv 2607.28022, 'Flux-OPD: On-Policy Distillation with Evolving Contexts', and summarize the method/problem."
+    },
+    {
+      "source": "flux-opd-on-policy-distillation-with-evolving",
+      "target": "flux-opd-on-policy-distillation-with-evolving-contexts",
+      "relation": "implements",
+      "confidence": 0.76,
+      "source_ids": [
+        "emergentmind-2607-28022-flux-opd-on-policy-distillation-with-evolving-contexts-2026"
+      ],
+      "evidence": "Large language model training in open-ended domains lacks verifiable rewards, making task preferences difficult to formalize as effective supervision. Contexts can convey such preferences, yet provide little additional supervision once distilled into the student, motivating conte"
+    },
+    {
+      "source": "flux-opd-on-policy-distillation-with-evolving",
+      "target": "flux-opd-on-policy-distillation-with-evolving-contexts",
+      "relation": "evaluates_on",
+      "confidence": 0.72,
+      "source_ids": [
+        "emergentmind-2607-28022-flux-opd-on-policy-distillation-with-evolving-contexts-2026"
+      ],
+      "evidence": "Large language model training in open-ended domains lacks verifiable rewards, making task preferences difficult to formalize as effective supervision. Contexts can convey such preferences, yet provide little additional supervision once distilled into the student, motivating conte"
+    },
+    {
+      "source": "flux-opd-on-policy-distillation-with-evolving",
+      "target": "the-flux-opd-on-policy-distillation",
+      "relation": "belongs_to_region",
+      "confidence": 0.78,
+      "source_ids": [
+        "emergentmind-2607-28022-flux-opd-on-policy-distillation-with-evolving-contexts-2026"
+      ],
+      "evidence": "Routed into The Flux Opd On Policy under perception-world-models from source title and abstract."
     }
   ],
   "open_questions": [
@@ -24738,6 +25032,45 @@
       "edges_added": 0,
       "regions_added": 0,
       "quality_findings": [],
+      "verification": {
+        "json_parse": "passed",
+        "dkg_test": "passed",
+        "build": "passed",
+        "supabase_sync": "passed",
+        "roundtrip": "passed"
+      }
+    },
+    {
+      "run_id": "daily-emergentmind-all-topics-20260802T140327Z",
+      "completed_at": "2026-08-02T14:03:27Z",
+      "type": "daily-emergentmind-all-topics",
+      "homepage_url": "https://www.emergentmind.com/",
+      "homepage_status": 200,
+      "homepage_papers": 45,
+      "source_ids": [
+        "emergentmind-2607-28033-dataclaweval-a-benchmark-for-data-engineering-agents-in-2026",
+        "emergentmind-2607-26853-from-representations-to-behaviors-exploring-the-person-situation-2026",
+        "emergentmind-2607-28022-flux-opd-on-policy-distillation-with-evolving-contexts-2026"
+      ],
+      "page_status": {
+        "2607.28033": 200,
+        "2607.26853": 200,
+        "2607.28022": 200
+      },
+      "sources_added": 3,
+      "sources_updated": 0,
+      "nodes_added": 9,
+      "nodes_updated": 0,
+      "edges_added": 12,
+      "worlds_touched": [
+        "perception-world-models",
+        "llm-systems-serving"
+      ],
+      "regions_added": 3,
+      "manual_review": [
+        "Skipped pure-math, astronomy/cosmology, and clinical/medical surfaced items in this bounded pass; clinical claims need deeper safety review before routing.",
+        "New visual-SLAM/event-camera/egocentric-video items are routed under Perception & World Models; DeepSearch is routed under Retrieval-Augmented Generation; beyond-human intelligence evaluation is routed under Agents."
+      ],
       "verification": {
         "json_parse": "passed",
         "dkg_test": "passed",
