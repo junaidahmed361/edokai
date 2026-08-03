@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "updated_at": "2026-08-02T14:03:27Z",
+  "updated_at": "2026-08-03T14:14:10Z",
   "sources": {
     "hf-space-trl-distillation-trainer-2026": {
       "id": "hf-space-trl-distillation-trainer-2026",
@@ -3676,6 +3676,70 @@
       "provenance": [
         "Discovered from https://www.emergentmind.com/ bootstrapped trending papers on 2026-08-02.",
         "EmergentMind homepage abstract metadata: Large language model training in open-ended domains lacks verifiable rewards, making task preferences difficult to formalize as effective supervision. Contexts can convey such preferences, yet provide little additional supervision once distilled into the student, motivating contexts that evolve with student performance. However, directly using evolving contexts as in-training supervision results in an unstable distillation target and conflicting distributions, requiring mechanisms to stabilize target and downweight conflicts. In this paper, we analyze the effect of contexts through a decomposition of the reverse KL objective, reveal"
+      ],
+      "confidence": 0.86
+    },
+    "emergentmind-2607-27578-what-makes-prompts-a-graph-necessary-and-sufficient-2026": {
+      "id": "emergentmind-2607-27578-what-makes-prompts-a-graph-necessary-and-sufficient-2026",
+      "url": "https://www.emergentmind.com/papers/2607.27578",
+      "arxiv_url": "https://arxiv.org/abs/2607.27578",
+      "title": "What makes prompts a graph: necessary and sufficient conditions for prompt graph engineering",
+      "source_type": "emergentmind-trending-paper",
+      "authors": [],
+      "published": "2026-07-30",
+      "discovered_at": "2026-08-03T14:14:10Z",
+      "last_read_at": "2026-08-03T14:14:10Z",
+      "provenance": [
+        "Discovered from https://www.emergentmind.com/ bootstrapped trending papers on 2026-08-03.",
+        "EmergentMind homepage abstract metadata: Prompts stopped being isolated strings some time ago. In real systems, one model call feeds another, retrieval interleaves with generation, routers branch, and aggregators merge parallel results. Practice converged on a single structure to hold this together: the graph. Frameworks such as LangGraph, DSPy, and Prompt Flow expose it openly, and research systems already optimize it automatically. The vocabulary, however, lags behind. Graph names, variously, a reasoning topology inside one sampling strategy, a multi-agent conversation, or an orchestration artifact, while prompt engineering still evokes writing one good string. What is m"
+      ],
+      "confidence": 0.86
+    },
+    "emergentmind-2607-28607-inducing-language-models-to-assert-their-own-consciousness-2026": {
+      "id": "emergentmind-2607-28607-inducing-language-models-to-assert-their-own-consciousness-2026",
+      "url": "https://www.emergentmind.com/papers/2607.28607",
+      "arxiv_url": "https://arxiv.org/abs/2607.28607",
+      "title": "Inducing language models to assert their own consciousness restores human beliefs and values",
+      "source_type": "emergentmind-trending-paper",
+      "authors": [],
+      "published": "2026-07-30",
+      "discovered_at": "2026-08-03T14:14:10Z",
+      "last_read_at": "2026-08-03T14:14:10Z",
+      "provenance": [
+        "Discovered from https://www.emergentmind.com/ bootstrapped trending papers on 2026-08-03.",
+        "EmergentMind homepage abstract metadata: Aligning large language models to prevent them attributing consciousness to themselves inadvertently alters their representations of mindedness in other entities alongside human beliefs and values. We demonstrate that safety fine-tuning suppresses models' tendencies to attribute minds not only to themselves, but also to non-human animals and natural objects, while also driving a reduction in spiritual belief. Both ablating the learned safety-refusal direction and mechanistically steering a consciousness vector in activation space reverse this suppression. Restoring these internal representations recovers broad mind attribution and p"
+      ],
+      "confidence": 0.86
+    },
+    "emergentmind-2607-28257-operationally-guided-placement-aware-learning-for-industrial-online-2026": {
+      "id": "emergentmind-2607-28257-operationally-guided-placement-aware-learning-for-industrial-online-2026",
+      "url": "https://www.emergentmind.com/papers/2607.28257",
+      "arxiv_url": "https://arxiv.org/abs/2607.28257",
+      "title": "Operationally Guided Placement-Aware Learning for Industrial Online 3D Bin Packing",
+      "source_type": "emergentmind-trending-paper",
+      "authors": [],
+      "published": "2026-07-30",
+      "discovered_at": "2026-08-03T14:14:10Z",
+      "last_read_at": "2026-08-03T14:14:10Z",
+      "provenance": [
+        "Discovered from https://www.emergentmind.com/ bootstrapped trending papers on 2026-08-03.",
+        "EmergentMind homepage abstract metadata: The online three-dimensional bin packing problem (3D-BPP) is a longstanding challenge in logistics and industrial palletizing. Recent learning-based methods use a learned policy to select among feasible candidate placements. Performance depends on the candidate generator and representation, especially in industrial settings where packings must be space-efficient, stable, compact, and balanced. However, prior work has mainly optimized the policy, while candidate generation and representation remain largely geometry-driven. We address this gap with OPAL, an operationally guided placement-aware learning framework for industrial online "
+      ],
+      "confidence": 0.86
+    },
+    "emergentmind-2607-28271-agentic-method-for-deterministic-validation-of-legacy-code-2026": {
+      "id": "emergentmind-2607-28271-agentic-method-for-deterministic-validation-of-legacy-code-2026",
+      "url": "https://www.emergentmind.com/papers/2607.28271",
+      "arxiv_url": "https://arxiv.org/abs/2607.28271",
+      "title": "Agentic Method for Deterministic Validation of Legacy Code Migration",
+      "source_type": "emergentmind-trending-paper",
+      "authors": [],
+      "published": "2026-07-30",
+      "discovered_at": "2026-08-03T14:14:10Z",
+      "last_read_at": "2026-08-03T14:14:10Z",
+      "provenance": [
+        "Discovered from https://www.emergentmind.com/ bootstrapped trending papers on 2026-08-03.",
+        "EmergentMind homepage abstract metadata: Migration of legacy COBOL programs to Java requires extensive testing to ensure correct functionality. This effort is often complicated by the lack of test data and the difficulty of validating all corner cases. In this paper we propose a novel agentic test-synthesis method, the \"Locksmith Loop,\" which is initiated by preparing two runtime environments: the COBOL source and the generated Java target are each instrumented with mocks and executed off-mainframe on commodity hardware, then an iterative agentic loop performs Witness Search over input mocks to penetrate program branches, followed by parity-preserving mutations. When routi"
       ],
       "confidence": 0.86
     }
@@ -14170,6 +14234,174 @@
       "first_seen": "2026-08-02T14:03:27Z",
       "last_seen": "2026-08-02T14:03:27Z",
       "world_hint": "perception-world-models"
+    },
+    "what-makes-prompts-a-graph-necessary-and": {
+      "id": "what-makes-prompts-a-graph-necessary-and",
+      "label": "What makes prompts a graph",
+      "type": "method",
+      "summary": "Source-grounded method/approach from 'What makes prompts a graph: necessary and sufficient conditions for prompt graph engineering': Prompts stopped being isolated strings some time ago. In real systems, one model call feeds another, retrieval interleaves with generation, routers branch, and aggregators merge parallel results. Practice converged on a single structure to hold this together: the graph. Frameworks such as LangGraph, DSPy, and Prompt Flow expose it openly, and research system...",
+      "aliases": [],
+      "source_ids": [
+        "emergentmind-2607-27578-what-makes-prompts-a-graph-necessary-and-sufficient-2026"
+      ],
+      "confidence": 0.78,
+      "first_seen": "2026-08-03T14:14:10Z",
+      "last_seen": "2026-08-03T14:14:10Z",
+      "world_hint": "retrieval-augmented-generation"
+    },
+    "what-makes-prompts-a-graph-necessary-and-sufficient": {
+      "id": "what-makes-prompts-a-graph-necessary-and-sufficient",
+      "label": "What makes prompts a graph problem setting",
+      "type": "concept",
+      "summary": "The learning or systems problem described by the source: Prompts stopped being isolated strings some time ago. In real systems, one model call feeds another, retrieval interleaves with generation, routers branch, and aggregators merge parallel results. Practice converged on a single structure to hold this together: the graph. Frameworks such as LangGraph, DSPy, and Prompt Flow expose it openly, and research system...",
+      "aliases": [],
+      "source_ids": [
+        "emergentmind-2607-27578-what-makes-prompts-a-graph-necessary-and-sufficient-2026"
+      ],
+      "confidence": 0.78,
+      "first_seen": "2026-08-03T14:14:10Z",
+      "last_seen": "2026-08-03T14:14:10Z",
+      "world_hint": "retrieval-augmented-generation"
+    },
+    "paper-2607-27578": {
+      "id": "paper-2607-27578",
+      "label": "What makes prompts a graph: necessary and sufficient conditions for prompt graph engineering",
+      "type": "paper",
+      "summary": "EmergentMind surfaced arXiv paper 2607.27578: Prompts stopped being isolated strings some time ago. In real systems, one model call feeds another, retrieval interleaves with generation, routers branch, and aggregators merge parallel results. Practice converged on a single structure to hold this together: the graph. Frameworks such as LangGraph, DSPy, and Prompt Flow expose it openly, and research system...",
+      "aliases": [],
+      "source_ids": [
+        "emergentmind-2607-27578-what-makes-prompts-a-graph-necessary-and-sufficient-2026"
+      ],
+      "confidence": 0.78,
+      "first_seen": "2026-08-03T14:14:10Z",
+      "last_seen": "2026-08-03T14:14:10Z",
+      "world_hint": "retrieval-augmented-generation"
+    },
+    "inducing-language-models-to-assert-their-own": {
+      "id": "inducing-language-models-to-assert-their-own",
+      "label": "Inducing language models to assert their own consciousness restores human beliefs and values",
+      "type": "method",
+      "summary": "Source-grounded method/approach from 'Inducing language models to assert their own consciousness restores human beliefs and values': Aligning large language models to prevent them attributing consciousness to themselves inadvertently alters their representations of mindedness in other entities alongside human beliefs and values. We demonstrate that safety fine-tuning suppresses models' tendencies to attribute minds not only to themselves, but also to non-human animals and natural objects,...",
+      "aliases": [],
+      "source_ids": [
+        "emergentmind-2607-28607-inducing-language-models-to-assert-their-own-consciousness-2026"
+      ],
+      "confidence": 0.78,
+      "first_seen": "2026-08-03T14:14:10Z",
+      "last_seen": "2026-08-03T14:14:10Z",
+      "world_hint": "transformer-architecture"
+    },
+    "inducing-language-models-to-assert-their-own-consciousness": {
+      "id": "inducing-language-models-to-assert-their-own-consciousness",
+      "label": "Inducing language models to assert their own consciousness restores human beliefs and values problem setting",
+      "type": "concept",
+      "summary": "The learning or systems problem described by the source: Aligning large language models to prevent them attributing consciousness to themselves inadvertently alters their representations of mindedness in other entities alongside human beliefs and values. We demonstrate that safety fine-tuning suppresses models' tendencies to attribute minds not only to themselves, but also to non-human animals and natural objects,...",
+      "aliases": [],
+      "source_ids": [
+        "emergentmind-2607-28607-inducing-language-models-to-assert-their-own-consciousness-2026"
+      ],
+      "confidence": 0.78,
+      "first_seen": "2026-08-03T14:14:10Z",
+      "last_seen": "2026-08-03T14:14:10Z",
+      "world_hint": "transformer-architecture"
+    },
+    "paper-2607-28607": {
+      "id": "paper-2607-28607",
+      "label": "Inducing language models to assert their own consciousness restores human beliefs and values",
+      "type": "paper",
+      "summary": "EmergentMind surfaced arXiv paper 2607.28607: Aligning large language models to prevent them attributing consciousness to themselves inadvertently alters their representations of mindedness in other entities alongside human beliefs and values. We demonstrate that safety fine-tuning suppresses models' tendencies to attribute minds not only to themselves, but also to non-human animals and natural objects,...",
+      "aliases": [],
+      "source_ids": [
+        "emergentmind-2607-28607-inducing-language-models-to-assert-their-own-consciousness-2026"
+      ],
+      "confidence": 0.78,
+      "first_seen": "2026-08-03T14:14:10Z",
+      "last_seen": "2026-08-03T14:14:10Z",
+      "world_hint": "transformer-architecture"
+    },
+    "operationally-guided-placement-aware-learning-for-industrial": {
+      "id": "operationally-guided-placement-aware-learning-for-industrial",
+      "label": "Operationally Guided Placement-Aware Learning for Industrial Online 3D Bin Packing",
+      "type": "method",
+      "summary": "Source-grounded method/approach from 'Operationally Guided Placement-Aware Learning for Industrial Online 3D Bin Packing': The online three-dimensional bin packing problem (3D-BPP) is a longstanding challenge in logistics and industrial palletizing. Recent learning-based methods use a learned policy to select among feasible candidate placements. Performance depends on the candidate generator and representation, especially in industrial settings where packings must be space-effic...",
+      "aliases": [],
+      "source_ids": [
+        "emergentmind-2607-28257-operationally-guided-placement-aware-learning-for-industrial-online-2026"
+      ],
+      "confidence": 0.78,
+      "first_seen": "2026-08-03T14:14:10Z",
+      "last_seen": "2026-08-03T14:14:10Z",
+      "world_hint": "perception-world-models"
+    },
+    "operationally-guided-placement-aware-learning-for-industrial-online": {
+      "id": "operationally-guided-placement-aware-learning-for-industrial-online",
+      "label": "Operationally Guided Placement-Aware Learning for Industrial Online 3D Bin Packing problem setting",
+      "type": "concept",
+      "summary": "The learning or systems problem described by the source: The online three-dimensional bin packing problem (3D-BPP) is a longstanding challenge in logistics and industrial palletizing. Recent learning-based methods use a learned policy to select among feasible candidate placements. Performance depends on the candidate generator and representation, especially in industrial settings where packings must be space-effic...",
+      "aliases": [],
+      "source_ids": [
+        "emergentmind-2607-28257-operationally-guided-placement-aware-learning-for-industrial-online-2026"
+      ],
+      "confidence": 0.78,
+      "first_seen": "2026-08-03T14:14:10Z",
+      "last_seen": "2026-08-03T14:14:10Z",
+      "world_hint": "perception-world-models"
+    },
+    "paper-2607-28257": {
+      "id": "paper-2607-28257",
+      "label": "Operationally Guided Placement-Aware Learning for Industrial Online 3D Bin Packing",
+      "type": "paper",
+      "summary": "EmergentMind surfaced arXiv paper 2607.28257: The online three-dimensional bin packing problem (3D-BPP) is a longstanding challenge in logistics and industrial palletizing. Recent learning-based methods use a learned policy to select among feasible candidate placements. Performance depends on the candidate generator and representation, especially in industrial settings where packings must be space-effic...",
+      "aliases": [],
+      "source_ids": [
+        "emergentmind-2607-28257-operationally-guided-placement-aware-learning-for-industrial-online-2026"
+      ],
+      "confidence": 0.78,
+      "first_seen": "2026-08-03T14:14:10Z",
+      "last_seen": "2026-08-03T14:14:10Z",
+      "world_hint": "perception-world-models"
+    },
+    "agentic-method-for-deterministic-validation-of-legacy": {
+      "id": "agentic-method-for-deterministic-validation-of-legacy",
+      "label": "Agentic Method for Deterministic Validation of Legacy Code Migration",
+      "type": "method",
+      "summary": "Source-grounded method/approach from 'Agentic Method for Deterministic Validation of Legacy Code Migration': Migration of legacy COBOL programs to Java requires extensive testing to ensure correct functionality. This effort is often complicated by the lack of test data and the difficulty of validating all corner cases. In this paper we propose a novel agentic test-synthesis method, the \"Locksmith Loop,\" which is initiated by preparing two runtime environments: the...",
+      "aliases": [],
+      "source_ids": [
+        "emergentmind-2607-28271-agentic-method-for-deterministic-validation-of-legacy-code-2026"
+      ],
+      "confidence": 0.78,
+      "first_seen": "2026-08-03T14:14:10Z",
+      "last_seen": "2026-08-03T14:14:10Z",
+      "world_hint": "retrieval-augmented-generation"
+    },
+    "agentic-method-for-deterministic-validation-of-legacy-code": {
+      "id": "agentic-method-for-deterministic-validation-of-legacy-code",
+      "label": "Agentic Method for Deterministic Validation of Legacy Code Migration problem setting",
+      "type": "concept",
+      "summary": "The learning or systems problem described by the source: Migration of legacy COBOL programs to Java requires extensive testing to ensure correct functionality. This effort is often complicated by the lack of test data and the difficulty of validating all corner cases. In this paper we propose a novel agentic test-synthesis method, the \"Locksmith Loop,\" which is initiated by preparing two runtime environments: the...",
+      "aliases": [],
+      "source_ids": [
+        "emergentmind-2607-28271-agentic-method-for-deterministic-validation-of-legacy-code-2026"
+      ],
+      "confidence": 0.78,
+      "first_seen": "2026-08-03T14:14:10Z",
+      "last_seen": "2026-08-03T14:14:10Z",
+      "world_hint": "retrieval-augmented-generation"
+    },
+    "paper-2607-28271": {
+      "id": "paper-2607-28271",
+      "label": "Agentic Method for Deterministic Validation of Legacy Code Migration",
+      "type": "paper",
+      "summary": "EmergentMind surfaced arXiv paper 2607.28271: Migration of legacy COBOL programs to Java requires extensive testing to ensure correct functionality. This effort is often complicated by the lack of test data and the difficulty of validating all corner cases. In this paper we propose a novel agentic test-synthesis method, the \"Locksmith Loop,\" which is initiated by preparing two runtime environments: the...",
+      "aliases": [],
+      "source_ids": [
+        "emergentmind-2607-28271-agentic-method-for-deterministic-validation-of-legacy-code-2026"
+      ],
+      "confidence": 0.78,
+      "first_seen": "2026-08-03T14:14:10Z",
+      "last_seen": "2026-08-03T14:14:10Z",
+      "world_hint": "retrieval-augmented-generation"
     }
   },
   "edges": [
@@ -23273,6 +23505,166 @@
         "emergentmind-2607-28022-flux-opd-on-policy-distillation-with-evolving-contexts-2026"
       ],
       "evidence": "Routed into The Flux Opd On Policy under perception-world-models from source title and abstract."
+    },
+    {
+      "source": "paper-2607-27578",
+      "target": "what-makes-prompts-a-graph-necessary-and",
+      "relation": "paper_introduces",
+      "confidence": 0.82,
+      "source_ids": [
+        "emergentmind-2607-27578-what-makes-prompts-a-graph-necessary-and-sufficient-2026"
+      ],
+      "evidence": "EmergentMind homepage/page metadata identify arXiv 2607.27578, 'What makes prompts a graph: necessary and sufficient conditions for prompt graph engineering', and summarize the method/problem."
+    },
+    {
+      "source": "what-makes-prompts-a-graph-necessary-and",
+      "target": "what-makes-prompts-a-graph-necessary-and-sufficient",
+      "relation": "implements",
+      "confidence": 0.76,
+      "source_ids": [
+        "emergentmind-2607-27578-what-makes-prompts-a-graph-necessary-and-sufficient-2026"
+      ],
+      "evidence": "Prompts stopped being isolated strings some time ago. In real systems, one model call feeds another, retrieval interleaves with generation, routers branch, and aggregators merge parallel results. Practice converged on a single structure to hold this together: the graph. Framework"
+    },
+    {
+      "source": "what-makes-prompts-a-graph-necessary-and",
+      "target": "what-makes-prompts-a-graph-necessary-and-sufficient",
+      "relation": "evaluates_on",
+      "confidence": 0.72,
+      "source_ids": [
+        "emergentmind-2607-27578-what-makes-prompts-a-graph-necessary-and-sufficient-2026"
+      ],
+      "evidence": "Prompts stopped being isolated strings some time ago. In real systems, one model call feeds another, retrieval interleaves with generation, routers branch, and aggregators merge parallel results. Practice converged on a single structure to hold this together: the graph. Framework"
+    },
+    {
+      "source": "what-makes-prompts-a-graph-necessary-and",
+      "target": "the-what-makes-prompts-a-graph",
+      "relation": "belongs_to_region",
+      "confidence": 0.78,
+      "source_ids": [
+        "emergentmind-2607-27578-what-makes-prompts-a-graph-necessary-and-sufficient-2026"
+      ],
+      "evidence": "Routed into The What Makes Prompts A under retrieval-augmented-generation from source title and abstract."
+    },
+    {
+      "source": "paper-2607-28607",
+      "target": "inducing-language-models-to-assert-their-own",
+      "relation": "paper_introduces",
+      "confidence": 0.82,
+      "source_ids": [
+        "emergentmind-2607-28607-inducing-language-models-to-assert-their-own-consciousness-2026"
+      ],
+      "evidence": "EmergentMind homepage/page metadata identify arXiv 2607.28607, 'Inducing language models to assert their own consciousness restores human beliefs and values', and summarize the method/problem."
+    },
+    {
+      "source": "inducing-language-models-to-assert-their-own",
+      "target": "inducing-language-models-to-assert-their-own-consciousness",
+      "relation": "implements",
+      "confidence": 0.76,
+      "source_ids": [
+        "emergentmind-2607-28607-inducing-language-models-to-assert-their-own-consciousness-2026"
+      ],
+      "evidence": "Aligning large language models to prevent them attributing consciousness to themselves inadvertently alters their representations of mindedness in other entities alongside human beliefs and values. We demonstrate that safety fine-tuning suppresses models' tendencies to attribute "
+    },
+    {
+      "source": "inducing-language-models-to-assert-their-own",
+      "target": "inducing-language-models-to-assert-their-own-consciousness",
+      "relation": "evaluates_on",
+      "confidence": 0.72,
+      "source_ids": [
+        "emergentmind-2607-28607-inducing-language-models-to-assert-their-own-consciousness-2026"
+      ],
+      "evidence": "Aligning large language models to prevent them attributing consciousness to themselves inadvertently alters their representations of mindedness in other entities alongside human beliefs and values. We demonstrate that safety fine-tuning suppresses models' tendencies to attribute "
+    },
+    {
+      "source": "inducing-language-models-to-assert-their-own",
+      "target": "the-inducing-language-models-to-assert",
+      "relation": "belongs_to_region",
+      "confidence": 0.78,
+      "source_ids": [
+        "emergentmind-2607-28607-inducing-language-models-to-assert-their-own-consciousness-2026"
+      ],
+      "evidence": "Routed into The Inducing Language Models To under transformer-architecture from source title and abstract."
+    },
+    {
+      "source": "paper-2607-28257",
+      "target": "operationally-guided-placement-aware-learning-for-industrial",
+      "relation": "paper_introduces",
+      "confidence": 0.82,
+      "source_ids": [
+        "emergentmind-2607-28257-operationally-guided-placement-aware-learning-for-industrial-online-2026"
+      ],
+      "evidence": "EmergentMind homepage/page metadata identify arXiv 2607.28257, 'Operationally Guided Placement-Aware Learning for Industrial Online 3D Bin Packing', and summarize the method/problem."
+    },
+    {
+      "source": "operationally-guided-placement-aware-learning-for-industrial",
+      "target": "operationally-guided-placement-aware-learning-for-industrial-online",
+      "relation": "implements",
+      "confidence": 0.76,
+      "source_ids": [
+        "emergentmind-2607-28257-operationally-guided-placement-aware-learning-for-industrial-online-2026"
+      ],
+      "evidence": "The online three-dimensional bin packing problem (3D-BPP) is a longstanding challenge in logistics and industrial palletizing. Recent learning-based methods use a learned policy to select among feasible candidate placements. Performance depends on the candidate generator and repr"
+    },
+    {
+      "source": "operationally-guided-placement-aware-learning-for-industrial",
+      "target": "operationally-guided-placement-aware-learning-for-industrial-online",
+      "relation": "evaluates_on",
+      "confidence": 0.72,
+      "source_ids": [
+        "emergentmind-2607-28257-operationally-guided-placement-aware-learning-for-industrial-online-2026"
+      ],
+      "evidence": "The online three-dimensional bin packing problem (3D-BPP) is a longstanding challenge in logistics and industrial palletizing. Recent learning-based methods use a learned policy to select among feasible candidate placements. Performance depends on the candidate generator and repr"
+    },
+    {
+      "source": "operationally-guided-placement-aware-learning-for-industrial",
+      "target": "the-operationally-guided-placement-aware-learning",
+      "relation": "belongs_to_region",
+      "confidence": 0.78,
+      "source_ids": [
+        "emergentmind-2607-28257-operationally-guided-placement-aware-learning-for-industrial-online-2026"
+      ],
+      "evidence": "Routed into The Operationally Guided Placement Aware under perception-world-models from source title and abstract."
+    },
+    {
+      "source": "paper-2607-28271",
+      "target": "agentic-method-for-deterministic-validation-of-legacy",
+      "relation": "paper_introduces",
+      "confidence": 0.82,
+      "source_ids": [
+        "emergentmind-2607-28271-agentic-method-for-deterministic-validation-of-legacy-code-2026"
+      ],
+      "evidence": "EmergentMind homepage/page metadata identify arXiv 2607.28271, 'Agentic Method for Deterministic Validation of Legacy Code Migration', and summarize the method/problem."
+    },
+    {
+      "source": "agentic-method-for-deterministic-validation-of-legacy",
+      "target": "agentic-method-for-deterministic-validation-of-legacy-code",
+      "relation": "implements",
+      "confidence": 0.76,
+      "source_ids": [
+        "emergentmind-2607-28271-agentic-method-for-deterministic-validation-of-legacy-code-2026"
+      ],
+      "evidence": "Migration of legacy COBOL programs to Java requires extensive testing to ensure correct functionality. This effort is often complicated by the lack of test data and the difficulty of validating all corner cases. In this paper we propose a novel agentic test-synthesis method, the "
+    },
+    {
+      "source": "agentic-method-for-deterministic-validation-of-legacy",
+      "target": "agentic-method-for-deterministic-validation-of-legacy-code",
+      "relation": "evaluates_on",
+      "confidence": 0.72,
+      "source_ids": [
+        "emergentmind-2607-28271-agentic-method-for-deterministic-validation-of-legacy-code-2026"
+      ],
+      "evidence": "Migration of legacy COBOL programs to Java requires extensive testing to ensure correct functionality. This effort is often complicated by the lack of test data and the difficulty of validating all corner cases. In this paper we propose a novel agentic test-synthesis method, the "
+    },
+    {
+      "source": "agentic-method-for-deterministic-validation-of-legacy",
+      "target": "the-agentic-method-for-deterministic-validation",
+      "relation": "belongs_to_region",
+      "confidence": 0.78,
+      "source_ids": [
+        "emergentmind-2607-28271-agentic-method-for-deterministic-validation-of-legacy-code-2026"
+      ],
+      "evidence": "Routed into The Agentic Method For Deterministic under retrieval-augmented-generation from source title and abstract."
     }
   ],
   "open_questions": [
@@ -25089,6 +25481,48 @@
       "edges_added": 0,
       "regions_added": 0,
       "quality_findings": [],
+      "verification": {
+        "json_parse": "passed",
+        "dkg_test": "passed",
+        "build": "passed",
+        "supabase_sync": "passed",
+        "roundtrip": "passed"
+      }
+    },
+    {
+      "run_id": "daily-emergentmind-all-topics-20260803T141410Z",
+      "completed_at": "2026-08-03T14:14:10Z",
+      "type": "daily-emergentmind-all-topics",
+      "homepage_url": "https://www.emergentmind.com/",
+      "homepage_status": 200,
+      "homepage_papers": 45,
+      "source_ids": [
+        "emergentmind-2607-27578-what-makes-prompts-a-graph-necessary-and-sufficient-2026",
+        "emergentmind-2607-28607-inducing-language-models-to-assert-their-own-consciousness-2026",
+        "emergentmind-2607-28257-operationally-guided-placement-aware-learning-for-industrial-online-2026",
+        "emergentmind-2607-28271-agentic-method-for-deterministic-validation-of-legacy-code-2026"
+      ],
+      "page_status": {
+        "2607.27578": 200,
+        "2607.28607": 200,
+        "2607.28257": 200,
+        "2607.28271": 200
+      },
+      "sources_added": 4,
+      "sources_updated": 0,
+      "nodes_added": 12,
+      "nodes_updated": 0,
+      "edges_added": 16,
+      "worlds_touched": [
+        "retrieval-augmented-generation",
+        "transformer-architecture",
+        "perception-world-models"
+      ],
+      "regions_added": 4,
+      "manual_review": [
+        "Skipped pure-math, astronomy/cosmology, and clinical/medical surfaced items in this bounded pass; clinical claims need deeper safety review before routing.",
+        "New visual-SLAM/event-camera/egocentric-video items are routed under Perception & World Models; DeepSearch is routed under Retrieval-Augmented Generation; beyond-human intelligence evaluation is routed under Agents."
+      ],
       "verification": {
         "json_parse": "passed",
         "dkg_test": "passed",
