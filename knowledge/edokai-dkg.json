@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "updated_at": "2026-08-03T14:14:10Z",
+  "updated_at": "2026-08-04T14:33:06Z",
   "sources": {
     "hf-space-trl-distillation-trainer-2026": {
       "id": "hf-space-trl-distillation-trainer-2026",
@@ -3740,6 +3740,102 @@
       "provenance": [
         "Discovered from https://www.emergentmind.com/ bootstrapped trending papers on 2026-08-03.",
         "EmergentMind homepage abstract metadata: Migration of legacy COBOL programs to Java requires extensive testing to ensure correct functionality. This effort is often complicated by the lack of test data and the difficulty of validating all corner cases. In this paper we propose a novel agentic test-synthesis method, the \"Locksmith Loop,\" which is initiated by preparing two runtime environments: the COBOL source and the generated Java target are each instrumented with mocks and executed off-mainframe on commodity hardware, then an iterative agentic loop performs Witness Search over input mocks to penetrate program branches, followed by parity-preserving mutations. When routi"
+      ],
+      "confidence": 0.86
+    },
+    "emergentmind-2608-00337-action-chunk-scheduling-for-batched-robot-policy-serving-2026": {
+      "id": "emergentmind-2608-00337-action-chunk-scheduling-for-batched-robot-policy-serving-2026",
+      "url": "https://www.emergentmind.com/papers/2608.00337",
+      "arxiv_url": "https://arxiv.org/abs/2608.00337",
+      "title": "Action Chunk Scheduling for Batched Robot Policy Serving",
+      "source_type": "emergentmind-trending-paper",
+      "authors": [],
+      "published": "2026-07-31",
+      "discovered_at": "2026-08-04T14:33:06Z",
+      "last_read_at": "2026-08-04T14:33:06Z",
+      "provenance": [
+        "Discovered from https://www.emergentmind.com/ bootstrapped trending papers on 2026-08-04.",
+        "EmergentMind homepage abstract metadata: Deploying robot foundation models at scale is the next step towards realizing the potential of general-purpose robots. However, Vision-Language-Action (VLA) and other foundation models are computationally demanding, and on-device compute is constrained by power and space. In this paper, we introduce the problem of serving a robot policy to multiple robots from a remote GPU and formulate it as a scheduling problem. We build Armory, a serving system validated on fleets of both simulated and real robots. Our experiments show that naive scheduling heuristics perform well when all robots are the same, but fall short when robots consume a"
+      ],
+      "confidence": 0.86
+    },
+    "emergentmind-2607-29378-ptp-previous-token-prediction-based-llm-inversion-for-2026": {
+      "id": "emergentmind-2607-29378-ptp-previous-token-prediction-based-llm-inversion-for-2026",
+      "url": "https://www.emergentmind.com/papers/2607.29378",
+      "arxiv_url": "https://arxiv.org/abs/2607.29378",
+      "title": "PTP: Previous-Token Prediction based LLM Inversion for Near-Exact Prompt Reconstruction",
+      "source_type": "emergentmind-trending-paper",
+      "authors": [],
+      "published": "2026-07-31",
+      "discovered_at": "2026-08-04T14:33:06Z",
+      "last_read_at": "2026-08-04T14:33:06Z",
+      "provenance": [
+        "Discovered from https://www.emergentmind.com/ bootstrapped trending papers on 2026-08-04.",
+        "EmergentMind homepage abstract metadata: Large language models (LLMs) generate text by auto-regressively sampling the next token. This inherently leads to a many-to-many mapping between prompts and responses, complicating the task of inferring prompts from observed outputs. Prior work on LLM inversion frames prompt recovery as a semantic reconstruction task. They rely on fine-tuning pretrained sequence-to-sequence models on large external datasets--and requiring access to model weights or logits--to generate semantically plausible prompts. In contrast, we present a functional approach to inverting a given LLM in a black-box setting, without auxiliary aids. We train an expl"
+      ],
+      "confidence": 0.86
+    },
+    "emergentmind-2607-29679-scaling-properties-of-text-conditioning-in-visual-generation-2026": {
+      "id": "emergentmind-2607-29679-scaling-properties-of-text-conditioning-in-visual-generation-2026",
+      "url": "https://www.emergentmind.com/papers/2607.29679",
+      "arxiv_url": "https://arxiv.org/abs/2607.29679",
+      "title": "Scaling Properties of Text Conditioning in Visual Generation",
+      "source_type": "emergentmind-trending-paper",
+      "authors": [],
+      "published": "2026-07-31",
+      "discovered_at": "2026-08-04T14:33:06Z",
+      "last_read_at": "2026-08-04T14:33:06Z",
+      "provenance": [
+        "Discovered from https://www.emergentmind.com/ bootstrapped trending papers on 2026-08-04.",
+        "EmergentMind homepage abstract metadata: We study empirical scaling properties for text conditioning in visual generation. Such properties have rarely been measured because diffusion loss does not scale with the number of tokens in natural-language prompts. Surprisingly, we find that the converged diffusion loss scales with the amount of structured language in the prompt. To quantify structured language, we adapt two complementary measures: a white-box likelihood metric (GPG) and a black-box attribute metric (ED). Across controlled training runs, the converged diffusion loss decreases approximately linearly with GPG and follows a power law with ED. Guided by these scaling "
+      ],
+      "confidence": 0.86
+    },
+    "emergentmind-2607-28560-x-navdp-generalizing-navigation-diffusion-policy-to-novel-2026": {
+      "id": "emergentmind-2607-28560-x-navdp-generalizing-navigation-diffusion-policy-to-novel-2026",
+      "url": "https://www.emergentmind.com/papers/2607.28560",
+      "arxiv_url": "https://arxiv.org/abs/2607.28560",
+      "title": "X-NavDP: Generalizing Navigation Diffusion Policy to Novel Behavior and Embodiments with Group Q-score Reweighted Matching",
+      "source_type": "emergentmind-trending-paper",
+      "authors": [],
+      "published": "2026-07-30",
+      "discovered_at": "2026-08-04T14:33:06Z",
+      "last_read_at": "2026-08-04T14:33:06Z",
+      "provenance": [
+        "Discovered from https://www.emergentmind.com/ bootstrapped trending papers on 2026-08-04.",
+        "EmergentMind homepage abstract metadata: Pretraining navigation diffusion policies rely on large-scale expert demonstrations. These data are typically generated by a fully-informed oracle planner suited to a single nominal robot. This limits the policy's generalization to diverse embodiments and challenging scenarios (e.g., escaping dead ends or detouring long obstacles) that demand diverse local reactive behaviors with only onboard local observations. Post-training the policy with reinforcement learning (RL) offers a principled remedy. However, previous RL for diffusion approaches lead to only marginal improvements. This is because the intractable likelihood of diffusion "
+      ],
+      "confidence": 0.86
+    },
+    "emergentmind-2608-00650-tenginedb-v-an-olap-native-vector-search-system-2026": {
+      "id": "emergentmind-2608-00650-tenginedb-v-an-olap-native-vector-search-system-2026",
+      "url": "https://www.emergentmind.com/papers/2608.00650",
+      "arxiv_url": "https://arxiv.org/abs/2608.00650",
+      "title": "TEngineDB-V: An OLAP-Native Vector Search System for Large-$k$ Workloads at Tencent",
+      "source_type": "emergentmind-trending-paper",
+      "authors": [],
+      "published": "2026-08-01",
+      "discovered_at": "2026-08-04T14:33:06Z",
+      "last_read_at": "2026-08-04T14:33:06Z",
+      "provenance": [
+        "Discovered from https://www.emergentmind.com/ bootstrapped trending papers on 2026-08-04.",
+        "EmergentMind homepage abstract metadata: Vector search systems are essential infrastructure for modern data-driven applications. Large-$k$ analytical vector search, which retrieves $k=10^3$--$10^5$ results for analytics (e.g., aggregation, filtering, joins), is increasingly important for emerging workloads, including LLM data management and advertising analysis at Tencent. Existing systems remain inadequate: specialized vector databases often cap $k$ (e.g., $k \\leq 10^4$) to satisfy tail-latency constraints and offer limited analytical support, while OLAP systems typically embed per-segment vector indexes as black boxes, causing severe read/compute amplification and preven"
+      ],
+      "confidence": 0.86
+    },
+    "emergentmind-2607-29293-assessing-the-generalization-of-graph-neural-networks-for-2026": {
+      "id": "emergentmind-2607-29293-assessing-the-generalization-of-graph-neural-networks-for-2026",
+      "url": "https://www.emergentmind.com/papers/2607.29293",
+      "arxiv_url": "https://arxiv.org/abs/2607.29293",
+      "title": "Assessing the Generalization of Graph Neural Networks for Fault Location Across Increasing Distributed Energy Resource Penetration Levels",
+      "source_type": "emergentmind-trending-paper",
+      "authors": [],
+      "published": "2026-07-31",
+      "discovered_at": "2026-08-04T14:33:06Z",
+      "last_read_at": "2026-08-04T14:33:06Z",
+      "provenance": [
+        "Discovered from https://www.emergentmind.com/ bootstrapped trending papers on 2026-08-04.",
+        "EmergentMind homepage abstract metadata: Accurate fault location is critical for distribution network reliability. However, increasing distributed energy resource (DER) penetration complicates fault location due to intermittent generation and bidirectional power flows that reshape fault signatures. Spatio-Temporal Graph Neural Networks (STGNNs) have shown promise by jointly modeling spatial and temporal dependencies, but their behavior under increasing DER penetration has not been studied rigorously. In this paper, we (i) systematically benchmark spatio-temporal graph attention network (STGATv2) against purely temporal (gated recurrent unit, GRU), purely spatial (GATv2) an"
       ],
       "confidence": 0.86
     }
@@ -14402,6 +14498,258 @@
       "first_seen": "2026-08-03T14:14:10Z",
       "last_seen": "2026-08-03T14:14:10Z",
       "world_hint": "retrieval-augmented-generation"
+    },
+    "action-chunk-scheduling-for-batched-robot-policy": {
+      "id": "action-chunk-scheduling-for-batched-robot-policy",
+      "label": "Action Chunk Scheduling for Batched Robot Policy Serving",
+      "type": "method",
+      "summary": "Source-grounded method/approach from 'Action Chunk Scheduling for Batched Robot Policy Serving': Deploying robot foundation models at scale is the next step towards realizing the potential of general-purpose robots. However, Vision-Language-Action (VLA) and other foundation models are computationally demanding, and on-device compute is constrained by power and space. In this paper, we introduce the problem of serving a robot policy to multiple robots fr...",
+      "aliases": [],
+      "source_ids": [
+        "emergentmind-2608-00337-action-chunk-scheduling-for-batched-robot-policy-serving-2026"
+      ],
+      "confidence": 0.78,
+      "first_seen": "2026-08-04T14:33:06Z",
+      "last_seen": "2026-08-04T14:33:06Z",
+      "world_hint": "perception-world-models"
+    },
+    "action-chunk-scheduling-for-batched-robot-policy-serving": {
+      "id": "action-chunk-scheduling-for-batched-robot-policy-serving",
+      "label": "Action Chunk Scheduling for Batched Robot Policy Serving problem setting",
+      "type": "concept",
+      "summary": "The learning or systems problem described by the source: Deploying robot foundation models at scale is the next step towards realizing the potential of general-purpose robots. However, Vision-Language-Action (VLA) and other foundation models are computationally demanding, and on-device compute is constrained by power and space. In this paper, we introduce the problem of serving a robot policy to multiple robots fr...",
+      "aliases": [],
+      "source_ids": [
+        "emergentmind-2608-00337-action-chunk-scheduling-for-batched-robot-policy-serving-2026"
+      ],
+      "confidence": 0.78,
+      "first_seen": "2026-08-04T14:33:06Z",
+      "last_seen": "2026-08-04T14:33:06Z",
+      "world_hint": "perception-world-models"
+    },
+    "paper-2608-00337": {
+      "id": "paper-2608-00337",
+      "label": "Action Chunk Scheduling for Batched Robot Policy Serving",
+      "type": "paper",
+      "summary": "EmergentMind surfaced arXiv paper 2608.00337: Deploying robot foundation models at scale is the next step towards realizing the potential of general-purpose robots. However, Vision-Language-Action (VLA) and other foundation models are computationally demanding, and on-device compute is constrained by power and space. In this paper, we introduce the problem of serving a robot policy to multiple robots fr...",
+      "aliases": [],
+      "source_ids": [
+        "emergentmind-2608-00337-action-chunk-scheduling-for-batched-robot-policy-serving-2026"
+      ],
+      "confidence": 0.78,
+      "first_seen": "2026-08-04T14:33:06Z",
+      "last_seen": "2026-08-04T14:33:06Z",
+      "world_hint": "perception-world-models"
+    },
+    "ptp-previous-token-prediction-based-llm-inversion": {
+      "id": "ptp-previous-token-prediction-based-llm-inversion",
+      "label": "PTP",
+      "type": "method",
+      "summary": "Source-grounded method/approach from 'PTP: Previous-Token Prediction based LLM Inversion for Near-Exact Prompt Reconstruction': Large language models (LLMs) generate text by auto-regressively sampling the next token. This inherently leads to a many-to-many mapping between prompts and responses, complicating the task of inferring prompts from observed outputs. Prior work on LLM inversion frames prompt recovery as a semantic reconstruction task. They rely on fine-tuning pretrained sequ...",
+      "aliases": [],
+      "source_ids": [
+        "emergentmind-2607-29378-ptp-previous-token-prediction-based-llm-inversion-for-2026"
+      ],
+      "confidence": 0.78,
+      "first_seen": "2026-08-04T14:33:06Z",
+      "last_seen": "2026-08-04T14:33:06Z",
+      "world_hint": "agents"
+    },
+    "ptp-previous-token-prediction-based-llm-inversion-for": {
+      "id": "ptp-previous-token-prediction-based-llm-inversion-for",
+      "label": "PTP problem setting",
+      "type": "concept",
+      "summary": "The learning or systems problem described by the source: Large language models (LLMs) generate text by auto-regressively sampling the next token. This inherently leads to a many-to-many mapping between prompts and responses, complicating the task of inferring prompts from observed outputs. Prior work on LLM inversion frames prompt recovery as a semantic reconstruction task. They rely on fine-tuning pretrained sequ...",
+      "aliases": [],
+      "source_ids": [
+        "emergentmind-2607-29378-ptp-previous-token-prediction-based-llm-inversion-for-2026"
+      ],
+      "confidence": 0.78,
+      "first_seen": "2026-08-04T14:33:06Z",
+      "last_seen": "2026-08-04T14:33:06Z",
+      "world_hint": "agents"
+    },
+    "paper-2607-29378": {
+      "id": "paper-2607-29378",
+      "label": "PTP: Previous-Token Prediction based LLM Inversion for Near-Exact Prompt Reconstruction",
+      "type": "paper",
+      "summary": "EmergentMind surfaced arXiv paper 2607.29378: Large language models (LLMs) generate text by auto-regressively sampling the next token. This inherently leads to a many-to-many mapping between prompts and responses, complicating the task of inferring prompts from observed outputs. Prior work on LLM inversion frames prompt recovery as a semantic reconstruction task. They rely on fine-tuning pretrained sequ...",
+      "aliases": [],
+      "source_ids": [
+        "emergentmind-2607-29378-ptp-previous-token-prediction-based-llm-inversion-for-2026"
+      ],
+      "confidence": 0.78,
+      "first_seen": "2026-08-04T14:33:06Z",
+      "last_seen": "2026-08-04T14:33:06Z",
+      "world_hint": "agents"
+    },
+    "scaling-properties-of-text-conditioning-in-visual": {
+      "id": "scaling-properties-of-text-conditioning-in-visual",
+      "label": "Scaling Properties of Text Conditioning in Visual Generation",
+      "type": "method",
+      "summary": "Source-grounded method/approach from 'Scaling Properties of Text Conditioning in Visual Generation': We study empirical scaling properties for text conditioning in visual generation. Such properties have rarely been measured because diffusion loss does not scale with the number of tokens in natural-language prompts. Surprisingly, we find that the converged diffusion loss scales with the amount of structured language in the prompt. To quantify structured lan...",
+      "aliases": [],
+      "source_ids": [
+        "emergentmind-2607-29679-scaling-properties-of-text-conditioning-in-visual-generation-2026"
+      ],
+      "confidence": 0.78,
+      "first_seen": "2026-08-04T14:33:06Z",
+      "last_seen": "2026-08-04T14:33:06Z",
+      "world_hint": "generative-models"
+    },
+    "scaling-properties-of-text-conditioning-in-visual-generation": {
+      "id": "scaling-properties-of-text-conditioning-in-visual-generation",
+      "label": "Scaling Properties of Text Conditioning in Visual Generation problem setting",
+      "type": "concept",
+      "summary": "The learning or systems problem described by the source: We study empirical scaling properties for text conditioning in visual generation. Such properties have rarely been measured because diffusion loss does not scale with the number of tokens in natural-language prompts. Surprisingly, we find that the converged diffusion loss scales with the amount of structured language in the prompt. To quantify structured lan...",
+      "aliases": [],
+      "source_ids": [
+        "emergentmind-2607-29679-scaling-properties-of-text-conditioning-in-visual-generation-2026"
+      ],
+      "confidence": 0.78,
+      "first_seen": "2026-08-04T14:33:06Z",
+      "last_seen": "2026-08-04T14:33:06Z",
+      "world_hint": "generative-models"
+    },
+    "paper-2607-29679": {
+      "id": "paper-2607-29679",
+      "label": "Scaling Properties of Text Conditioning in Visual Generation",
+      "type": "paper",
+      "summary": "EmergentMind surfaced arXiv paper 2607.29679: We study empirical scaling properties for text conditioning in visual generation. Such properties have rarely been measured because diffusion loss does not scale with the number of tokens in natural-language prompts. Surprisingly, we find that the converged diffusion loss scales with the amount of structured language in the prompt. To quantify structured lan...",
+      "aliases": [],
+      "source_ids": [
+        "emergentmind-2607-29679-scaling-properties-of-text-conditioning-in-visual-generation-2026"
+      ],
+      "confidence": 0.78,
+      "first_seen": "2026-08-04T14:33:06Z",
+      "last_seen": "2026-08-04T14:33:06Z",
+      "world_hint": "generative-models"
+    },
+    "x-navdp-generalizing-navigation-diffusion-policy-to": {
+      "id": "x-navdp-generalizing-navigation-diffusion-policy-to",
+      "label": "X-NavDP",
+      "type": "method",
+      "summary": "Source-grounded method/approach from 'X-NavDP: Generalizing Navigation Diffusion Policy to Novel Behavior and Embodiments with Group Q-score Reweighted Matching': Pretraining navigation diffusion policies rely on large-scale expert demonstrations. These data are typically generated by a fully-informed oracle planner suited to a single nominal robot. This limits the policy's generalization to diverse embodiments and challenging scenarios (e.g., escaping dead ends or detouring long obstacles) that demand diverse local r...",
+      "aliases": [],
+      "source_ids": [
+        "emergentmind-2607-28560-x-navdp-generalizing-navigation-diffusion-policy-to-novel-2026"
+      ],
+      "confidence": 0.78,
+      "first_seen": "2026-08-04T14:33:06Z",
+      "last_seen": "2026-08-04T14:33:06Z",
+      "world_hint": "perception-world-models"
+    },
+    "x-navdp-generalizing-navigation-diffusion-policy-to-novel": {
+      "id": "x-navdp-generalizing-navigation-diffusion-policy-to-novel",
+      "label": "X-NavDP problem setting",
+      "type": "concept",
+      "summary": "The learning or systems problem described by the source: Pretraining navigation diffusion policies rely on large-scale expert demonstrations. These data are typically generated by a fully-informed oracle planner suited to a single nominal robot. This limits the policy's generalization to diverse embodiments and challenging scenarios (e.g., escaping dead ends or detouring long obstacles) that demand diverse local r...",
+      "aliases": [],
+      "source_ids": [
+        "emergentmind-2607-28560-x-navdp-generalizing-navigation-diffusion-policy-to-novel-2026"
+      ],
+      "confidence": 0.78,
+      "first_seen": "2026-08-04T14:33:06Z",
+      "last_seen": "2026-08-04T14:33:06Z",
+      "world_hint": "perception-world-models"
+    },
+    "paper-2607-28560": {
+      "id": "paper-2607-28560",
+      "label": "X-NavDP: Generalizing Navigation Diffusion Policy to Novel Behavior and Embodiments with Group Q-score Reweighted Matching",
+      "type": "paper",
+      "summary": "EmergentMind surfaced arXiv paper 2607.28560: Pretraining navigation diffusion policies rely on large-scale expert demonstrations. These data are typically generated by a fully-informed oracle planner suited to a single nominal robot. This limits the policy's generalization to diverse embodiments and challenging scenarios (e.g., escaping dead ends or detouring long obstacles) that demand diverse local r...",
+      "aliases": [],
+      "source_ids": [
+        "emergentmind-2607-28560-x-navdp-generalizing-navigation-diffusion-policy-to-novel-2026"
+      ],
+      "confidence": 0.78,
+      "first_seen": "2026-08-04T14:33:06Z",
+      "last_seen": "2026-08-04T14:33:06Z",
+      "world_hint": "perception-world-models"
+    },
+    "tenginedb-v-an-olap-native-vector-search": {
+      "id": "tenginedb-v-an-olap-native-vector-search",
+      "label": "TEngineDB-V",
+      "type": "method",
+      "summary": "Source-grounded method/approach from 'TEngineDB-V: An OLAP-Native Vector Search System for Large-$k$ Workloads at Tencent': Vector search systems are essential infrastructure for modern data-driven applications. Large-$k$ analytical vector search, which retrieves $k=10^3$--$10^5$ results for analytics (e.g., aggregation, filtering, joins), is increasingly important for emerging workloads, including LLM data management and advertising analysis at Tencent. Existing systems remain i...",
+      "aliases": [],
+      "source_ids": [
+        "emergentmind-2608-00650-tenginedb-v-an-olap-native-vector-search-system-2026"
+      ],
+      "confidence": 0.78,
+      "first_seen": "2026-08-04T14:33:06Z",
+      "last_seen": "2026-08-04T14:33:06Z",
+      "world_hint": "retrieval-augmented-generation"
+    },
+    "tenginedb-v-an-olap-native-vector-search-system": {
+      "id": "tenginedb-v-an-olap-native-vector-search-system",
+      "label": "TEngineDB-V problem setting",
+      "type": "concept",
+      "summary": "The learning or systems problem described by the source: Vector search systems are essential infrastructure for modern data-driven applications. Large-$k$ analytical vector search, which retrieves $k=10^3$--$10^5$ results for analytics (e.g., aggregation, filtering, joins), is increasingly important for emerging workloads, including LLM data management and advertising analysis at Tencent. Existing systems remain i...",
+      "aliases": [],
+      "source_ids": [
+        "emergentmind-2608-00650-tenginedb-v-an-olap-native-vector-search-system-2026"
+      ],
+      "confidence": 0.78,
+      "first_seen": "2026-08-04T14:33:06Z",
+      "last_seen": "2026-08-04T14:33:06Z",
+      "world_hint": "retrieval-augmented-generation"
+    },
+    "paper-2608-00650": {
+      "id": "paper-2608-00650",
+      "label": "TEngineDB-V: An OLAP-Native Vector Search System for Large-$k$ Workloads at Tencent",
+      "type": "paper",
+      "summary": "EmergentMind surfaced arXiv paper 2608.00650: Vector search systems are essential infrastructure for modern data-driven applications. Large-$k$ analytical vector search, which retrieves $k=10^3$--$10^5$ results for analytics (e.g., aggregation, filtering, joins), is increasingly important for emerging workloads, including LLM data management and advertising analysis at Tencent. Existing systems remain i...",
+      "aliases": [],
+      "source_ids": [
+        "emergentmind-2608-00650-tenginedb-v-an-olap-native-vector-search-system-2026"
+      ],
+      "confidence": 0.78,
+      "first_seen": "2026-08-04T14:33:06Z",
+      "last_seen": "2026-08-04T14:33:06Z",
+      "world_hint": "retrieval-augmented-generation"
+    },
+    "assessing-the-generalization-of-graph-neural-networks": {
+      "id": "assessing-the-generalization-of-graph-neural-networks",
+      "label": "Assessing the Generalization of Graph Neural Networks for Fault Location Across Increasing Distributed Energy Resource Penetration Levels",
+      "type": "method",
+      "summary": "Source-grounded method/approach from 'Assessing the Generalization of Graph Neural Networks for Fault Location Across Increasing Distributed Energy Resource Penetration Levels': Accurate fault location is critical for distribution network reliability. However, increasing distributed energy resource (DER) penetration complicates fault location due to intermittent generation and bidirectional power flows that reshape fault signatures. Spatio-Temporal Graph Neural Networks (STGNNs) have shown promise by jointly modeling spatial and tem...",
+      "aliases": [],
+      "source_ids": [
+        "emergentmind-2607-29293-assessing-the-generalization-of-graph-neural-networks-for-2026"
+      ],
+      "confidence": 0.78,
+      "first_seen": "2026-08-04T14:33:06Z",
+      "last_seen": "2026-08-04T14:33:06Z",
+      "world_hint": "transformer-architecture"
+    },
+    "assessing-the-generalization-of-graph-neural-networks-for": {
+      "id": "assessing-the-generalization-of-graph-neural-networks-for",
+      "label": "Assessing the Generalization of Graph Neural Networks for Fault Location Across Increasing Distributed Energy Resource Penetration Levels problem setting",
+      "type": "concept",
+      "summary": "The learning or systems problem described by the source: Accurate fault location is critical for distribution network reliability. However, increasing distributed energy resource (DER) penetration complicates fault location due to intermittent generation and bidirectional power flows that reshape fault signatures. Spatio-Temporal Graph Neural Networks (STGNNs) have shown promise by jointly modeling spatial and tem...",
+      "aliases": [],
+      "source_ids": [
+        "emergentmind-2607-29293-assessing-the-generalization-of-graph-neural-networks-for-2026"
+      ],
+      "confidence": 0.78,
+      "first_seen": "2026-08-04T14:33:06Z",
+      "last_seen": "2026-08-04T14:33:06Z",
+      "world_hint": "transformer-architecture"
+    },
+    "paper-2607-29293": {
+      "id": "paper-2607-29293",
+      "label": "Assessing the Generalization of Graph Neural Networks for Fault Location Across Increasing Distributed Energy Resource Penetration Levels",
+      "type": "paper",
+      "summary": "EmergentMind surfaced arXiv paper 2607.29293: Accurate fault location is critical for distribution network reliability. However, increasing distributed energy resource (DER) penetration complicates fault location due to intermittent generation and bidirectional power flows that reshape fault signatures. Spatio-Temporal Graph Neural Networks (STGNNs) have shown promise by jointly modeling spatial and tem...",
+      "aliases": [],
+      "source_ids": [
+        "emergentmind-2607-29293-assessing-the-generalization-of-graph-neural-networks-for-2026"
+      ],
+      "confidence": 0.78,
+      "first_seen": "2026-08-04T14:33:06Z",
+      "last_seen": "2026-08-04T14:33:06Z",
+      "world_hint": "transformer-architecture"
     }
   },
   "edges": [
@@ -23665,6 +24013,246 @@
         "emergentmind-2607-28271-agentic-method-for-deterministic-validation-of-legacy-code-2026"
       ],
       "evidence": "Routed into The Agentic Method For Deterministic under retrieval-augmented-generation from source title and abstract."
+    },
+    {
+      "source": "paper-2608-00337",
+      "target": "action-chunk-scheduling-for-batched-robot-policy",
+      "relation": "paper_introduces",
+      "confidence": 0.82,
+      "source_ids": [
+        "emergentmind-2608-00337-action-chunk-scheduling-for-batched-robot-policy-serving-2026"
+      ],
+      "evidence": "EmergentMind homepage/page metadata identify arXiv 2608.00337, 'Action Chunk Scheduling for Batched Robot Policy Serving', and summarize the method/problem."
+    },
+    {
+      "source": "action-chunk-scheduling-for-batched-robot-policy",
+      "target": "action-chunk-scheduling-for-batched-robot-policy-serving",
+      "relation": "implements",
+      "confidence": 0.76,
+      "source_ids": [
+        "emergentmind-2608-00337-action-chunk-scheduling-for-batched-robot-policy-serving-2026"
+      ],
+      "evidence": "Deploying robot foundation models at scale is the next step towards realizing the potential of general-purpose robots. However, Vision-Language-Action (VLA) and other foundation models are computationally demanding, and on-device compute is constrained by power and space. In this"
+    },
+    {
+      "source": "action-chunk-scheduling-for-batched-robot-policy",
+      "target": "action-chunk-scheduling-for-batched-robot-policy-serving",
+      "relation": "evaluates_on",
+      "confidence": 0.72,
+      "source_ids": [
+        "emergentmind-2608-00337-action-chunk-scheduling-for-batched-robot-policy-serving-2026"
+      ],
+      "evidence": "Deploying robot foundation models at scale is the next step towards realizing the potential of general-purpose robots. However, Vision-Language-Action (VLA) and other foundation models are computationally demanding, and on-device compute is constrained by power and space. In this"
+    },
+    {
+      "source": "action-chunk-scheduling-for-batched-robot-policy",
+      "target": "the-action-chunk-scheduling-for-batched",
+      "relation": "belongs_to_region",
+      "confidence": 0.78,
+      "source_ids": [
+        "emergentmind-2608-00337-action-chunk-scheduling-for-batched-robot-policy-serving-2026"
+      ],
+      "evidence": "Routed into The Action Chunk Scheduling For under perception-world-models from source title and abstract."
+    },
+    {
+      "source": "paper-2607-29378",
+      "target": "ptp-previous-token-prediction-based-llm-inversion",
+      "relation": "paper_introduces",
+      "confidence": 0.82,
+      "source_ids": [
+        "emergentmind-2607-29378-ptp-previous-token-prediction-based-llm-inversion-for-2026"
+      ],
+      "evidence": "EmergentMind homepage/page metadata identify arXiv 2607.29378, 'PTP: Previous-Token Prediction based LLM Inversion for Near-Exact Prompt Reconstruction', and summarize the method/problem."
+    },
+    {
+      "source": "ptp-previous-token-prediction-based-llm-inversion",
+      "target": "ptp-previous-token-prediction-based-llm-inversion-for",
+      "relation": "implements",
+      "confidence": 0.76,
+      "source_ids": [
+        "emergentmind-2607-29378-ptp-previous-token-prediction-based-llm-inversion-for-2026"
+      ],
+      "evidence": "Large language models (LLMs) generate text by auto-regressively sampling the next token. This inherently leads to a many-to-many mapping between prompts and responses, complicating the task of inferring prompts from observed outputs. Prior work on LLM inversion frames prompt reco"
+    },
+    {
+      "source": "ptp-previous-token-prediction-based-llm-inversion",
+      "target": "ptp-previous-token-prediction-based-llm-inversion-for",
+      "relation": "evaluates_on",
+      "confidence": 0.72,
+      "source_ids": [
+        "emergentmind-2607-29378-ptp-previous-token-prediction-based-llm-inversion-for-2026"
+      ],
+      "evidence": "Large language models (LLMs) generate text by auto-regressively sampling the next token. This inherently leads to a many-to-many mapping between prompts and responses, complicating the task of inferring prompts from observed outputs. Prior work on LLM inversion frames prompt reco"
+    },
+    {
+      "source": "ptp-previous-token-prediction-based-llm-inversion",
+      "target": "the-ptp-previous-token-prediction-based",
+      "relation": "belongs_to_region",
+      "confidence": 0.78,
+      "source_ids": [
+        "emergentmind-2607-29378-ptp-previous-token-prediction-based-llm-inversion-for-2026"
+      ],
+      "evidence": "Routed into The Ptp Previous Token Prediction under agents from source title and abstract."
+    },
+    {
+      "source": "paper-2607-29679",
+      "target": "scaling-properties-of-text-conditioning-in-visual",
+      "relation": "paper_introduces",
+      "confidence": 0.82,
+      "source_ids": [
+        "emergentmind-2607-29679-scaling-properties-of-text-conditioning-in-visual-generation-2026"
+      ],
+      "evidence": "EmergentMind homepage/page metadata identify arXiv 2607.29679, 'Scaling Properties of Text Conditioning in Visual Generation', and summarize the method/problem."
+    },
+    {
+      "source": "scaling-properties-of-text-conditioning-in-visual",
+      "target": "scaling-properties-of-text-conditioning-in-visual-generation",
+      "relation": "implements",
+      "confidence": 0.76,
+      "source_ids": [
+        "emergentmind-2607-29679-scaling-properties-of-text-conditioning-in-visual-generation-2026"
+      ],
+      "evidence": "We study empirical scaling properties for text conditioning in visual generation. Such properties have rarely been measured because diffusion loss does not scale with the number of tokens in natural-language prompts. Surprisingly, we find that the converged diffusion loss scales "
+    },
+    {
+      "source": "scaling-properties-of-text-conditioning-in-visual",
+      "target": "scaling-properties-of-text-conditioning-in-visual-generation",
+      "relation": "evaluates_on",
+      "confidence": 0.72,
+      "source_ids": [
+        "emergentmind-2607-29679-scaling-properties-of-text-conditioning-in-visual-generation-2026"
+      ],
+      "evidence": "We study empirical scaling properties for text conditioning in visual generation. Such properties have rarely been measured because diffusion loss does not scale with the number of tokens in natural-language prompts. Surprisingly, we find that the converged diffusion loss scales "
+    },
+    {
+      "source": "scaling-properties-of-text-conditioning-in-visual",
+      "target": "the-scaling-properties-of-text-conditioning",
+      "relation": "belongs_to_region",
+      "confidence": 0.78,
+      "source_ids": [
+        "emergentmind-2607-29679-scaling-properties-of-text-conditioning-in-visual-generation-2026"
+      ],
+      "evidence": "Routed into The Scaling Properties Of Text under generative-models from source title and abstract."
+    },
+    {
+      "source": "paper-2607-28560",
+      "target": "x-navdp-generalizing-navigation-diffusion-policy-to",
+      "relation": "paper_introduces",
+      "confidence": 0.82,
+      "source_ids": [
+        "emergentmind-2607-28560-x-navdp-generalizing-navigation-diffusion-policy-to-novel-2026"
+      ],
+      "evidence": "EmergentMind homepage/page metadata identify arXiv 2607.28560, 'X-NavDP: Generalizing Navigation Diffusion Policy to Novel Behavior and Embodiments with Group Q-score Reweighted Matching', and summarize the method/problem."
+    },
+    {
+      "source": "x-navdp-generalizing-navigation-diffusion-policy-to",
+      "target": "x-navdp-generalizing-navigation-diffusion-policy-to-novel",
+      "relation": "implements",
+      "confidence": 0.76,
+      "source_ids": [
+        "emergentmind-2607-28560-x-navdp-generalizing-navigation-diffusion-policy-to-novel-2026"
+      ],
+      "evidence": "Pretraining navigation diffusion policies rely on large-scale expert demonstrations. These data are typically generated by a fully-informed oracle planner suited to a single nominal robot. This limits the policy's generalization to diverse embodiments and challenging scenarios (e"
+    },
+    {
+      "source": "x-navdp-generalizing-navigation-diffusion-policy-to",
+      "target": "x-navdp-generalizing-navigation-diffusion-policy-to-novel",
+      "relation": "evaluates_on",
+      "confidence": 0.72,
+      "source_ids": [
+        "emergentmind-2607-28560-x-navdp-generalizing-navigation-diffusion-policy-to-novel-2026"
+      ],
+      "evidence": "Pretraining navigation diffusion policies rely on large-scale expert demonstrations. These data are typically generated by a fully-informed oracle planner suited to a single nominal robot. This limits the policy's generalization to diverse embodiments and challenging scenarios (e"
+    },
+    {
+      "source": "x-navdp-generalizing-navigation-diffusion-policy-to",
+      "target": "the-x-navdp-generalizing-navigation-diffusion",
+      "relation": "belongs_to_region",
+      "confidence": 0.78,
+      "source_ids": [
+        "emergentmind-2607-28560-x-navdp-generalizing-navigation-diffusion-policy-to-novel-2026"
+      ],
+      "evidence": "Routed into The X Navdp Generalizing Navigation under perception-world-models from source title and abstract."
+    },
+    {
+      "source": "paper-2608-00650",
+      "target": "tenginedb-v-an-olap-native-vector-search",
+      "relation": "paper_introduces",
+      "confidence": 0.82,
+      "source_ids": [
+        "emergentmind-2608-00650-tenginedb-v-an-olap-native-vector-search-system-2026"
+      ],
+      "evidence": "EmergentMind homepage/page metadata identify arXiv 2608.00650, 'TEngineDB-V: An OLAP-Native Vector Search System for Large-$k$ Workloads at Tencent', and summarize the method/problem."
+    },
+    {
+      "source": "tenginedb-v-an-olap-native-vector-search",
+      "target": "tenginedb-v-an-olap-native-vector-search-system",
+      "relation": "implements",
+      "confidence": 0.76,
+      "source_ids": [
+        "emergentmind-2608-00650-tenginedb-v-an-olap-native-vector-search-system-2026"
+      ],
+      "evidence": "Vector search systems are essential infrastructure for modern data-driven applications. Large-$k$ analytical vector search, which retrieves $k=10^3$--$10^5$ results for analytics (e.g., aggregation, filtering, joins), is increasingly important for emerging workloads, including LL"
+    },
+    {
+      "source": "tenginedb-v-an-olap-native-vector-search",
+      "target": "tenginedb-v-an-olap-native-vector-search-system",
+      "relation": "evaluates_on",
+      "confidence": 0.72,
+      "source_ids": [
+        "emergentmind-2608-00650-tenginedb-v-an-olap-native-vector-search-system-2026"
+      ],
+      "evidence": "Vector search systems are essential infrastructure for modern data-driven applications. Large-$k$ analytical vector search, which retrieves $k=10^3$--$10^5$ results for analytics (e.g., aggregation, filtering, joins), is increasingly important for emerging workloads, including LL"
+    },
+    {
+      "source": "tenginedb-v-an-olap-native-vector-search",
+      "target": "the-tenginedb-v-an-olap-native",
+      "relation": "belongs_to_region",
+      "confidence": 0.78,
+      "source_ids": [
+        "emergentmind-2608-00650-tenginedb-v-an-olap-native-vector-search-system-2026"
+      ],
+      "evidence": "Routed into The Tenginedb V An Olap under retrieval-augmented-generation from source title and abstract."
+    },
+    {
+      "source": "paper-2607-29293",
+      "target": "assessing-the-generalization-of-graph-neural-networks",
+      "relation": "paper_introduces",
+      "confidence": 0.82,
+      "source_ids": [
+        "emergentmind-2607-29293-assessing-the-generalization-of-graph-neural-networks-for-2026"
+      ],
+      "evidence": "EmergentMind homepage/page metadata identify arXiv 2607.29293, 'Assessing the Generalization of Graph Neural Networks for Fault Location Across Increasing Distributed Energy Resource Penetration Levels', and summarize the method/problem."
+    },
+    {
+      "source": "assessing-the-generalization-of-graph-neural-networks",
+      "target": "assessing-the-generalization-of-graph-neural-networks-for",
+      "relation": "implements",
+      "confidence": 0.76,
+      "source_ids": [
+        "emergentmind-2607-29293-assessing-the-generalization-of-graph-neural-networks-for-2026"
+      ],
+      "evidence": "Accurate fault location is critical for distribution network reliability. However, increasing distributed energy resource (DER) penetration complicates fault location due to intermittent generation and bidirectional power flows that reshape fault signatures. Spatio-Temporal Graph"
+    },
+    {
+      "source": "assessing-the-generalization-of-graph-neural-networks",
+      "target": "assessing-the-generalization-of-graph-neural-networks-for",
+      "relation": "evaluates_on",
+      "confidence": 0.72,
+      "source_ids": [
+        "emergentmind-2607-29293-assessing-the-generalization-of-graph-neural-networks-for-2026"
+      ],
+      "evidence": "Accurate fault location is critical for distribution network reliability. However, increasing distributed energy resource (DER) penetration complicates fault location due to intermittent generation and bidirectional power flows that reshape fault signatures. Spatio-Temporal Graph"
+    },
+    {
+      "source": "assessing-the-generalization-of-graph-neural-networks",
+      "target": "the-assessing-the-generalization-of-graph",
+      "relation": "belongs_to_region",
+      "confidence": 0.78,
+      "source_ids": [
+        "emergentmind-2607-29293-assessing-the-generalization-of-graph-neural-networks-for-2026"
+      ],
+      "evidence": "Routed into The Assessing The Generalization Of under transformer-architecture from source title and abstract."
     }
   ],
   "open_questions": [
@@ -25541,6 +26129,54 @@
       "edges_added": 0,
       "regions_added": 0,
       "quality_findings": [],
+      "verification": {
+        "json_parse": "passed",
+        "dkg_test": "passed",
+        "build": "passed",
+        "supabase_sync": "passed",
+        "roundtrip": "passed"
+      }
+    },
+    {
+      "run_id": "daily-emergentmind-all-topics-20260804T143306Z",
+      "completed_at": "2026-08-04T14:33:06Z",
+      "type": "daily-emergentmind-all-topics",
+      "homepage_url": "https://www.emergentmind.com/",
+      "homepage_status": 200,
+      "homepage_papers": 45,
+      "source_ids": [
+        "emergentmind-2608-00337-action-chunk-scheduling-for-batched-robot-policy-serving-2026",
+        "emergentmind-2607-29378-ptp-previous-token-prediction-based-llm-inversion-for-2026",
+        "emergentmind-2607-29679-scaling-properties-of-text-conditioning-in-visual-generation-2026",
+        "emergentmind-2607-28560-x-navdp-generalizing-navigation-diffusion-policy-to-novel-2026",
+        "emergentmind-2608-00650-tenginedb-v-an-olap-native-vector-search-system-2026",
+        "emergentmind-2607-29293-assessing-the-generalization-of-graph-neural-networks-for-2026"
+      ],
+      "page_status": {
+        "2608.00337": 200,
+        "2607.29378": 200,
+        "2607.29679": 200,
+        "2607.28560": 200,
+        "2608.00650": 200,
+        "2607.29293": 200
+      },
+      "sources_added": 6,
+      "sources_updated": 0,
+      "nodes_added": 18,
+      "nodes_updated": 0,
+      "edges_added": 24,
+      "worlds_touched": [
+        "perception-world-models",
+        "agents",
+        "generative-models",
+        "retrieval-augmented-generation",
+        "transformer-architecture"
+      ],
+      "regions_added": 6,
+      "manual_review": [
+        "Skipped pure-math, astronomy/cosmology, and clinical/medical surfaced items in this bounded pass; clinical claims need deeper safety review before routing.",
+        "New visual-SLAM/event-camera/egocentric-video items are routed under Perception & World Models; DeepSearch is routed under Retrieval-Augmented Generation; beyond-human intelligence evaluation is routed under Agents."
+      ],
       "verification": {
         "json_parse": "passed",
         "dkg_test": "passed",

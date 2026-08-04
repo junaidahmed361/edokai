@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "updated_at": "2026-08-03T14:14:10Z",
+  "updated_at": "2026-08-04T14:33:06Z",
   "macro_worlds": {
     "agents": {
       "label": "Agents",
@@ -1886,6 +1886,48 @@
               ]
             }
           ]
+        },
+        {
+          "id": "the-ptp-previous-token-prediction-based",
+          "label": "The Ptp Previous Token Prediction",
+          "summary": "A source-backed case board for PTP: Previous-Token Prediction based LLM Inversion for Near-Exact Prompt Reconstruction: learners inspect the plain technical mechanism, the evaluation signal, and where the claim fits in Edokai's agents world.",
+          "source_ids": [
+            "emergentmind-2607-29378-ptp-previous-token-prediction-based-llm-inversion-for-2026"
+          ],
+          "concept_ids": [
+            "ptp-previous-token-prediction-based-llm-inversion",
+            "ptp-previous-token-prediction-based-llm-inversion-for",
+            "ptp-previous-token-prediction-based-llm-inversion-for"
+          ],
+          "critical_concepts": [
+            "ptp-previous-token-prediction-based-llm-inversion",
+            "ptp-previous-token-prediction-based-llm-inversion-for"
+          ],
+          "prerequisite_links": [],
+          "side_retention_duels": [
+            {
+              "id": "the-ptp-previous-token-prediction-duel",
+              "prompt": "What should Edokai learners remember about **PTP**?",
+              "left": "Treat it as a title-only bookmark without checking the mechanism.",
+              "right": "Track the mechanism, evidence signal, and limits stated by the source.",
+              "answer": "Use the source-backed mechanism and evaluation signal; avoid inferring guarantees beyond the paper summary."
+            }
+          ],
+          "quiz_questions": [
+            {
+              "question": "In the source **PTP: Previous-Token Prediction based LLM Inversion for Near-Exact Prompt Reconstruction**, what is the main learner-facing mechanism Edokai should preserve?",
+              "choices": [
+                "It mainly replaces the user interface theme without changing the learning mechanism.",
+                "It is a clinical treatment protocol rather than a machine-learning research method.",
+                "It uses the source's PTP mechanism to address the paper's stated ML/AI problem.",
+                "It proves a pure-math theorem without a model, agent, or evaluation loop."
+              ],
+              "answer_index": 2,
+              "source_ids": [
+                "emergentmind-2607-29378-ptp-previous-token-prediction-based-llm-inversion-for-2026"
+              ]
+            }
+          ]
         }
       ]
     },
@@ -2610,6 +2652,48 @@
               "answer_index": 2,
               "source_ids": [
                 "emergentmind-2607-28607-inducing-language-models-to-assert-their-own-consciousness-2026"
+              ]
+            }
+          ]
+        },
+        {
+          "id": "the-assessing-the-generalization-of-graph",
+          "label": "The Assessing The Generalization Of",
+          "summary": "A source-backed case board for Assessing the Generalization of Graph Neural Networks for Fault Location Across Increasing Distributed Energy Resource Penetration Levels: learners inspect the plain technical mechanism, the evaluation signal, and where the claim fits in Edokai's transformer architecture world.",
+          "source_ids": [
+            "emergentmind-2607-29293-assessing-the-generalization-of-graph-neural-networks-for-2026"
+          ],
+          "concept_ids": [
+            "assessing-the-generalization-of-graph-neural-networks",
+            "assessing-the-generalization-of-graph-neural-networks-for",
+            "assessing-the-generalization-of-graph-neural-networks-for"
+          ],
+          "critical_concepts": [
+            "assessing-the-generalization-of-graph-neural-networks",
+            "assessing-the-generalization-of-graph-neural-networks-for"
+          ],
+          "prerequisite_links": [],
+          "side_retention_duels": [
+            {
+              "id": "the-assessing-the-generalization-of-duel",
+              "prompt": "What should Edokai learners remember about **Assessing the Generalization of Graph Neural Networks for Fault Location Across Increasing Distributed Energy Resource Penetration Levels**?",
+              "left": "Treat it as a title-only bookmark without checking the mechanism.",
+              "right": "Track the mechanism, evidence signal, and limits stated by the source.",
+              "answer": "Use the source-backed mechanism and evaluation signal; avoid inferring guarantees beyond the paper summary."
+            }
+          ],
+          "quiz_questions": [
+            {
+              "question": "In the source **Assessing the Generalization of Graph Neural Networks for Fault Location Across Increasing Distributed Energy Resource Penetration Levels**, what is the main learner-facing mechanism Edokai should preserve?",
+              "choices": [
+                "It mainly replaces the user interface theme without changing the learning mechanism.",
+                "It is a clinical treatment protocol rather than a machine-learning research method.",
+                "It uses the source's Assessing the Generalization of Graph Neural Networks for Fault Location Across Increasing Distributed Energy Resource Penetration Levels mechanism to address the paper's stated ML/AI problem.",
+                "It proves a pure-math theorem without a model, agent, or evaluation loop."
+              ],
+              "answer_index": 2,
+              "source_ids": [
+                "emergentmind-2607-29293-assessing-the-generalization-of-graph-neural-networks-for-2026"
               ]
             }
           ]
@@ -3554,6 +3638,48 @@
               "answer_index": 3,
               "source_ids": [
                 "emergentmind-2607-26115-gpt-red-automated-red-teaming-via-self-play-2026"
+              ]
+            }
+          ]
+        },
+        {
+          "id": "the-scaling-properties-of-text-conditioning",
+          "label": "The Scaling Properties Of Text",
+          "summary": "A source-backed case board for Scaling Properties of Text Conditioning in Visual Generation: learners inspect the plain technical mechanism, the evaluation signal, and where the claim fits in Edokai's generative models world.",
+          "source_ids": [
+            "emergentmind-2607-29679-scaling-properties-of-text-conditioning-in-visual-generation-2026"
+          ],
+          "concept_ids": [
+            "scaling-properties-of-text-conditioning-in-visual",
+            "scaling-properties-of-text-conditioning-in-visual-generation",
+            "scaling-properties-of-text-conditioning-in-visual-generation"
+          ],
+          "critical_concepts": [
+            "scaling-properties-of-text-conditioning-in-visual",
+            "scaling-properties-of-text-conditioning-in-visual-generation"
+          ],
+          "prerequisite_links": [],
+          "side_retention_duels": [
+            {
+              "id": "the-scaling-properties-of-text-duel",
+              "prompt": "What should Edokai learners remember about **Scaling Properties of Text Conditioning in Visual Generation**?",
+              "left": "Treat it as a title-only bookmark without checking the mechanism.",
+              "right": "Track the mechanism, evidence signal, and limits stated by the source.",
+              "answer": "Use the source-backed mechanism and evaluation signal; avoid inferring guarantees beyond the paper summary."
+            }
+          ],
+          "quiz_questions": [
+            {
+              "question": "In the source **Scaling Properties of Text Conditioning in Visual Generation**, what is the main learner-facing mechanism Edokai should preserve?",
+              "choices": [
+                "It mainly replaces the user interface theme without changing the learning mechanism.",
+                "It is a clinical treatment protocol rather than a machine-learning research method.",
+                "It proves a pure-math theorem without a model, agent, or evaluation loop.",
+                "It uses the source's Scaling Properties of Text Conditioning in Visual Generation mechanism to address the paper's stated ML/AI problem."
+              ],
+              "answer_index": 3,
+              "source_ids": [
+                "emergentmind-2607-29679-scaling-properties-of-text-conditioning-in-visual-generation-2026"
               ]
             }
           ]
@@ -6585,6 +6711,90 @@
               "answer_index": 3,
               "source_ids": [
                 "emergentmind-2607-28257-operationally-guided-placement-aware-learning-for-industrial-online-2026"
+              ]
+            }
+          ]
+        },
+        {
+          "id": "the-action-chunk-scheduling-for-batched",
+          "label": "The Action Chunk Scheduling For",
+          "summary": "A source-backed case board for Action Chunk Scheduling for Batched Robot Policy Serving: learners inspect the plain technical mechanism, the evaluation signal, and where the claim fits in Edokai's perception world models world.",
+          "source_ids": [
+            "emergentmind-2608-00337-action-chunk-scheduling-for-batched-robot-policy-serving-2026"
+          ],
+          "concept_ids": [
+            "action-chunk-scheduling-for-batched-robot-policy",
+            "action-chunk-scheduling-for-batched-robot-policy-serving",
+            "action-chunk-scheduling-for-batched-robot-policy-serving"
+          ],
+          "critical_concepts": [
+            "action-chunk-scheduling-for-batched-robot-policy",
+            "action-chunk-scheduling-for-batched-robot-policy-serving"
+          ],
+          "prerequisite_links": [],
+          "side_retention_duels": [
+            {
+              "id": "the-action-chunk-scheduling-for-duel",
+              "prompt": "What should Edokai learners remember about **Action Chunk Scheduling for Batched Robot Policy Serving**?",
+              "left": "Treat it as a title-only bookmark without checking the mechanism.",
+              "right": "Track the mechanism, evidence signal, and limits stated by the source.",
+              "answer": "Use the source-backed mechanism and evaluation signal; avoid inferring guarantees beyond the paper summary."
+            }
+          ],
+          "quiz_questions": [
+            {
+              "question": "In the source **Action Chunk Scheduling for Batched Robot Policy Serving**, what is the main learner-facing mechanism Edokai should preserve?",
+              "choices": [
+                "It mainly replaces the user interface theme without changing the learning mechanism.",
+                "It uses the source's Action Chunk Scheduling for Batched Robot Policy Serving mechanism to address the paper's stated ML/AI problem.",
+                "It is a clinical treatment protocol rather than a machine-learning research method.",
+                "It proves a pure-math theorem without a model, agent, or evaluation loop."
+              ],
+              "answer_index": 1,
+              "source_ids": [
+                "emergentmind-2608-00337-action-chunk-scheduling-for-batched-robot-policy-serving-2026"
+              ]
+            }
+          ]
+        },
+        {
+          "id": "the-x-navdp-generalizing-navigation-diffusion",
+          "label": "The X Navdp Generalizing Navigation",
+          "summary": "A source-backed case board for X-NavDP: Generalizing Navigation Diffusion Policy to Novel Behavior and Embodiments with Group Q-score Reweighted Matching: learners inspect the plain technical mechanism, the evaluation signal, and where the claim fits in Edokai's perception world models world.",
+          "source_ids": [
+            "emergentmind-2607-28560-x-navdp-generalizing-navigation-diffusion-policy-to-novel-2026"
+          ],
+          "concept_ids": [
+            "x-navdp-generalizing-navigation-diffusion-policy-to",
+            "x-navdp-generalizing-navigation-diffusion-policy-to-novel",
+            "x-navdp-generalizing-navigation-diffusion-policy-to-novel"
+          ],
+          "critical_concepts": [
+            "x-navdp-generalizing-navigation-diffusion-policy-to",
+            "x-navdp-generalizing-navigation-diffusion-policy-to-novel"
+          ],
+          "prerequisite_links": [],
+          "side_retention_duels": [
+            {
+              "id": "the-x-navdp-generalizing-navigation-duel",
+              "prompt": "What should Edokai learners remember about **X-NavDP**?",
+              "left": "Treat it as a title-only bookmark without checking the mechanism.",
+              "right": "Track the mechanism, evidence signal, and limits stated by the source.",
+              "answer": "Use the source-backed mechanism and evaluation signal; avoid inferring guarantees beyond the paper summary."
+            }
+          ],
+          "quiz_questions": [
+            {
+              "question": "In the source **X-NavDP: Generalizing Navigation Diffusion Policy to Novel Behavior and Embodiments with Group Q-score Reweighted Matching**, what is the main learner-facing mechanism Edokai should preserve?",
+              "choices": [
+                "It uses the source's X-NavDP mechanism to address the paper's stated ML/AI problem.",
+                "It mainly replaces the user interface theme without changing the learning mechanism.",
+                "It is a clinical treatment protocol rather than a machine-learning research method.",
+                "It proves a pure-math theorem without a model, agent, or evaluation loop."
+              ],
+              "answer_index": 0,
+              "source_ids": [
+                "emergentmind-2607-28560-x-navdp-generalizing-navigation-diffusion-policy-to-novel-2026"
               ]
             }
           ]
@@ -10035,6 +10245,48 @@
               ]
             }
           ]
+        },
+        {
+          "id": "the-tenginedb-v-an-olap-native",
+          "label": "The Tenginedb V An Olap",
+          "summary": "A source-backed case board for TEngineDB-V: An OLAP-Native Vector Search System for Large-$k$ Workloads at Tencent: learners inspect the plain technical mechanism, the evaluation signal, and where the claim fits in Edokai's retrieval augmented generation world.",
+          "source_ids": [
+            "emergentmind-2608-00650-tenginedb-v-an-olap-native-vector-search-system-2026"
+          ],
+          "concept_ids": [
+            "tenginedb-v-an-olap-native-vector-search",
+            "tenginedb-v-an-olap-native-vector-search-system",
+            "tenginedb-v-an-olap-native-vector-search-system"
+          ],
+          "critical_concepts": [
+            "tenginedb-v-an-olap-native-vector-search",
+            "tenginedb-v-an-olap-native-vector-search-system"
+          ],
+          "prerequisite_links": [],
+          "side_retention_duels": [
+            {
+              "id": "the-tenginedb-v-an-olap-duel",
+              "prompt": "What should Edokai learners remember about **TEngineDB-V**?",
+              "left": "Treat it as a title-only bookmark without checking the mechanism.",
+              "right": "Track the mechanism, evidence signal, and limits stated by the source.",
+              "answer": "Use the source-backed mechanism and evaluation signal; avoid inferring guarantees beyond the paper summary."
+            }
+          ],
+          "quiz_questions": [
+            {
+              "question": "In the source **TEngineDB-V: An OLAP-Native Vector Search System for Large-$k$ Workloads at Tencent**, what is the main learner-facing mechanism Edokai should preserve?",
+              "choices": [
+                "It mainly replaces the user interface theme without changing the learning mechanism.",
+                "It uses the source's TEngineDB-V mechanism to address the paper's stated ML/AI problem.",
+                "It is a clinical treatment protocol rather than a machine-learning research method.",
+                "It proves a pure-math theorem without a model, agent, or evaluation loop."
+              ],
+              "answer_index": 1,
+              "source_ids": [
+                "emergentmind-2608-00650-tenginedb-v-an-olap-native-vector-search-system-2026"
+              ]
+            }
+          ]
         }
       ]
     }
@@ -11697,6 +11949,42 @@
       "regions_added": 0,
       "new_worlds_created": [],
       "quality_findings": [],
+      "verification": {
+        "json_parse": "passed",
+        "dkg_test": "passed",
+        "build": "passed",
+        "supabase_sync": "passed",
+        "roundtrip": "passed"
+      }
+    },
+    {
+      "run_id": "daily-emergentmind-all-topics-20260804T143306Z",
+      "completed_at": "2026-08-04T14:33:06Z",
+      "event": "daily EmergentMind homepage all-topics ingestion",
+      "sources_added": 6,
+      "nodes_added": 18,
+      "edges_added": 24,
+      "worlds_enhanced": [
+        "perception-world-models",
+        "agents",
+        "generative-models",
+        "retrieval-augmented-generation",
+        "transformer-architecture"
+      ],
+      "regions_enhanced": [
+        "the-action-chunk-scheduling-for-batched",
+        "the-ptp-previous-token-prediction-based",
+        "the-scaling-properties-of-text-conditioning",
+        "the-x-navdp-generalizing-navigation-diffusion",
+        "the-tenginedb-v-an-olap-native",
+        "the-assessing-the-generalization-of-graph"
+      ],
+      "new_worlds_created": [],
+      "router_learning": "The 2026-07-12 homepage delta fits existing umbrellas: SLAM/event-camera/egocentric-video strengthen Perception & World Models, DeepSearch strengthens Retrieval-Augmented Generation, and beyond-human intelligence evaluation strengthens Agents.",
+      "manual_review": [
+        "Skipped pure-math, astronomy/cosmology, and clinical/medical surfaced items in this bounded pass; clinical claims need deeper safety review before routing.",
+        "New visual-SLAM/event-camera/egocentric-video items are routed under Perception & World Models; DeepSearch is routed under Retrieval-Augmented Generation; beyond-human intelligence evaluation is routed under Agents."
+      ],
       "verification": {
         "json_parse": "passed",
         "dkg_test": "passed",
