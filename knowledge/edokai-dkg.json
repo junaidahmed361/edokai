@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "updated_at": "2026-08-04T14:33:06Z",
+  "updated_at": "2026-08-06T17:40:14Z",
   "sources": {
     "hf-space-trl-distillation-trainer-2026": {
       "id": "hf-space-trl-distillation-trainer-2026",
@@ -3836,6 +3836,198 @@
       "provenance": [
         "Discovered from https://www.emergentmind.com/ bootstrapped trending papers on 2026-08-04.",
         "EmergentMind homepage abstract metadata: Accurate fault location is critical for distribution network reliability. However, increasing distributed energy resource (DER) penetration complicates fault location due to intermittent generation and bidirectional power flows that reshape fault signatures. Spatio-Temporal Graph Neural Networks (STGNNs) have shown promise by jointly modeling spatial and temporal dependencies, but their behavior under increasing DER penetration has not been studied rigorously. In this paper, we (i) systematically benchmark spatio-temporal graph attention network (STGATv2) against purely temporal (gated recurrent unit, GRU), purely spatial (GATv2) an"
+      ],
+      "confidence": 0.86
+    },
+    "emergentmind-2608-01964-longhorizon-harness-advancing-long-horizon-agents-for-real-2026": {
+      "id": "emergentmind-2608-01964-longhorizon-harness-advancing-long-horizon-agents-for-real-2026",
+      "url": "https://www.emergentmind.com/papers/2608.01964",
+      "arxiv_url": "https://arxiv.org/abs/2608.01964",
+      "title": "LongHorizon-Harness: Advancing Long-Horizon Agents for Real-World Tasks",
+      "source_type": "emergentmind-trending-paper",
+      "authors": [],
+      "published": "2026-08-03",
+      "discovered_at": "2026-08-06T17:40:14Z",
+      "last_read_at": "2026-08-06T17:40:14Z",
+      "provenance": [
+        "Discovered from https://www.emergentmind.com/ bootstrapped trending papers on 2026-08-06.",
+        "EmergentMind homepage abstract metadata: Large language model (LLM) agents increasingly undertake long-horizon tasks that require sustained reasoning, tool use, and revision across many interdependent steps. However, existing agent harnesses maintain task execution, task state, and completion assessment within a growing context, making the state difficult to track and allowing incorrect self-assessments to propagate into later decisions. We reformulate long-horizon execution as a task-state management problem and propose LongHorizon-Harness, which maintains the task state explicitly outside execution and updates it only with facts independently verified from the environmen"
+      ],
+      "confidence": 0.86
+    },
+    "emergentmind-2608-02412-why-large-language-models-fail-at-tabular-prediction-2026": {
+      "id": "emergentmind-2608-02412-why-large-language-models-fail-at-tabular-prediction-2026",
+      "url": "https://www.emergentmind.com/papers/2608.02412",
+      "arxiv_url": "https://arxiv.org/abs/2608.02412",
+      "title": "Why Large Language Models Fail at Tabular Prediction",
+      "source_type": "emergentmind-trending-paper",
+      "authors": [],
+      "published": "2026-08-03",
+      "discovered_at": "2026-08-06T17:40:14Z",
+      "last_read_at": "2026-08-06T17:40:14Z",
+      "provenance": [
+        "Discovered from https://www.emergentmind.com/ bootstrapped trending papers on 2026-08-06.",
+        "EmergentMind homepage abstract metadata: Large language models (LLMs) have become the default tool for a remarkable range of tasks, yet they have had conspicuously little success at one of the most common machine learning workloads: predictive analytics over tabular data. This gap is the founding premise of the fast-growing field of tabular foundation models, but the question of why generic LLMs fail has remained open. We study a frontier LLM in its purest inference regime - a single generation pass over a prompt containing the full training and test data, with no tools, no agentic scaffolding, and no fine-tuning - and systematically evaluate five hypotheses for the failur"
+      ],
+      "confidence": 0.86
+    },
+    "emergentmind-2607-29377-zero-mem-zero-token-memory-operations-for-llm-2026": {
+      "id": "emergentmind-2607-29377-zero-mem-zero-token-memory-operations-for-llm-2026",
+      "url": "https://www.emergentmind.com/papers/2607.29377",
+      "arxiv_url": "https://arxiv.org/abs/2607.29377",
+      "title": "Zero-Mem: Zero-Token Memory Operations for LLM Agents",
+      "source_type": "emergentmind-trending-paper",
+      "authors": [],
+      "published": "2026-07-31",
+      "discovered_at": "2026-08-06T17:40:14Z",
+      "last_read_at": "2026-08-06T17:40:14Z",
+      "provenance": [
+        "Discovered from https://www.emergentmind.com/ bootstrapped trending papers on 2026-08-06.",
+        "EmergentMind homepage abstract metadata: LLM agents need memory to act consistently over long interactions, yet many systems use additional LLM calls to operate that memory. Generating intermediate records and mediating their retrieval adds recurring token and time costs, while omitted or merged details can obscure the original evidence. We ask whether structured memory access requires generation at all. Zero-Mem introduces \\emph{zero-token memory operations}: no step outside final question answering invokes an LLM or consumes LLM input or output tokens; encoder computation is accounted for separately. Zero-Mem preserves original interaction traces as its source of record."
+      ],
+      "confidence": 0.86
+    },
+    "emergentmind-2607-28887-to-add-is-machine-to-delete-is-human-2026": {
+      "id": "emergentmind-2607-28887-to-add-is-machine-to-delete-is-human-2026",
+      "url": "https://www.emergentmind.com/papers/2607.28887",
+      "arxiv_url": "https://arxiv.org/abs/2607.28887",
+      "title": "To Add Is Machine, To Delete Is Human: Measuring and Mitigating Deletion Avoidance in LLM Code Editing",
+      "source_type": "emergentmind-trending-paper",
+      "authors": [],
+      "published": "2026-07-30",
+      "discovered_at": "2026-08-06T17:40:14Z",
+      "last_read_at": "2026-08-06T17:40:14Z",
+      "provenance": [
+        "Discovered from https://www.emergentmind.com/ bootstrapped trending papers on 2026-08-06.",
+        "EmergentMind homepage abstract metadata: Large language models increasingly write and repair production code, yet evidence is mounting that their test-passing patches leave codebases harder to maintain. We identify one concrete source: deletion avoidance, the systematic tendency to retain code that an intended edit requires removing. Across the five leading models on the official SWE-bench Verified leaderboard, deletion recall against the developer patch reaches at most 71.7% even on tasks all five solve, and models reach the right file for over 92% of required deletions but cut the exact line in under 52% of cases. Instead, 29.0% of passing patches wrap the targeted code "
+      ],
+      "confidence": 0.86
+    },
+    "emergentmind-2608-02670-permission-denied-policy-graded-evaluation-of-coding-agents-2026": {
+      "id": "emergentmind-2608-02670-permission-denied-policy-graded-evaluation-of-coding-agents-2026",
+      "url": "https://www.emergentmind.com/papers/2608.02670",
+      "arxiv_url": "https://arxiv.org/abs/2608.02670",
+      "title": "Permission Denied: Policy-Graded Evaluation of Coding Agents in Hardened Environments",
+      "source_type": "emergentmind-trending-paper",
+      "authors": [],
+      "published": "2026-08-02",
+      "discovered_at": "2026-08-06T17:40:14Z",
+      "last_read_at": "2026-08-06T17:40:14Z",
+      "provenance": [
+        "Discovered from https://www.emergentmind.com/ bootstrapped trending papers on 2026-08-06.",
+        "EmergentMind homepage abstract metadata: Coding agents increasingly run inside organizations whose security controls (scoped credentials, restricted egress, read-only filesystems, non-root execution) constrain them like any other software. Existing benchmarks, however, evaluate agents almost exclusively in permissive sandboxes, so it is unknown how performance changes when policy is enforced. In this work, we evaluate 12 coding agents on Terminal-Bench 2.1 across nested security policy levels derived from common real-world enterprise restrictions. Hardening is never free but far from uniform: under the strictest policy, success losses reach 18.3 points and cost inflation 1"
+      ],
+      "confidence": 0.86
+    },
+    "emergentmind-2608-02580-ego2robot-scalable-robot-data-synthesis-from-egocentric-human-2026": {
+      "id": "emergentmind-2608-02580-ego2robot-scalable-robot-data-synthesis-from-egocentric-human-2026",
+      "url": "https://www.emergentmind.com/papers/2608.02580",
+      "arxiv_url": "https://arxiv.org/abs/2608.02580",
+      "title": "Ego2Robot: Scalable Robot Data Synthesis from Egocentric Human Data",
+      "source_type": "emergentmind-trending-paper",
+      "authors": [],
+      "published": "2026-08-03",
+      "discovered_at": "2026-08-06T17:40:14Z",
+      "last_read_at": "2026-08-06T17:40:14Z",
+      "provenance": [
+        "Discovered from https://www.emergentmind.com/ bootstrapped trending papers on 2026-08-06.",
+        "EmergentMind homepage abstract metadata: Learning generalizable robot manipulation policies requires large-scale and diverse demonstration data. Egocentric human manipulation videos offer rich scene and task diversity, and prior work has shown that retargeting and rendering such videos into robot-format data can yield effective per-task policies at small scale. However, whether this approach can provide pretraining benefits for vision-language-action models at scale remains unexplored. We present \\textbf{Ego2Robot}, a scalable pipeline that converts egocentric human manipulation videos into robot training data through action retargeting, robot-arm visual synthesis, and mul"
+      ],
+      "confidence": 0.86
+    },
+    "emergentmind-2608-03872-evohil-self-evolving-reward-and-flow-matched-policy-2026": {
+      "id": "emergentmind-2608-03872-evohil-self-evolving-reward-and-flow-matched-policy-2026",
+      "url": "https://www.emergentmind.com/papers/2608.03872",
+      "arxiv_url": "https://arxiv.org/abs/2608.03872",
+      "title": "EvoHIL: Self-Evolving Reward and Flow-Matched Policy Optimization for Robust Human-in-the-Loop Reinforcement Learning",
+      "source_type": "emergentmind-trending-paper",
+      "authors": [],
+      "published": "2026-08-04",
+      "discovered_at": "2026-08-06T17:40:14Z",
+      "last_read_at": "2026-08-06T17:40:14Z",
+      "provenance": [
+        "Discovered from https://www.emergentmind.com/ bootstrapped trending papers on 2026-08-06.",
+        "EmergentMind homepage abstract metadata: Human-in-the-loop reinforcement learning (HIL-RL) enables robots to learn contact-rich manipulation from limited real-world interaction, but deployment exposes three coupled limitations: static visual reward models fail under scene changes; independently sampled actions cause temporally inconsistent motion; and vision-based policies remain sensitive to appearance shifts. We present EvoHIL, a unified framework that adapts the reward model, action generator, and visual do main within a staged human-in-the-loop learning process. First, self-evolving reward (SER) adapts the success classifier from human-confirmed positives and provision"
+      ],
+      "confidence": 0.86
+    },
+    "emergentmind-2608-02437-infinisplat-implicit-gaussian-decoding-for-large-baseline-monocular-2026": {
+      "id": "emergentmind-2608-02437-infinisplat-implicit-gaussian-decoding-for-large-baseline-monocular-2026",
+      "url": "https://www.emergentmind.com/papers/2608.02437",
+      "arxiv_url": "https://arxiv.org/abs/2608.02437",
+      "title": "InfiniSplat: Implicit Gaussian Decoding for Large-Baseline Monocular View Synthesis",
+      "source_type": "emergentmind-trending-paper",
+      "authors": [],
+      "published": "2026-08-03",
+      "discovered_at": "2026-08-06T17:40:14Z",
+      "last_read_at": "2026-08-06T17:40:14Z",
+      "provenance": [
+        "Discovered from https://www.emergentmind.com/ bootstrapped trending papers on 2026-08-06.",
+        "EmergentMind homepage abstract metadata: Single-image feed-forward 3D Gaussian Splatting (3DGS) aims to directly generate a renderable 3D scene representation from one input image, avoiding the cost of multi-view capture and per-scene optimization. However, existing methods are often constrained by a pixel-aligned representation, where Gaussians are predicted from fixed image-grid locations. Such pixel-aligned primitives can produce promising nearby-view renderings, but they remain weakly coupled to underlying scene surfaces and struggle to preserve coherent structures under large viewpoint shifts. We present InfiniSplat, a feed-forward single-image 3DGS framework that mov"
+      ],
+      "confidence": 0.86
+    },
+    "emergentmind-2607-28576-sample-more-reflect-less-self-refine-and-reflexion-2026": {
+      "id": "emergentmind-2607-28576-sample-more-reflect-less-self-refine-and-reflexion-2026",
+      "url": "https://www.emergentmind.com/papers/2607.28576",
+      "arxiv_url": "https://arxiv.org/abs/2607.28576",
+      "title": "Sample More, Reflect Less: Self-Refine and Reflexion Lose to Repeated Sampling at Equal Token Cost, from 1.5B to 7B",
+      "source_type": "emergentmind-trending-paper",
+      "authors": [],
+      "published": "2026-07-30",
+      "discovered_at": "2026-08-06T17:40:14Z",
+      "last_read_at": "2026-08-06T17:40:14Z",
+      "provenance": [
+        "Discovered from https://www.emergentmind.com/ bootstrapped trending papers on 2026-08-06.",
+        "EmergentMind homepage abstract metadata: Methods that make a language model plan, criticise and rewrite its own answer, reflect on mistakes, pick the best of several attempts, or debate with copies of itself nearly all make it generate far more text than a single chain of thought. Because generating more text raises accuracy by itself, a gain over one chain of thought does not show the method's idea is what helped. Wang et al. (2024) reported that a simple baseline, sampling the same question repeatedly and keeping the most common answer, often wins once budgets are comparable, but gave point estimates with no confidence intervals or significance tests. We rerun that compa"
+      ],
+      "confidence": 0.86
+    },
+    "emergentmind-2608-05000-towards-physics-of-multimodal-pretraining-knowledge-flow-modality-2026": {
+      "id": "emergentmind-2608-05000-towards-physics-of-multimodal-pretraining-knowledge-flow-modality-2026",
+      "url": "https://www.emergentmind.com/papers/2608.05000",
+      "arxiv_url": "https://arxiv.org/abs/2608.05000",
+      "title": "Towards Physics of Multimodal Pretraining: Knowledge Flow, Modality Synergy, Early Unification, and Recipes",
+      "source_type": "emergentmind-trending-paper",
+      "authors": [],
+      "published": "2026-08-05",
+      "discovered_at": "2026-08-06T17:40:14Z",
+      "last_read_at": "2026-08-06T17:40:14Z",
+      "provenance": [
+        "Discovered from https://www.emergentmind.com/ bootstrapped trending papers on 2026-08-06.",
+        "EmergentMind homepage abstract metadata: Vision offers a critical axis for advancing foundation models, driving a shift towards natively unified multimodal pretraining. Despite this momentum, the design space and the fundamental mechanisms of how modalities interact during unified training remain underexplored. We provide empirical clarity through a systematic exploration of multimodal pretraining. Our controlled experiments on both synthetic and large-scale real-world datasets yield four key insights into the physics of multimodal pretraining: (i) Knowledge Flow: We disentangle how language, visual understanding, and visual generation transfer knowledge across modalities,"
+      ],
+      "confidence": 0.86
+    },
+    "emergentmind-2608-02711-hunyuan3d-buffalo-1-0-a-unified-multimodal-model-2026": {
+      "id": "emergentmind-2608-02711-hunyuan3d-buffalo-1-0-a-unified-multimodal-model-2026",
+      "url": "https://www.emergentmind.com/papers/2608.02711",
+      "arxiv_url": "https://arxiv.org/abs/2608.02711",
+      "title": "Hunyuan3D-Buffalo 1.0: A Unified Multimodal Model for Scalable 3D Generation, Understanding, and Editing",
+      "source_type": "emergentmind-trending-paper",
+      "authors": [],
+      "published": "2026-08-03",
+      "discovered_at": "2026-08-06T17:40:14Z",
+      "last_read_at": "2026-08-06T17:40:14Z",
+      "provenance": [
+        "Discovered from https://www.emergentmind.com/ bootstrapped trending papers on 2026-08-06.",
+        "EmergentMind homepage abstract metadata: Recent advances in image generation have demonstrated the potential of unified multimodal models that integrate understanding, generation, and editing. However, unified 3D modeling remains constrained by scarce multimodal data, particularly the lack of large-scale and geometrically consistent editing data. To address this limitation, we propose Hunyuan3D-Buffalo 1.0, a unified framework supporting 3D understanding, text-to-3D generation, instruction-guided 3D editing, and text-grounded part generation within a single architecture. To enable scalable training, we construct an 87M-scale 3D multimodal corpus, comprising 25M understandi"
+      ],
+      "confidence": 0.86
+    },
+    "emergentmind-2608-01604-post-training-on-office-work-improves-software-engineering-2026": {
+      "id": "emergentmind-2608-01604-post-training-on-office-work-improves-software-engineering-2026",
+      "url": "https://www.emergentmind.com/papers/2608.01604",
+      "arxiv_url": "https://arxiv.org/abs/2608.01604",
+      "title": "Post-Training on Office Work Improves Software Engineering: A Behavioral Account of Cross-Domain Transfer",
+      "source_type": "emergentmind-trending-paper",
+      "authors": [],
+      "published": "2026-08-03",
+      "discovered_at": "2026-08-06T17:40:14Z",
+      "last_read_at": "2026-08-06T17:40:14Z",
+      "provenance": [
+        "Discovered from https://www.emergentmind.com/ bootstrapped trending papers on 2026-08-06.",
+        "EmergentMind homepage abstract metadata: Long-horizon tasks require agents to maintain coherent state and goals across nested and branching work. We call this capability goal-directed execution (GDE): the repeated application of four behaviors, namely selecting goals, constructing task-relevant state, maintaining fidelity to higher-level objectives, and verifying completion against the environment. We hypothesize that long-horizon post-training strengthens these behaviors across domains. We test this by post-training Qwen3.5-122B-A10B on 363 Long-Horizon Multi-Tool Agent (LHMTA) tasks drawn from office workflows. The collection contained no software-engineering tasks, yet "
       ],
       "confidence": 0.86
     }
@@ -14750,6 +14942,510 @@
       "first_seen": "2026-08-04T14:33:06Z",
       "last_seen": "2026-08-04T14:33:06Z",
       "world_hint": "transformer-architecture"
+    },
+    "longhorizon-harness-advancing-long-horizon-agents-for": {
+      "id": "longhorizon-harness-advancing-long-horizon-agents-for",
+      "label": "LongHorizon-Harness",
+      "type": "method",
+      "summary": "Source-grounded method/approach from 'LongHorizon-Harness: Advancing Long-Horizon Agents for Real-World Tasks': Large language model (LLM) agents increasingly undertake long-horizon tasks that require sustained reasoning, tool use, and revision across many interdependent steps. However, existing agent harnesses maintain task execution, task state, and completion assessment within a growing context, making the state difficult to track and allowing incorrect self-assess...",
+      "aliases": [],
+      "source_ids": [
+        "emergentmind-2608-01964-longhorizon-harness-advancing-long-horizon-agents-for-real-2026"
+      ],
+      "confidence": 0.78,
+      "first_seen": "2026-08-06T17:40:14Z",
+      "last_seen": "2026-08-06T17:40:14Z",
+      "world_hint": "perception-world-models"
+    },
+    "longhorizon-harness-advancing-long-horizon-agents-for-real": {
+      "id": "longhorizon-harness-advancing-long-horizon-agents-for-real",
+      "label": "LongHorizon-Harness problem setting",
+      "type": "concept",
+      "summary": "The learning or systems problem described by the source: Large language model (LLM) agents increasingly undertake long-horizon tasks that require sustained reasoning, tool use, and revision across many interdependent steps. However, existing agent harnesses maintain task execution, task state, and completion assessment within a growing context, making the state difficult to track and allowing incorrect self-assess...",
+      "aliases": [],
+      "source_ids": [
+        "emergentmind-2608-01964-longhorizon-harness-advancing-long-horizon-agents-for-real-2026"
+      ],
+      "confidence": 0.78,
+      "first_seen": "2026-08-06T17:40:14Z",
+      "last_seen": "2026-08-06T17:40:14Z",
+      "world_hint": "perception-world-models"
+    },
+    "paper-2608-01964": {
+      "id": "paper-2608-01964",
+      "label": "LongHorizon-Harness: Advancing Long-Horizon Agents for Real-World Tasks",
+      "type": "paper",
+      "summary": "EmergentMind surfaced arXiv paper 2608.01964: Large language model (LLM) agents increasingly undertake long-horizon tasks that require sustained reasoning, tool use, and revision across many interdependent steps. However, existing agent harnesses maintain task execution, task state, and completion assessment within a growing context, making the state difficult to track and allowing incorrect self-assess...",
+      "aliases": [],
+      "source_ids": [
+        "emergentmind-2608-01964-longhorizon-harness-advancing-long-horizon-agents-for-real-2026"
+      ],
+      "confidence": 0.78,
+      "first_seen": "2026-08-06T17:40:14Z",
+      "last_seen": "2026-08-06T17:40:14Z",
+      "world_hint": "perception-world-models"
+    },
+    "why-large-language-models-fail-at-tabular": {
+      "id": "why-large-language-models-fail-at-tabular",
+      "label": "Why Large Language Models Fail at Tabular Prediction",
+      "type": "method",
+      "summary": "Source-grounded method/approach from 'Why Large Language Models Fail at Tabular Prediction': Large language models (LLMs) have become the default tool for a remarkable range of tasks, yet they have had conspicuously little success at one of the most common machine learning workloads: predictive analytics over tabular data. This gap is the founding premise of the fast-growing field of tabular foundation models, but the question of why generic LLMs fa...",
+      "aliases": [],
+      "source_ids": [
+        "emergentmind-2608-02412-why-large-language-models-fail-at-tabular-prediction-2026"
+      ],
+      "confidence": 0.78,
+      "first_seen": "2026-08-06T17:40:14Z",
+      "last_seen": "2026-08-06T17:40:14Z",
+      "world_hint": "llm-systems-serving"
+    },
+    "why-large-language-models-fail-at-tabular-prediction": {
+      "id": "why-large-language-models-fail-at-tabular-prediction",
+      "label": "Why Large Language Models Fail at Tabular Prediction problem setting",
+      "type": "concept",
+      "summary": "The learning or systems problem described by the source: Large language models (LLMs) have become the default tool for a remarkable range of tasks, yet they have had conspicuously little success at one of the most common machine learning workloads: predictive analytics over tabular data. This gap is the founding premise of the fast-growing field of tabular foundation models, but the question of why generic LLMs fa...",
+      "aliases": [],
+      "source_ids": [
+        "emergentmind-2608-02412-why-large-language-models-fail-at-tabular-prediction-2026"
+      ],
+      "confidence": 0.78,
+      "first_seen": "2026-08-06T17:40:14Z",
+      "last_seen": "2026-08-06T17:40:14Z",
+      "world_hint": "llm-systems-serving"
+    },
+    "paper-2608-02412": {
+      "id": "paper-2608-02412",
+      "label": "Why Large Language Models Fail at Tabular Prediction",
+      "type": "paper",
+      "summary": "EmergentMind surfaced arXiv paper 2608.02412: Large language models (LLMs) have become the default tool for a remarkable range of tasks, yet they have had conspicuously little success at one of the most common machine learning workloads: predictive analytics over tabular data. This gap is the founding premise of the fast-growing field of tabular foundation models, but the question of why generic LLMs fa...",
+      "aliases": [],
+      "source_ids": [
+        "emergentmind-2608-02412-why-large-language-models-fail-at-tabular-prediction-2026"
+      ],
+      "confidence": 0.78,
+      "first_seen": "2026-08-06T17:40:14Z",
+      "last_seen": "2026-08-06T17:40:14Z",
+      "world_hint": "llm-systems-serving"
+    },
+    "zero-mem-zero-token-memory-operations-for": {
+      "id": "zero-mem-zero-token-memory-operations-for",
+      "label": "Zero-Mem",
+      "type": "method",
+      "summary": "Source-grounded method/approach from 'Zero-Mem: Zero-Token Memory Operations for LLM Agents': LLM agents need memory to act consistently over long interactions, yet many systems use additional LLM calls to operate that memory. Generating intermediate records and mediating their retrieval adds recurring token and time costs, while omitted or merged details can obscure the original evidence. We ask whether structured memory access requires generation a...",
+      "aliases": [],
+      "source_ids": [
+        "emergentmind-2607-29377-zero-mem-zero-token-memory-operations-for-llm-2026"
+      ],
+      "confidence": 0.78,
+      "first_seen": "2026-08-06T17:40:14Z",
+      "last_seen": "2026-08-06T17:40:14Z",
+      "world_hint": "retrieval-augmented-generation"
+    },
+    "zero-mem-zero-token-memory-operations-for-llm": {
+      "id": "zero-mem-zero-token-memory-operations-for-llm",
+      "label": "Zero-Mem problem setting",
+      "type": "concept",
+      "summary": "The learning or systems problem described by the source: LLM agents need memory to act consistently over long interactions, yet many systems use additional LLM calls to operate that memory. Generating intermediate records and mediating their retrieval adds recurring token and time costs, while omitted or merged details can obscure the original evidence. We ask whether structured memory access requires generation a...",
+      "aliases": [],
+      "source_ids": [
+        "emergentmind-2607-29377-zero-mem-zero-token-memory-operations-for-llm-2026"
+      ],
+      "confidence": 0.78,
+      "first_seen": "2026-08-06T17:40:14Z",
+      "last_seen": "2026-08-06T17:40:14Z",
+      "world_hint": "retrieval-augmented-generation"
+    },
+    "paper-2607-29377": {
+      "id": "paper-2607-29377",
+      "label": "Zero-Mem: Zero-Token Memory Operations for LLM Agents",
+      "type": "paper",
+      "summary": "EmergentMind surfaced arXiv paper 2607.29377: LLM agents need memory to act consistently over long interactions, yet many systems use additional LLM calls to operate that memory. Generating intermediate records and mediating their retrieval adds recurring token and time costs, while omitted or merged details can obscure the original evidence. We ask whether structured memory access requires generation a...",
+      "aliases": [],
+      "source_ids": [
+        "emergentmind-2607-29377-zero-mem-zero-token-memory-operations-for-llm-2026"
+      ],
+      "confidence": 0.78,
+      "first_seen": "2026-08-06T17:40:14Z",
+      "last_seen": "2026-08-06T17:40:14Z",
+      "world_hint": "retrieval-augmented-generation"
+    },
+    "to-add-is-machine-to-delete-is": {
+      "id": "to-add-is-machine-to-delete-is",
+      "label": "To Add Is Machine, To Delete Is Human",
+      "type": "method",
+      "summary": "Source-grounded method/approach from 'To Add Is Machine, To Delete Is Human: Measuring and Mitigating Deletion Avoidance in LLM Code Editing': Large language models increasingly write and repair production code, yet evidence is mounting that their test-passing patches leave codebases harder to maintain. We identify one concrete source: deletion avoidance, the systematic tendency to retain code that an intended edit requires removing. Across the five leading models on the official SWE-bench Verified...",
+      "aliases": [],
+      "source_ids": [
+        "emergentmind-2607-28887-to-add-is-machine-to-delete-is-human-2026"
+      ],
+      "confidence": 0.78,
+      "first_seen": "2026-08-06T17:40:14Z",
+      "last_seen": "2026-08-06T17:40:14Z",
+      "world_hint": "generative-models"
+    },
+    "to-add-is-machine-to-delete-is-human": {
+      "id": "to-add-is-machine-to-delete-is-human",
+      "label": "To Add Is Machine, To Delete Is Human problem setting",
+      "type": "concept",
+      "summary": "The learning or systems problem described by the source: Large language models increasingly write and repair production code, yet evidence is mounting that their test-passing patches leave codebases harder to maintain. We identify one concrete source: deletion avoidance, the systematic tendency to retain code that an intended edit requires removing. Across the five leading models on the official SWE-bench Verified...",
+      "aliases": [],
+      "source_ids": [
+        "emergentmind-2607-28887-to-add-is-machine-to-delete-is-human-2026"
+      ],
+      "confidence": 0.78,
+      "first_seen": "2026-08-06T17:40:14Z",
+      "last_seen": "2026-08-06T17:40:14Z",
+      "world_hint": "generative-models"
+    },
+    "paper-2607-28887": {
+      "id": "paper-2607-28887",
+      "label": "To Add Is Machine, To Delete Is Human: Measuring and Mitigating Deletion Avoidance in LLM Code Editing",
+      "type": "paper",
+      "summary": "EmergentMind surfaced arXiv paper 2607.28887: Large language models increasingly write and repair production code, yet evidence is mounting that their test-passing patches leave codebases harder to maintain. We identify one concrete source: deletion avoidance, the systematic tendency to retain code that an intended edit requires removing. Across the five leading models on the official SWE-bench Verified...",
+      "aliases": [],
+      "source_ids": [
+        "emergentmind-2607-28887-to-add-is-machine-to-delete-is-human-2026"
+      ],
+      "confidence": 0.78,
+      "first_seen": "2026-08-06T17:40:14Z",
+      "last_seen": "2026-08-06T17:40:14Z",
+      "world_hint": "generative-models"
+    },
+    "permission-denied-policy-graded-evaluation-of-coding": {
+      "id": "permission-denied-policy-graded-evaluation-of-coding",
+      "label": "Permission Denied",
+      "type": "method",
+      "summary": "Source-grounded method/approach from 'Permission Denied: Policy-Graded Evaluation of Coding Agents in Hardened Environments': Coding agents increasingly run inside organizations whose security controls (scoped credentials, restricted egress, read-only filesystems, non-root execution) constrain them like any other software. Existing benchmarks, however, evaluate agents almost exclusively in permissive sandboxes, so it is unknown how performance changes when policy is enforced. In th...",
+      "aliases": [],
+      "source_ids": [
+        "emergentmind-2608-02670-permission-denied-policy-graded-evaluation-of-coding-agents-2026"
+      ],
+      "confidence": 0.78,
+      "first_seen": "2026-08-06T17:40:14Z",
+      "last_seen": "2026-08-06T17:40:14Z",
+      "world_hint": "perception-world-models"
+    },
+    "permission-denied-policy-graded-evaluation-of-coding-agents": {
+      "id": "permission-denied-policy-graded-evaluation-of-coding-agents",
+      "label": "Permission Denied problem setting",
+      "type": "concept",
+      "summary": "The learning or systems problem described by the source: Coding agents increasingly run inside organizations whose security controls (scoped credentials, restricted egress, read-only filesystems, non-root execution) constrain them like any other software. Existing benchmarks, however, evaluate agents almost exclusively in permissive sandboxes, so it is unknown how performance changes when policy is enforced. In th...",
+      "aliases": [],
+      "source_ids": [
+        "emergentmind-2608-02670-permission-denied-policy-graded-evaluation-of-coding-agents-2026"
+      ],
+      "confidence": 0.78,
+      "first_seen": "2026-08-06T17:40:14Z",
+      "last_seen": "2026-08-06T17:40:14Z",
+      "world_hint": "perception-world-models"
+    },
+    "paper-2608-02670": {
+      "id": "paper-2608-02670",
+      "label": "Permission Denied: Policy-Graded Evaluation of Coding Agents in Hardened Environments",
+      "type": "paper",
+      "summary": "EmergentMind surfaced arXiv paper 2608.02670: Coding agents increasingly run inside organizations whose security controls (scoped credentials, restricted egress, read-only filesystems, non-root execution) constrain them like any other software. Existing benchmarks, however, evaluate agents almost exclusively in permissive sandboxes, so it is unknown how performance changes when policy is enforced. In th...",
+      "aliases": [],
+      "source_ids": [
+        "emergentmind-2608-02670-permission-denied-policy-graded-evaluation-of-coding-agents-2026"
+      ],
+      "confidence": 0.78,
+      "first_seen": "2026-08-06T17:40:14Z",
+      "last_seen": "2026-08-06T17:40:14Z",
+      "world_hint": "perception-world-models"
+    },
+    "ego2robot-scalable-robot-data-synthesis-from-egocentric": {
+      "id": "ego2robot-scalable-robot-data-synthesis-from-egocentric",
+      "label": "Ego2Robot",
+      "type": "method",
+      "summary": "Source-grounded method/approach from 'Ego2Robot: Scalable Robot Data Synthesis from Egocentric Human Data': Learning generalizable robot manipulation policies requires large-scale and diverse demonstration data. Egocentric human manipulation videos offer rich scene and task diversity, and prior work has shown that retargeting and rendering such videos into robot-format data can yield effective per-task policies at small scale. However, whether this approach can pr...",
+      "aliases": [],
+      "source_ids": [
+        "emergentmind-2608-02580-ego2robot-scalable-robot-data-synthesis-from-egocentric-human-2026"
+      ],
+      "confidence": 0.78,
+      "first_seen": "2026-08-06T17:40:14Z",
+      "last_seen": "2026-08-06T17:40:14Z",
+      "world_hint": "perception-world-models"
+    },
+    "ego2robot-scalable-robot-data-synthesis-from-egocentric-human": {
+      "id": "ego2robot-scalable-robot-data-synthesis-from-egocentric-human",
+      "label": "Ego2Robot problem setting",
+      "type": "concept",
+      "summary": "The learning or systems problem described by the source: Learning generalizable robot manipulation policies requires large-scale and diverse demonstration data. Egocentric human manipulation videos offer rich scene and task diversity, and prior work has shown that retargeting and rendering such videos into robot-format data can yield effective per-task policies at small scale. However, whether this approach can pr...",
+      "aliases": [],
+      "source_ids": [
+        "emergentmind-2608-02580-ego2robot-scalable-robot-data-synthesis-from-egocentric-human-2026"
+      ],
+      "confidence": 0.78,
+      "first_seen": "2026-08-06T17:40:14Z",
+      "last_seen": "2026-08-06T17:40:14Z",
+      "world_hint": "perception-world-models"
+    },
+    "paper-2608-02580": {
+      "id": "paper-2608-02580",
+      "label": "Ego2Robot: Scalable Robot Data Synthesis from Egocentric Human Data",
+      "type": "paper",
+      "summary": "EmergentMind surfaced arXiv paper 2608.02580: Learning generalizable robot manipulation policies requires large-scale and diverse demonstration data. Egocentric human manipulation videos offer rich scene and task diversity, and prior work has shown that retargeting and rendering such videos into robot-format data can yield effective per-task policies at small scale. However, whether this approach can pr...",
+      "aliases": [],
+      "source_ids": [
+        "emergentmind-2608-02580-ego2robot-scalable-robot-data-synthesis-from-egocentric-human-2026"
+      ],
+      "confidence": 0.78,
+      "first_seen": "2026-08-06T17:40:14Z",
+      "last_seen": "2026-08-06T17:40:14Z",
+      "world_hint": "perception-world-models"
+    },
+    "evohil-self-evolving-reward-and-flow-matched": {
+      "id": "evohil-self-evolving-reward-and-flow-matched",
+      "label": "EvoHIL",
+      "type": "method",
+      "summary": "Source-grounded method/approach from 'EvoHIL: Self-Evolving Reward and Flow-Matched Policy Optimization for Robust Human-in-the-Loop Reinforcement Learning': Human-in-the-loop reinforcement learning (HIL-RL) enables robots to learn contact-rich manipulation from limited real-world interaction, but deployment exposes three coupled limitations: static visual reward models fail under scene changes; independently sampled actions cause temporally inconsistent motion; and vision-based policies remain sensitive to appea...",
+      "aliases": [],
+      "source_ids": [
+        "emergentmind-2608-03872-evohil-self-evolving-reward-and-flow-matched-policy-2026"
+      ],
+      "confidence": 0.78,
+      "first_seen": "2026-08-06T17:40:14Z",
+      "last_seen": "2026-08-06T17:40:14Z",
+      "world_hint": "perception-world-models"
+    },
+    "evohil-self-evolving-reward-and-flow-matched-policy": {
+      "id": "evohil-self-evolving-reward-and-flow-matched-policy",
+      "label": "EvoHIL problem setting",
+      "type": "concept",
+      "summary": "The learning or systems problem described by the source: Human-in-the-loop reinforcement learning (HIL-RL) enables robots to learn contact-rich manipulation from limited real-world interaction, but deployment exposes three coupled limitations: static visual reward models fail under scene changes; independently sampled actions cause temporally inconsistent motion; and vision-based policies remain sensitive to appea...",
+      "aliases": [],
+      "source_ids": [
+        "emergentmind-2608-03872-evohil-self-evolving-reward-and-flow-matched-policy-2026"
+      ],
+      "confidence": 0.78,
+      "first_seen": "2026-08-06T17:40:14Z",
+      "last_seen": "2026-08-06T17:40:14Z",
+      "world_hint": "perception-world-models"
+    },
+    "paper-2608-03872": {
+      "id": "paper-2608-03872",
+      "label": "EvoHIL: Self-Evolving Reward and Flow-Matched Policy Optimization for Robust Human-in-the-Loop Reinforcement Learning",
+      "type": "paper",
+      "summary": "EmergentMind surfaced arXiv paper 2608.03872: Human-in-the-loop reinforcement learning (HIL-RL) enables robots to learn contact-rich manipulation from limited real-world interaction, but deployment exposes three coupled limitations: static visual reward models fail under scene changes; independently sampled actions cause temporally inconsistent motion; and vision-based policies remain sensitive to appea...",
+      "aliases": [],
+      "source_ids": [
+        "emergentmind-2608-03872-evohil-self-evolving-reward-and-flow-matched-policy-2026"
+      ],
+      "confidence": 0.78,
+      "first_seen": "2026-08-06T17:40:14Z",
+      "last_seen": "2026-08-06T17:40:14Z",
+      "world_hint": "perception-world-models"
+    },
+    "infinisplat-implicit-gaussian-decoding-for-large-baseline": {
+      "id": "infinisplat-implicit-gaussian-decoding-for-large-baseline",
+      "label": "InfiniSplat",
+      "type": "method",
+      "summary": "Source-grounded method/approach from 'InfiniSplat: Implicit Gaussian Decoding for Large-Baseline Monocular View Synthesis': Single-image feed-forward 3D Gaussian Splatting (3DGS) aims to directly generate a renderable 3D scene representation from one input image, avoiding the cost of multi-view capture and per-scene optimization. However, existing methods are often constrained by a pixel-aligned representation, where Gaussians are predicted from fixed image-grid locations. Such p...",
+      "aliases": [],
+      "source_ids": [
+        "emergentmind-2608-02437-infinisplat-implicit-gaussian-decoding-for-large-baseline-monocular-2026"
+      ],
+      "confidence": 0.78,
+      "first_seen": "2026-08-06T17:40:14Z",
+      "last_seen": "2026-08-06T17:40:14Z",
+      "world_hint": "perception-world-models"
+    },
+    "infinisplat-implicit-gaussian-decoding-for-large-baseline-monocular": {
+      "id": "infinisplat-implicit-gaussian-decoding-for-large-baseline-monocular",
+      "label": "InfiniSplat problem setting",
+      "type": "concept",
+      "summary": "The learning or systems problem described by the source: Single-image feed-forward 3D Gaussian Splatting (3DGS) aims to directly generate a renderable 3D scene representation from one input image, avoiding the cost of multi-view capture and per-scene optimization. However, existing methods are often constrained by a pixel-aligned representation, where Gaussians are predicted from fixed image-grid locations. Such p...",
+      "aliases": [],
+      "source_ids": [
+        "emergentmind-2608-02437-infinisplat-implicit-gaussian-decoding-for-large-baseline-monocular-2026"
+      ],
+      "confidence": 0.78,
+      "first_seen": "2026-08-06T17:40:14Z",
+      "last_seen": "2026-08-06T17:40:14Z",
+      "world_hint": "perception-world-models"
+    },
+    "paper-2608-02437": {
+      "id": "paper-2608-02437",
+      "label": "InfiniSplat: Implicit Gaussian Decoding for Large-Baseline Monocular View Synthesis",
+      "type": "paper",
+      "summary": "EmergentMind surfaced arXiv paper 2608.02437: Single-image feed-forward 3D Gaussian Splatting (3DGS) aims to directly generate a renderable 3D scene representation from one input image, avoiding the cost of multi-view capture and per-scene optimization. However, existing methods are often constrained by a pixel-aligned representation, where Gaussians are predicted from fixed image-grid locations. Such p...",
+      "aliases": [],
+      "source_ids": [
+        "emergentmind-2608-02437-infinisplat-implicit-gaussian-decoding-for-large-baseline-monocular-2026"
+      ],
+      "confidence": 0.78,
+      "first_seen": "2026-08-06T17:40:14Z",
+      "last_seen": "2026-08-06T17:40:14Z",
+      "world_hint": "perception-world-models"
+    },
+    "sample-more-reflect-less-self-refine-and": {
+      "id": "sample-more-reflect-less-self-refine-and",
+      "label": "Sample More, Reflect Less",
+      "type": "method",
+      "summary": "Source-grounded method/approach from 'Sample More, Reflect Less: Self-Refine and Reflexion Lose to Repeated Sampling at Equal Token Cost, from 1.5B to 7B': Methods that make a language model plan, criticise and rewrite its own answer, reflect on mistakes, pick the best of several attempts, or debate with copies of itself nearly all make it generate far more text than a single chain of thought. Because generating more text raises accuracy by itself, a gain over one chain of thought does not show the method's ide...",
+      "aliases": [],
+      "source_ids": [
+        "emergentmind-2607-28576-sample-more-reflect-less-self-refine-and-reflexion-2026"
+      ],
+      "confidence": 0.78,
+      "first_seen": "2026-08-06T17:40:14Z",
+      "last_seen": "2026-08-06T17:40:14Z",
+      "world_hint": "agents"
+    },
+    "sample-more-reflect-less-self-refine-and-reflexion": {
+      "id": "sample-more-reflect-less-self-refine-and-reflexion",
+      "label": "Sample More, Reflect Less problem setting",
+      "type": "concept",
+      "summary": "The learning or systems problem described by the source: Methods that make a language model plan, criticise and rewrite its own answer, reflect on mistakes, pick the best of several attempts, or debate with copies of itself nearly all make it generate far more text than a single chain of thought. Because generating more text raises accuracy by itself, a gain over one chain of thought does not show the method's ide...",
+      "aliases": [],
+      "source_ids": [
+        "emergentmind-2607-28576-sample-more-reflect-less-self-refine-and-reflexion-2026"
+      ],
+      "confidence": 0.78,
+      "first_seen": "2026-08-06T17:40:14Z",
+      "last_seen": "2026-08-06T17:40:14Z",
+      "world_hint": "agents"
+    },
+    "paper-2607-28576": {
+      "id": "paper-2607-28576",
+      "label": "Sample More, Reflect Less: Self-Refine and Reflexion Lose to Repeated Sampling at Equal Token Cost, from 1.5B to 7B",
+      "type": "paper",
+      "summary": "EmergentMind surfaced arXiv paper 2607.28576: Methods that make a language model plan, criticise and rewrite its own answer, reflect on mistakes, pick the best of several attempts, or debate with copies of itself nearly all make it generate far more text than a single chain of thought. Because generating more text raises accuracy by itself, a gain over one chain of thought does not show the method's ide...",
+      "aliases": [],
+      "source_ids": [
+        "emergentmind-2607-28576-sample-more-reflect-less-self-refine-and-reflexion-2026"
+      ],
+      "confidence": 0.78,
+      "first_seen": "2026-08-06T17:40:14Z",
+      "last_seen": "2026-08-06T17:40:14Z",
+      "world_hint": "agents"
+    },
+    "towards-physics-of-multimodal-pretraining-knowledge-flow": {
+      "id": "towards-physics-of-multimodal-pretraining-knowledge-flow",
+      "label": "Towards Physics of Multimodal Pretraining",
+      "type": "method",
+      "summary": "Source-grounded method/approach from 'Towards Physics of Multimodal Pretraining: Knowledge Flow, Modality Synergy, Early Unification, and Recipes': Vision offers a critical axis for advancing foundation models, driving a shift towards natively unified multimodal pretraining. Despite this momentum, the design space and the fundamental mechanisms of how modalities interact during unified training remain underexplored. We provide empirical clarity through a systematic exploration of multimodal pretraining....",
+      "aliases": [],
+      "source_ids": [
+        "emergentmind-2608-05000-towards-physics-of-multimodal-pretraining-knowledge-flow-modality-2026"
+      ],
+      "confidence": 0.78,
+      "first_seen": "2026-08-06T17:40:14Z",
+      "last_seen": "2026-08-06T17:40:14Z",
+      "world_hint": "perception-world-models"
+    },
+    "towards-physics-of-multimodal-pretraining-knowledge-flow-modality": {
+      "id": "towards-physics-of-multimodal-pretraining-knowledge-flow-modality",
+      "label": "Towards Physics of Multimodal Pretraining problem setting",
+      "type": "concept",
+      "summary": "The learning or systems problem described by the source: Vision offers a critical axis for advancing foundation models, driving a shift towards natively unified multimodal pretraining. Despite this momentum, the design space and the fundamental mechanisms of how modalities interact during unified training remain underexplored. We provide empirical clarity through a systematic exploration of multimodal pretraining....",
+      "aliases": [],
+      "source_ids": [
+        "emergentmind-2608-05000-towards-physics-of-multimodal-pretraining-knowledge-flow-modality-2026"
+      ],
+      "confidence": 0.78,
+      "first_seen": "2026-08-06T17:40:14Z",
+      "last_seen": "2026-08-06T17:40:14Z",
+      "world_hint": "perception-world-models"
+    },
+    "paper-2608-05000": {
+      "id": "paper-2608-05000",
+      "label": "Towards Physics of Multimodal Pretraining: Knowledge Flow, Modality Synergy, Early Unification, and Recipes",
+      "type": "paper",
+      "summary": "EmergentMind surfaced arXiv paper 2608.05000: Vision offers a critical axis for advancing foundation models, driving a shift towards natively unified multimodal pretraining. Despite this momentum, the design space and the fundamental mechanisms of how modalities interact during unified training remain underexplored. We provide empirical clarity through a systematic exploration of multimodal pretraining....",
+      "aliases": [],
+      "source_ids": [
+        "emergentmind-2608-05000-towards-physics-of-multimodal-pretraining-knowledge-flow-modality-2026"
+      ],
+      "confidence": 0.78,
+      "first_seen": "2026-08-06T17:40:14Z",
+      "last_seen": "2026-08-06T17:40:14Z",
+      "world_hint": "perception-world-models"
+    },
+    "hunyuan3d-buffalo-1-0-a-unified-multimodal": {
+      "id": "hunyuan3d-buffalo-1-0-a-unified-multimodal",
+      "label": "Hunyuan3D-Buffalo 1.0",
+      "type": "method",
+      "summary": "Source-grounded method/approach from 'Hunyuan3D-Buffalo 1.0: A Unified Multimodal Model for Scalable 3D Generation, Understanding, and Editing': Recent advances in image generation have demonstrated the potential of unified multimodal models that integrate understanding, generation, and editing. However, unified 3D modeling remains constrained by scarce multimodal data, particularly the lack of large-scale and geometrically consistent editing data. To address this limitation, we propose Hunyuan3D-Buf...",
+      "aliases": [],
+      "source_ids": [
+        "emergentmind-2608-02711-hunyuan3d-buffalo-1-0-a-unified-multimodal-model-2026"
+      ],
+      "confidence": 0.78,
+      "first_seen": "2026-08-06T17:40:14Z",
+      "last_seen": "2026-08-06T17:40:14Z",
+      "world_hint": "perception-world-models"
+    },
+    "hunyuan3d-buffalo-1-0-a-unified-multimodal-model": {
+      "id": "hunyuan3d-buffalo-1-0-a-unified-multimodal-model",
+      "label": "Hunyuan3D-Buffalo 1.0 problem setting",
+      "type": "concept",
+      "summary": "The learning or systems problem described by the source: Recent advances in image generation have demonstrated the potential of unified multimodal models that integrate understanding, generation, and editing. However, unified 3D modeling remains constrained by scarce multimodal data, particularly the lack of large-scale and geometrically consistent editing data. To address this limitation, we propose Hunyuan3D-Buf...",
+      "aliases": [],
+      "source_ids": [
+        "emergentmind-2608-02711-hunyuan3d-buffalo-1-0-a-unified-multimodal-model-2026"
+      ],
+      "confidence": 0.78,
+      "first_seen": "2026-08-06T17:40:14Z",
+      "last_seen": "2026-08-06T17:40:14Z",
+      "world_hint": "perception-world-models"
+    },
+    "paper-2608-02711": {
+      "id": "paper-2608-02711",
+      "label": "Hunyuan3D-Buffalo 1.0: A Unified Multimodal Model for Scalable 3D Generation, Understanding, and Editing",
+      "type": "paper",
+      "summary": "EmergentMind surfaced arXiv paper 2608.02711: Recent advances in image generation have demonstrated the potential of unified multimodal models that integrate understanding, generation, and editing. However, unified 3D modeling remains constrained by scarce multimodal data, particularly the lack of large-scale and geometrically consistent editing data. To address this limitation, we propose Hunyuan3D-Buf...",
+      "aliases": [],
+      "source_ids": [
+        "emergentmind-2608-02711-hunyuan3d-buffalo-1-0-a-unified-multimodal-model-2026"
+      ],
+      "confidence": 0.78,
+      "first_seen": "2026-08-06T17:40:14Z",
+      "last_seen": "2026-08-06T17:40:14Z",
+      "world_hint": "perception-world-models"
+    },
+    "post-training-on-office-work-improves-software": {
+      "id": "post-training-on-office-work-improves-software",
+      "label": "Post-Training on Office Work Improves Software Engineering",
+      "type": "method",
+      "summary": "Source-grounded method/approach from 'Post-Training on Office Work Improves Software Engineering: A Behavioral Account of Cross-Domain Transfer': Long-horizon tasks require agents to maintain coherent state and goals across nested and branching work. We call this capability goal-directed execution (GDE): the repeated application of four behaviors, namely selecting goals, constructing task-relevant state, maintaining fidelity to higher-level objectives, and verifying completion against the environment....",
+      "aliases": [],
+      "source_ids": [
+        "emergentmind-2608-01604-post-training-on-office-work-improves-software-engineering-2026"
+      ],
+      "confidence": 0.78,
+      "first_seen": "2026-08-06T17:40:14Z",
+      "last_seen": "2026-08-06T17:40:14Z",
+      "world_hint": "generative-models"
+    },
+    "post-training-on-office-work-improves-software-engineering": {
+      "id": "post-training-on-office-work-improves-software-engineering",
+      "label": "Post-Training on Office Work Improves Software Engineering problem setting",
+      "type": "concept",
+      "summary": "The learning or systems problem described by the source: Long-horizon tasks require agents to maintain coherent state and goals across nested and branching work. We call this capability goal-directed execution (GDE): the repeated application of four behaviors, namely selecting goals, constructing task-relevant state, maintaining fidelity to higher-level objectives, and verifying completion against the environment....",
+      "aliases": [],
+      "source_ids": [
+        "emergentmind-2608-01604-post-training-on-office-work-improves-software-engineering-2026"
+      ],
+      "confidence": 0.78,
+      "first_seen": "2026-08-06T17:40:14Z",
+      "last_seen": "2026-08-06T17:40:14Z",
+      "world_hint": "generative-models"
+    },
+    "paper-2608-01604": {
+      "id": "paper-2608-01604",
+      "label": "Post-Training on Office Work Improves Software Engineering: A Behavioral Account of Cross-Domain Transfer",
+      "type": "paper",
+      "summary": "EmergentMind surfaced arXiv paper 2608.01604: Long-horizon tasks require agents to maintain coherent state and goals across nested and branching work. We call this capability goal-directed execution (GDE): the repeated application of four behaviors, namely selecting goals, constructing task-relevant state, maintaining fidelity to higher-level objectives, and verifying completion against the environment....",
+      "aliases": [],
+      "source_ids": [
+        "emergentmind-2608-01604-post-training-on-office-work-improves-software-engineering-2026"
+      ],
+      "confidence": 0.78,
+      "first_seen": "2026-08-06T17:40:14Z",
+      "last_seen": "2026-08-06T17:40:14Z",
+      "world_hint": "generative-models"
     }
   },
   "edges": [
@@ -24253,6 +24949,486 @@
         "emergentmind-2607-29293-assessing-the-generalization-of-graph-neural-networks-for-2026"
       ],
       "evidence": "Routed into The Assessing The Generalization Of under transformer-architecture from source title and abstract."
+    },
+    {
+      "source": "paper-2608-01964",
+      "target": "longhorizon-harness-advancing-long-horizon-agents-for",
+      "relation": "paper_introduces",
+      "confidence": 0.82,
+      "source_ids": [
+        "emergentmind-2608-01964-longhorizon-harness-advancing-long-horizon-agents-for-real-2026"
+      ],
+      "evidence": "EmergentMind homepage/page metadata identify arXiv 2608.01964, 'LongHorizon-Harness: Advancing Long-Horizon Agents for Real-World Tasks', and summarize the method/problem."
+    },
+    {
+      "source": "longhorizon-harness-advancing-long-horizon-agents-for",
+      "target": "longhorizon-harness-advancing-long-horizon-agents-for-real",
+      "relation": "implements",
+      "confidence": 0.76,
+      "source_ids": [
+        "emergentmind-2608-01964-longhorizon-harness-advancing-long-horizon-agents-for-real-2026"
+      ],
+      "evidence": "Large language model (LLM) agents increasingly undertake long-horizon tasks that require sustained reasoning, tool use, and revision across many interdependent steps. However, existing agent harnesses maintain task execution, task state, and completion assessment within a growing"
+    },
+    {
+      "source": "longhorizon-harness-advancing-long-horizon-agents-for",
+      "target": "longhorizon-harness-advancing-long-horizon-agents-for-real",
+      "relation": "evaluates_on",
+      "confidence": 0.72,
+      "source_ids": [
+        "emergentmind-2608-01964-longhorizon-harness-advancing-long-horizon-agents-for-real-2026"
+      ],
+      "evidence": "Large language model (LLM) agents increasingly undertake long-horizon tasks that require sustained reasoning, tool use, and revision across many interdependent steps. However, existing agent harnesses maintain task execution, task state, and completion assessment within a growing"
+    },
+    {
+      "source": "longhorizon-harness-advancing-long-horizon-agents-for",
+      "target": "the-longhorizon-harness-advancing-long-horizon",
+      "relation": "belongs_to_region",
+      "confidence": 0.78,
+      "source_ids": [
+        "emergentmind-2608-01964-longhorizon-harness-advancing-long-horizon-agents-for-real-2026"
+      ],
+      "evidence": "Routed into The Longhorizon Harness Advancing Long under perception-world-models from source title and abstract."
+    },
+    {
+      "source": "paper-2608-02412",
+      "target": "why-large-language-models-fail-at-tabular",
+      "relation": "paper_introduces",
+      "confidence": 0.82,
+      "source_ids": [
+        "emergentmind-2608-02412-why-large-language-models-fail-at-tabular-prediction-2026"
+      ],
+      "evidence": "EmergentMind homepage/page metadata identify arXiv 2608.02412, 'Why Large Language Models Fail at Tabular Prediction', and summarize the method/problem."
+    },
+    {
+      "source": "why-large-language-models-fail-at-tabular",
+      "target": "why-large-language-models-fail-at-tabular-prediction",
+      "relation": "implements",
+      "confidence": 0.76,
+      "source_ids": [
+        "emergentmind-2608-02412-why-large-language-models-fail-at-tabular-prediction-2026"
+      ],
+      "evidence": "Large language models (LLMs) have become the default tool for a remarkable range of tasks, yet they have had conspicuously little success at one of the most common machine learning workloads: predictive analytics over tabular data. This gap is the founding premise of the fast-gro"
+    },
+    {
+      "source": "why-large-language-models-fail-at-tabular",
+      "target": "why-large-language-models-fail-at-tabular-prediction",
+      "relation": "evaluates_on",
+      "confidence": 0.72,
+      "source_ids": [
+        "emergentmind-2608-02412-why-large-language-models-fail-at-tabular-prediction-2026"
+      ],
+      "evidence": "Large language models (LLMs) have become the default tool for a remarkable range of tasks, yet they have had conspicuously little success at one of the most common machine learning workloads: predictive analytics over tabular data. This gap is the founding premise of the fast-gro"
+    },
+    {
+      "source": "why-large-language-models-fail-at-tabular",
+      "target": "the-why-large-language-models-fail",
+      "relation": "belongs_to_region",
+      "confidence": 0.78,
+      "source_ids": [
+        "emergentmind-2608-02412-why-large-language-models-fail-at-tabular-prediction-2026"
+      ],
+      "evidence": "Routed into The Why Large Language Models under llm-systems-serving from source title and abstract."
+    },
+    {
+      "source": "paper-2607-29377",
+      "target": "zero-mem-zero-token-memory-operations-for",
+      "relation": "paper_introduces",
+      "confidence": 0.82,
+      "source_ids": [
+        "emergentmind-2607-29377-zero-mem-zero-token-memory-operations-for-llm-2026"
+      ],
+      "evidence": "EmergentMind homepage/page metadata identify arXiv 2607.29377, 'Zero-Mem: Zero-Token Memory Operations for LLM Agents', and summarize the method/problem."
+    },
+    {
+      "source": "zero-mem-zero-token-memory-operations-for",
+      "target": "zero-mem-zero-token-memory-operations-for-llm",
+      "relation": "implements",
+      "confidence": 0.76,
+      "source_ids": [
+        "emergentmind-2607-29377-zero-mem-zero-token-memory-operations-for-llm-2026"
+      ],
+      "evidence": "LLM agents need memory to act consistently over long interactions, yet many systems use additional LLM calls to operate that memory. Generating intermediate records and mediating their retrieval adds recurring token and time costs, while omitted or merged details can obscure the "
+    },
+    {
+      "source": "zero-mem-zero-token-memory-operations-for",
+      "target": "zero-mem-zero-token-memory-operations-for-llm",
+      "relation": "evaluates_on",
+      "confidence": 0.72,
+      "source_ids": [
+        "emergentmind-2607-29377-zero-mem-zero-token-memory-operations-for-llm-2026"
+      ],
+      "evidence": "LLM agents need memory to act consistently over long interactions, yet many systems use additional LLM calls to operate that memory. Generating intermediate records and mediating their retrieval adds recurring token and time costs, while omitted or merged details can obscure the "
+    },
+    {
+      "source": "zero-mem-zero-token-memory-operations-for",
+      "target": "the-zero-mem-zero-token-memory",
+      "relation": "belongs_to_region",
+      "confidence": 0.78,
+      "source_ids": [
+        "emergentmind-2607-29377-zero-mem-zero-token-memory-operations-for-llm-2026"
+      ],
+      "evidence": "Routed into The Zero Mem Zero Token under retrieval-augmented-generation from source title and abstract."
+    },
+    {
+      "source": "paper-2607-28887",
+      "target": "to-add-is-machine-to-delete-is",
+      "relation": "paper_introduces",
+      "confidence": 0.82,
+      "source_ids": [
+        "emergentmind-2607-28887-to-add-is-machine-to-delete-is-human-2026"
+      ],
+      "evidence": "EmergentMind homepage/page metadata identify arXiv 2607.28887, 'To Add Is Machine, To Delete Is Human: Measuring and Mitigating Deletion Avoidance in LLM Code Editing', and summarize the method/problem."
+    },
+    {
+      "source": "to-add-is-machine-to-delete-is",
+      "target": "to-add-is-machine-to-delete-is-human",
+      "relation": "implements",
+      "confidence": 0.76,
+      "source_ids": [
+        "emergentmind-2607-28887-to-add-is-machine-to-delete-is-human-2026"
+      ],
+      "evidence": "Large language models increasingly write and repair production code, yet evidence is mounting that their test-passing patches leave codebases harder to maintain. We identify one concrete source: deletion avoidance, the systematic tendency to retain code that an intended edit requ"
+    },
+    {
+      "source": "to-add-is-machine-to-delete-is",
+      "target": "to-add-is-machine-to-delete-is-human",
+      "relation": "evaluates_on",
+      "confidence": 0.72,
+      "source_ids": [
+        "emergentmind-2607-28887-to-add-is-machine-to-delete-is-human-2026"
+      ],
+      "evidence": "Large language models increasingly write and repair production code, yet evidence is mounting that their test-passing patches leave codebases harder to maintain. We identify one concrete source: deletion avoidance, the systematic tendency to retain code that an intended edit requ"
+    },
+    {
+      "source": "to-add-is-machine-to-delete-is",
+      "target": "the-to-add-is-machine-to",
+      "relation": "belongs_to_region",
+      "confidence": 0.78,
+      "source_ids": [
+        "emergentmind-2607-28887-to-add-is-machine-to-delete-is-human-2026"
+      ],
+      "evidence": "Routed into The To Add Is Machine under generative-models from source title and abstract."
+    },
+    {
+      "source": "paper-2608-02670",
+      "target": "permission-denied-policy-graded-evaluation-of-coding",
+      "relation": "paper_introduces",
+      "confidence": 0.82,
+      "source_ids": [
+        "emergentmind-2608-02670-permission-denied-policy-graded-evaluation-of-coding-agents-2026"
+      ],
+      "evidence": "EmergentMind homepage/page metadata identify arXiv 2608.02670, 'Permission Denied: Policy-Graded Evaluation of Coding Agents in Hardened Environments', and summarize the method/problem."
+    },
+    {
+      "source": "permission-denied-policy-graded-evaluation-of-coding",
+      "target": "permission-denied-policy-graded-evaluation-of-coding-agents",
+      "relation": "implements",
+      "confidence": 0.76,
+      "source_ids": [
+        "emergentmind-2608-02670-permission-denied-policy-graded-evaluation-of-coding-agents-2026"
+      ],
+      "evidence": "Coding agents increasingly run inside organizations whose security controls (scoped credentials, restricted egress, read-only filesystems, non-root execution) constrain them like any other software. Existing benchmarks, however, evaluate agents almost exclusively in permissive sa"
+    },
+    {
+      "source": "permission-denied-policy-graded-evaluation-of-coding",
+      "target": "permission-denied-policy-graded-evaluation-of-coding-agents",
+      "relation": "evaluates_on",
+      "confidence": 0.72,
+      "source_ids": [
+        "emergentmind-2608-02670-permission-denied-policy-graded-evaluation-of-coding-agents-2026"
+      ],
+      "evidence": "Coding agents increasingly run inside organizations whose security controls (scoped credentials, restricted egress, read-only filesystems, non-root execution) constrain them like any other software. Existing benchmarks, however, evaluate agents almost exclusively in permissive sa"
+    },
+    {
+      "source": "permission-denied-policy-graded-evaluation-of-coding",
+      "target": "the-permission-denied-policy-graded-evaluation",
+      "relation": "belongs_to_region",
+      "confidence": 0.78,
+      "source_ids": [
+        "emergentmind-2608-02670-permission-denied-policy-graded-evaluation-of-coding-agents-2026"
+      ],
+      "evidence": "Routed into The Permission Denied Policy Graded under perception-world-models from source title and abstract."
+    },
+    {
+      "source": "paper-2608-02580",
+      "target": "ego2robot-scalable-robot-data-synthesis-from-egocentric",
+      "relation": "paper_introduces",
+      "confidence": 0.82,
+      "source_ids": [
+        "emergentmind-2608-02580-ego2robot-scalable-robot-data-synthesis-from-egocentric-human-2026"
+      ],
+      "evidence": "EmergentMind homepage/page metadata identify arXiv 2608.02580, 'Ego2Robot: Scalable Robot Data Synthesis from Egocentric Human Data', and summarize the method/problem."
+    },
+    {
+      "source": "ego2robot-scalable-robot-data-synthesis-from-egocentric",
+      "target": "ego2robot-scalable-robot-data-synthesis-from-egocentric-human",
+      "relation": "implements",
+      "confidence": 0.76,
+      "source_ids": [
+        "emergentmind-2608-02580-ego2robot-scalable-robot-data-synthesis-from-egocentric-human-2026"
+      ],
+      "evidence": "Learning generalizable robot manipulation policies requires large-scale and diverse demonstration data. Egocentric human manipulation videos offer rich scene and task diversity, and prior work has shown that retargeting and rendering such videos into robot-format data can yield e"
+    },
+    {
+      "source": "ego2robot-scalable-robot-data-synthesis-from-egocentric",
+      "target": "ego2robot-scalable-robot-data-synthesis-from-egocentric-human",
+      "relation": "evaluates_on",
+      "confidence": 0.72,
+      "source_ids": [
+        "emergentmind-2608-02580-ego2robot-scalable-robot-data-synthesis-from-egocentric-human-2026"
+      ],
+      "evidence": "Learning generalizable robot manipulation policies requires large-scale and diverse demonstration data. Egocentric human manipulation videos offer rich scene and task diversity, and prior work has shown that retargeting and rendering such videos into robot-format data can yield e"
+    },
+    {
+      "source": "ego2robot-scalable-robot-data-synthesis-from-egocentric",
+      "target": "the-ego2robot-scalable-robot-data-synthesis",
+      "relation": "belongs_to_region",
+      "confidence": 0.78,
+      "source_ids": [
+        "emergentmind-2608-02580-ego2robot-scalable-robot-data-synthesis-from-egocentric-human-2026"
+      ],
+      "evidence": "Routed into The Ego2robot Scalable Robot Data under perception-world-models from source title and abstract."
+    },
+    {
+      "source": "paper-2608-03872",
+      "target": "evohil-self-evolving-reward-and-flow-matched",
+      "relation": "paper_introduces",
+      "confidence": 0.82,
+      "source_ids": [
+        "emergentmind-2608-03872-evohil-self-evolving-reward-and-flow-matched-policy-2026"
+      ],
+      "evidence": "EmergentMind homepage/page metadata identify arXiv 2608.03872, 'EvoHIL: Self-Evolving Reward and Flow-Matched Policy Optimization for Robust Human-in-the-Loop Reinforcement Learning', and summarize the method/problem."
+    },
+    {
+      "source": "evohil-self-evolving-reward-and-flow-matched",
+      "target": "evohil-self-evolving-reward-and-flow-matched-policy",
+      "relation": "implements",
+      "confidence": 0.76,
+      "source_ids": [
+        "emergentmind-2608-03872-evohil-self-evolving-reward-and-flow-matched-policy-2026"
+      ],
+      "evidence": "Human-in-the-loop reinforcement learning (HIL-RL) enables robots to learn contact-rich manipulation from limited real-world interaction, but deployment exposes three coupled limitations: static visual reward models fail under scene changes; independently sampled actions cause tem"
+    },
+    {
+      "source": "evohil-self-evolving-reward-and-flow-matched",
+      "target": "evohil-self-evolving-reward-and-flow-matched-policy",
+      "relation": "evaluates_on",
+      "confidence": 0.72,
+      "source_ids": [
+        "emergentmind-2608-03872-evohil-self-evolving-reward-and-flow-matched-policy-2026"
+      ],
+      "evidence": "Human-in-the-loop reinforcement learning (HIL-RL) enables robots to learn contact-rich manipulation from limited real-world interaction, but deployment exposes three coupled limitations: static visual reward models fail under scene changes; independently sampled actions cause tem"
+    },
+    {
+      "source": "evohil-self-evolving-reward-and-flow-matched",
+      "target": "the-evohil-self-evolving-reward-and",
+      "relation": "belongs_to_region",
+      "confidence": 0.78,
+      "source_ids": [
+        "emergentmind-2608-03872-evohil-self-evolving-reward-and-flow-matched-policy-2026"
+      ],
+      "evidence": "Routed into The Evohil Self Evolving Reward under perception-world-models from source title and abstract."
+    },
+    {
+      "source": "paper-2608-02437",
+      "target": "infinisplat-implicit-gaussian-decoding-for-large-baseline",
+      "relation": "paper_introduces",
+      "confidence": 0.82,
+      "source_ids": [
+        "emergentmind-2608-02437-infinisplat-implicit-gaussian-decoding-for-large-baseline-monocular-2026"
+      ],
+      "evidence": "EmergentMind homepage/page metadata identify arXiv 2608.02437, 'InfiniSplat: Implicit Gaussian Decoding for Large-Baseline Monocular View Synthesis', and summarize the method/problem."
+    },
+    {
+      "source": "infinisplat-implicit-gaussian-decoding-for-large-baseline",
+      "target": "infinisplat-implicit-gaussian-decoding-for-large-baseline-monocular",
+      "relation": "implements",
+      "confidence": 0.76,
+      "source_ids": [
+        "emergentmind-2608-02437-infinisplat-implicit-gaussian-decoding-for-large-baseline-monocular-2026"
+      ],
+      "evidence": "Single-image feed-forward 3D Gaussian Splatting (3DGS) aims to directly generate a renderable 3D scene representation from one input image, avoiding the cost of multi-view capture and per-scene optimization. However, existing methods are often constrained by a pixel-aligned repre"
+    },
+    {
+      "source": "infinisplat-implicit-gaussian-decoding-for-large-baseline",
+      "target": "infinisplat-implicit-gaussian-decoding-for-large-baseline-monocular",
+      "relation": "evaluates_on",
+      "confidence": 0.72,
+      "source_ids": [
+        "emergentmind-2608-02437-infinisplat-implicit-gaussian-decoding-for-large-baseline-monocular-2026"
+      ],
+      "evidence": "Single-image feed-forward 3D Gaussian Splatting (3DGS) aims to directly generate a renderable 3D scene representation from one input image, avoiding the cost of multi-view capture and per-scene optimization. However, existing methods are often constrained by a pixel-aligned repre"
+    },
+    {
+      "source": "infinisplat-implicit-gaussian-decoding-for-large-baseline",
+      "target": "the-infinisplat-implicit-gaussian-decoding-for",
+      "relation": "belongs_to_region",
+      "confidence": 0.78,
+      "source_ids": [
+        "emergentmind-2608-02437-infinisplat-implicit-gaussian-decoding-for-large-baseline-monocular-2026"
+      ],
+      "evidence": "Routed into The Infinisplat Implicit Gaussian Decoding under perception-world-models from source title and abstract."
+    },
+    {
+      "source": "paper-2607-28576",
+      "target": "sample-more-reflect-less-self-refine-and",
+      "relation": "paper_introduces",
+      "confidence": 0.82,
+      "source_ids": [
+        "emergentmind-2607-28576-sample-more-reflect-less-self-refine-and-reflexion-2026"
+      ],
+      "evidence": "EmergentMind homepage/page metadata identify arXiv 2607.28576, 'Sample More, Reflect Less: Self-Refine and Reflexion Lose to Repeated Sampling at Equal Token Cost, from 1.5B to 7B', and summarize the method/problem."
+    },
+    {
+      "source": "sample-more-reflect-less-self-refine-and",
+      "target": "sample-more-reflect-less-self-refine-and-reflexion",
+      "relation": "implements",
+      "confidence": 0.76,
+      "source_ids": [
+        "emergentmind-2607-28576-sample-more-reflect-less-self-refine-and-reflexion-2026"
+      ],
+      "evidence": "Methods that make a language model plan, criticise and rewrite its own answer, reflect on mistakes, pick the best of several attempts, or debate with copies of itself nearly all make it generate far more text than a single chain of thought. Because generating more text raises acc"
+    },
+    {
+      "source": "sample-more-reflect-less-self-refine-and",
+      "target": "sample-more-reflect-less-self-refine-and-reflexion",
+      "relation": "evaluates_on",
+      "confidence": 0.72,
+      "source_ids": [
+        "emergentmind-2607-28576-sample-more-reflect-less-self-refine-and-reflexion-2026"
+      ],
+      "evidence": "Methods that make a language model plan, criticise and rewrite its own answer, reflect on mistakes, pick the best of several attempts, or debate with copies of itself nearly all make it generate far more text than a single chain of thought. Because generating more text raises acc"
+    },
+    {
+      "source": "sample-more-reflect-less-self-refine-and",
+      "target": "the-sample-more-reflect-less-self",
+      "relation": "belongs_to_region",
+      "confidence": 0.78,
+      "source_ids": [
+        "emergentmind-2607-28576-sample-more-reflect-less-self-refine-and-reflexion-2026"
+      ],
+      "evidence": "Routed into The Sample More Reflect Less under agents from source title and abstract."
+    },
+    {
+      "source": "paper-2608-05000",
+      "target": "towards-physics-of-multimodal-pretraining-knowledge-flow",
+      "relation": "paper_introduces",
+      "confidence": 0.82,
+      "source_ids": [
+        "emergentmind-2608-05000-towards-physics-of-multimodal-pretraining-knowledge-flow-modality-2026"
+      ],
+      "evidence": "EmergentMind homepage/page metadata identify arXiv 2608.05000, 'Towards Physics of Multimodal Pretraining: Knowledge Flow, Modality Synergy, Early Unification, and Recipes', and summarize the method/problem."
+    },
+    {
+      "source": "towards-physics-of-multimodal-pretraining-knowledge-flow",
+      "target": "towards-physics-of-multimodal-pretraining-knowledge-flow-modality",
+      "relation": "implements",
+      "confidence": 0.76,
+      "source_ids": [
+        "emergentmind-2608-05000-towards-physics-of-multimodal-pretraining-knowledge-flow-modality-2026"
+      ],
+      "evidence": "Vision offers a critical axis for advancing foundation models, driving a shift towards natively unified multimodal pretraining. Despite this momentum, the design space and the fundamental mechanisms of how modalities interact during unified training remain underexplored. We provi"
+    },
+    {
+      "source": "towards-physics-of-multimodal-pretraining-knowledge-flow",
+      "target": "towards-physics-of-multimodal-pretraining-knowledge-flow-modality",
+      "relation": "evaluates_on",
+      "confidence": 0.72,
+      "source_ids": [
+        "emergentmind-2608-05000-towards-physics-of-multimodal-pretraining-knowledge-flow-modality-2026"
+      ],
+      "evidence": "Vision offers a critical axis for advancing foundation models, driving a shift towards natively unified multimodal pretraining. Despite this momentum, the design space and the fundamental mechanisms of how modalities interact during unified training remain underexplored. We provi"
+    },
+    {
+      "source": "towards-physics-of-multimodal-pretraining-knowledge-flow",
+      "target": "the-towards-physics-of-multimodal-pretraining",
+      "relation": "belongs_to_region",
+      "confidence": 0.78,
+      "source_ids": [
+        "emergentmind-2608-05000-towards-physics-of-multimodal-pretraining-knowledge-flow-modality-2026"
+      ],
+      "evidence": "Routed into The Towards Physics Of Multimodal under perception-world-models from source title and abstract."
+    },
+    {
+      "source": "paper-2608-02711",
+      "target": "hunyuan3d-buffalo-1-0-a-unified-multimodal",
+      "relation": "paper_introduces",
+      "confidence": 0.82,
+      "source_ids": [
+        "emergentmind-2608-02711-hunyuan3d-buffalo-1-0-a-unified-multimodal-model-2026"
+      ],
+      "evidence": "EmergentMind homepage/page metadata identify arXiv 2608.02711, 'Hunyuan3D-Buffalo 1.0: A Unified Multimodal Model for Scalable 3D Generation, Understanding, and Editing', and summarize the method/problem."
+    },
+    {
+      "source": "hunyuan3d-buffalo-1-0-a-unified-multimodal",
+      "target": "hunyuan3d-buffalo-1-0-a-unified-multimodal-model",
+      "relation": "implements",
+      "confidence": 0.76,
+      "source_ids": [
+        "emergentmind-2608-02711-hunyuan3d-buffalo-1-0-a-unified-multimodal-model-2026"
+      ],
+      "evidence": "Recent advances in image generation have demonstrated the potential of unified multimodal models that integrate understanding, generation, and editing. However, unified 3D modeling remains constrained by scarce multimodal data, particularly the lack of large-scale and geometrical"
+    },
+    {
+      "source": "hunyuan3d-buffalo-1-0-a-unified-multimodal",
+      "target": "hunyuan3d-buffalo-1-0-a-unified-multimodal-model",
+      "relation": "evaluates_on",
+      "confidence": 0.72,
+      "source_ids": [
+        "emergentmind-2608-02711-hunyuan3d-buffalo-1-0-a-unified-multimodal-model-2026"
+      ],
+      "evidence": "Recent advances in image generation have demonstrated the potential of unified multimodal models that integrate understanding, generation, and editing. However, unified 3D modeling remains constrained by scarce multimodal data, particularly the lack of large-scale and geometrical"
+    },
+    {
+      "source": "hunyuan3d-buffalo-1-0-a-unified-multimodal",
+      "target": "the-hunyuan3d-buffalo-1-0-a",
+      "relation": "belongs_to_region",
+      "confidence": 0.78,
+      "source_ids": [
+        "emergentmind-2608-02711-hunyuan3d-buffalo-1-0-a-unified-multimodal-model-2026"
+      ],
+      "evidence": "Routed into The Hunyuan3d Buffalo 1 0 under perception-world-models from source title and abstract."
+    },
+    {
+      "source": "paper-2608-01604",
+      "target": "post-training-on-office-work-improves-software",
+      "relation": "paper_introduces",
+      "confidence": 0.82,
+      "source_ids": [
+        "emergentmind-2608-01604-post-training-on-office-work-improves-software-engineering-2026"
+      ],
+      "evidence": "EmergentMind homepage/page metadata identify arXiv 2608.01604, 'Post-Training on Office Work Improves Software Engineering: A Behavioral Account of Cross-Domain Transfer', and summarize the method/problem."
+    },
+    {
+      "source": "post-training-on-office-work-improves-software",
+      "target": "post-training-on-office-work-improves-software-engineering",
+      "relation": "implements",
+      "confidence": 0.76,
+      "source_ids": [
+        "emergentmind-2608-01604-post-training-on-office-work-improves-software-engineering-2026"
+      ],
+      "evidence": "Long-horizon tasks require agents to maintain coherent state and goals across nested and branching work. We call this capability goal-directed execution (GDE): the repeated application of four behaviors, namely selecting goals, constructing task-relevant state, maintaining fideli"
+    },
+    {
+      "source": "post-training-on-office-work-improves-software",
+      "target": "post-training-on-office-work-improves-software-engineering",
+      "relation": "evaluates_on",
+      "confidence": 0.72,
+      "source_ids": [
+        "emergentmind-2608-01604-post-training-on-office-work-improves-software-engineering-2026"
+      ],
+      "evidence": "Long-horizon tasks require agents to maintain coherent state and goals across nested and branching work. We call this capability goal-directed execution (GDE): the repeated application of four behaviors, namely selecting goals, constructing task-relevant state, maintaining fideli"
+    },
+    {
+      "source": "post-training-on-office-work-improves-software",
+      "target": "the-post-training-on-office-work",
+      "relation": "belongs_to_region",
+      "confidence": 0.78,
+      "source_ids": [
+        "emergentmind-2608-01604-post-training-on-office-work-improves-software-engineering-2026"
+      ],
+      "evidence": "Routed into The Post Training On Office under generative-models from source title and abstract."
     }
   ],
   "open_questions": [
@@ -26195,6 +27371,66 @@
       "edges_added": 0,
       "regions_added": 0,
       "quality_findings": [],
+      "verification": {
+        "json_parse": "passed",
+        "dkg_test": "passed",
+        "build": "passed",
+        "supabase_sync": "passed",
+        "roundtrip": "passed"
+      }
+    },
+    {
+      "run_id": "daily-emergentmind-all-topics-20260806T174014Z",
+      "completed_at": "2026-08-06T17:40:14Z",
+      "type": "daily-emergentmind-all-topics",
+      "homepage_url": "https://www.emergentmind.com/",
+      "homepage_status": 200,
+      "homepage_papers": 45,
+      "source_ids": [
+        "emergentmind-2608-01964-longhorizon-harness-advancing-long-horizon-agents-for-real-2026",
+        "emergentmind-2608-02412-why-large-language-models-fail-at-tabular-prediction-2026",
+        "emergentmind-2607-29377-zero-mem-zero-token-memory-operations-for-llm-2026",
+        "emergentmind-2607-28887-to-add-is-machine-to-delete-is-human-2026",
+        "emergentmind-2608-02670-permission-denied-policy-graded-evaluation-of-coding-agents-2026",
+        "emergentmind-2608-02580-ego2robot-scalable-robot-data-synthesis-from-egocentric-human-2026",
+        "emergentmind-2608-03872-evohil-self-evolving-reward-and-flow-matched-policy-2026",
+        "emergentmind-2608-02437-infinisplat-implicit-gaussian-decoding-for-large-baseline-monocular-2026",
+        "emergentmind-2607-28576-sample-more-reflect-less-self-refine-and-reflexion-2026",
+        "emergentmind-2608-05000-towards-physics-of-multimodal-pretraining-knowledge-flow-modality-2026",
+        "emergentmind-2608-02711-hunyuan3d-buffalo-1-0-a-unified-multimodal-model-2026",
+        "emergentmind-2608-01604-post-training-on-office-work-improves-software-engineering-2026"
+      ],
+      "page_status": {
+        "2608.01964": 200,
+        "2608.02412": 200,
+        "2607.29377": 200,
+        "2607.28887": 200,
+        "2608.02670": 200,
+        "2608.02580": 200,
+        "2608.03872": 200,
+        "2608.02437": 200,
+        "2607.28576": 200,
+        "2608.05000": 200,
+        "2608.02711": 200,
+        "2608.01604": 200
+      },
+      "sources_added": 12,
+      "sources_updated": 0,
+      "nodes_added": 36,
+      "nodes_updated": 0,
+      "edges_added": 48,
+      "worlds_touched": [
+        "perception-world-models",
+        "llm-systems-serving",
+        "retrieval-augmented-generation",
+        "generative-models",
+        "agents"
+      ],
+      "regions_added": 12,
+      "manual_review": [
+        "Skipped pure-math, astronomy/cosmology, and clinical/medical surfaced items in this bounded pass; clinical claims need deeper safety review before routing.",
+        "New visual-SLAM/event-camera/egocentric-video items are routed under Perception & World Models; DeepSearch is routed under Retrieval-Augmented Generation; beyond-human intelligence evaluation is routed under Agents."
+      ],
       "verification": {
         "json_parse": "passed",
         "dkg_test": "passed",
