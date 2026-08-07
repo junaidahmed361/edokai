@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "updated_at": "2026-08-06T17:40:14Z",
+  "updated_at": "2026-08-07T14:17:12Z",
   "sources": {
     "hf-space-trl-distillation-trainer-2026": {
       "id": "hf-space-trl-distillation-trainer-2026",
@@ -4028,6 +4028,198 @@
       "provenance": [
         "Discovered from https://www.emergentmind.com/ bootstrapped trending papers on 2026-08-06.",
         "EmergentMind homepage abstract metadata: Long-horizon tasks require agents to maintain coherent state and goals across nested and branching work. We call this capability goal-directed execution (GDE): the repeated application of four behaviors, namely selecting goals, constructing task-relevant state, maintaining fidelity to higher-level objectives, and verifying completion against the environment. We hypothesize that long-horizon post-training strengthens these behaviors across domains. We test this by post-training Qwen3.5-122B-A10B on 363 Long-Horizon Multi-Tool Agent (LHMTA) tasks drawn from office workflows. The collection contained no software-engineering tasks, yet "
+      ],
+      "confidence": 0.86
+    },
+    "emergentmind-2608-03972-reflectrl-learning-from-golden-negative-trajectories-via-reflective-2026": {
+      "id": "emergentmind-2608-03972-reflectrl-learning-from-golden-negative-trajectories-via-reflective-2026",
+      "url": "https://www.emergentmind.com/papers/2608.03972",
+      "arxiv_url": "https://arxiv.org/abs/2608.03972",
+      "title": "ReflectRL: Learning from Golden Negative Trajectories via Reflective-to-Direct Reasoning",
+      "source_type": "emergentmind-trending-paper",
+      "authors": [],
+      "published": "2026-08-04",
+      "discovered_at": "2026-08-07T14:17:12Z",
+      "last_read_at": "2026-08-07T14:17:12Z",
+      "provenance": [
+        "Discovered from https://www.emergentmind.com/ bootstrapped trending papers on 2026-08-07.",
+        "EmergentMind homepage abstract metadata: On-policy training has emerged as a powerful post-training paradigm for improving the reasoning capabilities of large language models, and is often enhanced by golden trajectories from stronger expert models. However, when the expert fails on harder problems, existing trajectory-guided methods lose their main source of supervision, and these failed trajectories are typically discarded as negative samples. We argue that such failures, which we call Golden Negative Trajectories, can still provide valuable reasoning signals when treated not as demonstrations to imitate, but as flawed trajectories to reflect upon. We identify a Reflecti"
+      ],
+      "confidence": 0.86
+    },
+    "emergentmind-2608-05466-recursive-synthesis-for-long-horizon-terminal-tasks-2026": {
+      "id": "emergentmind-2608-05466-recursive-synthesis-for-long-horizon-terminal-tasks-2026",
+      "url": "https://www.emergentmind.com/papers/2608.05466",
+      "arxiv_url": "https://arxiv.org/abs/2608.05466",
+      "title": "Recursive Synthesis for Long-Horizon Terminal Tasks",
+      "source_type": "emergentmind-trending-paper",
+      "authors": [],
+      "published": "2026-08-05",
+      "discovered_at": "2026-08-07T14:17:12Z",
+      "last_read_at": "2026-08-07T14:17:12Z",
+      "provenance": [
+        "Discovered from https://www.emergentmind.com/ bootstrapped trending papers on 2026-08-07.",
+        "EmergentMind homepage abstract metadata: High-quality long-horizon training data for terminal agents is expensive to produce, often costing hundreds to thousands of dollars per task, because each task must keep the instruction, environment, reference solution, and verifier mutually consistent. Human authoring does not scale, and direct generation with large language models (LLMs) often breaks these dependencies. We present Recursive Synthetic Terminal Tasks (RST), a recursive verified synthesis framework for constructing long-horizon terminal-agent tasks at scale. Starting from verified seed tasks, RST extends the reference solution, realigns the verifier and instruction t"
+      ],
+      "confidence": 0.86
+    },
+    "emergentmind-2608-04205-matraix-simulating-the-world-with-8-3-billion-2026": {
+      "id": "emergentmind-2608-04205-matraix-simulating-the-world-with-8-3-billion-2026",
+      "url": "https://www.emergentmind.com/papers/2608.04205",
+      "arxiv_url": "https://arxiv.org/abs/2608.04205",
+      "title": "MatrAIx: Simulating the World with 8.3 Billion Persona Agents",
+      "source_type": "emergentmind-trending-paper",
+      "authors": [],
+      "published": "2026-08-04",
+      "discovered_at": "2026-08-07T14:17:12Z",
+      "last_read_at": "2026-08-07T14:17:12Z",
+      "provenance": [
+        "Discovered from https://www.emergentmind.com/ bootstrapped trending papers on 2026-08-07.",
+        "EmergentMind homepage abstract metadata: Human evaluation of AI systems and digital products is costly, slow, and difficult to scale. Offline evaluations are more scalable but often abstract away human diversity and interactive behavior. We therefore introduce MatrAIx, a population-scale simulated-user evaluation infrastructure for testing AI systems and digital products with heterogeneous users. MatrAIx has three core components: First, Persona 8B contains 8.3 billion persona records represented by 1,290 categorical dimensions. Records are either sampled from a dependency graph that preserves correlated attributes or derived from human-authored profiles. We release a qual"
+      ],
+      "confidence": 0.86
+    },
+    "emergentmind-2608-01186-querysplat-decoupling-geometry-and-appearance-representations-in-3dgs-2026": {
+      "id": "emergentmind-2608-01186-querysplat-decoupling-geometry-and-appearance-representations-in-3dgs-2026",
+      "url": "https://www.emergentmind.com/papers/2608.01186",
+      "arxiv_url": "https://arxiv.org/abs/2608.01186",
+      "title": "QuerySplat: Decoupling Geometry and Appearance Representations in 3DGS Prediction",
+      "source_type": "emergentmind-trending-paper",
+      "authors": [],
+      "published": "2026-08-02",
+      "discovered_at": "2026-08-07T14:17:12Z",
+      "last_read_at": "2026-08-07T14:17:12Z",
+      "provenance": [
+        "Discovered from https://www.emergentmind.com/ bootstrapped trending papers on 2026-08-07.",
+        "EmergentMind homepage abstract metadata: While feed-forward 3D Gaussian Splatting (3DGS) enables efficient 3D reconstruction, achieving high-fidelity rendering remains challenging. Existing pixel-aligned approaches suffer from spatial inflexibility and massive structural redundancy, whereas query-based methods lack 3D priors and entangle geometry with appearance, yielding blurry, pose-dependent results. To overcome these deficiencies, we propose \\textbf{QuerySplat}, a feed-forward 3DGS framework driven by geometric priors and explicit appearance decoupling. Specifically, we design a dual-branch query-based decoder: the geometry branch leverages a pretrained Vision Geometri"
+      ],
+      "confidence": 0.86
+    },
+    "emergentmind-2608-00931-stipple-real-time-incremental-gaussian-splatting-with-visual-2026": {
+      "id": "emergentmind-2608-00931-stipple-real-time-incremental-gaussian-splatting-with-visual-2026",
+      "url": "https://www.emergentmind.com/papers/2608.00931",
+      "arxiv_url": "https://arxiv.org/abs/2608.00931",
+      "title": "Stipple: Real-Time Incremental Gaussian Splatting with Visual-Inertial Tracking",
+      "source_type": "emergentmind-trending-paper",
+      "authors": [],
+      "published": "2026-08-02",
+      "discovered_at": "2026-08-07T14:17:12Z",
+      "last_read_at": "2026-08-07T14:17:12Z",
+      "provenance": [
+        "Discovered from https://www.emergentmind.com/ bootstrapped trending papers on 2026-08-07.",
+        "EmergentMind homepage abstract metadata: 3D Gaussian Splatting (3DGS) provides efficient rendering of photo-realistic scenes, but its heavy preprocessing and training steps make it a poor fit for applications that require real-time reconstruction in robotics or XR. This capability is important since it allows immediate feedback and interaction with new environments. Visual-inertial odometry (VIO) and simultaneous localization and mapping (VI-SLAM) systems, on the other hand, specifically target these real-time applications, which makes them a good choice for integration with 3DGS. We propose a new method that tracks and reconstructs simultaneously in real-time by leveragin"
+      ],
+      "confidence": 0.86
+    },
+    "emergentmind-2608-05141-octolong-mid-training-on-cross-repository-code-contexts-2026": {
+      "id": "emergentmind-2608-05141-octolong-mid-training-on-cross-repository-code-contexts-2026",
+      "url": "https://www.emergentmind.com/papers/2608.05141",
+      "arxiv_url": "https://arxiv.org/abs/2608.05141",
+      "title": "OctoLong: Mid-Training On Cross-Repository Code Contexts Enhances Long-Context Modeling",
+      "source_type": "emergentmind-trending-paper",
+      "authors": [],
+      "published": "2026-08-05",
+      "discovered_at": "2026-08-07T14:17:12Z",
+      "last_read_at": "2026-08-07T14:17:12Z",
+      "provenance": [
+        "Discovered from https://www.emergentmind.com/ bootstrapped trending papers on 2026-08-07.",
+        "EmergentMind homepage abstract metadata: Context lengths of language models (LMs) have dramatically increased, driven by the demands for in-context learning, self-improvement, and long-horizon agentic workflows. Existing long-context corpora, however, are dominated by books, academic articles, and code repositories, which are finite resources and often scarce in long-distance dependencies. In this work, we introduce OctoLong, a context engineering pipeline that instruments an AST parser, a language server backend, and a package manager to facilitate the recursive retrieval of code references, enabling the curation of dependency-rich code contexts of millions of tokens in l"
+      ],
+      "confidence": 0.86
+    },
+    "emergentmind-2608-05139-toward-skill-native-llms-skill-entropy-for-benchmarking-2026": {
+      "id": "emergentmind-2608-05139-toward-skill-native-llms-skill-entropy-for-benchmarking-2026",
+      "url": "https://www.emergentmind.com/papers/2608.05139",
+      "arxiv_url": "https://arxiv.org/abs/2608.05139",
+      "title": "Toward Skill-Native LLMs: Skill Entropy for Benchmarking and Training Long-Horizon Reasoning",
+      "source_type": "emergentmind-trending-paper",
+      "authors": [],
+      "published": "2026-08-05",
+      "discovered_at": "2026-08-07T14:17:12Z",
+      "last_read_at": "2026-08-07T14:17:12Z",
+      "provenance": [
+        "Discovered from https://www.emergentmind.com/ bootstrapped trending papers on 2026-08-07.",
+        "EmergentMind homepage abstract metadata: Long-horizon reasoning in recent LLMs demands that the model switch between distinct skills inside a reasoning chain, such as first doing a math derivation, then using the result to plan a schedule. We call such problems cross-skill long-horizon tasks: multi-step tasks whose steps require different reasoning skills and depend on earlier outputs. Existing benchmarks often evaluate individual skills, lacking a principled way to measure how well a model switches between skills. We address this gap from both the evaluation and training sides. We introduce Skill Entropy, a measure of the difficulty of switching from one skill to another."
+      ],
+      "confidence": 0.86
+    },
+    "emergentmind-2608-05784-activity-frames-deterministic-screen-activity-compilation-for-agent-2026": {
+      "id": "emergentmind-2608-05784-activity-frames-deterministic-screen-activity-compilation-for-agent-2026",
+      "url": "https://www.emergentmind.com/papers/2608.05784",
+      "arxiv_url": "https://arxiv.org/abs/2608.05784",
+      "title": "Activity Frames: Deterministic Screen-Activity Compilation for Agent Memory and Replay",
+      "source_type": "emergentmind-trending-paper",
+      "authors": [],
+      "published": "2026-08-06",
+      "discovered_at": "2026-08-07T14:17:12Z",
+      "last_read_at": "2026-08-07T14:17:12Z",
+      "provenance": [
+        "Discovered from https://www.emergentmind.com/ bootstrapped trending papers on 2026-08-07.",
+        "EmergentMind homepage abstract metadata: Computer-use agents pay full frontier inference to re-derive routines their user has already performed, because an agent's memory today records what the user said, not what the user did. We compile passively captured screen activity into agent memory with a deterministic, zero-model pipeline: it segments a local capture stream into typed activity frames, bounded episodes carrying application, site, timing, input volume, and evidence pointers back to the raw rows, with no model in the loop, so the output is byte-identical, cacheable, and mechanically auditable. On one professional's single-user corpus of 128,756 frames over 51 active"
+      ],
+      "confidence": 0.86
+    },
+    "emergentmind-2608-01588-d-2-4dgs-dual-depth-guided-sparse-camera-2026": {
+      "id": "emergentmind-2608-01588-d-2-4dgs-dual-depth-guided-sparse-camera-2026",
+      "url": "https://www.emergentmind.com/papers/2608.01588",
+      "arxiv_url": "https://arxiv.org/abs/2608.01588",
+      "title": "D^2-4DGS: Dual-Depth Guided Sparse-Camera 4D Gaussian Splatting",
+      "source_type": "emergentmind-trending-paper",
+      "authors": [],
+      "published": "2026-08-03",
+      "discovered_at": "2026-08-07T14:17:12Z",
+      "last_read_at": "2026-08-07T14:17:12Z",
+      "provenance": [
+        "Discovered from https://www.emergentmind.com/ bootstrapped trending papers on 2026-08-07.",
+        "EmergentMind homepage abstract metadata: Dynamic 4D Gaussian Splatting has emerged as an efficient representation for dynamic novel view synthesis through explicit scene modeling and real-time rendering. However, existing methods typically require dense multi-view videos for sufficient geometric constraints, making capture expensive and limiting sparse-camera deployment. Reducing input views lowers acquisition cost but weakens geometry supervision, often causing missing structures and floating Gaussians. Depth priors provide geometric cues, yet no single source offers both dense coverage and reliable geometry. Monocular depth provides dense structure but is scale-ambiguous"
+      ],
+      "confidence": 0.86
+    },
+    "emergentmind-2608-01706-unisim-slam-feed-forward-slam-with-unified-sim-2026": {
+      "id": "emergentmind-2608-01706-unisim-slam-feed-forward-slam-with-unified-sim-2026",
+      "url": "https://www.emergentmind.com/papers/2608.01706",
+      "arxiv_url": "https://arxiv.org/abs/2608.01706",
+      "title": "UniSim-SLAM: Feed-Forward SLAM with Unified Sim(3) Optimization",
+      "source_type": "emergentmind-trending-paper",
+      "authors": [],
+      "published": "2026-08-03",
+      "discovered_at": "2026-08-07T14:17:12Z",
+      "last_read_at": "2026-08-07T14:17:12Z",
+      "provenance": [
+        "Discovered from https://www.emergentmind.com/ bootstrapped trending papers on 2026-08-07.",
+        "EmergentMind homepage abstract metadata: Recent geometric foundation models enable feed-forward inference for SLAM, but their predictions are strongly dependent on the input view set, which leads to geometric inconsistencies and trajectory drift when results are chained over long sequences. Online deployment further exposes a trade-off between the low latency of two-view tracking and the constraint richness of multi-view inference. We introduce UniSim-SLAM, an integrated system that runs lightweight two-view keyframe tracking in the frontend and performs periodic multi-view submap refinement in the backend. To combine predictions defined in heterogeneous local coordinates "
+      ],
+      "confidence": 0.86
+    },
+    "emergentmind-2608-00146-diffusiongemma-technical-report-2026": {
+      "id": "emergentmind-2608-00146-diffusiongemma-technical-report-2026",
+      "url": "https://www.emergentmind.com/papers/2608.00146",
+      "arxiv_url": "https://arxiv.org/abs/2608.00146",
+      "title": "DiffusionGemma Technical Report",
+      "source_type": "emergentmind-trending-paper",
+      "authors": [],
+      "published": "2026-07-31",
+      "discovered_at": "2026-08-07T14:17:12Z",
+      "last_read_at": "2026-08-07T14:17:12Z",
+      "provenance": [
+        "Discovered from https://www.emergentmind.com/ bootstrapped trending papers on 2026-08-07.",
+        "EmergentMind homepage abstract metadata: We introduce DiffusionGemma, an experimental open-weight language model that uses discrete diffusion to generate text at exceptionally high speed. Rather than decoding one token at a time, DiffusionGemma iteratively refines blocks of 256 tokens in parallel, avoiding the sequential decoding bottleneck of conventional autoregressive (AR) large language models. Instead of training from scratch, we obtain DiffusionGemma by fine-tuning the mixture-of-experts Gemma 4 model with 3.8B activated and 25.2B total parameters. Our compute-efficient two-stage training pipeline uses fewer than 10% of the starting AR model's total training token bu"
+      ],
+      "confidence": 0.86
+    },
+    "emergentmind-2608-01662-longcat-sparse-attention-taming-the-lightning-via-streaming-2026": {
+      "id": "emergentmind-2608-01662-longcat-sparse-attention-taming-the-lightning-via-streaming-2026",
+      "url": "https://www.emergentmind.com/papers/2608.01662",
+      "arxiv_url": "https://arxiv.org/abs/2608.01662",
+      "title": "LongCat Sparse Attention: Taming the Lightning via Streaming-aware Hierarchical Cross-Layer Indexing",
+      "source_type": "emergentmind-trending-paper",
+      "authors": [],
+      "published": "2026-08-03",
+      "discovered_at": "2026-08-07T14:17:12Z",
+      "last_read_at": "2026-08-07T14:17:12Z",
+      "provenance": [
+        "Discovered from https://www.emergentmind.com/ bootstrapped trending papers on 2026-08-07.",
+        "EmergentMind homepage abstract metadata: DeepSeek Sparse Attention (DSA) enables efficient long-context modeling through its Lightning Indexer. However, practical deployment remains constrained by the indexer's expensive $O(L^2)$ scoring overhead and the hardware-inefficient, discontinuous memory-access patterns induced by its outputs. To address these system-level bottlenecks, we introduce LongCat Sparse Attention (LSA), a hardware-algorithm co-designed framework comprising three complementary and orthogonal strategies: (1) Streaming-Aware Indexing, which selectively converts scattered KV entries into hardware-aligned contiguous layouts to enable coalesced HBM access; (2)"
       ],
       "confidence": 0.86
     }
@@ -15446,6 +15638,538 @@
       "first_seen": "2026-08-06T17:40:14Z",
       "last_seen": "2026-08-06T17:40:14Z",
       "world_hint": "generative-models"
+    },
+    "reflectrl-learning-from-golden-negative-trajectories-via": {
+      "id": "reflectrl-learning-from-golden-negative-trajectories-via",
+      "label": "ReflectRL",
+      "type": "method",
+      "summary": "Source-grounded method/approach from 'ReflectRL: Learning from Golden Negative Trajectories via Reflective-to-Direct Reasoning': On-policy training has emerged as a powerful post-training paradigm for improving the reasoning capabilities of large language models, and is often enhanced by golden trajectories from stronger expert models. However, when the expert fails on harder problems, existing trajectory-guided methods lose their main source of supervision, and these failed trajector...",
+      "aliases": [],
+      "source_ids": [
+        "emergentmind-2608-03972-reflectrl-learning-from-golden-negative-trajectories-via-reflective-2026"
+      ],
+      "confidence": 0.78,
+      "first_seen": "2026-08-07T14:17:12Z",
+      "last_seen": "2026-08-07T14:17:12Z",
+      "world_hint": "perception-world-models"
+    },
+    "reflectrl-learning-from-golden-negative-trajectories-via-reflective": {
+      "id": "reflectrl-learning-from-golden-negative-trajectories-via-reflective",
+      "label": "ReflectRL problem setting",
+      "type": "concept",
+      "summary": "The learning or systems problem described by the source: On-policy training has emerged as a powerful post-training paradigm for improving the reasoning capabilities of large language models, and is often enhanced by golden trajectories from stronger expert models. However, when the expert fails on harder problems, existing trajectory-guided methods lose their main source of supervision, and these failed trajector...",
+      "aliases": [],
+      "source_ids": [
+        "emergentmind-2608-03972-reflectrl-learning-from-golden-negative-trajectories-via-reflective-2026"
+      ],
+      "confidence": 0.78,
+      "first_seen": "2026-08-07T14:17:12Z",
+      "last_seen": "2026-08-07T14:17:12Z",
+      "world_hint": "perception-world-models"
+    },
+    "paper-2608-03972": {
+      "id": "paper-2608-03972",
+      "label": "ReflectRL: Learning from Golden Negative Trajectories via Reflective-to-Direct Reasoning",
+      "type": "paper",
+      "summary": "EmergentMind surfaced arXiv paper 2608.03972: On-policy training has emerged as a powerful post-training paradigm for improving the reasoning capabilities of large language models, and is often enhanced by golden trajectories from stronger expert models. However, when the expert fails on harder problems, existing trajectory-guided methods lose their main source of supervision, and these failed trajector...",
+      "aliases": [],
+      "source_ids": [
+        "emergentmind-2608-03972-reflectrl-learning-from-golden-negative-trajectories-via-reflective-2026"
+      ],
+      "confidence": 0.78,
+      "first_seen": "2026-08-07T14:17:12Z",
+      "last_seen": "2026-08-07T14:17:12Z",
+      "world_hint": "perception-world-models"
+    },
+    "recursive-synthesis-for-long-horizon-terminal-tasks": {
+      "id": "recursive-synthesis-for-long-horizon-terminal-tasks",
+      "label": "Recursive Synthesis for Long-Horizon Terminal Tasks",
+      "type": "method",
+      "summary": "Source-grounded method/approach from 'Recursive Synthesis for Long-Horizon Terminal Tasks': High-quality long-horizon training data for terminal agents is expensive to produce, often costing hundreds to thousands of dollars per task, because each task must keep the instruction, environment, reference solution, and verifier mutually consistent. Human authoring does not scale, and direct generation with large language models (LLMs) often breaks these...",
+      "aliases": [],
+      "source_ids": [
+        "emergentmind-2608-05466-recursive-synthesis-for-long-horizon-terminal-tasks-2026"
+      ],
+      "confidence": 0.78,
+      "first_seen": "2026-08-07T14:17:12Z",
+      "last_seen": "2026-08-07T14:17:12Z",
+      "world_hint": "generative-models"
+    },
+    "recursive-synthesis-for-long-horizon-terminal-tasks-learning": {
+      "id": "recursive-synthesis-for-long-horizon-terminal-tasks-learning",
+      "label": "Recursive Synthesis for Long-Horizon Terminal Tasks problem setting",
+      "type": "concept",
+      "summary": "The learning or systems problem described by the source: High-quality long-horizon training data for terminal agents is expensive to produce, often costing hundreds to thousands of dollars per task, because each task must keep the instruction, environment, reference solution, and verifier mutually consistent. Human authoring does not scale, and direct generation with large language models (LLMs) often breaks these...",
+      "aliases": [],
+      "source_ids": [
+        "emergentmind-2608-05466-recursive-synthesis-for-long-horizon-terminal-tasks-2026"
+      ],
+      "confidence": 0.78,
+      "first_seen": "2026-08-07T14:17:12Z",
+      "last_seen": "2026-08-07T14:17:12Z",
+      "world_hint": "generative-models"
+    },
+    "recursive-synthesis-for-long-horizon-terminal-tasks-evaluation": {
+      "id": "recursive-synthesis-for-long-horizon-terminal-tasks-evaluation",
+      "label": "Recursive Synthesis for Long-Horizon Terminal Tasks evaluation signal",
+      "type": "concept",
+      "summary": "The source's evaluation/benchmark signal for judging the method; Edokai keeps this claim source-qualified.",
+      "aliases": [],
+      "source_ids": [
+        "emergentmind-2608-05466-recursive-synthesis-for-long-horizon-terminal-tasks-2026"
+      ],
+      "confidence": 0.78,
+      "first_seen": "2026-08-07T14:17:12Z",
+      "last_seen": "2026-08-07T14:17:12Z",
+      "world_hint": "generative-models"
+    },
+    "paper-2608-05466": {
+      "id": "paper-2608-05466",
+      "label": "Recursive Synthesis for Long-Horizon Terminal Tasks",
+      "type": "paper",
+      "summary": "EmergentMind surfaced arXiv paper 2608.05466: High-quality long-horizon training data for terminal agents is expensive to produce, often costing hundreds to thousands of dollars per task, because each task must keep the instruction, environment, reference solution, and verifier mutually consistent. Human authoring does not scale, and direct generation with large language models (LLMs) often breaks these...",
+      "aliases": [],
+      "source_ids": [
+        "emergentmind-2608-05466-recursive-synthesis-for-long-horizon-terminal-tasks-2026"
+      ],
+      "confidence": 0.78,
+      "first_seen": "2026-08-07T14:17:12Z",
+      "last_seen": "2026-08-07T14:17:12Z",
+      "world_hint": "generative-models"
+    },
+    "matraix-simulating-the-world-with-8-3": {
+      "id": "matraix-simulating-the-world-with-8-3",
+      "label": "MatrAIx",
+      "type": "method",
+      "summary": "Source-grounded method/approach from 'MatrAIx: Simulating the World with 8.3 Billion Persona Agents': Human evaluation of AI systems and digital products is costly, slow, and difficult to scale. Offline evaluations are more scalable but often abstract away human diversity and interactive behavior. We therefore introduce MatrAIx, a population-scale simulated-user evaluation infrastructure for testing AI systems and digital products with heterogeneous users. M...",
+      "aliases": [],
+      "source_ids": [
+        "emergentmind-2608-04205-matraix-simulating-the-world-with-8-3-billion-2026"
+      ],
+      "confidence": 0.78,
+      "first_seen": "2026-08-07T14:17:12Z",
+      "last_seen": "2026-08-07T14:17:12Z",
+      "world_hint": "llm-systems-serving"
+    },
+    "matraix-simulating-the-world-with-8-3-billion": {
+      "id": "matraix-simulating-the-world-with-8-3-billion",
+      "label": "MatrAIx problem setting",
+      "type": "concept",
+      "summary": "The learning or systems problem described by the source: Human evaluation of AI systems and digital products is costly, slow, and difficult to scale. Offline evaluations are more scalable but often abstract away human diversity and interactive behavior. We therefore introduce MatrAIx, a population-scale simulated-user evaluation infrastructure for testing AI systems and digital products with heterogeneous users. M...",
+      "aliases": [],
+      "source_ids": [
+        "emergentmind-2608-04205-matraix-simulating-the-world-with-8-3-billion-2026"
+      ],
+      "confidence": 0.78,
+      "first_seen": "2026-08-07T14:17:12Z",
+      "last_seen": "2026-08-07T14:17:12Z",
+      "world_hint": "llm-systems-serving"
+    },
+    "paper-2608-04205": {
+      "id": "paper-2608-04205",
+      "label": "MatrAIx: Simulating the World with 8.3 Billion Persona Agents",
+      "type": "paper",
+      "summary": "EmergentMind surfaced arXiv paper 2608.04205: Human evaluation of AI systems and digital products is costly, slow, and difficult to scale. Offline evaluations are more scalable but often abstract away human diversity and interactive behavior. We therefore introduce MatrAIx, a population-scale simulated-user evaluation infrastructure for testing AI systems and digital products with heterogeneous users. M...",
+      "aliases": [],
+      "source_ids": [
+        "emergentmind-2608-04205-matraix-simulating-the-world-with-8-3-billion-2026"
+      ],
+      "confidence": 0.78,
+      "first_seen": "2026-08-07T14:17:12Z",
+      "last_seen": "2026-08-07T14:17:12Z",
+      "world_hint": "llm-systems-serving"
+    },
+    "querysplat-decoupling-geometry-and-appearance-representations-in": {
+      "id": "querysplat-decoupling-geometry-and-appearance-representations-in",
+      "label": "QuerySplat",
+      "type": "method",
+      "summary": "Source-grounded method/approach from 'QuerySplat: Decoupling Geometry and Appearance Representations in 3DGS Prediction': While feed-forward 3D Gaussian Splatting (3DGS) enables efficient 3D reconstruction, achieving high-fidelity rendering remains challenging. Existing pixel-aligned approaches suffer from spatial inflexibility and massive structural redundancy, whereas query-based methods lack 3D priors and entangle geometry with appearance, yielding blurry, pose-dependent res...",
+      "aliases": [],
+      "source_ids": [
+        "emergentmind-2608-01186-querysplat-decoupling-geometry-and-appearance-representations-in-3dgs-2026"
+      ],
+      "confidence": 0.78,
+      "first_seen": "2026-08-07T14:17:12Z",
+      "last_seen": "2026-08-07T14:17:12Z",
+      "world_hint": "retrieval-augmented-generation"
+    },
+    "querysplat-decoupling-geometry-and-appearance-representations-in-3dgs": {
+      "id": "querysplat-decoupling-geometry-and-appearance-representations-in-3dgs",
+      "label": "QuerySplat problem setting",
+      "type": "concept",
+      "summary": "The learning or systems problem described by the source: While feed-forward 3D Gaussian Splatting (3DGS) enables efficient 3D reconstruction, achieving high-fidelity rendering remains challenging. Existing pixel-aligned approaches suffer from spatial inflexibility and massive structural redundancy, whereas query-based methods lack 3D priors and entangle geometry with appearance, yielding blurry, pose-dependent res...",
+      "aliases": [],
+      "source_ids": [
+        "emergentmind-2608-01186-querysplat-decoupling-geometry-and-appearance-representations-in-3dgs-2026"
+      ],
+      "confidence": 0.78,
+      "first_seen": "2026-08-07T14:17:12Z",
+      "last_seen": "2026-08-07T14:17:12Z",
+      "world_hint": "retrieval-augmented-generation"
+    },
+    "paper-2608-01186": {
+      "id": "paper-2608-01186",
+      "label": "QuerySplat: Decoupling Geometry and Appearance Representations in 3DGS Prediction",
+      "type": "paper",
+      "summary": "EmergentMind surfaced arXiv paper 2608.01186: While feed-forward 3D Gaussian Splatting (3DGS) enables efficient 3D reconstruction, achieving high-fidelity rendering remains challenging. Existing pixel-aligned approaches suffer from spatial inflexibility and massive structural redundancy, whereas query-based methods lack 3D priors and entangle geometry with appearance, yielding blurry, pose-dependent res...",
+      "aliases": [],
+      "source_ids": [
+        "emergentmind-2608-01186-querysplat-decoupling-geometry-and-appearance-representations-in-3dgs-2026"
+      ],
+      "confidence": 0.78,
+      "first_seen": "2026-08-07T14:17:12Z",
+      "last_seen": "2026-08-07T14:17:12Z",
+      "world_hint": "retrieval-augmented-generation"
+    },
+    "stipple-real-time-incremental-gaussian-splatting-with": {
+      "id": "stipple-real-time-incremental-gaussian-splatting-with",
+      "label": "Stipple",
+      "type": "method",
+      "summary": "Source-grounded method/approach from 'Stipple: Real-Time Incremental Gaussian Splatting with Visual-Inertial Tracking': 3D Gaussian Splatting (3DGS) provides efficient rendering of photo-realistic scenes, but its heavy preprocessing and training steps make it a poor fit for applications that require real-time reconstruction in robotics or XR. This capability is important since it allows immediate feedback and interaction with new environments. Visual-inertial odometry (VIO) a...",
+      "aliases": [],
+      "source_ids": [
+        "emergentmind-2608-00931-stipple-real-time-incremental-gaussian-splatting-with-visual-2026"
+      ],
+      "confidence": 0.78,
+      "first_seen": "2026-08-07T14:17:12Z",
+      "last_seen": "2026-08-07T14:17:12Z",
+      "world_hint": "retrieval-augmented-generation"
+    },
+    "stipple-real-time-incremental-gaussian-splatting-with-visual": {
+      "id": "stipple-real-time-incremental-gaussian-splatting-with-visual",
+      "label": "Stipple problem setting",
+      "type": "concept",
+      "summary": "The learning or systems problem described by the source: 3D Gaussian Splatting (3DGS) provides efficient rendering of photo-realistic scenes, but its heavy preprocessing and training steps make it a poor fit for applications that require real-time reconstruction in robotics or XR. This capability is important since it allows immediate feedback and interaction with new environments. Visual-inertial odometry (VIO) a...",
+      "aliases": [],
+      "source_ids": [
+        "emergentmind-2608-00931-stipple-real-time-incremental-gaussian-splatting-with-visual-2026"
+      ],
+      "confidence": 0.78,
+      "first_seen": "2026-08-07T14:17:12Z",
+      "last_seen": "2026-08-07T14:17:12Z",
+      "world_hint": "retrieval-augmented-generation"
+    },
+    "paper-2608-00931": {
+      "id": "paper-2608-00931",
+      "label": "Stipple: Real-Time Incremental Gaussian Splatting with Visual-Inertial Tracking",
+      "type": "paper",
+      "summary": "EmergentMind surfaced arXiv paper 2608.00931: 3D Gaussian Splatting (3DGS) provides efficient rendering of photo-realistic scenes, but its heavy preprocessing and training steps make it a poor fit for applications that require real-time reconstruction in robotics or XR. This capability is important since it allows immediate feedback and interaction with new environments. Visual-inertial odometry (VIO) a...",
+      "aliases": [],
+      "source_ids": [
+        "emergentmind-2608-00931-stipple-real-time-incremental-gaussian-splatting-with-visual-2026"
+      ],
+      "confidence": 0.78,
+      "first_seen": "2026-08-07T14:17:12Z",
+      "last_seen": "2026-08-07T14:17:12Z",
+      "world_hint": "retrieval-augmented-generation"
+    },
+    "octolong-mid-training-on-cross-repository-code": {
+      "id": "octolong-mid-training-on-cross-repository-code",
+      "label": "OctoLong",
+      "type": "method",
+      "summary": "Source-grounded method/approach from 'OctoLong: Mid-Training On Cross-Repository Code Contexts Enhances Long-Context Modeling': Context lengths of language models (LMs) have dramatically increased, driven by the demands for in-context learning, self-improvement, and long-horizon agentic workflows. Existing long-context corpora, however, are dominated by books, academic articles, and code repositories, which are finite resources and often scarce in long-distance dependencies. In this...",
+      "aliases": [],
+      "source_ids": [
+        "emergentmind-2608-05141-octolong-mid-training-on-cross-repository-code-contexts-2026"
+      ],
+      "confidence": 0.78,
+      "first_seen": "2026-08-07T14:17:12Z",
+      "last_seen": "2026-08-07T14:17:12Z",
+      "world_hint": "retrieval-augmented-generation"
+    },
+    "octolong-mid-training-on-cross-repository-code-contexts": {
+      "id": "octolong-mid-training-on-cross-repository-code-contexts",
+      "label": "OctoLong problem setting",
+      "type": "concept",
+      "summary": "The learning or systems problem described by the source: Context lengths of language models (LMs) have dramatically increased, driven by the demands for in-context learning, self-improvement, and long-horizon agentic workflows. Existing long-context corpora, however, are dominated by books, academic articles, and code repositories, which are finite resources and often scarce in long-distance dependencies. In this...",
+      "aliases": [],
+      "source_ids": [
+        "emergentmind-2608-05141-octolong-mid-training-on-cross-repository-code-contexts-2026"
+      ],
+      "confidence": 0.78,
+      "first_seen": "2026-08-07T14:17:12Z",
+      "last_seen": "2026-08-07T14:17:12Z",
+      "world_hint": "retrieval-augmented-generation"
+    },
+    "paper-2608-05141": {
+      "id": "paper-2608-05141",
+      "label": "OctoLong: Mid-Training On Cross-Repository Code Contexts Enhances Long-Context Modeling",
+      "type": "paper",
+      "summary": "EmergentMind surfaced arXiv paper 2608.05141: Context lengths of language models (LMs) have dramatically increased, driven by the demands for in-context learning, self-improvement, and long-horizon agentic workflows. Existing long-context corpora, however, are dominated by books, academic articles, and code repositories, which are finite resources and often scarce in long-distance dependencies. In this...",
+      "aliases": [],
+      "source_ids": [
+        "emergentmind-2608-05141-octolong-mid-training-on-cross-repository-code-contexts-2026"
+      ],
+      "confidence": 0.78,
+      "first_seen": "2026-08-07T14:17:12Z",
+      "last_seen": "2026-08-07T14:17:12Z",
+      "world_hint": "retrieval-augmented-generation"
+    },
+    "toward-skill-native-llms-skill-entropy-for": {
+      "id": "toward-skill-native-llms-skill-entropy-for",
+      "label": "Toward Skill-Native LLMs",
+      "type": "method",
+      "summary": "Source-grounded method/approach from 'Toward Skill-Native LLMs: Skill Entropy for Benchmarking and Training Long-Horizon Reasoning': Long-horizon reasoning in recent LLMs demands that the model switch between distinct skills inside a reasoning chain, such as first doing a math derivation, then using the result to plan a schedule. We call such problems cross-skill long-horizon tasks: multi-step tasks whose steps require different reasoning skills and depend on earlier outputs. Existing ben...",
+      "aliases": [],
+      "source_ids": [
+        "emergentmind-2608-05139-toward-skill-native-llms-skill-entropy-for-benchmarking-2026"
+      ],
+      "confidence": 0.78,
+      "first_seen": "2026-08-07T14:17:12Z",
+      "last_seen": "2026-08-07T14:17:12Z",
+      "world_hint": "perception-world-models"
+    },
+    "toward-skill-native-llms-skill-entropy-for-benchmarking": {
+      "id": "toward-skill-native-llms-skill-entropy-for-benchmarking",
+      "label": "Toward Skill-Native LLMs problem setting",
+      "type": "concept",
+      "summary": "The learning or systems problem described by the source: Long-horizon reasoning in recent LLMs demands that the model switch between distinct skills inside a reasoning chain, such as first doing a math derivation, then using the result to plan a schedule. We call such problems cross-skill long-horizon tasks: multi-step tasks whose steps require different reasoning skills and depend on earlier outputs. Existing ben...",
+      "aliases": [],
+      "source_ids": [
+        "emergentmind-2608-05139-toward-skill-native-llms-skill-entropy-for-benchmarking-2026"
+      ],
+      "confidence": 0.78,
+      "first_seen": "2026-08-07T14:17:12Z",
+      "last_seen": "2026-08-07T14:17:12Z",
+      "world_hint": "perception-world-models"
+    },
+    "paper-2608-05139": {
+      "id": "paper-2608-05139",
+      "label": "Toward Skill-Native LLMs: Skill Entropy for Benchmarking and Training Long-Horizon Reasoning",
+      "type": "paper",
+      "summary": "EmergentMind surfaced arXiv paper 2608.05139: Long-horizon reasoning in recent LLMs demands that the model switch between distinct skills inside a reasoning chain, such as first doing a math derivation, then using the result to plan a schedule. We call such problems cross-skill long-horizon tasks: multi-step tasks whose steps require different reasoning skills and depend on earlier outputs. Existing ben...",
+      "aliases": [],
+      "source_ids": [
+        "emergentmind-2608-05139-toward-skill-native-llms-skill-entropy-for-benchmarking-2026"
+      ],
+      "confidence": 0.78,
+      "first_seen": "2026-08-07T14:17:12Z",
+      "last_seen": "2026-08-07T14:17:12Z",
+      "world_hint": "perception-world-models"
+    },
+    "activity-frames-deterministic-screen-activity-compilation-for": {
+      "id": "activity-frames-deterministic-screen-activity-compilation-for",
+      "label": "Activity Frames",
+      "type": "method",
+      "summary": "Source-grounded method/approach from 'Activity Frames: Deterministic Screen-Activity Compilation for Agent Memory and Replay': Computer-use agents pay full frontier inference to re-derive routines their user has already performed, because an agent's memory today records what the user said, not what the user did. We compile passively captured screen activity into agent memory with a deterministic, zero-model pipeline: it segments a local capture stream into typed activity frames, bou...",
+      "aliases": [],
+      "source_ids": [
+        "emergentmind-2608-05784-activity-frames-deterministic-screen-activity-compilation-for-agent-2026"
+      ],
+      "confidence": 0.78,
+      "first_seen": "2026-08-07T14:17:12Z",
+      "last_seen": "2026-08-07T14:17:12Z",
+      "world_hint": "llm-systems-serving"
+    },
+    "activity-frames-deterministic-screen-activity-compilation-for-agent": {
+      "id": "activity-frames-deterministic-screen-activity-compilation-for-agent",
+      "label": "Activity Frames problem setting",
+      "type": "concept",
+      "summary": "The learning or systems problem described by the source: Computer-use agents pay full frontier inference to re-derive routines their user has already performed, because an agent's memory today records what the user said, not what the user did. We compile passively captured screen activity into agent memory with a deterministic, zero-model pipeline: it segments a local capture stream into typed activity frames, bou...",
+      "aliases": [],
+      "source_ids": [
+        "emergentmind-2608-05784-activity-frames-deterministic-screen-activity-compilation-for-agent-2026"
+      ],
+      "confidence": 0.78,
+      "first_seen": "2026-08-07T14:17:12Z",
+      "last_seen": "2026-08-07T14:17:12Z",
+      "world_hint": "llm-systems-serving"
+    },
+    "paper-2608-05784": {
+      "id": "paper-2608-05784",
+      "label": "Activity Frames: Deterministic Screen-Activity Compilation for Agent Memory and Replay",
+      "type": "paper",
+      "summary": "EmergentMind surfaced arXiv paper 2608.05784: Computer-use agents pay full frontier inference to re-derive routines their user has already performed, because an agent's memory today records what the user said, not what the user did. We compile passively captured screen activity into agent memory with a deterministic, zero-model pipeline: it segments a local capture stream into typed activity frames, bou...",
+      "aliases": [],
+      "source_ids": [
+        "emergentmind-2608-05784-activity-frames-deterministic-screen-activity-compilation-for-agent-2026"
+      ],
+      "confidence": 0.78,
+      "first_seen": "2026-08-07T14:17:12Z",
+      "last_seen": "2026-08-07T14:17:12Z",
+      "world_hint": "llm-systems-serving"
+    },
+    "d-2-4dgs-dual-depth-guided-sparse": {
+      "id": "d-2-4dgs-dual-depth-guided-sparse",
+      "label": "D^2-4DGS",
+      "type": "method",
+      "summary": "Source-grounded method/approach from 'D^2-4DGS: Dual-Depth Guided Sparse-Camera 4D Gaussian Splatting': Dynamic 4D Gaussian Splatting has emerged as an efficient representation for dynamic novel view synthesis through explicit scene modeling and real-time rendering. However, existing methods typically require dense multi-view videos for sufficient geometric constraints, making capture expensive and limiting sparse-camera deployment. Reducing input views lowers...",
+      "aliases": [],
+      "source_ids": [
+        "emergentmind-2608-01588-d-2-4dgs-dual-depth-guided-sparse-camera-2026"
+      ],
+      "confidence": 0.78,
+      "first_seen": "2026-08-07T14:17:12Z",
+      "last_seen": "2026-08-07T14:17:12Z",
+      "world_hint": "retrieval-augmented-generation"
+    },
+    "d-2-4dgs-dual-depth-guided-sparse-camera": {
+      "id": "d-2-4dgs-dual-depth-guided-sparse-camera",
+      "label": "D^2-4DGS problem setting",
+      "type": "concept",
+      "summary": "The learning or systems problem described by the source: Dynamic 4D Gaussian Splatting has emerged as an efficient representation for dynamic novel view synthesis through explicit scene modeling and real-time rendering. However, existing methods typically require dense multi-view videos for sufficient geometric constraints, making capture expensive and limiting sparse-camera deployment. Reducing input views lowers...",
+      "aliases": [],
+      "source_ids": [
+        "emergentmind-2608-01588-d-2-4dgs-dual-depth-guided-sparse-camera-2026"
+      ],
+      "confidence": 0.78,
+      "first_seen": "2026-08-07T14:17:12Z",
+      "last_seen": "2026-08-07T14:17:12Z",
+      "world_hint": "retrieval-augmented-generation"
+    },
+    "paper-2608-01588": {
+      "id": "paper-2608-01588",
+      "label": "D^2-4DGS: Dual-Depth Guided Sparse-Camera 4D Gaussian Splatting",
+      "type": "paper",
+      "summary": "EmergentMind surfaced arXiv paper 2608.01588: Dynamic 4D Gaussian Splatting has emerged as an efficient representation for dynamic novel view synthesis through explicit scene modeling and real-time rendering. However, existing methods typically require dense multi-view videos for sufficient geometric constraints, making capture expensive and limiting sparse-camera deployment. Reducing input views lowers...",
+      "aliases": [],
+      "source_ids": [
+        "emergentmind-2608-01588-d-2-4dgs-dual-depth-guided-sparse-camera-2026"
+      ],
+      "confidence": 0.78,
+      "first_seen": "2026-08-07T14:17:12Z",
+      "last_seen": "2026-08-07T14:17:12Z",
+      "world_hint": "retrieval-augmented-generation"
+    },
+    "unisim-slam-feed-forward-slam-with-unified": {
+      "id": "unisim-slam-feed-forward-slam-with-unified",
+      "label": "UniSim-SLAM",
+      "type": "method",
+      "summary": "Source-grounded method/approach from 'UniSim-SLAM: Feed-Forward SLAM with Unified Sim(3) Optimization': Recent geometric foundation models enable feed-forward inference for SLAM, but their predictions are strongly dependent on the input view set, which leads to geometric inconsistencies and trajectory drift when results are chained over long sequences. Online deployment further exposes a trade-off between the low latency of two-view tracking and the constraint...",
+      "aliases": [],
+      "source_ids": [
+        "emergentmind-2608-01706-unisim-slam-feed-forward-slam-with-unified-sim-2026"
+      ],
+      "confidence": 0.78,
+      "first_seen": "2026-08-07T14:17:12Z",
+      "last_seen": "2026-08-07T14:17:12Z",
+      "world_hint": "perception-world-models"
+    },
+    "unisim-slam-feed-forward-slam-with-unified-sim": {
+      "id": "unisim-slam-feed-forward-slam-with-unified-sim",
+      "label": "UniSim-SLAM problem setting",
+      "type": "concept",
+      "summary": "The learning or systems problem described by the source: Recent geometric foundation models enable feed-forward inference for SLAM, but their predictions are strongly dependent on the input view set, which leads to geometric inconsistencies and trajectory drift when results are chained over long sequences. Online deployment further exposes a trade-off between the low latency of two-view tracking and the constraint...",
+      "aliases": [],
+      "source_ids": [
+        "emergentmind-2608-01706-unisim-slam-feed-forward-slam-with-unified-sim-2026"
+      ],
+      "confidence": 0.78,
+      "first_seen": "2026-08-07T14:17:12Z",
+      "last_seen": "2026-08-07T14:17:12Z",
+      "world_hint": "perception-world-models"
+    },
+    "paper-2608-01706": {
+      "id": "paper-2608-01706",
+      "label": "UniSim-SLAM: Feed-Forward SLAM with Unified Sim(3) Optimization",
+      "type": "paper",
+      "summary": "EmergentMind surfaced arXiv paper 2608.01706: Recent geometric foundation models enable feed-forward inference for SLAM, but their predictions are strongly dependent on the input view set, which leads to geometric inconsistencies and trajectory drift when results are chained over long sequences. Online deployment further exposes a trade-off between the low latency of two-view tracking and the constraint...",
+      "aliases": [],
+      "source_ids": [
+        "emergentmind-2608-01706-unisim-slam-feed-forward-slam-with-unified-sim-2026"
+      ],
+      "confidence": 0.78,
+      "first_seen": "2026-08-07T14:17:12Z",
+      "last_seen": "2026-08-07T14:17:12Z",
+      "world_hint": "perception-world-models"
+    },
+    "diffusiongemma-technical-report": {
+      "id": "diffusiongemma-technical-report",
+      "label": "DiffusionGemma Technical Report",
+      "type": "method",
+      "summary": "Source-grounded method/approach from 'DiffusionGemma Technical Report': We introduce DiffusionGemma, an experimental open-weight language model that uses discrete diffusion to generate text at exceptionally high speed. Rather than decoding one token at a time, DiffusionGemma iteratively refines blocks of 256 tokens in parallel, avoiding the sequential decoding bottleneck of conventional autoregressive (AR) large language models....",
+      "aliases": [],
+      "source_ids": [
+        "emergentmind-2608-00146-diffusiongemma-technical-report-2026"
+      ],
+      "confidence": 0.78,
+      "first_seen": "2026-08-07T14:17:12Z",
+      "last_seen": "2026-08-07T14:17:12Z",
+      "world_hint": "retrieval-augmented-generation"
+    },
+    "diffusiongemma-technical-report-learning-problem": {
+      "id": "diffusiongemma-technical-report-learning-problem",
+      "label": "DiffusionGemma Technical Report problem setting",
+      "type": "concept",
+      "summary": "The learning or systems problem described by the source: We introduce DiffusionGemma, an experimental open-weight language model that uses discrete diffusion to generate text at exceptionally high speed. Rather than decoding one token at a time, DiffusionGemma iteratively refines blocks of 256 tokens in parallel, avoiding the sequential decoding bottleneck of conventional autoregressive (AR) large language models....",
+      "aliases": [],
+      "source_ids": [
+        "emergentmind-2608-00146-diffusiongemma-technical-report-2026"
+      ],
+      "confidence": 0.78,
+      "first_seen": "2026-08-07T14:17:12Z",
+      "last_seen": "2026-08-07T14:17:12Z",
+      "world_hint": "retrieval-augmented-generation"
+    },
+    "diffusiongemma-technical-report-evaluation-signal": {
+      "id": "diffusiongemma-technical-report-evaluation-signal",
+      "label": "DiffusionGemma Technical Report evaluation signal",
+      "type": "concept",
+      "summary": "The source's evaluation/benchmark signal for judging the method; Edokai keeps this claim source-qualified.",
+      "aliases": [],
+      "source_ids": [
+        "emergentmind-2608-00146-diffusiongemma-technical-report-2026"
+      ],
+      "confidence": 0.78,
+      "first_seen": "2026-08-07T14:17:12Z",
+      "last_seen": "2026-08-07T14:17:12Z",
+      "world_hint": "retrieval-augmented-generation"
+    },
+    "paper-2608-00146": {
+      "id": "paper-2608-00146",
+      "label": "DiffusionGemma Technical Report",
+      "type": "paper",
+      "summary": "EmergentMind surfaced arXiv paper 2608.00146: We introduce DiffusionGemma, an experimental open-weight language model that uses discrete diffusion to generate text at exceptionally high speed. Rather than decoding one token at a time, DiffusionGemma iteratively refines blocks of 256 tokens in parallel, avoiding the sequential decoding bottleneck of conventional autoregressive (AR) large language models....",
+      "aliases": [],
+      "source_ids": [
+        "emergentmind-2608-00146-diffusiongemma-technical-report-2026"
+      ],
+      "confidence": 0.78,
+      "first_seen": "2026-08-07T14:17:12Z",
+      "last_seen": "2026-08-07T14:17:12Z",
+      "world_hint": "retrieval-augmented-generation"
+    },
+    "longcat-sparse-attention-taming-the-lightning-via": {
+      "id": "longcat-sparse-attention-taming-the-lightning-via",
+      "label": "LongCat Sparse Attention",
+      "type": "method",
+      "summary": "Source-grounded method/approach from 'LongCat Sparse Attention: Taming the Lightning via Streaming-aware Hierarchical Cross-Layer Indexing': DeepSeek Sparse Attention (DSA) enables efficient long-context modeling through its Lightning Indexer. However, practical deployment remains constrained by the indexer's expensive $O(L^2)$ scoring overhead and the hardware-inefficient, discontinuous memory-access patterns induced by its outputs. To address these system-level bottlenecks, we introduce LongCat...",
+      "aliases": [],
+      "source_ids": [
+        "emergentmind-2608-01662-longcat-sparse-attention-taming-the-lightning-via-streaming-2026"
+      ],
+      "confidence": 0.78,
+      "first_seen": "2026-08-07T14:17:12Z",
+      "last_seen": "2026-08-07T14:17:12Z",
+      "world_hint": "perception-world-models"
+    },
+    "longcat-sparse-attention-taming-the-lightning-via-streaming": {
+      "id": "longcat-sparse-attention-taming-the-lightning-via-streaming",
+      "label": "LongCat Sparse Attention problem setting",
+      "type": "concept",
+      "summary": "The learning or systems problem described by the source: DeepSeek Sparse Attention (DSA) enables efficient long-context modeling through its Lightning Indexer. However, practical deployment remains constrained by the indexer's expensive $O(L^2)$ scoring overhead and the hardware-inefficient, discontinuous memory-access patterns induced by its outputs. To address these system-level bottlenecks, we introduce LongCat...",
+      "aliases": [],
+      "source_ids": [
+        "emergentmind-2608-01662-longcat-sparse-attention-taming-the-lightning-via-streaming-2026"
+      ],
+      "confidence": 0.78,
+      "first_seen": "2026-08-07T14:17:12Z",
+      "last_seen": "2026-08-07T14:17:12Z",
+      "world_hint": "perception-world-models"
+    },
+    "paper-2608-01662": {
+      "id": "paper-2608-01662",
+      "label": "LongCat Sparse Attention: Taming the Lightning via Streaming-aware Hierarchical Cross-Layer Indexing",
+      "type": "paper",
+      "summary": "EmergentMind surfaced arXiv paper 2608.01662: DeepSeek Sparse Attention (DSA) enables efficient long-context modeling through its Lightning Indexer. However, practical deployment remains constrained by the indexer's expensive $O(L^2)$ scoring overhead and the hardware-inefficient, discontinuous memory-access patterns induced by its outputs. To address these system-level bottlenecks, we introduce LongCat...",
+      "aliases": [],
+      "source_ids": [
+        "emergentmind-2608-01662-longcat-sparse-attention-taming-the-lightning-via-streaming-2026"
+      ],
+      "confidence": 0.78,
+      "first_seen": "2026-08-07T14:17:12Z",
+      "last_seen": "2026-08-07T14:17:12Z",
+      "world_hint": "perception-world-models"
     }
   },
   "edges": [
@@ -25429,6 +26153,486 @@
         "emergentmind-2608-01604-post-training-on-office-work-improves-software-engineering-2026"
       ],
       "evidence": "Routed into The Post Training On Office under generative-models from source title and abstract."
+    },
+    {
+      "source": "paper-2608-03972",
+      "target": "reflectrl-learning-from-golden-negative-trajectories-via",
+      "relation": "paper_introduces",
+      "confidence": 0.82,
+      "source_ids": [
+        "emergentmind-2608-03972-reflectrl-learning-from-golden-negative-trajectories-via-reflective-2026"
+      ],
+      "evidence": "EmergentMind homepage/page metadata identify arXiv 2608.03972, 'ReflectRL: Learning from Golden Negative Trajectories via Reflective-to-Direct Reasoning', and summarize the method/problem."
+    },
+    {
+      "source": "reflectrl-learning-from-golden-negative-trajectories-via",
+      "target": "reflectrl-learning-from-golden-negative-trajectories-via-reflective",
+      "relation": "implements",
+      "confidence": 0.76,
+      "source_ids": [
+        "emergentmind-2608-03972-reflectrl-learning-from-golden-negative-trajectories-via-reflective-2026"
+      ],
+      "evidence": "On-policy training has emerged as a powerful post-training paradigm for improving the reasoning capabilities of large language models, and is often enhanced by golden trajectories from stronger expert models. However, when the expert fails on harder problems, existing trajectory-"
+    },
+    {
+      "source": "reflectrl-learning-from-golden-negative-trajectories-via",
+      "target": "reflectrl-learning-from-golden-negative-trajectories-via-reflective",
+      "relation": "evaluates_on",
+      "confidence": 0.72,
+      "source_ids": [
+        "emergentmind-2608-03972-reflectrl-learning-from-golden-negative-trajectories-via-reflective-2026"
+      ],
+      "evidence": "On-policy training has emerged as a powerful post-training paradigm for improving the reasoning capabilities of large language models, and is often enhanced by golden trajectories from stronger expert models. However, when the expert fails on harder problems, existing trajectory-"
+    },
+    {
+      "source": "reflectrl-learning-from-golden-negative-trajectories-via",
+      "target": "the-reflectrl-learning-from-golden-negative",
+      "relation": "belongs_to_region",
+      "confidence": 0.78,
+      "source_ids": [
+        "emergentmind-2608-03972-reflectrl-learning-from-golden-negative-trajectories-via-reflective-2026"
+      ],
+      "evidence": "Routed into The Reflectrl Learning From Golden under perception-world-models from source title and abstract."
+    },
+    {
+      "source": "paper-2608-05466",
+      "target": "recursive-synthesis-for-long-horizon-terminal-tasks",
+      "relation": "paper_introduces",
+      "confidence": 0.82,
+      "source_ids": [
+        "emergentmind-2608-05466-recursive-synthesis-for-long-horizon-terminal-tasks-2026"
+      ],
+      "evidence": "EmergentMind homepage/page metadata identify arXiv 2608.05466, 'Recursive Synthesis for Long-Horizon Terminal Tasks', and summarize the method/problem."
+    },
+    {
+      "source": "recursive-synthesis-for-long-horizon-terminal-tasks",
+      "target": "recursive-synthesis-for-long-horizon-terminal-tasks-learning",
+      "relation": "implements",
+      "confidence": 0.76,
+      "source_ids": [
+        "emergentmind-2608-05466-recursive-synthesis-for-long-horizon-terminal-tasks-2026"
+      ],
+      "evidence": "High-quality long-horizon training data for terminal agents is expensive to produce, often costing hundreds to thousands of dollars per task, because each task must keep the instruction, environment, reference solution, and verifier mutually consistent. Human authoring does not s"
+    },
+    {
+      "source": "recursive-synthesis-for-long-horizon-terminal-tasks",
+      "target": "recursive-synthesis-for-long-horizon-terminal-tasks-evaluation",
+      "relation": "evaluates_on",
+      "confidence": 0.72,
+      "source_ids": [
+        "emergentmind-2608-05466-recursive-synthesis-for-long-horizon-terminal-tasks-2026"
+      ],
+      "evidence": "High-quality long-horizon training data for terminal agents is expensive to produce, often costing hundreds to thousands of dollars per task, because each task must keep the instruction, environment, reference solution, and verifier mutually consistent. Human authoring does not s"
+    },
+    {
+      "source": "recursive-synthesis-for-long-horizon-terminal-tasks",
+      "target": "the-recursive-synthesis-for-long-horizon",
+      "relation": "belongs_to_region",
+      "confidence": 0.78,
+      "source_ids": [
+        "emergentmind-2608-05466-recursive-synthesis-for-long-horizon-terminal-tasks-2026"
+      ],
+      "evidence": "Routed into The Recursive Synthesis For Long under generative-models from source title and abstract."
+    },
+    {
+      "source": "paper-2608-04205",
+      "target": "matraix-simulating-the-world-with-8-3",
+      "relation": "paper_introduces",
+      "confidence": 0.82,
+      "source_ids": [
+        "emergentmind-2608-04205-matraix-simulating-the-world-with-8-3-billion-2026"
+      ],
+      "evidence": "EmergentMind homepage/page metadata identify arXiv 2608.04205, 'MatrAIx: Simulating the World with 8.3 Billion Persona Agents', and summarize the method/problem."
+    },
+    {
+      "source": "matraix-simulating-the-world-with-8-3",
+      "target": "matraix-simulating-the-world-with-8-3-billion",
+      "relation": "implements",
+      "confidence": 0.76,
+      "source_ids": [
+        "emergentmind-2608-04205-matraix-simulating-the-world-with-8-3-billion-2026"
+      ],
+      "evidence": "Human evaluation of AI systems and digital products is costly, slow, and difficult to scale. Offline evaluations are more scalable but often abstract away human diversity and interactive behavior. We therefore introduce MatrAIx, a population-scale simulated-user evaluation infras"
+    },
+    {
+      "source": "matraix-simulating-the-world-with-8-3",
+      "target": "matraix-simulating-the-world-with-8-3-billion",
+      "relation": "evaluates_on",
+      "confidence": 0.72,
+      "source_ids": [
+        "emergentmind-2608-04205-matraix-simulating-the-world-with-8-3-billion-2026"
+      ],
+      "evidence": "Human evaluation of AI systems and digital products is costly, slow, and difficult to scale. Offline evaluations are more scalable but often abstract away human diversity and interactive behavior. We therefore introduce MatrAIx, a population-scale simulated-user evaluation infras"
+    },
+    {
+      "source": "matraix-simulating-the-world-with-8-3",
+      "target": "the-matraix-simulating-the-world-with",
+      "relation": "belongs_to_region",
+      "confidence": 0.78,
+      "source_ids": [
+        "emergentmind-2608-04205-matraix-simulating-the-world-with-8-3-billion-2026"
+      ],
+      "evidence": "Routed into The Matraix Simulating The World under llm-systems-serving from source title and abstract."
+    },
+    {
+      "source": "paper-2608-01186",
+      "target": "querysplat-decoupling-geometry-and-appearance-representations-in",
+      "relation": "paper_introduces",
+      "confidence": 0.82,
+      "source_ids": [
+        "emergentmind-2608-01186-querysplat-decoupling-geometry-and-appearance-representations-in-3dgs-2026"
+      ],
+      "evidence": "EmergentMind homepage/page metadata identify arXiv 2608.01186, 'QuerySplat: Decoupling Geometry and Appearance Representations in 3DGS Prediction', and summarize the method/problem."
+    },
+    {
+      "source": "querysplat-decoupling-geometry-and-appearance-representations-in",
+      "target": "querysplat-decoupling-geometry-and-appearance-representations-in-3dgs",
+      "relation": "implements",
+      "confidence": 0.76,
+      "source_ids": [
+        "emergentmind-2608-01186-querysplat-decoupling-geometry-and-appearance-representations-in-3dgs-2026"
+      ],
+      "evidence": "While feed-forward 3D Gaussian Splatting (3DGS) enables efficient 3D reconstruction, achieving high-fidelity rendering remains challenging. Existing pixel-aligned approaches suffer from spatial inflexibility and massive structural redundancy, whereas query-based methods lack 3D p"
+    },
+    {
+      "source": "querysplat-decoupling-geometry-and-appearance-representations-in",
+      "target": "querysplat-decoupling-geometry-and-appearance-representations-in-3dgs",
+      "relation": "evaluates_on",
+      "confidence": 0.72,
+      "source_ids": [
+        "emergentmind-2608-01186-querysplat-decoupling-geometry-and-appearance-representations-in-3dgs-2026"
+      ],
+      "evidence": "While feed-forward 3D Gaussian Splatting (3DGS) enables efficient 3D reconstruction, achieving high-fidelity rendering remains challenging. Existing pixel-aligned approaches suffer from spatial inflexibility and massive structural redundancy, whereas query-based methods lack 3D p"
+    },
+    {
+      "source": "querysplat-decoupling-geometry-and-appearance-representations-in",
+      "target": "the-querysplat-decoupling-geometry-and-appearance",
+      "relation": "belongs_to_region",
+      "confidence": 0.78,
+      "source_ids": [
+        "emergentmind-2608-01186-querysplat-decoupling-geometry-and-appearance-representations-in-3dgs-2026"
+      ],
+      "evidence": "Routed into The Querysplat Decoupling Geometry And under retrieval-augmented-generation from source title and abstract."
+    },
+    {
+      "source": "paper-2608-00931",
+      "target": "stipple-real-time-incremental-gaussian-splatting-with",
+      "relation": "paper_introduces",
+      "confidence": 0.82,
+      "source_ids": [
+        "emergentmind-2608-00931-stipple-real-time-incremental-gaussian-splatting-with-visual-2026"
+      ],
+      "evidence": "EmergentMind homepage/page metadata identify arXiv 2608.00931, 'Stipple: Real-Time Incremental Gaussian Splatting with Visual-Inertial Tracking', and summarize the method/problem."
+    },
+    {
+      "source": "stipple-real-time-incremental-gaussian-splatting-with",
+      "target": "stipple-real-time-incremental-gaussian-splatting-with-visual",
+      "relation": "implements",
+      "confidence": 0.76,
+      "source_ids": [
+        "emergentmind-2608-00931-stipple-real-time-incremental-gaussian-splatting-with-visual-2026"
+      ],
+      "evidence": "3D Gaussian Splatting (3DGS) provides efficient rendering of photo-realistic scenes, but its heavy preprocessing and training steps make it a poor fit for applications that require real-time reconstruction in robotics or XR. This capability is important since it allows immediate "
+    },
+    {
+      "source": "stipple-real-time-incremental-gaussian-splatting-with",
+      "target": "stipple-real-time-incremental-gaussian-splatting-with-visual",
+      "relation": "evaluates_on",
+      "confidence": 0.72,
+      "source_ids": [
+        "emergentmind-2608-00931-stipple-real-time-incremental-gaussian-splatting-with-visual-2026"
+      ],
+      "evidence": "3D Gaussian Splatting (3DGS) provides efficient rendering of photo-realistic scenes, but its heavy preprocessing and training steps make it a poor fit for applications that require real-time reconstruction in robotics or XR. This capability is important since it allows immediate "
+    },
+    {
+      "source": "stipple-real-time-incremental-gaussian-splatting-with",
+      "target": "the-stipple-real-time-incremental-gaussian",
+      "relation": "belongs_to_region",
+      "confidence": 0.78,
+      "source_ids": [
+        "emergentmind-2608-00931-stipple-real-time-incremental-gaussian-splatting-with-visual-2026"
+      ],
+      "evidence": "Routed into The Stipple Real Time Incremental under retrieval-augmented-generation from source title and abstract."
+    },
+    {
+      "source": "paper-2608-05141",
+      "target": "octolong-mid-training-on-cross-repository-code",
+      "relation": "paper_introduces",
+      "confidence": 0.82,
+      "source_ids": [
+        "emergentmind-2608-05141-octolong-mid-training-on-cross-repository-code-contexts-2026"
+      ],
+      "evidence": "EmergentMind homepage/page metadata identify arXiv 2608.05141, 'OctoLong: Mid-Training On Cross-Repository Code Contexts Enhances Long-Context Modeling', and summarize the method/problem."
+    },
+    {
+      "source": "octolong-mid-training-on-cross-repository-code",
+      "target": "octolong-mid-training-on-cross-repository-code-contexts",
+      "relation": "implements",
+      "confidence": 0.76,
+      "source_ids": [
+        "emergentmind-2608-05141-octolong-mid-training-on-cross-repository-code-contexts-2026"
+      ],
+      "evidence": "Context lengths of language models (LMs) have dramatically increased, driven by the demands for in-context learning, self-improvement, and long-horizon agentic workflows. Existing long-context corpora, however, are dominated by books, academic articles, and code repositories, whi"
+    },
+    {
+      "source": "octolong-mid-training-on-cross-repository-code",
+      "target": "octolong-mid-training-on-cross-repository-code-contexts",
+      "relation": "evaluates_on",
+      "confidence": 0.72,
+      "source_ids": [
+        "emergentmind-2608-05141-octolong-mid-training-on-cross-repository-code-contexts-2026"
+      ],
+      "evidence": "Context lengths of language models (LMs) have dramatically increased, driven by the demands for in-context learning, self-improvement, and long-horizon agentic workflows. Existing long-context corpora, however, are dominated by books, academic articles, and code repositories, whi"
+    },
+    {
+      "source": "octolong-mid-training-on-cross-repository-code",
+      "target": "the-octolong-mid-training-on-cross",
+      "relation": "belongs_to_region",
+      "confidence": 0.78,
+      "source_ids": [
+        "emergentmind-2608-05141-octolong-mid-training-on-cross-repository-code-contexts-2026"
+      ],
+      "evidence": "Routed into The Octolong Mid Training On under retrieval-augmented-generation from source title and abstract."
+    },
+    {
+      "source": "paper-2608-05139",
+      "target": "toward-skill-native-llms-skill-entropy-for",
+      "relation": "paper_introduces",
+      "confidence": 0.82,
+      "source_ids": [
+        "emergentmind-2608-05139-toward-skill-native-llms-skill-entropy-for-benchmarking-2026"
+      ],
+      "evidence": "EmergentMind homepage/page metadata identify arXiv 2608.05139, 'Toward Skill-Native LLMs: Skill Entropy for Benchmarking and Training Long-Horizon Reasoning', and summarize the method/problem."
+    },
+    {
+      "source": "toward-skill-native-llms-skill-entropy-for",
+      "target": "toward-skill-native-llms-skill-entropy-for-benchmarking",
+      "relation": "implements",
+      "confidence": 0.76,
+      "source_ids": [
+        "emergentmind-2608-05139-toward-skill-native-llms-skill-entropy-for-benchmarking-2026"
+      ],
+      "evidence": "Long-horizon reasoning in recent LLMs demands that the model switch between distinct skills inside a reasoning chain, such as first doing a math derivation, then using the result to plan a schedule. We call such problems cross-skill long-horizon tasks: multi-step tasks whose step"
+    },
+    {
+      "source": "toward-skill-native-llms-skill-entropy-for",
+      "target": "toward-skill-native-llms-skill-entropy-for-benchmarking",
+      "relation": "evaluates_on",
+      "confidence": 0.72,
+      "source_ids": [
+        "emergentmind-2608-05139-toward-skill-native-llms-skill-entropy-for-benchmarking-2026"
+      ],
+      "evidence": "Long-horizon reasoning in recent LLMs demands that the model switch between distinct skills inside a reasoning chain, such as first doing a math derivation, then using the result to plan a schedule. We call such problems cross-skill long-horizon tasks: multi-step tasks whose step"
+    },
+    {
+      "source": "toward-skill-native-llms-skill-entropy-for",
+      "target": "the-toward-skill-native-llms-skill",
+      "relation": "belongs_to_region",
+      "confidence": 0.78,
+      "source_ids": [
+        "emergentmind-2608-05139-toward-skill-native-llms-skill-entropy-for-benchmarking-2026"
+      ],
+      "evidence": "Routed into The Toward Skill Native Llms under perception-world-models from source title and abstract."
+    },
+    {
+      "source": "paper-2608-05784",
+      "target": "activity-frames-deterministic-screen-activity-compilation-for",
+      "relation": "paper_introduces",
+      "confidence": 0.82,
+      "source_ids": [
+        "emergentmind-2608-05784-activity-frames-deterministic-screen-activity-compilation-for-agent-2026"
+      ],
+      "evidence": "EmergentMind homepage/page metadata identify arXiv 2608.05784, 'Activity Frames: Deterministic Screen-Activity Compilation for Agent Memory and Replay', and summarize the method/problem."
+    },
+    {
+      "source": "activity-frames-deterministic-screen-activity-compilation-for",
+      "target": "activity-frames-deterministic-screen-activity-compilation-for-agent",
+      "relation": "implements",
+      "confidence": 0.76,
+      "source_ids": [
+        "emergentmind-2608-05784-activity-frames-deterministic-screen-activity-compilation-for-agent-2026"
+      ],
+      "evidence": "Computer-use agents pay full frontier inference to re-derive routines their user has already performed, because an agent's memory today records what the user said, not what the user did. We compile passively captured screen activity into agent memory with a deterministic, zero-mo"
+    },
+    {
+      "source": "activity-frames-deterministic-screen-activity-compilation-for",
+      "target": "activity-frames-deterministic-screen-activity-compilation-for-agent",
+      "relation": "evaluates_on",
+      "confidence": 0.72,
+      "source_ids": [
+        "emergentmind-2608-05784-activity-frames-deterministic-screen-activity-compilation-for-agent-2026"
+      ],
+      "evidence": "Computer-use agents pay full frontier inference to re-derive routines their user has already performed, because an agent's memory today records what the user said, not what the user did. We compile passively captured screen activity into agent memory with a deterministic, zero-mo"
+    },
+    {
+      "source": "activity-frames-deterministic-screen-activity-compilation-for",
+      "target": "the-activity-frames-deterministic-screen-activity",
+      "relation": "belongs_to_region",
+      "confidence": 0.78,
+      "source_ids": [
+        "emergentmind-2608-05784-activity-frames-deterministic-screen-activity-compilation-for-agent-2026"
+      ],
+      "evidence": "Routed into The Activity Frames Deterministic Screen under llm-systems-serving from source title and abstract."
+    },
+    {
+      "source": "paper-2608-01588",
+      "target": "d-2-4dgs-dual-depth-guided-sparse",
+      "relation": "paper_introduces",
+      "confidence": 0.82,
+      "source_ids": [
+        "emergentmind-2608-01588-d-2-4dgs-dual-depth-guided-sparse-camera-2026"
+      ],
+      "evidence": "EmergentMind homepage/page metadata identify arXiv 2608.01588, 'D^2-4DGS: Dual-Depth Guided Sparse-Camera 4D Gaussian Splatting', and summarize the method/problem."
+    },
+    {
+      "source": "d-2-4dgs-dual-depth-guided-sparse",
+      "target": "d-2-4dgs-dual-depth-guided-sparse-camera",
+      "relation": "implements",
+      "confidence": 0.76,
+      "source_ids": [
+        "emergentmind-2608-01588-d-2-4dgs-dual-depth-guided-sparse-camera-2026"
+      ],
+      "evidence": "Dynamic 4D Gaussian Splatting has emerged as an efficient representation for dynamic novel view synthesis through explicit scene modeling and real-time rendering. However, existing methods typically require dense multi-view videos for sufficient geometric constraints, making capt"
+    },
+    {
+      "source": "d-2-4dgs-dual-depth-guided-sparse",
+      "target": "d-2-4dgs-dual-depth-guided-sparse-camera",
+      "relation": "evaluates_on",
+      "confidence": 0.72,
+      "source_ids": [
+        "emergentmind-2608-01588-d-2-4dgs-dual-depth-guided-sparse-camera-2026"
+      ],
+      "evidence": "Dynamic 4D Gaussian Splatting has emerged as an efficient representation for dynamic novel view synthesis through explicit scene modeling and real-time rendering. However, existing methods typically require dense multi-view videos for sufficient geometric constraints, making capt"
+    },
+    {
+      "source": "d-2-4dgs-dual-depth-guided-sparse",
+      "target": "the-d-2-4dgs-dual-depth",
+      "relation": "belongs_to_region",
+      "confidence": 0.78,
+      "source_ids": [
+        "emergentmind-2608-01588-d-2-4dgs-dual-depth-guided-sparse-camera-2026"
+      ],
+      "evidence": "Routed into The D 2 4dgs Dual under retrieval-augmented-generation from source title and abstract."
+    },
+    {
+      "source": "paper-2608-01706",
+      "target": "unisim-slam-feed-forward-slam-with-unified",
+      "relation": "paper_introduces",
+      "confidence": 0.82,
+      "source_ids": [
+        "emergentmind-2608-01706-unisim-slam-feed-forward-slam-with-unified-sim-2026"
+      ],
+      "evidence": "EmergentMind homepage/page metadata identify arXiv 2608.01706, 'UniSim-SLAM: Feed-Forward SLAM with Unified Sim(3) Optimization', and summarize the method/problem."
+    },
+    {
+      "source": "unisim-slam-feed-forward-slam-with-unified",
+      "target": "unisim-slam-feed-forward-slam-with-unified-sim",
+      "relation": "implements",
+      "confidence": 0.76,
+      "source_ids": [
+        "emergentmind-2608-01706-unisim-slam-feed-forward-slam-with-unified-sim-2026"
+      ],
+      "evidence": "Recent geometric foundation models enable feed-forward inference for SLAM, but their predictions are strongly dependent on the input view set, which leads to geometric inconsistencies and trajectory drift when results are chained over long sequences. Online deployment further exp"
+    },
+    {
+      "source": "unisim-slam-feed-forward-slam-with-unified",
+      "target": "unisim-slam-feed-forward-slam-with-unified-sim",
+      "relation": "evaluates_on",
+      "confidence": 0.72,
+      "source_ids": [
+        "emergentmind-2608-01706-unisim-slam-feed-forward-slam-with-unified-sim-2026"
+      ],
+      "evidence": "Recent geometric foundation models enable feed-forward inference for SLAM, but their predictions are strongly dependent on the input view set, which leads to geometric inconsistencies and trajectory drift when results are chained over long sequences. Online deployment further exp"
+    },
+    {
+      "source": "unisim-slam-feed-forward-slam-with-unified",
+      "target": "the-unisim-slam-feed-forward-slam",
+      "relation": "belongs_to_region",
+      "confidence": 0.78,
+      "source_ids": [
+        "emergentmind-2608-01706-unisim-slam-feed-forward-slam-with-unified-sim-2026"
+      ],
+      "evidence": "Routed into The Unisim Slam Feed Forward under perception-world-models from source title and abstract."
+    },
+    {
+      "source": "paper-2608-00146",
+      "target": "diffusiongemma-technical-report",
+      "relation": "paper_introduces",
+      "confidence": 0.82,
+      "source_ids": [
+        "emergentmind-2608-00146-diffusiongemma-technical-report-2026"
+      ],
+      "evidence": "EmergentMind homepage/page metadata identify arXiv 2608.00146, 'DiffusionGemma Technical Report', and summarize the method/problem."
+    },
+    {
+      "source": "diffusiongemma-technical-report",
+      "target": "diffusiongemma-technical-report-learning-problem",
+      "relation": "implements",
+      "confidence": 0.76,
+      "source_ids": [
+        "emergentmind-2608-00146-diffusiongemma-technical-report-2026"
+      ],
+      "evidence": "We introduce DiffusionGemma, an experimental open-weight language model that uses discrete diffusion to generate text at exceptionally high speed. Rather than decoding one token at a time, DiffusionGemma iteratively refines blocks of 256 tokens in parallel, avoiding the sequentia"
+    },
+    {
+      "source": "diffusiongemma-technical-report",
+      "target": "diffusiongemma-technical-report-evaluation-signal",
+      "relation": "evaluates_on",
+      "confidence": 0.72,
+      "source_ids": [
+        "emergentmind-2608-00146-diffusiongemma-technical-report-2026"
+      ],
+      "evidence": "We introduce DiffusionGemma, an experimental open-weight language model that uses discrete diffusion to generate text at exceptionally high speed. Rather than decoding one token at a time, DiffusionGemma iteratively refines blocks of 256 tokens in parallel, avoiding the sequentia"
+    },
+    {
+      "source": "diffusiongemma-technical-report",
+      "target": "the-diffusiongemma-technical-report",
+      "relation": "belongs_to_region",
+      "confidence": 0.78,
+      "source_ids": [
+        "emergentmind-2608-00146-diffusiongemma-technical-report-2026"
+      ],
+      "evidence": "Routed into The Diffusiongemma Technical Report under retrieval-augmented-generation from source title and abstract."
+    },
+    {
+      "source": "paper-2608-01662",
+      "target": "longcat-sparse-attention-taming-the-lightning-via",
+      "relation": "paper_introduces",
+      "confidence": 0.82,
+      "source_ids": [
+        "emergentmind-2608-01662-longcat-sparse-attention-taming-the-lightning-via-streaming-2026"
+      ],
+      "evidence": "EmergentMind homepage/page metadata identify arXiv 2608.01662, 'LongCat Sparse Attention: Taming the Lightning via Streaming-aware Hierarchical Cross-Layer Indexing', and summarize the method/problem."
+    },
+    {
+      "source": "longcat-sparse-attention-taming-the-lightning-via",
+      "target": "longcat-sparse-attention-taming-the-lightning-via-streaming",
+      "relation": "implements",
+      "confidence": 0.76,
+      "source_ids": [
+        "emergentmind-2608-01662-longcat-sparse-attention-taming-the-lightning-via-streaming-2026"
+      ],
+      "evidence": "DeepSeek Sparse Attention (DSA) enables efficient long-context modeling through its Lightning Indexer. However, practical deployment remains constrained by the indexer's expensive $O(L^2)$ scoring overhead and the hardware-inefficient, discontinuous memory-access patterns induced"
+    },
+    {
+      "source": "longcat-sparse-attention-taming-the-lightning-via",
+      "target": "longcat-sparse-attention-taming-the-lightning-via-streaming",
+      "relation": "evaluates_on",
+      "confidence": 0.72,
+      "source_ids": [
+        "emergentmind-2608-01662-longcat-sparse-attention-taming-the-lightning-via-streaming-2026"
+      ],
+      "evidence": "DeepSeek Sparse Attention (DSA) enables efficient long-context modeling through its Lightning Indexer. However, practical deployment remains constrained by the indexer's expensive $O(L^2)$ scoring overhead and the hardware-inefficient, discontinuous memory-access patterns induced"
+    },
+    {
+      "source": "longcat-sparse-attention-taming-the-lightning-via",
+      "target": "the-longcat-sparse-attention-taming-the",
+      "relation": "belongs_to_region",
+      "confidence": 0.78,
+      "source_ids": [
+        "emergentmind-2608-01662-longcat-sparse-attention-taming-the-lightning-via-streaming-2026"
+      ],
+      "evidence": "Routed into The Longcat Sparse Attention Taming under perception-world-models from source title and abstract."
     }
   ],
   "open_questions": [
@@ -27425,6 +28629,65 @@
         "retrieval-augmented-generation",
         "generative-models",
         "agents"
+      ],
+      "regions_added": 12,
+      "manual_review": [
+        "Skipped pure-math, astronomy/cosmology, and clinical/medical surfaced items in this bounded pass; clinical claims need deeper safety review before routing.",
+        "New visual-SLAM/event-camera/egocentric-video items are routed under Perception & World Models; DeepSearch is routed under Retrieval-Augmented Generation; beyond-human intelligence evaluation is routed under Agents."
+      ],
+      "verification": {
+        "json_parse": "passed",
+        "dkg_test": "passed",
+        "build": "passed",
+        "supabase_sync": "passed",
+        "roundtrip": "passed"
+      }
+    },
+    {
+      "run_id": "daily-emergentmind-all-topics-20260807T141712Z",
+      "completed_at": "2026-08-07T14:17:12Z",
+      "type": "daily-emergentmind-all-topics",
+      "homepage_url": "https://www.emergentmind.com/",
+      "homepage_status": 200,
+      "homepage_papers": 45,
+      "source_ids": [
+        "emergentmind-2608-03972-reflectrl-learning-from-golden-negative-trajectories-via-reflective-2026",
+        "emergentmind-2608-05466-recursive-synthesis-for-long-horizon-terminal-tasks-2026",
+        "emergentmind-2608-04205-matraix-simulating-the-world-with-8-3-billion-2026",
+        "emergentmind-2608-01186-querysplat-decoupling-geometry-and-appearance-representations-in-3dgs-2026",
+        "emergentmind-2608-00931-stipple-real-time-incremental-gaussian-splatting-with-visual-2026",
+        "emergentmind-2608-05141-octolong-mid-training-on-cross-repository-code-contexts-2026",
+        "emergentmind-2608-05139-toward-skill-native-llms-skill-entropy-for-benchmarking-2026",
+        "emergentmind-2608-05784-activity-frames-deterministic-screen-activity-compilation-for-agent-2026",
+        "emergentmind-2608-01588-d-2-4dgs-dual-depth-guided-sparse-camera-2026",
+        "emergentmind-2608-01706-unisim-slam-feed-forward-slam-with-unified-sim-2026",
+        "emergentmind-2608-00146-diffusiongemma-technical-report-2026",
+        "emergentmind-2608-01662-longcat-sparse-attention-taming-the-lightning-via-streaming-2026"
+      ],
+      "page_status": {
+        "2608.03972": 200,
+        "2608.05466": 200,
+        "2608.04205": 200,
+        "2608.01186": 200,
+        "2608.00931": 200,
+        "2608.05141": 200,
+        "2608.05139": 200,
+        "2608.05784": 200,
+        "2608.01588": 200,
+        "2608.01706": 200,
+        "2608.00146": 200,
+        "2608.01662": 200
+      },
+      "sources_added": 12,
+      "sources_updated": 0,
+      "nodes_added": 38,
+      "nodes_updated": 0,
+      "edges_added": 48,
+      "worlds_touched": [
+        "perception-world-models",
+        "generative-models",
+        "llm-systems-serving",
+        "retrieval-augmented-generation"
       ],
       "regions_added": 12,
       "manual_review": [

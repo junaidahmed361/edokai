@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "updated_at": "2026-08-06T17:40:14Z",
+  "updated_at": "2026-08-07T14:17:12Z",
   "macro_worlds": {
     "agents": {
       "label": "Agents",
@@ -3809,6 +3809,48 @@
               ]
             }
           ]
+        },
+        {
+          "id": "the-recursive-synthesis-for-long-horizon",
+          "label": "The Recursive Synthesis For Long",
+          "summary": "A source-backed case board for Recursive Synthesis for Long-Horizon Terminal Tasks: learners inspect the plain technical mechanism, the evaluation signal, and where the claim fits in Edokai's generative models world.",
+          "source_ids": [
+            "emergentmind-2608-05466-recursive-synthesis-for-long-horizon-terminal-tasks-2026"
+          ],
+          "concept_ids": [
+            "recursive-synthesis-for-long-horizon-terminal-tasks",
+            "recursive-synthesis-for-long-horizon-terminal-tasks-learning",
+            "recursive-synthesis-for-long-horizon-terminal-tasks-evaluation"
+          ],
+          "critical_concepts": [
+            "recursive-synthesis-for-long-horizon-terminal-tasks",
+            "recursive-synthesis-for-long-horizon-terminal-tasks-learning"
+          ],
+          "prerequisite_links": [],
+          "side_retention_duels": [
+            {
+              "id": "the-recursive-synthesis-for-long-duel",
+              "prompt": "What should Edokai learners remember about **Recursive Synthesis for Long-Horizon Terminal Tasks**?",
+              "left": "Treat it as a title-only bookmark without checking the mechanism.",
+              "right": "Track the mechanism, evidence signal, and limits stated by the source.",
+              "answer": "Use the source-backed mechanism and evaluation signal; avoid inferring guarantees beyond the paper summary."
+            }
+          ],
+          "quiz_questions": [
+            {
+              "question": "In the source **Recursive Synthesis for Long-Horizon Terminal Tasks**, what is the main learner-facing mechanism Edokai should preserve?",
+              "choices": [
+                "It mainly replaces the user interface theme without changing the learning mechanism.",
+                "It is a clinical treatment protocol rather than a machine-learning research method.",
+                "It uses the source's Recursive Synthesis for Long-Horizon Terminal Tasks mechanism to address the paper's stated ML/AI problem.",
+                "It proves a pure-math theorem without a model, agent, or evaluation loop."
+              ],
+              "answer_index": 2,
+              "source_ids": [
+                "emergentmind-2608-05466-recursive-synthesis-for-long-horizon-terminal-tasks-2026"
+              ]
+            }
+          ]
         }
       ]
     },
@@ -7218,6 +7260,174 @@
               ]
             }
           ]
+        },
+        {
+          "id": "the-reflectrl-learning-from-golden-negative",
+          "label": "The Reflectrl Learning From Golden",
+          "summary": "A source-backed case board for ReflectRL: Learning from Golden Negative Trajectories via Reflective-to-Direct Reasoning: learners inspect the plain technical mechanism, the evaluation signal, and where the claim fits in Edokai's perception world models world.",
+          "source_ids": [
+            "emergentmind-2608-03972-reflectrl-learning-from-golden-negative-trajectories-via-reflective-2026"
+          ],
+          "concept_ids": [
+            "reflectrl-learning-from-golden-negative-trajectories-via",
+            "reflectrl-learning-from-golden-negative-trajectories-via-reflective",
+            "reflectrl-learning-from-golden-negative-trajectories-via-reflective"
+          ],
+          "critical_concepts": [
+            "reflectrl-learning-from-golden-negative-trajectories-via",
+            "reflectrl-learning-from-golden-negative-trajectories-via-reflective"
+          ],
+          "prerequisite_links": [],
+          "side_retention_duels": [
+            {
+              "id": "the-reflectrl-learning-from-golden-duel",
+              "prompt": "What should Edokai learners remember about **ReflectRL**?",
+              "left": "Treat it as a title-only bookmark without checking the mechanism.",
+              "right": "Track the mechanism, evidence signal, and limits stated by the source.",
+              "answer": "Use the source-backed mechanism and evaluation signal; avoid inferring guarantees beyond the paper summary."
+            }
+          ],
+          "quiz_questions": [
+            {
+              "question": "In the source **ReflectRL: Learning from Golden Negative Trajectories via Reflective-to-Direct Reasoning**, what is the main learner-facing mechanism Edokai should preserve?",
+              "choices": [
+                "It mainly replaces the user interface theme without changing the learning mechanism.",
+                "It uses the source's ReflectRL mechanism to address the paper's stated ML/AI problem.",
+                "It is a clinical treatment protocol rather than a machine-learning research method.",
+                "It proves a pure-math theorem without a model, agent, or evaluation loop."
+              ],
+              "answer_index": 1,
+              "source_ids": [
+                "emergentmind-2608-03972-reflectrl-learning-from-golden-negative-trajectories-via-reflective-2026"
+              ]
+            }
+          ]
+        },
+        {
+          "id": "the-toward-skill-native-llms-skill",
+          "label": "The Toward Skill Native Llms",
+          "summary": "A source-backed case board for Toward Skill-Native LLMs: Skill Entropy for Benchmarking and Training Long-Horizon Reasoning: learners inspect the plain technical mechanism, the evaluation signal, and where the claim fits in Edokai's perception world models world.",
+          "source_ids": [
+            "emergentmind-2608-05139-toward-skill-native-llms-skill-entropy-for-benchmarking-2026"
+          ],
+          "concept_ids": [
+            "toward-skill-native-llms-skill-entropy-for",
+            "toward-skill-native-llms-skill-entropy-for-benchmarking",
+            "toward-skill-native-llms-skill-entropy-for-benchmarking"
+          ],
+          "critical_concepts": [
+            "toward-skill-native-llms-skill-entropy-for",
+            "toward-skill-native-llms-skill-entropy-for-benchmarking"
+          ],
+          "prerequisite_links": [],
+          "side_retention_duels": [
+            {
+              "id": "the-toward-skill-native-llms-duel",
+              "prompt": "What should Edokai learners remember about **Toward Skill-Native LLMs**?",
+              "left": "Treat it as a title-only bookmark without checking the mechanism.",
+              "right": "Track the mechanism, evidence signal, and limits stated by the source.",
+              "answer": "Use the source-backed mechanism and evaluation signal; avoid inferring guarantees beyond the paper summary."
+            }
+          ],
+          "quiz_questions": [
+            {
+              "question": "In the source **Toward Skill-Native LLMs: Skill Entropy for Benchmarking and Training Long-Horizon Reasoning**, what is the main learner-facing mechanism Edokai should preserve?",
+              "choices": [
+                "It mainly replaces the user interface theme without changing the learning mechanism.",
+                "It is a clinical treatment protocol rather than a machine-learning research method.",
+                "It proves a pure-math theorem without a model, agent, or evaluation loop.",
+                "It uses the source's Toward Skill-Native LLMs mechanism to address the paper's stated ML/AI problem."
+              ],
+              "answer_index": 3,
+              "source_ids": [
+                "emergentmind-2608-05139-toward-skill-native-llms-skill-entropy-for-benchmarking-2026"
+              ]
+            }
+          ]
+        },
+        {
+          "id": "the-unisim-slam-feed-forward-slam",
+          "label": "The Unisim Slam Feed Forward",
+          "summary": "A source-backed case board for UniSim-SLAM: Feed-Forward SLAM with Unified Sim(3) Optimization: learners inspect the plain technical mechanism, the evaluation signal, and where the claim fits in Edokai's perception world models world.",
+          "source_ids": [
+            "emergentmind-2608-01706-unisim-slam-feed-forward-slam-with-unified-sim-2026"
+          ],
+          "concept_ids": [
+            "unisim-slam-feed-forward-slam-with-unified",
+            "unisim-slam-feed-forward-slam-with-unified-sim",
+            "unisim-slam-feed-forward-slam-with-unified-sim"
+          ],
+          "critical_concepts": [
+            "unisim-slam-feed-forward-slam-with-unified",
+            "unisim-slam-feed-forward-slam-with-unified-sim"
+          ],
+          "prerequisite_links": [],
+          "side_retention_duels": [
+            {
+              "id": "the-unisim-slam-feed-forward-duel",
+              "prompt": "What should Edokai learners remember about **UniSim-SLAM**?",
+              "left": "Treat it as a title-only bookmark without checking the mechanism.",
+              "right": "Track the mechanism, evidence signal, and limits stated by the source.",
+              "answer": "Use the source-backed mechanism and evaluation signal; avoid inferring guarantees beyond the paper summary."
+            }
+          ],
+          "quiz_questions": [
+            {
+              "question": "In the source **UniSim-SLAM: Feed-Forward SLAM with Unified Sim(3) Optimization**, what is the main learner-facing mechanism Edokai should preserve?",
+              "choices": [
+                "It mainly replaces the user interface theme without changing the learning mechanism.",
+                "It is a clinical treatment protocol rather than a machine-learning research method.",
+                "It uses the source's UniSim-SLAM mechanism to address the paper's stated ML/AI problem.",
+                "It proves a pure-math theorem without a model, agent, or evaluation loop."
+              ],
+              "answer_index": 2,
+              "source_ids": [
+                "emergentmind-2608-01706-unisim-slam-feed-forward-slam-with-unified-sim-2026"
+              ]
+            }
+          ]
+        },
+        {
+          "id": "the-longcat-sparse-attention-taming-the",
+          "label": "The Longcat Sparse Attention Taming",
+          "summary": "A source-backed case board for LongCat Sparse Attention: Taming the Lightning via Streaming-aware Hierarchical Cross-Layer Indexing: learners inspect the plain technical mechanism, the evaluation signal, and where the claim fits in Edokai's perception world models world.",
+          "source_ids": [
+            "emergentmind-2608-01662-longcat-sparse-attention-taming-the-lightning-via-streaming-2026"
+          ],
+          "concept_ids": [
+            "longcat-sparse-attention-taming-the-lightning-via",
+            "longcat-sparse-attention-taming-the-lightning-via-streaming",
+            "longcat-sparse-attention-taming-the-lightning-via-streaming"
+          ],
+          "critical_concepts": [
+            "longcat-sparse-attention-taming-the-lightning-via",
+            "longcat-sparse-attention-taming-the-lightning-via-streaming"
+          ],
+          "prerequisite_links": [],
+          "side_retention_duels": [
+            {
+              "id": "the-longcat-sparse-attention-taming-duel",
+              "prompt": "What should Edokai learners remember about **LongCat Sparse Attention**?",
+              "left": "Treat it as a title-only bookmark without checking the mechanism.",
+              "right": "Track the mechanism, evidence signal, and limits stated by the source.",
+              "answer": "Use the source-backed mechanism and evaluation signal; avoid inferring guarantees beyond the paper summary."
+            }
+          ],
+          "quiz_questions": [
+            {
+              "question": "In the source **LongCat Sparse Attention: Taming the Lightning via Streaming-aware Hierarchical Cross-Layer Indexing**, what is the main learner-facing mechanism Edokai should preserve?",
+              "choices": [
+                "It uses the source's LongCat Sparse Attention mechanism to address the paper's stated ML/AI problem.",
+                "It mainly replaces the user interface theme without changing the learning mechanism.",
+                "It is a clinical treatment protocol rather than a machine-learning research method.",
+                "It proves a pure-math theorem without a model, agent, or evaluation loop."
+              ],
+              "answer_index": 0,
+              "source_ids": [
+                "emergentmind-2608-01662-longcat-sparse-attention-taming-the-lightning-via-streaming-2026"
+              ]
+            }
+          ]
         }
       ]
     },
@@ -8174,6 +8384,90 @@
               "answer_index": 2,
               "source_ids": [
                 "emergentmind-2608-02412-why-large-language-models-fail-at-tabular-prediction-2026"
+              ]
+            }
+          ]
+        },
+        {
+          "id": "the-matraix-simulating-the-world-with",
+          "label": "The Matraix Simulating The World",
+          "summary": "A source-backed case board for MatrAIx: Simulating the World with 8.3 Billion Persona Agents: learners inspect the plain technical mechanism, the evaluation signal, and where the claim fits in Edokai's llm systems serving world.",
+          "source_ids": [
+            "emergentmind-2608-04205-matraix-simulating-the-world-with-8-3-billion-2026"
+          ],
+          "concept_ids": [
+            "matraix-simulating-the-world-with-8-3",
+            "matraix-simulating-the-world-with-8-3-billion",
+            "matraix-simulating-the-world-with-8-3-billion"
+          ],
+          "critical_concepts": [
+            "matraix-simulating-the-world-with-8-3",
+            "matraix-simulating-the-world-with-8-3-billion"
+          ],
+          "prerequisite_links": [],
+          "side_retention_duels": [
+            {
+              "id": "the-matraix-simulating-the-world-duel",
+              "prompt": "What should Edokai learners remember about **MatrAIx**?",
+              "left": "Treat it as a title-only bookmark without checking the mechanism.",
+              "right": "Track the mechanism, evidence signal, and limits stated by the source.",
+              "answer": "Use the source-backed mechanism and evaluation signal; avoid inferring guarantees beyond the paper summary."
+            }
+          ],
+          "quiz_questions": [
+            {
+              "question": "In the source **MatrAIx: Simulating the World with 8.3 Billion Persona Agents**, what is the main learner-facing mechanism Edokai should preserve?",
+              "choices": [
+                "It mainly replaces the user interface theme without changing the learning mechanism.",
+                "It is a clinical treatment protocol rather than a machine-learning research method.",
+                "It proves a pure-math theorem without a model, agent, or evaluation loop.",
+                "It uses the source's MatrAIx mechanism to address the paper's stated ML/AI problem."
+              ],
+              "answer_index": 3,
+              "source_ids": [
+                "emergentmind-2608-04205-matraix-simulating-the-world-with-8-3-billion-2026"
+              ]
+            }
+          ]
+        },
+        {
+          "id": "the-activity-frames-deterministic-screen-activity",
+          "label": "The Activity Frames Deterministic Screen",
+          "summary": "A source-backed case board for Activity Frames: Deterministic Screen-Activity Compilation for Agent Memory and Replay: learners inspect the plain technical mechanism, the evaluation signal, and where the claim fits in Edokai's llm systems serving world.",
+          "source_ids": [
+            "emergentmind-2608-05784-activity-frames-deterministic-screen-activity-compilation-for-agent-2026"
+          ],
+          "concept_ids": [
+            "activity-frames-deterministic-screen-activity-compilation-for",
+            "activity-frames-deterministic-screen-activity-compilation-for-agent",
+            "activity-frames-deterministic-screen-activity-compilation-for-agent"
+          ],
+          "critical_concepts": [
+            "activity-frames-deterministic-screen-activity-compilation-for",
+            "activity-frames-deterministic-screen-activity-compilation-for-agent"
+          ],
+          "prerequisite_links": [],
+          "side_retention_duels": [
+            {
+              "id": "the-activity-frames-deterministic-screen-duel",
+              "prompt": "What should Edokai learners remember about **Activity Frames**?",
+              "left": "Treat it as a title-only bookmark without checking the mechanism.",
+              "right": "Track the mechanism, evidence signal, and limits stated by the source.",
+              "answer": "Use the source-backed mechanism and evaluation signal; avoid inferring guarantees beyond the paper summary."
+            }
+          ],
+          "quiz_questions": [
+            {
+              "question": "In the source **Activity Frames: Deterministic Screen-Activity Compilation for Agent Memory and Replay**, what is the main learner-facing mechanism Edokai should preserve?",
+              "choices": [
+                "It uses the source's Activity Frames mechanism to address the paper's stated ML/AI problem.",
+                "It mainly replaces the user interface theme without changing the learning mechanism.",
+                "It is a clinical treatment protocol rather than a machine-learning research method.",
+                "It proves a pure-math theorem without a model, agent, or evaluation loop."
+              ],
+              "answer_index": 0,
+              "source_ids": [
+                "emergentmind-2608-05784-activity-frames-deterministic-screen-activity-compilation-for-agent-2026"
               ]
             }
           ]
@@ -10791,6 +11085,216 @@
               ]
             }
           ]
+        },
+        {
+          "id": "the-querysplat-decoupling-geometry-and-appearance",
+          "label": "The Querysplat Decoupling Geometry And",
+          "summary": "A source-backed case board for QuerySplat: Decoupling Geometry and Appearance Representations in 3DGS Prediction: learners inspect the plain technical mechanism, the evaluation signal, and where the claim fits in Edokai's retrieval augmented generation world.",
+          "source_ids": [
+            "emergentmind-2608-01186-querysplat-decoupling-geometry-and-appearance-representations-in-3dgs-2026"
+          ],
+          "concept_ids": [
+            "querysplat-decoupling-geometry-and-appearance-representations-in",
+            "querysplat-decoupling-geometry-and-appearance-representations-in-3dgs",
+            "querysplat-decoupling-geometry-and-appearance-representations-in-3dgs"
+          ],
+          "critical_concepts": [
+            "querysplat-decoupling-geometry-and-appearance-representations-in",
+            "querysplat-decoupling-geometry-and-appearance-representations-in-3dgs"
+          ],
+          "prerequisite_links": [],
+          "side_retention_duels": [
+            {
+              "id": "the-querysplat-decoupling-geometry-and-duel",
+              "prompt": "What should Edokai learners remember about **QuerySplat**?",
+              "left": "Treat it as a title-only bookmark without checking the mechanism.",
+              "right": "Track the mechanism, evidence signal, and limits stated by the source.",
+              "answer": "Use the source-backed mechanism and evaluation signal; avoid inferring guarantees beyond the paper summary."
+            }
+          ],
+          "quiz_questions": [
+            {
+              "question": "In the source **QuerySplat: Decoupling Geometry and Appearance Representations in 3DGS Prediction**, what is the main learner-facing mechanism Edokai should preserve?",
+              "choices": [
+                "It uses the source's QuerySplat mechanism to address the paper's stated ML/AI problem.",
+                "It mainly replaces the user interface theme without changing the learning mechanism.",
+                "It is a clinical treatment protocol rather than a machine-learning research method.",
+                "It proves a pure-math theorem without a model, agent, or evaluation loop."
+              ],
+              "answer_index": 0,
+              "source_ids": [
+                "emergentmind-2608-01186-querysplat-decoupling-geometry-and-appearance-representations-in-3dgs-2026"
+              ]
+            }
+          ]
+        },
+        {
+          "id": "the-stipple-real-time-incremental-gaussian",
+          "label": "The Stipple Real Time Incremental",
+          "summary": "A source-backed case board for Stipple: Real-Time Incremental Gaussian Splatting with Visual-Inertial Tracking: learners inspect the plain technical mechanism, the evaluation signal, and where the claim fits in Edokai's retrieval augmented generation world.",
+          "source_ids": [
+            "emergentmind-2608-00931-stipple-real-time-incremental-gaussian-splatting-with-visual-2026"
+          ],
+          "concept_ids": [
+            "stipple-real-time-incremental-gaussian-splatting-with",
+            "stipple-real-time-incremental-gaussian-splatting-with-visual",
+            "stipple-real-time-incremental-gaussian-splatting-with-visual"
+          ],
+          "critical_concepts": [
+            "stipple-real-time-incremental-gaussian-splatting-with",
+            "stipple-real-time-incremental-gaussian-splatting-with-visual"
+          ],
+          "prerequisite_links": [],
+          "side_retention_duels": [
+            {
+              "id": "the-stipple-real-time-incremental-duel",
+              "prompt": "What should Edokai learners remember about **Stipple**?",
+              "left": "Treat it as a title-only bookmark without checking the mechanism.",
+              "right": "Track the mechanism, evidence signal, and limits stated by the source.",
+              "answer": "Use the source-backed mechanism and evaluation signal; avoid inferring guarantees beyond the paper summary."
+            }
+          ],
+          "quiz_questions": [
+            {
+              "question": "In the source **Stipple: Real-Time Incremental Gaussian Splatting with Visual-Inertial Tracking**, what is the main learner-facing mechanism Edokai should preserve?",
+              "choices": [
+                "It mainly replaces the user interface theme without changing the learning mechanism.",
+                "It uses the source's Stipple mechanism to address the paper's stated ML/AI problem.",
+                "It is a clinical treatment protocol rather than a machine-learning research method.",
+                "It proves a pure-math theorem without a model, agent, or evaluation loop."
+              ],
+              "answer_index": 1,
+              "source_ids": [
+                "emergentmind-2608-00931-stipple-real-time-incremental-gaussian-splatting-with-visual-2026"
+              ]
+            }
+          ]
+        },
+        {
+          "id": "the-octolong-mid-training-on-cross",
+          "label": "The Octolong Mid Training On",
+          "summary": "A source-backed case board for OctoLong: Mid-Training On Cross-Repository Code Contexts Enhances Long-Context Modeling: learners inspect the plain technical mechanism, the evaluation signal, and where the claim fits in Edokai's retrieval augmented generation world.",
+          "source_ids": [
+            "emergentmind-2608-05141-octolong-mid-training-on-cross-repository-code-contexts-2026"
+          ],
+          "concept_ids": [
+            "octolong-mid-training-on-cross-repository-code",
+            "octolong-mid-training-on-cross-repository-code-contexts",
+            "octolong-mid-training-on-cross-repository-code-contexts"
+          ],
+          "critical_concepts": [
+            "octolong-mid-training-on-cross-repository-code",
+            "octolong-mid-training-on-cross-repository-code-contexts"
+          ],
+          "prerequisite_links": [],
+          "side_retention_duels": [
+            {
+              "id": "the-octolong-mid-training-on-duel",
+              "prompt": "What should Edokai learners remember about **OctoLong**?",
+              "left": "Treat it as a title-only bookmark without checking the mechanism.",
+              "right": "Track the mechanism, evidence signal, and limits stated by the source.",
+              "answer": "Use the source-backed mechanism and evaluation signal; avoid inferring guarantees beyond the paper summary."
+            }
+          ],
+          "quiz_questions": [
+            {
+              "question": "In the source **OctoLong: Mid-Training On Cross-Repository Code Contexts Enhances Long-Context Modeling**, what is the main learner-facing mechanism Edokai should preserve?",
+              "choices": [
+                "It mainly replaces the user interface theme without changing the learning mechanism.",
+                "It is a clinical treatment protocol rather than a machine-learning research method.",
+                "It uses the source's OctoLong mechanism to address the paper's stated ML/AI problem.",
+                "It proves a pure-math theorem without a model, agent, or evaluation loop."
+              ],
+              "answer_index": 2,
+              "source_ids": [
+                "emergentmind-2608-05141-octolong-mid-training-on-cross-repository-code-contexts-2026"
+              ]
+            }
+          ]
+        },
+        {
+          "id": "the-d-2-4dgs-dual-depth",
+          "label": "The D 2 4dgs Dual",
+          "summary": "A source-backed case board for D^2-4DGS: Dual-Depth Guided Sparse-Camera 4D Gaussian Splatting: learners inspect the plain technical mechanism, the evaluation signal, and where the claim fits in Edokai's retrieval augmented generation world.",
+          "source_ids": [
+            "emergentmind-2608-01588-d-2-4dgs-dual-depth-guided-sparse-camera-2026"
+          ],
+          "concept_ids": [
+            "d-2-4dgs-dual-depth-guided-sparse",
+            "d-2-4dgs-dual-depth-guided-sparse-camera",
+            "d-2-4dgs-dual-depth-guided-sparse-camera"
+          ],
+          "critical_concepts": [
+            "d-2-4dgs-dual-depth-guided-sparse",
+            "d-2-4dgs-dual-depth-guided-sparse-camera"
+          ],
+          "prerequisite_links": [],
+          "side_retention_duels": [
+            {
+              "id": "the-d-2-4dgs-dual-duel",
+              "prompt": "What should Edokai learners remember about **D^2-4DGS**?",
+              "left": "Treat it as a title-only bookmark without checking the mechanism.",
+              "right": "Track the mechanism, evidence signal, and limits stated by the source.",
+              "answer": "Use the source-backed mechanism and evaluation signal; avoid inferring guarantees beyond the paper summary."
+            }
+          ],
+          "quiz_questions": [
+            {
+              "question": "In the source **D^2-4DGS: Dual-Depth Guided Sparse-Camera 4D Gaussian Splatting**, what is the main learner-facing mechanism Edokai should preserve?",
+              "choices": [
+                "It mainly replaces the user interface theme without changing the learning mechanism.",
+                "It uses the source's D^2-4DGS mechanism to address the paper's stated ML/AI problem.",
+                "It is a clinical treatment protocol rather than a machine-learning research method.",
+                "It proves a pure-math theorem without a model, agent, or evaluation loop."
+              ],
+              "answer_index": 1,
+              "source_ids": [
+                "emergentmind-2608-01588-d-2-4dgs-dual-depth-guided-sparse-camera-2026"
+              ]
+            }
+          ]
+        },
+        {
+          "id": "the-diffusiongemma-technical-report",
+          "label": "The Diffusiongemma Technical Report",
+          "summary": "A source-backed case board for DiffusionGemma Technical Report: learners inspect the plain technical mechanism, the evaluation signal, and where the claim fits in Edokai's retrieval augmented generation world.",
+          "source_ids": [
+            "emergentmind-2608-00146-diffusiongemma-technical-report-2026"
+          ],
+          "concept_ids": [
+            "diffusiongemma-technical-report",
+            "diffusiongemma-technical-report-learning-problem",
+            "diffusiongemma-technical-report-evaluation-signal"
+          ],
+          "critical_concepts": [
+            "diffusiongemma-technical-report",
+            "diffusiongemma-technical-report-learning-problem"
+          ],
+          "prerequisite_links": [],
+          "side_retention_duels": [
+            {
+              "id": "the-diffusiongemma-technical-report-duel",
+              "prompt": "What should Edokai learners remember about **DiffusionGemma Technical Report**?",
+              "left": "Treat it as a title-only bookmark without checking the mechanism.",
+              "right": "Track the mechanism, evidence signal, and limits stated by the source.",
+              "answer": "Use the source-backed mechanism and evaluation signal; avoid inferring guarantees beyond the paper summary."
+            }
+          ],
+          "quiz_questions": [
+            {
+              "question": "In the source **DiffusionGemma Technical Report**, what is the main learner-facing mechanism Edokai should preserve?",
+              "choices": [
+                "It mainly replaces the user interface theme without changing the learning mechanism.",
+                "It is a clinical treatment protocol rather than a machine-learning research method.",
+                "It proves a pure-math theorem without a model, agent, or evaluation loop.",
+                "It uses the source's DiffusionGemma Technical Report mechanism to address the paper's stated ML/AI problem."
+              ],
+              "answer_index": 3,
+              "source_ids": [
+                "emergentmind-2608-00146-diffusiongemma-technical-report-2026"
+              ]
+            }
+          ]
         }
       ]
     }
@@ -12543,6 +13047,47 @@
         "the-towards-physics-of-multimodal-pretraining",
         "the-hunyuan3d-buffalo-1-0-a",
         "the-post-training-on-office-work"
+      ],
+      "new_worlds_created": [],
+      "router_learning": "The 2026-07-12 homepage delta fits existing umbrellas: SLAM/event-camera/egocentric-video strengthen Perception & World Models, DeepSearch strengthens Retrieval-Augmented Generation, and beyond-human intelligence evaluation strengthens Agents.",
+      "manual_review": [
+        "Skipped pure-math, astronomy/cosmology, and clinical/medical surfaced items in this bounded pass; clinical claims need deeper safety review before routing.",
+        "New visual-SLAM/event-camera/egocentric-video items are routed under Perception & World Models; DeepSearch is routed under Retrieval-Augmented Generation; beyond-human intelligence evaluation is routed under Agents."
+      ],
+      "verification": {
+        "json_parse": "passed",
+        "dkg_test": "passed",
+        "build": "passed",
+        "supabase_sync": "passed",
+        "roundtrip": "passed"
+      }
+    },
+    {
+      "run_id": "daily-emergentmind-all-topics-20260807T141712Z",
+      "completed_at": "2026-08-07T14:17:12Z",
+      "event": "daily EmergentMind homepage all-topics ingestion",
+      "sources_added": 12,
+      "nodes_added": 38,
+      "edges_added": 48,
+      "worlds_enhanced": [
+        "perception-world-models",
+        "generative-models",
+        "llm-systems-serving",
+        "retrieval-augmented-generation"
+      ],
+      "regions_enhanced": [
+        "the-reflectrl-learning-from-golden-negative",
+        "the-recursive-synthesis-for-long-horizon",
+        "the-matraix-simulating-the-world-with",
+        "the-querysplat-decoupling-geometry-and-appearance",
+        "the-stipple-real-time-incremental-gaussian",
+        "the-octolong-mid-training-on-cross",
+        "the-toward-skill-native-llms-skill",
+        "the-activity-frames-deterministic-screen-activity",
+        "the-d-2-4dgs-dual-depth",
+        "the-unisim-slam-feed-forward-slam",
+        "the-diffusiongemma-technical-report",
+        "the-longcat-sparse-attention-taming-the"
       ],
       "new_worlds_created": [],
       "router_learning": "The 2026-07-12 homepage delta fits existing umbrellas: SLAM/event-camera/egocentric-video strengthen Perception & World Models, DeepSearch strengthens Retrieval-Augmented Generation, and beyond-human intelligence evaluation strengthens Agents.",
