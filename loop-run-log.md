@@ -594,3 +594,14 @@ Append-only operational log for automatic EmergentMind ingestion, Telegram manua
 - Counts before sync: 262 sources / 837 nodes / 1045 edges / 6 macro worlds / 264 regions / 266 quizzes / 268 duels.
 - Verification: JSON parse passed; `npm run dkg:test` passed; `npm run build` passed; `npm run dkg:sync` passed; `node scripts/test-dkg-roundtrip.mjs` passed.
 - Escalations/manual review: none.
+
+## daily-emergentmind-all-topics-20260808T140144Z
+
+- Trigger: scheduled daily EmergentMind all-topics graph growth loop.
+- Homepage discovery: fetched `https://www.emergentmind.com/` (HTTP 200) and decoded `window.bootstrapped_trending_papers_json`; homepage exposed 45 trending papers. Selected 11 new high-signal ML/AI papers under the daily budget.
+- Sources ingested: emergentmind-2608-05987-agentopsd-recursive-self-distillation-for-agentic-reinforcement-learning-2026, emergentmind-2608-03392-self-evolving-coding-agents-2026, emergentmind-2608-03223-agentic-reinforcement-learning-with-self-distilled-reward-shaping-2026, emergentmind-2608-06332-geniworld-a-generalizable-interactive-world-model-for-robotic-2026, emergentmind-2608-06117-confidence-matters-leveraging-multi-view-geometric-priors-for-2026, emergentmind-2608-04003-past-bench-benchmarking-the-foundations-of-recursive-self-2026, emergentmind-2608-04373-public-trader-identity-adverse-selection-and-return-predictability-2026, emergentmind-2608-01509-rolling-shutter-camera-self-calibration-2026, emergentmind-2608-01659-streamsplat-streaming-feed-forward-3d-gaussian-splatting-2026, emergentmind-2608-00799-cadena-stepwise-cad-reverse-engineering-2026, emergentmind-2608-01735-dapd-dual-anchored-policy-distillation-2026.
+- Source-page fetch statuses: {"2608.05987": 200, "2608.03392": 200, "2608.03223": 200, "2608.06332": 200, "2608.06117": 200, "2608.04003": 200, "2608.04373": 200, "2608.01509": 200, "2608.01659": 200, "2608.00799": 200, "2608.01735": 200}.
+- Graph actions: added 11 source records, updated 0; added 38 nodes, updated 0; added 44 source-backed edges. Totals now 273 sources / 875 nodes / 1089 edges.
+- Concept-world builder: added 11 preliminary source-backed regions across perception-world-models, llm-systems-serving, retrieval-augmented-generation; no new macro world created.
+- Verification: maker/checker provenance pass succeeded before write; JSON parse, `npm run dkg:test`, `npm run build`, `npm run dkg:sync`, and Supabase round-trip readback passed.
+- Escalations/manual review: Skipped pure-math, astronomy/cosmology, and clinical/medical surfaced items in this bounded pass; clinical claims need deeper safety review before routing. New visual-SLAM/event-camera/egocentric-video items are routed under Perception & World Models; DeepSearch is routed under Retrieval-Augmented Generation; beyond-human intelligence evaluation is routed under Agents. No publishing, secrets, infra, or broad UI refactor performed.

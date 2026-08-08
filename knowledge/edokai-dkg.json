@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "updated_at": "2026-08-07T14:17:12Z",
+  "updated_at": "2026-08-08T14:01:44Z",
   "sources": {
     "hf-space-trl-distillation-trainer-2026": {
       "id": "hf-space-trl-distillation-trainer-2026",
@@ -4220,6 +4220,182 @@
       "provenance": [
         "Discovered from https://www.emergentmind.com/ bootstrapped trending papers on 2026-08-07.",
         "EmergentMind homepage abstract metadata: DeepSeek Sparse Attention (DSA) enables efficient long-context modeling through its Lightning Indexer. However, practical deployment remains constrained by the indexer's expensive $O(L^2)$ scoring overhead and the hardware-inefficient, discontinuous memory-access patterns induced by its outputs. To address these system-level bottlenecks, we introduce LongCat Sparse Attention (LSA), a hardware-algorithm co-designed framework comprising three complementary and orthogonal strategies: (1) Streaming-Aware Indexing, which selectively converts scattered KV entries into hardware-aligned contiguous layouts to enable coalesced HBM access; (2)"
+      ],
+      "confidence": 0.86
+    },
+    "emergentmind-2608-05987-agentopsd-recursive-self-distillation-for-agentic-reinforcement-learning-2026": {
+      "id": "emergentmind-2608-05987-agentopsd-recursive-self-distillation-for-agentic-reinforcement-learning-2026",
+      "url": "https://www.emergentmind.com/papers/2608.05987",
+      "arxiv_url": "https://arxiv.org/abs/2608.05987",
+      "title": "AgentOPSD: Recursive Self-Distillation for Agentic Reinforcement Learning",
+      "source_type": "emergentmind-trending-paper",
+      "authors": [],
+      "published": "2026-08-06",
+      "discovered_at": "2026-08-08T14:01:44Z",
+      "last_read_at": "2026-08-08T14:01:44Z",
+      "provenance": [
+        "Discovered from https://www.emergentmind.com/ bootstrapped trending papers on 2026-08-08.",
+        "EmergentMind homepage abstract metadata: Reinforcement learning (RL) with verifiable rewards constructs trajectory-level advantage estimates, yet it often fails to credit the few pivotal decisions that determine outcomes in long-horizon, multi-turn agentic tasks. Recent work introduces privileged self-distillation for credit assignment, providing denser supervision, but it remains unclear how such local signals should represent sequential credit. We propose AgentOPSD, a critic-free, recursive method for turn-level credit assignment in agentic reinforcement learning. AgentOPSD aggregates token-level teacher-student log-probability gaps into turn-level evidence and recursive"
+      ],
+      "confidence": 0.86
+    },
+    "emergentmind-2608-03392-self-evolving-coding-agents-2026": {
+      "id": "emergentmind-2608-03392-self-evolving-coding-agents-2026",
+      "url": "https://www.emergentmind.com/papers/2608.03392",
+      "arxiv_url": "https://arxiv.org/abs/2608.03392",
+      "title": "Self-Evolving Coding Agents",
+      "source_type": "emergentmind-trending-paper",
+      "authors": [],
+      "published": "2026-08-04",
+      "discovered_at": "2026-08-08T14:01:44Z",
+      "last_read_at": "2026-08-08T14:01:44Z",
+      "provenance": [
+        "Discovered from https://www.emergentmind.com/ bootstrapped trending papers on 2026-08-08.",
+        "EmergentMind homepage abstract metadata: Large language models are increasingly embedded in software engineering workflows as coding agents that can inspect repositories, invoke tools, execute tests, debug failures, and generate patches. Yet most existing agents remain largely static after deployment, even though software development is a dynamic, feedback-rich process in which repositories evolve, dependencies change, tests fail, and repair attempts leave reusable experience. This tension has motivated a growing body of work on self-evolving coding agents, where the agent improves its future behavior by updating its framework, memory, skills, tools, models, or collaborati"
+      ],
+      "confidence": 0.86
+    },
+    "emergentmind-2608-03223-agentic-reinforcement-learning-with-self-distilled-reward-shaping-2026": {
+      "id": "emergentmind-2608-03223-agentic-reinforcement-learning-with-self-distilled-reward-shaping-2026",
+      "url": "https://www.emergentmind.com/papers/2608.03223",
+      "arxiv_url": "https://arxiv.org/abs/2608.03223",
+      "title": "Agentic Reinforcement Learning with Self-Distilled Reward Shaping",
+      "source_type": "emergentmind-trending-paper",
+      "authors": [],
+      "published": "2026-08-04",
+      "discovered_at": "2026-08-08T14:01:44Z",
+      "last_read_at": "2026-08-08T14:01:44Z",
+      "provenance": [
+        "Discovered from https://www.emergentmind.com/ bootstrapped trending papers on 2026-08-08.",
+        "EmergentMind homepage abstract metadata: Agentic reinforcement learning enables LLM agents to learn through interaction, but sparse trajectory-level rewards reveal success without identifying which intermediate decisions deserve credit. Training-only privileged skills can provide denser supervision by allowing the same frozen policy snapshot to rescore fixed tokens from skill-free trajectories while conditioned on task-matched procedural skills. Existing methods, however, do not jointly calibrate teacher scores across interaction steps, relate teacher confidence to realized returns, and integrate the resulting signal into native reward-to-advantage construction. We introdu"
+      ],
+      "confidence": 0.86
+    },
+    "emergentmind-2608-06332-geniworld-a-generalizable-interactive-world-model-for-robotic-2026": {
+      "id": "emergentmind-2608-06332-geniworld-a-generalizable-interactive-world-model-for-robotic-2026",
+      "url": "https://www.emergentmind.com/papers/2608.06332",
+      "arxiv_url": "https://arxiv.org/abs/2608.06332",
+      "title": "GeniWorld: A Generalizable Interactive World Model for Robotic Manipulation via Visual Actions",
+      "source_type": "emergentmind-trending-paper",
+      "authors": [],
+      "published": "2026-08-06",
+      "discovered_at": "2026-08-08T14:01:44Z",
+      "last_read_at": "2026-08-08T14:01:44Z",
+      "provenance": [
+        "Discovered from https://www.emergentmind.com/ bootstrapped trending papers on 2026-08-08.",
+        "EmergentMind homepage abstract metadata: Generalist robot policies exhibit strong capabilities, but their robustness in complex and unseen environments remains limited. Scaling robot learning and evaluation in diverse real-world environments remains costly and challenging. Action-conditioned world models offer a promising alternative, but they often suffer from limited action controllability and poor generalization to out-of-distribution (OOD) scenarios. To this end, we present GeniWorld, an interactive world model for robots that generalizes robustly across unseen scenarios. Building on pretrained video generative models, we use URDF-based rendering to transform numerical"
+      ],
+      "confidence": 0.86
+    },
+    "emergentmind-2608-06117-confidence-matters-leveraging-multi-view-geometric-priors-for-2026": {
+      "id": "emergentmind-2608-06117-confidence-matters-leveraging-multi-view-geometric-priors-for-2026",
+      "url": "https://www.emergentmind.com/papers/2608.06117",
+      "arxiv_url": "https://arxiv.org/abs/2608.06117",
+      "title": "Confidence matters: Leveraging Multi-view Geometric Priors for GS-based Reconstruction",
+      "source_type": "emergentmind-trending-paper",
+      "authors": [],
+      "published": "2026-08-06",
+      "discovered_at": "2026-08-08T14:01:44Z",
+      "last_read_at": "2026-08-08T14:01:44Z",
+      "provenance": [
+        "Discovered from https://www.emergentmind.com/ bootstrapped trending papers on 2026-08-08.",
+        "EmergentMind homepage abstract metadata: 3D Gaussian splatting (3DGS) has emerged as a widely-used tool for novel view synthesis, offering real-time rendering in a sparse representation. However, the method's reliance on structure-from-motion initialization and photometric optimization can lead to suboptimal geometric reconstruction, particularly for objects with high specularity. In this work, we investigate the integration of geometric priors, in the form of predicted normal and depth maps, into the 3DGS framework to improve the reconstruction quality. We analyze the effect of incorporating these priors into GS-based methods and our evaluation reveals that multi-view pre"
+      ],
+      "confidence": 0.86
+    },
+    "emergentmind-2608-04003-past-bench-benchmarking-the-foundations-of-recursive-self-2026": {
+      "id": "emergentmind-2608-04003-past-bench-benchmarking-the-foundations-of-recursive-self-2026",
+      "url": "https://www.emergentmind.com/papers/2608.04003",
+      "arxiv_url": "https://arxiv.org/abs/2608.04003",
+      "title": "PAST-Bench: Benchmarking the Foundations of Recursive Self-Improvement in Personal Agents",
+      "source_type": "emergentmind-trending-paper",
+      "authors": [],
+      "published": "2026-08-04",
+      "discovered_at": "2026-08-08T14:01:44Z",
+      "last_read_at": "2026-08-08T14:01:44Z",
+      "provenance": [
+        "Discovered from https://www.emergentmind.com/ bootstrapped trending papers on 2026-08-08.",
+        "EmergentMind homepage abstract metadata: Recursive self-improvement requires agents to turn accumulated experience into better future behavior. Personal AI agents offer a concrete setting for studying this capability because they retain preferences, task histories, tool routines, and learned skills across sessions. Yet whether retained experience actually improves them over time has not been systematically tested. We introduce PAST-Bench, a benchmark designed to isolate this question. Each agent runs through ordered sequences of fresh-session tasks under matched conditions that turn retained experience on and off. It spans 26 scenarios and 204 episodes across memory, proce"
+      ],
+      "confidence": 0.86
+    },
+    "emergentmind-2608-04373-public-trader-identity-adverse-selection-and-return-predictability-2026": {
+      "id": "emergentmind-2608-04373-public-trader-identity-adverse-selection-and-return-predictability-2026",
+      "url": "https://www.emergentmind.com/papers/2608.04373",
+      "arxiv_url": "https://arxiv.org/abs/2608.04373",
+      "title": "Public Trader Identity: Adverse Selection and Return Predictability",
+      "source_type": "emergentmind-trending-paper",
+      "authors": [],
+      "published": "2026-08-05",
+      "discovered_at": "2026-08-08T14:01:44Z",
+      "last_read_at": "2026-08-08T14:01:44Z",
+      "provenance": [
+        "Discovered from https://www.emergentmind.com/ bootstrapped trending papers on 2026-08-08.",
+        "EmergentMind homepage abstract metadata: Informed traders are supposed to need anonymity: they profit by hiding among the uninformed. A decentralized exchange now publishes the counterparty: every committed order, cancellation, rejection, and fill carries a persistent pseudonymous wallet address. We reconstruct the full-depth limit order book from a record of 17.1 billion messages and 14.3 million aggressive orders by 147,113 wallets, covering $84.3 billion in taker notional. We report three findings. First, informativeness is a persistent wallet attribute. We rank wallets by the price movement that follows their aggressive orders over ten days, and the ranking largely hol"
+      ],
+      "confidence": 0.86
+    },
+    "emergentmind-2608-01509-rolling-shutter-camera-self-calibration-2026": {
+      "id": "emergentmind-2608-01509-rolling-shutter-camera-self-calibration-2026",
+      "url": "https://www.emergentmind.com/papers/2608.01509",
+      "arxiv_url": "https://arxiv.org/abs/2608.01509",
+      "title": "Rolling Shutter Camera Self-Calibration",
+      "source_type": "emergentmind-trending-paper",
+      "authors": [],
+      "published": "2026-08-02",
+      "discovered_at": "2026-08-08T14:01:44Z",
+      "last_read_at": "2026-08-08T14:01:44Z",
+      "provenance": [
+        "Discovered from https://www.emergentmind.com/ bootstrapped trending papers on 2026-08-08.",
+        "EmergentMind homepage abstract metadata: Rolling shutter (RS) cameras are widely used in consumer devices, but their row-wise exposure causes distortions under motion, making geometric 3D vision problems dependent on both camera intrinsics and readout time ratio. Existing RS calibration methods rely on calibration targets or specialised hardware, limiting their use in unconstrained settings. We present the first self-calibration method for RS cameras that directly estimates camera intrinsics and the readout time ratio from image sequences, without requiring calibration targets. The method is implemented as a self-calibrating bundle adjustment (BA), which critically depends"
+      ],
+      "confidence": 0.86
+    },
+    "emergentmind-2608-01659-streamsplat-streaming-feed-forward-3d-gaussian-splatting-2026": {
+      "id": "emergentmind-2608-01659-streamsplat-streaming-feed-forward-3d-gaussian-splatting-2026",
+      "url": "https://www.emergentmind.com/papers/2608.01659",
+      "arxiv_url": "https://arxiv.org/abs/2608.01659",
+      "title": "StreamSplat: Streaming Feed-Forward 3D Gaussian Splatting",
+      "source_type": "emergentmind-trending-paper",
+      "authors": [],
+      "published": "2026-08-03",
+      "discovered_at": "2026-08-08T14:01:44Z",
+      "last_read_at": "2026-08-08T14:01:44Z",
+      "provenance": [
+        "Discovered from https://www.emergentmind.com/ bootstrapped trending papers on 2026-08-08.",
+        "EmergentMind homepage abstract metadata: Feed-forward 3D Gaussian Splatting enables efficient novel-view synthesis without per-scene optimization, but most existing methods assume a fixed set of context views and process them jointly. This limits their applicability to online scenarios where calibrated views arrive sequentially and the scene must be updated causally. We present \\emph{StreamSplat}, a streaming feed-forward 3DGS framework that incrementally maintains a persistent geometry-grounded scene state and decodes it into renderable 3D Gaussians after each input chunk. StreamSplat centers on a \\textbf{Voxel-Aligned Causal Cache (VACC)}, which stores historical 3D toke"
+      ],
+      "confidence": 0.86
+    },
+    "emergentmind-2608-00799-cadena-stepwise-cad-reverse-engineering-2026": {
+      "id": "emergentmind-2608-00799-cadena-stepwise-cad-reverse-engineering-2026",
+      "url": "https://www.emergentmind.com/papers/2608.00799",
+      "arxiv_url": "https://arxiv.org/abs/2608.00799",
+      "title": "CADENA: Stepwise CAD Reverse Engineering",
+      "source_type": "emergentmind-trending-paper",
+      "authors": [],
+      "published": "2026-08-01",
+      "discovered_at": "2026-08-08T14:01:44Z",
+      "last_read_at": "2026-08-08T14:01:44Z",
+      "provenance": [
+        "Discovered from https://www.emergentmind.com/ bootstrapped trending papers on 2026-08-08.",
+        "EmergentMind homepage abstract metadata: Computer-Aided Design (CAD) underpins modern engineering, yet converting existing shapes into editable models still demands substantial expert effort. Most AI systems emit the entire CAD program in a single pass, never inspecting the intermediate geometry. In contrast, human engineers build a part feature by feature, checking after each operation what remains to be modeled. We introduce CADENA (Spanish for \"chain\"), a model that reconstructs a 3D mesh as a parametric CAD program, growing its sequence of operations one at a time and comparing the target with the currently predicted geometry at every step. We also address the lack of "
+      ],
+      "confidence": 0.86
+    },
+    "emergentmind-2608-01735-dapd-dual-anchored-policy-distillation-2026": {
+      "id": "emergentmind-2608-01735-dapd-dual-anchored-policy-distillation-2026",
+      "url": "https://www.emergentmind.com/papers/2608.01735",
+      "arxiv_url": "https://arxiv.org/abs/2608.01735",
+      "title": "DAPD: Dual-Anchored Policy Distillation",
+      "source_type": "emergentmind-trending-paper",
+      "authors": [],
+      "published": "2026-08-03",
+      "discovered_at": "2026-08-08T14:01:44Z",
+      "last_read_at": "2026-08-08T14:01:44Z",
+      "provenance": [
+        "Discovered from https://www.emergentmind.com/ bootstrapped trending papers on 2026-08-08.",
+        "EmergentMind homepage abstract metadata: On-policy (self) distillation (OPSD) is increasingly adopted for language-model post-training. It strengthens the teacher with privileged information but can induce a privilege illusion: the student learns privilege-dependent behavior it cannot reproduce from its inference-time context, yet behaves as if the training-time privileged information remained available, ultimately degrading performance. In this paper, we identify information asymmetry between the privileged teacher and the student at inference as the root cause of this failure in OPSD. To resolve this asymmetry, we propose Dual-Anchored Policy Distillation (DAPD), a unifi"
       ],
       "confidence": 0.86
     }
@@ -16170,6 +16346,538 @@
       "first_seen": "2026-08-07T14:17:12Z",
       "last_seen": "2026-08-07T14:17:12Z",
       "world_hint": "perception-world-models"
+    },
+    "agentopsd-recursive-self-distillation-for-agentic-reinforcement": {
+      "id": "agentopsd-recursive-self-distillation-for-agentic-reinforcement",
+      "label": "AgentOPSD",
+      "type": "method",
+      "summary": "Source-grounded method/approach from 'AgentOPSD: Recursive Self-Distillation for Agentic Reinforcement Learning': Reinforcement learning (RL) with verifiable rewards constructs trajectory-level advantage estimates, yet it often fails to credit the few pivotal decisions that determine outcomes in long-horizon, multi-turn agentic tasks. Recent work introduces privileged self-distillation for credit assignment, providing denser supervision, but it remains unclear how such...",
+      "aliases": [],
+      "source_ids": [
+        "emergentmind-2608-05987-agentopsd-recursive-self-distillation-for-agentic-reinforcement-learning-2026"
+      ],
+      "confidence": 0.78,
+      "first_seen": "2026-08-08T14:01:44Z",
+      "last_seen": "2026-08-08T14:01:44Z",
+      "world_hint": "perception-world-models"
+    },
+    "agentopsd-recursive-self-distillation-for-agentic-reinforcement-learning": {
+      "id": "agentopsd-recursive-self-distillation-for-agentic-reinforcement-learning",
+      "label": "AgentOPSD problem setting",
+      "type": "concept",
+      "summary": "The learning or systems problem described by the source: Reinforcement learning (RL) with verifiable rewards constructs trajectory-level advantage estimates, yet it often fails to credit the few pivotal decisions that determine outcomes in long-horizon, multi-turn agentic tasks. Recent work introduces privileged self-distillation for credit assignment, providing denser supervision, but it remains unclear how such...",
+      "aliases": [],
+      "source_ids": [
+        "emergentmind-2608-05987-agentopsd-recursive-self-distillation-for-agentic-reinforcement-learning-2026"
+      ],
+      "confidence": 0.78,
+      "first_seen": "2026-08-08T14:01:44Z",
+      "last_seen": "2026-08-08T14:01:44Z",
+      "world_hint": "perception-world-models"
+    },
+    "paper-2608-05987": {
+      "id": "paper-2608-05987",
+      "label": "AgentOPSD: Recursive Self-Distillation for Agentic Reinforcement Learning",
+      "type": "paper",
+      "summary": "EmergentMind surfaced arXiv paper 2608.05987: Reinforcement learning (RL) with verifiable rewards constructs trajectory-level advantage estimates, yet it often fails to credit the few pivotal decisions that determine outcomes in long-horizon, multi-turn agentic tasks. Recent work introduces privileged self-distillation for credit assignment, providing denser supervision, but it remains unclear how such...",
+      "aliases": [],
+      "source_ids": [
+        "emergentmind-2608-05987-agentopsd-recursive-self-distillation-for-agentic-reinforcement-learning-2026"
+      ],
+      "confidence": 0.78,
+      "first_seen": "2026-08-08T14:01:44Z",
+      "last_seen": "2026-08-08T14:01:44Z",
+      "world_hint": "perception-world-models"
+    },
+    "self-evolving-coding-agents": {
+      "id": "self-evolving-coding-agents",
+      "label": "Self-Evolving Coding Agents",
+      "type": "method",
+      "summary": "Source-grounded method/approach from 'Self-Evolving Coding Agents': Large language models are increasingly embedded in software engineering workflows as coding agents that can inspect repositories, invoke tools, execute tests, debug failures, and generate patches. Yet most existing agents remain largely static after deployment, even though software development is a dynamic, feedback-rich process in which repositories evolve,...",
+      "aliases": [],
+      "source_ids": [
+        "emergentmind-2608-03392-self-evolving-coding-agents-2026"
+      ],
+      "confidence": 0.78,
+      "first_seen": "2026-08-08T14:01:44Z",
+      "last_seen": "2026-08-08T14:01:44Z",
+      "world_hint": "llm-systems-serving"
+    },
+    "self-evolving-coding-agents-learning-problem": {
+      "id": "self-evolving-coding-agents-learning-problem",
+      "label": "Self-Evolving Coding Agents problem setting",
+      "type": "concept",
+      "summary": "The learning or systems problem described by the source: Large language models are increasingly embedded in software engineering workflows as coding agents that can inspect repositories, invoke tools, execute tests, debug failures, and generate patches. Yet most existing agents remain largely static after deployment, even though software development is a dynamic, feedback-rich process in which repositories evolve,...",
+      "aliases": [],
+      "source_ids": [
+        "emergentmind-2608-03392-self-evolving-coding-agents-2026"
+      ],
+      "confidence": 0.78,
+      "first_seen": "2026-08-08T14:01:44Z",
+      "last_seen": "2026-08-08T14:01:44Z",
+      "world_hint": "llm-systems-serving"
+    },
+    "self-evolving-coding-agents-evaluation-signal": {
+      "id": "self-evolving-coding-agents-evaluation-signal",
+      "label": "Self-Evolving Coding Agents evaluation signal",
+      "type": "concept",
+      "summary": "The source's evaluation/benchmark signal for judging the method; Edokai keeps this claim source-qualified.",
+      "aliases": [],
+      "source_ids": [
+        "emergentmind-2608-03392-self-evolving-coding-agents-2026"
+      ],
+      "confidence": 0.78,
+      "first_seen": "2026-08-08T14:01:44Z",
+      "last_seen": "2026-08-08T14:01:44Z",
+      "world_hint": "llm-systems-serving"
+    },
+    "paper-2608-03392": {
+      "id": "paper-2608-03392",
+      "label": "Self-Evolving Coding Agents",
+      "type": "paper",
+      "summary": "EmergentMind surfaced arXiv paper 2608.03392: Large language models are increasingly embedded in software engineering workflows as coding agents that can inspect repositories, invoke tools, execute tests, debug failures, and generate patches. Yet most existing agents remain largely static after deployment, even though software development is a dynamic, feedback-rich process in which repositories evolve,...",
+      "aliases": [],
+      "source_ids": [
+        "emergentmind-2608-03392-self-evolving-coding-agents-2026"
+      ],
+      "confidence": 0.78,
+      "first_seen": "2026-08-08T14:01:44Z",
+      "last_seen": "2026-08-08T14:01:44Z",
+      "world_hint": "llm-systems-serving"
+    },
+    "agentic-reinforcement-learning-with-self-distilled-reward": {
+      "id": "agentic-reinforcement-learning-with-self-distilled-reward",
+      "label": "Agentic Reinforcement Learning with Self-Distilled Reward Shaping",
+      "type": "method",
+      "summary": "Source-grounded method/approach from 'Agentic Reinforcement Learning with Self-Distilled Reward Shaping': Agentic reinforcement learning enables LLM agents to learn through interaction, but sparse trajectory-level rewards reveal success without identifying which intermediate decisions deserve credit. Training-only privileged skills can provide denser supervision by allowing the same frozen policy snapshot to rescore fixed tokens from skill-free trajectories whil...",
+      "aliases": [],
+      "source_ids": [
+        "emergentmind-2608-03223-agentic-reinforcement-learning-with-self-distilled-reward-shaping-2026"
+      ],
+      "confidence": 0.78,
+      "first_seen": "2026-08-08T14:01:44Z",
+      "last_seen": "2026-08-08T14:01:44Z",
+      "world_hint": "perception-world-models"
+    },
+    "agentic-reinforcement-learning-with-self-distilled-reward-shaping": {
+      "id": "agentic-reinforcement-learning-with-self-distilled-reward-shaping",
+      "label": "Agentic Reinforcement Learning with Self-Distilled Reward Shaping problem setting",
+      "type": "concept",
+      "summary": "The learning or systems problem described by the source: Agentic reinforcement learning enables LLM agents to learn through interaction, but sparse trajectory-level rewards reveal success without identifying which intermediate decisions deserve credit. Training-only privileged skills can provide denser supervision by allowing the same frozen policy snapshot to rescore fixed tokens from skill-free trajectories whil...",
+      "aliases": [],
+      "source_ids": [
+        "emergentmind-2608-03223-agentic-reinforcement-learning-with-self-distilled-reward-shaping-2026"
+      ],
+      "confidence": 0.78,
+      "first_seen": "2026-08-08T14:01:44Z",
+      "last_seen": "2026-08-08T14:01:44Z",
+      "world_hint": "perception-world-models"
+    },
+    "paper-2608-03223": {
+      "id": "paper-2608-03223",
+      "label": "Agentic Reinforcement Learning with Self-Distilled Reward Shaping",
+      "type": "paper",
+      "summary": "EmergentMind surfaced arXiv paper 2608.03223: Agentic reinforcement learning enables LLM agents to learn through interaction, but sparse trajectory-level rewards reveal success without identifying which intermediate decisions deserve credit. Training-only privileged skills can provide denser supervision by allowing the same frozen policy snapshot to rescore fixed tokens from skill-free trajectories whil...",
+      "aliases": [],
+      "source_ids": [
+        "emergentmind-2608-03223-agentic-reinforcement-learning-with-self-distilled-reward-shaping-2026"
+      ],
+      "confidence": 0.78,
+      "first_seen": "2026-08-08T14:01:44Z",
+      "last_seen": "2026-08-08T14:01:44Z",
+      "world_hint": "perception-world-models"
+    },
+    "geniworld-a-generalizable-interactive-world-model-for": {
+      "id": "geniworld-a-generalizable-interactive-world-model-for",
+      "label": "GeniWorld",
+      "type": "method",
+      "summary": "Source-grounded method/approach from 'GeniWorld: A Generalizable Interactive World Model for Robotic Manipulation via Visual Actions': Generalist robot policies exhibit strong capabilities, but their robustness in complex and unseen environments remains limited. Scaling robot learning and evaluation in diverse real-world environments remains costly and challenging. Action-conditioned world models offer a promising alternative, but they often suffer from limited action controllability and po...",
+      "aliases": [],
+      "source_ids": [
+        "emergentmind-2608-06332-geniworld-a-generalizable-interactive-world-model-for-robotic-2026"
+      ],
+      "confidence": 0.78,
+      "first_seen": "2026-08-08T14:01:44Z",
+      "last_seen": "2026-08-08T14:01:44Z",
+      "world_hint": "perception-world-models"
+    },
+    "geniworld-a-generalizable-interactive-world-model-for-robotic": {
+      "id": "geniworld-a-generalizable-interactive-world-model-for-robotic",
+      "label": "GeniWorld problem setting",
+      "type": "concept",
+      "summary": "The learning or systems problem described by the source: Generalist robot policies exhibit strong capabilities, but their robustness in complex and unseen environments remains limited. Scaling robot learning and evaluation in diverse real-world environments remains costly and challenging. Action-conditioned world models offer a promising alternative, but they often suffer from limited action controllability and po...",
+      "aliases": [],
+      "source_ids": [
+        "emergentmind-2608-06332-geniworld-a-generalizable-interactive-world-model-for-robotic-2026"
+      ],
+      "confidence": 0.78,
+      "first_seen": "2026-08-08T14:01:44Z",
+      "last_seen": "2026-08-08T14:01:44Z",
+      "world_hint": "perception-world-models"
+    },
+    "paper-2608-06332": {
+      "id": "paper-2608-06332",
+      "label": "GeniWorld: A Generalizable Interactive World Model for Robotic Manipulation via Visual Actions",
+      "type": "paper",
+      "summary": "EmergentMind surfaced arXiv paper 2608.06332: Generalist robot policies exhibit strong capabilities, but their robustness in complex and unseen environments remains limited. Scaling robot learning and evaluation in diverse real-world environments remains costly and challenging. Action-conditioned world models offer a promising alternative, but they often suffer from limited action controllability and po...",
+      "aliases": [],
+      "source_ids": [
+        "emergentmind-2608-06332-geniworld-a-generalizable-interactive-world-model-for-robotic-2026"
+      ],
+      "confidence": 0.78,
+      "first_seen": "2026-08-08T14:01:44Z",
+      "last_seen": "2026-08-08T14:01:44Z",
+      "world_hint": "perception-world-models"
+    },
+    "confidence-matters-leveraging-multi-view-geometric-priors": {
+      "id": "confidence-matters-leveraging-multi-view-geometric-priors",
+      "label": "Confidence matters",
+      "type": "method",
+      "summary": "Source-grounded method/approach from 'Confidence matters: Leveraging Multi-view Geometric Priors for GS-based Reconstruction': 3D Gaussian splatting (3DGS) has emerged as a widely-used tool for novel view synthesis, offering real-time rendering in a sparse representation. However, the method's reliance on structure-from-motion initialization and photometric optimization can lead to suboptimal geometric reconstruction, particularly for objects with high specularity. In this work, we...",
+      "aliases": [],
+      "source_ids": [
+        "emergentmind-2608-06117-confidence-matters-leveraging-multi-view-geometric-priors-for-2026"
+      ],
+      "confidence": 0.78,
+      "first_seen": "2026-08-08T14:01:44Z",
+      "last_seen": "2026-08-08T14:01:44Z",
+      "world_hint": "retrieval-augmented-generation"
+    },
+    "confidence-matters-leveraging-multi-view-geometric-priors-for": {
+      "id": "confidence-matters-leveraging-multi-view-geometric-priors-for",
+      "label": "Confidence matters problem setting",
+      "type": "concept",
+      "summary": "The learning or systems problem described by the source: 3D Gaussian splatting (3DGS) has emerged as a widely-used tool for novel view synthesis, offering real-time rendering in a sparse representation. However, the method's reliance on structure-from-motion initialization and photometric optimization can lead to suboptimal geometric reconstruction, particularly for objects with high specularity. In this work, we...",
+      "aliases": [],
+      "source_ids": [
+        "emergentmind-2608-06117-confidence-matters-leveraging-multi-view-geometric-priors-for-2026"
+      ],
+      "confidence": 0.78,
+      "first_seen": "2026-08-08T14:01:44Z",
+      "last_seen": "2026-08-08T14:01:44Z",
+      "world_hint": "retrieval-augmented-generation"
+    },
+    "paper-2608-06117": {
+      "id": "paper-2608-06117",
+      "label": "Confidence matters: Leveraging Multi-view Geometric Priors for GS-based Reconstruction",
+      "type": "paper",
+      "summary": "EmergentMind surfaced arXiv paper 2608.06117: 3D Gaussian splatting (3DGS) has emerged as a widely-used tool for novel view synthesis, offering real-time rendering in a sparse representation. However, the method's reliance on structure-from-motion initialization and photometric optimization can lead to suboptimal geometric reconstruction, particularly for objects with high specularity. In this work, we...",
+      "aliases": [],
+      "source_ids": [
+        "emergentmind-2608-06117-confidence-matters-leveraging-multi-view-geometric-priors-for-2026"
+      ],
+      "confidence": 0.78,
+      "first_seen": "2026-08-08T14:01:44Z",
+      "last_seen": "2026-08-08T14:01:44Z",
+      "world_hint": "retrieval-augmented-generation"
+    },
+    "past-bench-benchmarking-the-foundations-of-recursive": {
+      "id": "past-bench-benchmarking-the-foundations-of-recursive",
+      "label": "PAST-Bench",
+      "type": "method",
+      "summary": "Source-grounded method/approach from 'PAST-Bench: Benchmarking the Foundations of Recursive Self-Improvement in Personal Agents': Recursive self-improvement requires agents to turn accumulated experience into better future behavior. Personal AI agents offer a concrete setting for studying this capability because they retain preferences, task histories, tool routines, and learned skills across sessions. Yet whether retained experience actually improves them over time has not been system...",
+      "aliases": [],
+      "source_ids": [
+        "emergentmind-2608-04003-past-bench-benchmarking-the-foundations-of-recursive-self-2026"
+      ],
+      "confidence": 0.78,
+      "first_seen": "2026-08-08T14:01:44Z",
+      "last_seen": "2026-08-08T14:01:44Z",
+      "world_hint": "retrieval-augmented-generation"
+    },
+    "past-bench-benchmarking-the-foundations-of-recursive-self": {
+      "id": "past-bench-benchmarking-the-foundations-of-recursive-self",
+      "label": "PAST-Bench problem setting",
+      "type": "concept",
+      "summary": "The learning or systems problem described by the source: Recursive self-improvement requires agents to turn accumulated experience into better future behavior. Personal AI agents offer a concrete setting for studying this capability because they retain preferences, task histories, tool routines, and learned skills across sessions. Yet whether retained experience actually improves them over time has not been system...",
+      "aliases": [],
+      "source_ids": [
+        "emergentmind-2608-04003-past-bench-benchmarking-the-foundations-of-recursive-self-2026"
+      ],
+      "confidence": 0.78,
+      "first_seen": "2026-08-08T14:01:44Z",
+      "last_seen": "2026-08-08T14:01:44Z",
+      "world_hint": "retrieval-augmented-generation"
+    },
+    "paper-2608-04003": {
+      "id": "paper-2608-04003",
+      "label": "PAST-Bench: Benchmarking the Foundations of Recursive Self-Improvement in Personal Agents",
+      "type": "paper",
+      "summary": "EmergentMind surfaced arXiv paper 2608.04003: Recursive self-improvement requires agents to turn accumulated experience into better future behavior. Personal AI agents offer a concrete setting for studying this capability because they retain preferences, task histories, tool routines, and learned skills across sessions. Yet whether retained experience actually improves them over time has not been system...",
+      "aliases": [],
+      "source_ids": [
+        "emergentmind-2608-04003-past-bench-benchmarking-the-foundations-of-recursive-self-2026"
+      ],
+      "confidence": 0.78,
+      "first_seen": "2026-08-08T14:01:44Z",
+      "last_seen": "2026-08-08T14:01:44Z",
+      "world_hint": "retrieval-augmented-generation"
+    },
+    "public-trader-identity-adverse-selection-and-return": {
+      "id": "public-trader-identity-adverse-selection-and-return",
+      "label": "Public Trader Identity",
+      "type": "method",
+      "summary": "Source-grounded method/approach from 'Public Trader Identity: Adverse Selection and Return Predictability': Informed traders are supposed to need anonymity: they profit by hiding among the uninformed. A decentralized exchange now publishes the counterparty: every committed order, cancellation, rejection, and fill carries a persistent pseudonymous wallet address. We reconstruct the full-depth limit order book from a record of 17.1 billion messages and 14.3 million...",
+      "aliases": [],
+      "source_ids": [
+        "emergentmind-2608-04373-public-trader-identity-adverse-selection-and-return-predictability-2026"
+      ],
+      "confidence": 0.78,
+      "first_seen": "2026-08-08T14:01:44Z",
+      "last_seen": "2026-08-08T14:01:44Z",
+      "world_hint": "perception-world-models"
+    },
+    "public-trader-identity-adverse-selection-and-return-predictability": {
+      "id": "public-trader-identity-adverse-selection-and-return-predictability",
+      "label": "Public Trader Identity problem setting",
+      "type": "concept",
+      "summary": "The learning or systems problem described by the source: Informed traders are supposed to need anonymity: they profit by hiding among the uninformed. A decentralized exchange now publishes the counterparty: every committed order, cancellation, rejection, and fill carries a persistent pseudonymous wallet address. We reconstruct the full-depth limit order book from a record of 17.1 billion messages and 14.3 million...",
+      "aliases": [],
+      "source_ids": [
+        "emergentmind-2608-04373-public-trader-identity-adverse-selection-and-return-predictability-2026"
+      ],
+      "confidence": 0.78,
+      "first_seen": "2026-08-08T14:01:44Z",
+      "last_seen": "2026-08-08T14:01:44Z",
+      "world_hint": "perception-world-models"
+    },
+    "paper-2608-04373": {
+      "id": "paper-2608-04373",
+      "label": "Public Trader Identity: Adverse Selection and Return Predictability",
+      "type": "paper",
+      "summary": "EmergentMind surfaced arXiv paper 2608.04373: Informed traders are supposed to need anonymity: they profit by hiding among the uninformed. A decentralized exchange now publishes the counterparty: every committed order, cancellation, rejection, and fill carries a persistent pseudonymous wallet address. We reconstruct the full-depth limit order book from a record of 17.1 billion messages and 14.3 million...",
+      "aliases": [],
+      "source_ids": [
+        "emergentmind-2608-04373-public-trader-identity-adverse-selection-and-return-predictability-2026"
+      ],
+      "confidence": 0.78,
+      "first_seen": "2026-08-08T14:01:44Z",
+      "last_seen": "2026-08-08T14:01:44Z",
+      "world_hint": "perception-world-models"
+    },
+    "rolling-shutter-camera-self-calibration": {
+      "id": "rolling-shutter-camera-self-calibration",
+      "label": "Rolling Shutter Camera Self-Calibration",
+      "type": "method",
+      "summary": "Source-grounded method/approach from 'Rolling Shutter Camera Self-Calibration': Rolling shutter (RS) cameras are widely used in consumer devices, but their row-wise exposure causes distortions under motion, making geometric 3D vision problems dependent on both camera intrinsics and readout time ratio. Existing RS calibration methods rely on calibration targets or specialised hardware, limiting their use in unconstrained settings. We pre...",
+      "aliases": [],
+      "source_ids": [
+        "emergentmind-2608-01509-rolling-shutter-camera-self-calibration-2026"
+      ],
+      "confidence": 0.78,
+      "first_seen": "2026-08-08T14:01:44Z",
+      "last_seen": "2026-08-08T14:01:44Z",
+      "world_hint": "perception-world-models"
+    },
+    "rolling-shutter-camera-self-calibration-learning-problem": {
+      "id": "rolling-shutter-camera-self-calibration-learning-problem",
+      "label": "Rolling Shutter Camera Self-Calibration problem setting",
+      "type": "concept",
+      "summary": "The learning or systems problem described by the source: Rolling shutter (RS) cameras are widely used in consumer devices, but their row-wise exposure causes distortions under motion, making geometric 3D vision problems dependent on both camera intrinsics and readout time ratio. Existing RS calibration methods rely on calibration targets or specialised hardware, limiting their use in unconstrained settings. We pre...",
+      "aliases": [],
+      "source_ids": [
+        "emergentmind-2608-01509-rolling-shutter-camera-self-calibration-2026"
+      ],
+      "confidence": 0.78,
+      "first_seen": "2026-08-08T14:01:44Z",
+      "last_seen": "2026-08-08T14:01:44Z",
+      "world_hint": "perception-world-models"
+    },
+    "rolling-shutter-camera-self-calibration-evaluation-signal": {
+      "id": "rolling-shutter-camera-self-calibration-evaluation-signal",
+      "label": "Rolling Shutter Camera Self-Calibration evaluation signal",
+      "type": "concept",
+      "summary": "The source's evaluation/benchmark signal for judging the method; Edokai keeps this claim source-qualified.",
+      "aliases": [],
+      "source_ids": [
+        "emergentmind-2608-01509-rolling-shutter-camera-self-calibration-2026"
+      ],
+      "confidence": 0.78,
+      "first_seen": "2026-08-08T14:01:44Z",
+      "last_seen": "2026-08-08T14:01:44Z",
+      "world_hint": "perception-world-models"
+    },
+    "paper-2608-01509": {
+      "id": "paper-2608-01509",
+      "label": "Rolling Shutter Camera Self-Calibration",
+      "type": "paper",
+      "summary": "EmergentMind surfaced arXiv paper 2608.01509: Rolling shutter (RS) cameras are widely used in consumer devices, but their row-wise exposure causes distortions under motion, making geometric 3D vision problems dependent on both camera intrinsics and readout time ratio. Existing RS calibration methods rely on calibration targets or specialised hardware, limiting their use in unconstrained settings. We pre...",
+      "aliases": [],
+      "source_ids": [
+        "emergentmind-2608-01509-rolling-shutter-camera-self-calibration-2026"
+      ],
+      "confidence": 0.78,
+      "first_seen": "2026-08-08T14:01:44Z",
+      "last_seen": "2026-08-08T14:01:44Z",
+      "world_hint": "perception-world-models"
+    },
+    "streamsplat-streaming-feed-forward-3d-gaussian-splatting": {
+      "id": "streamsplat-streaming-feed-forward-3d-gaussian-splatting",
+      "label": "StreamSplat",
+      "type": "method",
+      "summary": "Source-grounded method/approach from 'StreamSplat: Streaming Feed-Forward 3D Gaussian Splatting': Feed-forward 3D Gaussian Splatting enables efficient novel-view synthesis without per-scene optimization, but most existing methods assume a fixed set of context views and process them jointly. This limits their applicability to online scenarios where calibrated views arrive sequentially and the scene must be updated causally. We present \\emph{StreamSplat},...",
+      "aliases": [],
+      "source_ids": [
+        "emergentmind-2608-01659-streamsplat-streaming-feed-forward-3d-gaussian-splatting-2026"
+      ],
+      "confidence": 0.78,
+      "first_seen": "2026-08-08T14:01:44Z",
+      "last_seen": "2026-08-08T14:01:44Z",
+      "world_hint": "perception-world-models"
+    },
+    "streamsplat-streaming-feed-forward-3d-gaussian-splatting-learning": {
+      "id": "streamsplat-streaming-feed-forward-3d-gaussian-splatting-learning",
+      "label": "StreamSplat problem setting",
+      "type": "concept",
+      "summary": "The learning or systems problem described by the source: Feed-forward 3D Gaussian Splatting enables efficient novel-view synthesis without per-scene optimization, but most existing methods assume a fixed set of context views and process them jointly. This limits their applicability to online scenarios where calibrated views arrive sequentially and the scene must be updated causally. We present \\emph{StreamSplat},...",
+      "aliases": [],
+      "source_ids": [
+        "emergentmind-2608-01659-streamsplat-streaming-feed-forward-3d-gaussian-splatting-2026"
+      ],
+      "confidence": 0.78,
+      "first_seen": "2026-08-08T14:01:44Z",
+      "last_seen": "2026-08-08T14:01:44Z",
+      "world_hint": "perception-world-models"
+    },
+    "streamsplat-streaming-feed-forward-3d-gaussian-splatting-evaluation": {
+      "id": "streamsplat-streaming-feed-forward-3d-gaussian-splatting-evaluation",
+      "label": "StreamSplat evaluation signal",
+      "type": "concept",
+      "summary": "The source's evaluation/benchmark signal for judging the method; Edokai keeps this claim source-qualified.",
+      "aliases": [],
+      "source_ids": [
+        "emergentmind-2608-01659-streamsplat-streaming-feed-forward-3d-gaussian-splatting-2026"
+      ],
+      "confidence": 0.78,
+      "first_seen": "2026-08-08T14:01:44Z",
+      "last_seen": "2026-08-08T14:01:44Z",
+      "world_hint": "perception-world-models"
+    },
+    "paper-2608-01659": {
+      "id": "paper-2608-01659",
+      "label": "StreamSplat: Streaming Feed-Forward 3D Gaussian Splatting",
+      "type": "paper",
+      "summary": "EmergentMind surfaced arXiv paper 2608.01659: Feed-forward 3D Gaussian Splatting enables efficient novel-view synthesis without per-scene optimization, but most existing methods assume a fixed set of context views and process them jointly. This limits their applicability to online scenarios where calibrated views arrive sequentially and the scene must be updated causally. We present \\emph{StreamSplat},...",
+      "aliases": [],
+      "source_ids": [
+        "emergentmind-2608-01659-streamsplat-streaming-feed-forward-3d-gaussian-splatting-2026"
+      ],
+      "confidence": 0.78,
+      "first_seen": "2026-08-08T14:01:44Z",
+      "last_seen": "2026-08-08T14:01:44Z",
+      "world_hint": "perception-world-models"
+    },
+    "cadena-stepwise-cad-reverse-engineering": {
+      "id": "cadena-stepwise-cad-reverse-engineering",
+      "label": "CADENA",
+      "type": "method",
+      "summary": "Source-grounded method/approach from 'CADENA: Stepwise CAD Reverse Engineering': Computer-Aided Design (CAD) underpins modern engineering, yet converting existing shapes into editable models still demands substantial expert effort. Most AI systems emit the entire CAD program in a single pass, never inspecting the intermediate geometry. In contrast, human engineers build a part feature by feature, checking after each operation what remain...",
+      "aliases": [],
+      "source_ids": [
+        "emergentmind-2608-00799-cadena-stepwise-cad-reverse-engineering-2026"
+      ],
+      "confidence": 0.78,
+      "first_seen": "2026-08-08T14:01:44Z",
+      "last_seen": "2026-08-08T14:01:44Z",
+      "world_hint": "perception-world-models"
+    },
+    "cadena-stepwise-cad-reverse-engineering-learning-problem": {
+      "id": "cadena-stepwise-cad-reverse-engineering-learning-problem",
+      "label": "CADENA problem setting",
+      "type": "concept",
+      "summary": "The learning or systems problem described by the source: Computer-Aided Design (CAD) underpins modern engineering, yet converting existing shapes into editable models still demands substantial expert effort. Most AI systems emit the entire CAD program in a single pass, never inspecting the intermediate geometry. In contrast, human engineers build a part feature by feature, checking after each operation what remain...",
+      "aliases": [],
+      "source_ids": [
+        "emergentmind-2608-00799-cadena-stepwise-cad-reverse-engineering-2026"
+      ],
+      "confidence": 0.78,
+      "first_seen": "2026-08-08T14:01:44Z",
+      "last_seen": "2026-08-08T14:01:44Z",
+      "world_hint": "perception-world-models"
+    },
+    "cadena-stepwise-cad-reverse-engineering-evaluation-signal": {
+      "id": "cadena-stepwise-cad-reverse-engineering-evaluation-signal",
+      "label": "CADENA evaluation signal",
+      "type": "concept",
+      "summary": "The source's evaluation/benchmark signal for judging the method; Edokai keeps this claim source-qualified.",
+      "aliases": [],
+      "source_ids": [
+        "emergentmind-2608-00799-cadena-stepwise-cad-reverse-engineering-2026"
+      ],
+      "confidence": 0.78,
+      "first_seen": "2026-08-08T14:01:44Z",
+      "last_seen": "2026-08-08T14:01:44Z",
+      "world_hint": "perception-world-models"
+    },
+    "paper-2608-00799": {
+      "id": "paper-2608-00799",
+      "label": "CADENA: Stepwise CAD Reverse Engineering",
+      "type": "paper",
+      "summary": "EmergentMind surfaced arXiv paper 2608.00799: Computer-Aided Design (CAD) underpins modern engineering, yet converting existing shapes into editable models still demands substantial expert effort. Most AI systems emit the entire CAD program in a single pass, never inspecting the intermediate geometry. In contrast, human engineers build a part feature by feature, checking after each operation what remain...",
+      "aliases": [],
+      "source_ids": [
+        "emergentmind-2608-00799-cadena-stepwise-cad-reverse-engineering-2026"
+      ],
+      "confidence": 0.78,
+      "first_seen": "2026-08-08T14:01:44Z",
+      "last_seen": "2026-08-08T14:01:44Z",
+      "world_hint": "perception-world-models"
+    },
+    "dapd-dual-anchored-policy-distillation": {
+      "id": "dapd-dual-anchored-policy-distillation",
+      "label": "DAPD",
+      "type": "method",
+      "summary": "Source-grounded method/approach from 'DAPD: Dual-Anchored Policy Distillation': On-policy (self) distillation (OPSD) is increasingly adopted for language-model post-training. It strengthens the teacher with privileged information but can induce a privilege illusion: the student learns privilege-dependent behavior it cannot reproduce from its inference-time context, yet behaves as if the training-time privileged information remained avai...",
+      "aliases": [],
+      "source_ids": [
+        "emergentmind-2608-01735-dapd-dual-anchored-policy-distillation-2026"
+      ],
+      "confidence": 0.78,
+      "first_seen": "2026-08-08T14:01:44Z",
+      "last_seen": "2026-08-08T14:01:44Z",
+      "world_hint": "retrieval-augmented-generation"
+    },
+    "dapd-dual-anchored-policy-distillation-learning-problem": {
+      "id": "dapd-dual-anchored-policy-distillation-learning-problem",
+      "label": "DAPD problem setting",
+      "type": "concept",
+      "summary": "The learning or systems problem described by the source: On-policy (self) distillation (OPSD) is increasingly adopted for language-model post-training. It strengthens the teacher with privileged information but can induce a privilege illusion: the student learns privilege-dependent behavior it cannot reproduce from its inference-time context, yet behaves as if the training-time privileged information remained avai...",
+      "aliases": [],
+      "source_ids": [
+        "emergentmind-2608-01735-dapd-dual-anchored-policy-distillation-2026"
+      ],
+      "confidence": 0.78,
+      "first_seen": "2026-08-08T14:01:44Z",
+      "last_seen": "2026-08-08T14:01:44Z",
+      "world_hint": "retrieval-augmented-generation"
+    },
+    "dapd-dual-anchored-policy-distillation-evaluation-signal": {
+      "id": "dapd-dual-anchored-policy-distillation-evaluation-signal",
+      "label": "DAPD evaluation signal",
+      "type": "concept",
+      "summary": "The source's evaluation/benchmark signal for judging the method; Edokai keeps this claim source-qualified.",
+      "aliases": [],
+      "source_ids": [
+        "emergentmind-2608-01735-dapd-dual-anchored-policy-distillation-2026"
+      ],
+      "confidence": 0.78,
+      "first_seen": "2026-08-08T14:01:44Z",
+      "last_seen": "2026-08-08T14:01:44Z",
+      "world_hint": "retrieval-augmented-generation"
+    },
+    "paper-2608-01735": {
+      "id": "paper-2608-01735",
+      "label": "DAPD: Dual-Anchored Policy Distillation",
+      "type": "paper",
+      "summary": "EmergentMind surfaced arXiv paper 2608.01735: On-policy (self) distillation (OPSD) is increasingly adopted for language-model post-training. It strengthens the teacher with privileged information but can induce a privilege illusion: the student learns privilege-dependent behavior it cannot reproduce from its inference-time context, yet behaves as if the training-time privileged information remained avai...",
+      "aliases": [],
+      "source_ids": [
+        "emergentmind-2608-01735-dapd-dual-anchored-policy-distillation-2026"
+      ],
+      "confidence": 0.78,
+      "first_seen": "2026-08-08T14:01:44Z",
+      "last_seen": "2026-08-08T14:01:44Z",
+      "world_hint": "retrieval-augmented-generation"
     }
   },
   "edges": [
@@ -26633,6 +27341,446 @@
         "emergentmind-2608-01662-longcat-sparse-attention-taming-the-lightning-via-streaming-2026"
       ],
       "evidence": "Routed into The Longcat Sparse Attention Taming under perception-world-models from source title and abstract."
+    },
+    {
+      "source": "paper-2608-05987",
+      "target": "agentopsd-recursive-self-distillation-for-agentic-reinforcement",
+      "relation": "paper_introduces",
+      "confidence": 0.82,
+      "source_ids": [
+        "emergentmind-2608-05987-agentopsd-recursive-self-distillation-for-agentic-reinforcement-learning-2026"
+      ],
+      "evidence": "EmergentMind homepage/page metadata identify arXiv 2608.05987, 'AgentOPSD: Recursive Self-Distillation for Agentic Reinforcement Learning', and summarize the method/problem."
+    },
+    {
+      "source": "agentopsd-recursive-self-distillation-for-agentic-reinforcement",
+      "target": "agentopsd-recursive-self-distillation-for-agentic-reinforcement-learning",
+      "relation": "implements",
+      "confidence": 0.76,
+      "source_ids": [
+        "emergentmind-2608-05987-agentopsd-recursive-self-distillation-for-agentic-reinforcement-learning-2026"
+      ],
+      "evidence": "Reinforcement learning (RL) with verifiable rewards constructs trajectory-level advantage estimates, yet it often fails to credit the few pivotal decisions that determine outcomes in long-horizon, multi-turn agentic tasks. Recent work introduces privileged self-distillation for c"
+    },
+    {
+      "source": "agentopsd-recursive-self-distillation-for-agentic-reinforcement",
+      "target": "agentopsd-recursive-self-distillation-for-agentic-reinforcement-learning",
+      "relation": "evaluates_on",
+      "confidence": 0.72,
+      "source_ids": [
+        "emergentmind-2608-05987-agentopsd-recursive-self-distillation-for-agentic-reinforcement-learning-2026"
+      ],
+      "evidence": "Reinforcement learning (RL) with verifiable rewards constructs trajectory-level advantage estimates, yet it often fails to credit the few pivotal decisions that determine outcomes in long-horizon, multi-turn agentic tasks. Recent work introduces privileged self-distillation for c"
+    },
+    {
+      "source": "agentopsd-recursive-self-distillation-for-agentic-reinforcement",
+      "target": "the-agentopsd-recursive-self-distillation-for",
+      "relation": "belongs_to_region",
+      "confidence": 0.78,
+      "source_ids": [
+        "emergentmind-2608-05987-agentopsd-recursive-self-distillation-for-agentic-reinforcement-learning-2026"
+      ],
+      "evidence": "Routed into The Agentopsd Recursive Self Distillation under perception-world-models from source title and abstract."
+    },
+    {
+      "source": "paper-2608-03392",
+      "target": "self-evolving-coding-agents",
+      "relation": "paper_introduces",
+      "confidence": 0.82,
+      "source_ids": [
+        "emergentmind-2608-03392-self-evolving-coding-agents-2026"
+      ],
+      "evidence": "EmergentMind homepage/page metadata identify arXiv 2608.03392, 'Self-Evolving Coding Agents', and summarize the method/problem."
+    },
+    {
+      "source": "self-evolving-coding-agents",
+      "target": "self-evolving-coding-agents-learning-problem",
+      "relation": "implements",
+      "confidence": 0.76,
+      "source_ids": [
+        "emergentmind-2608-03392-self-evolving-coding-agents-2026"
+      ],
+      "evidence": "Large language models are increasingly embedded in software engineering workflows as coding agents that can inspect repositories, invoke tools, execute tests, debug failures, and generate patches. Yet most existing agents remain largely static after deployment, even though softwa"
+    },
+    {
+      "source": "self-evolving-coding-agents",
+      "target": "self-evolving-coding-agents-evaluation-signal",
+      "relation": "evaluates_on",
+      "confidence": 0.72,
+      "source_ids": [
+        "emergentmind-2608-03392-self-evolving-coding-agents-2026"
+      ],
+      "evidence": "Large language models are increasingly embedded in software engineering workflows as coding agents that can inspect repositories, invoke tools, execute tests, debug failures, and generate patches. Yet most existing agents remain largely static after deployment, even though softwa"
+    },
+    {
+      "source": "self-evolving-coding-agents",
+      "target": "the-self-evolving-coding-agents",
+      "relation": "belongs_to_region",
+      "confidence": 0.78,
+      "source_ids": [
+        "emergentmind-2608-03392-self-evolving-coding-agents-2026"
+      ],
+      "evidence": "Routed into The Self Evolving Coding Agents under llm-systems-serving from source title and abstract."
+    },
+    {
+      "source": "paper-2608-03223",
+      "target": "agentic-reinforcement-learning-with-self-distilled-reward",
+      "relation": "paper_introduces",
+      "confidence": 0.82,
+      "source_ids": [
+        "emergentmind-2608-03223-agentic-reinforcement-learning-with-self-distilled-reward-shaping-2026"
+      ],
+      "evidence": "EmergentMind homepage/page metadata identify arXiv 2608.03223, 'Agentic Reinforcement Learning with Self-Distilled Reward Shaping', and summarize the method/problem."
+    },
+    {
+      "source": "agentic-reinforcement-learning-with-self-distilled-reward",
+      "target": "agentic-reinforcement-learning-with-self-distilled-reward-shaping",
+      "relation": "implements",
+      "confidence": 0.76,
+      "source_ids": [
+        "emergentmind-2608-03223-agentic-reinforcement-learning-with-self-distilled-reward-shaping-2026"
+      ],
+      "evidence": "Agentic reinforcement learning enables LLM agents to learn through interaction, but sparse trajectory-level rewards reveal success without identifying which intermediate decisions deserve credit. Training-only privileged skills can provide denser supervision by allowing the same "
+    },
+    {
+      "source": "agentic-reinforcement-learning-with-self-distilled-reward",
+      "target": "agentic-reinforcement-learning-with-self-distilled-reward-shaping",
+      "relation": "evaluates_on",
+      "confidence": 0.72,
+      "source_ids": [
+        "emergentmind-2608-03223-agentic-reinforcement-learning-with-self-distilled-reward-shaping-2026"
+      ],
+      "evidence": "Agentic reinforcement learning enables LLM agents to learn through interaction, but sparse trajectory-level rewards reveal success without identifying which intermediate decisions deserve credit. Training-only privileged skills can provide denser supervision by allowing the same "
+    },
+    {
+      "source": "agentic-reinforcement-learning-with-self-distilled-reward",
+      "target": "the-agentic-reinforcement-learning-with-self",
+      "relation": "belongs_to_region",
+      "confidence": 0.78,
+      "source_ids": [
+        "emergentmind-2608-03223-agentic-reinforcement-learning-with-self-distilled-reward-shaping-2026"
+      ],
+      "evidence": "Routed into The Agentic Reinforcement Learning With under perception-world-models from source title and abstract."
+    },
+    {
+      "source": "paper-2608-06332",
+      "target": "geniworld-a-generalizable-interactive-world-model-for",
+      "relation": "paper_introduces",
+      "confidence": 0.82,
+      "source_ids": [
+        "emergentmind-2608-06332-geniworld-a-generalizable-interactive-world-model-for-robotic-2026"
+      ],
+      "evidence": "EmergentMind homepage/page metadata identify arXiv 2608.06332, 'GeniWorld: A Generalizable Interactive World Model for Robotic Manipulation via Visual Actions', and summarize the method/problem."
+    },
+    {
+      "source": "geniworld-a-generalizable-interactive-world-model-for",
+      "target": "geniworld-a-generalizable-interactive-world-model-for-robotic",
+      "relation": "implements",
+      "confidence": 0.76,
+      "source_ids": [
+        "emergentmind-2608-06332-geniworld-a-generalizable-interactive-world-model-for-robotic-2026"
+      ],
+      "evidence": "Generalist robot policies exhibit strong capabilities, but their robustness in complex and unseen environments remains limited. Scaling robot learning and evaluation in diverse real-world environments remains costly and challenging. Action-conditioned world models offer a promisi"
+    },
+    {
+      "source": "geniworld-a-generalizable-interactive-world-model-for",
+      "target": "geniworld-a-generalizable-interactive-world-model-for-robotic",
+      "relation": "evaluates_on",
+      "confidence": 0.72,
+      "source_ids": [
+        "emergentmind-2608-06332-geniworld-a-generalizable-interactive-world-model-for-robotic-2026"
+      ],
+      "evidence": "Generalist robot policies exhibit strong capabilities, but their robustness in complex and unseen environments remains limited. Scaling robot learning and evaluation in diverse real-world environments remains costly and challenging. Action-conditioned world models offer a promisi"
+    },
+    {
+      "source": "geniworld-a-generalizable-interactive-world-model-for",
+      "target": "the-geniworld-a-generalizable-interactive-world",
+      "relation": "belongs_to_region",
+      "confidence": 0.78,
+      "source_ids": [
+        "emergentmind-2608-06332-geniworld-a-generalizable-interactive-world-model-for-robotic-2026"
+      ],
+      "evidence": "Routed into The Geniworld A Generalizable Interactive under perception-world-models from source title and abstract."
+    },
+    {
+      "source": "paper-2608-06117",
+      "target": "confidence-matters-leveraging-multi-view-geometric-priors",
+      "relation": "paper_introduces",
+      "confidence": 0.82,
+      "source_ids": [
+        "emergentmind-2608-06117-confidence-matters-leveraging-multi-view-geometric-priors-for-2026"
+      ],
+      "evidence": "EmergentMind homepage/page metadata identify arXiv 2608.06117, 'Confidence matters: Leveraging Multi-view Geometric Priors for GS-based Reconstruction', and summarize the method/problem."
+    },
+    {
+      "source": "confidence-matters-leveraging-multi-view-geometric-priors",
+      "target": "confidence-matters-leveraging-multi-view-geometric-priors-for",
+      "relation": "implements",
+      "confidence": 0.76,
+      "source_ids": [
+        "emergentmind-2608-06117-confidence-matters-leveraging-multi-view-geometric-priors-for-2026"
+      ],
+      "evidence": "3D Gaussian splatting (3DGS) has emerged as a widely-used tool for novel view synthesis, offering real-time rendering in a sparse representation. However, the method's reliance on structure-from-motion initialization and photometric optimization can lead to suboptimal geometric r"
+    },
+    {
+      "source": "confidence-matters-leveraging-multi-view-geometric-priors",
+      "target": "confidence-matters-leveraging-multi-view-geometric-priors-for",
+      "relation": "evaluates_on",
+      "confidence": 0.72,
+      "source_ids": [
+        "emergentmind-2608-06117-confidence-matters-leveraging-multi-view-geometric-priors-for-2026"
+      ],
+      "evidence": "3D Gaussian splatting (3DGS) has emerged as a widely-used tool for novel view synthesis, offering real-time rendering in a sparse representation. However, the method's reliance on structure-from-motion initialization and photometric optimization can lead to suboptimal geometric r"
+    },
+    {
+      "source": "confidence-matters-leveraging-multi-view-geometric-priors",
+      "target": "the-confidence-matters-leveraging-multi-view",
+      "relation": "belongs_to_region",
+      "confidence": 0.78,
+      "source_ids": [
+        "emergentmind-2608-06117-confidence-matters-leveraging-multi-view-geometric-priors-for-2026"
+      ],
+      "evidence": "Routed into The Confidence Matters Leveraging Multi under retrieval-augmented-generation from source title and abstract."
+    },
+    {
+      "source": "paper-2608-04003",
+      "target": "past-bench-benchmarking-the-foundations-of-recursive",
+      "relation": "paper_introduces",
+      "confidence": 0.82,
+      "source_ids": [
+        "emergentmind-2608-04003-past-bench-benchmarking-the-foundations-of-recursive-self-2026"
+      ],
+      "evidence": "EmergentMind homepage/page metadata identify arXiv 2608.04003, 'PAST-Bench: Benchmarking the Foundations of Recursive Self-Improvement in Personal Agents', and summarize the method/problem."
+    },
+    {
+      "source": "past-bench-benchmarking-the-foundations-of-recursive",
+      "target": "past-bench-benchmarking-the-foundations-of-recursive-self",
+      "relation": "implements",
+      "confidence": 0.76,
+      "source_ids": [
+        "emergentmind-2608-04003-past-bench-benchmarking-the-foundations-of-recursive-self-2026"
+      ],
+      "evidence": "Recursive self-improvement requires agents to turn accumulated experience into better future behavior. Personal AI agents offer a concrete setting for studying this capability because they retain preferences, task histories, tool routines, and learned skills across sessions. Yet "
+    },
+    {
+      "source": "past-bench-benchmarking-the-foundations-of-recursive",
+      "target": "past-bench-benchmarking-the-foundations-of-recursive-self",
+      "relation": "evaluates_on",
+      "confidence": 0.72,
+      "source_ids": [
+        "emergentmind-2608-04003-past-bench-benchmarking-the-foundations-of-recursive-self-2026"
+      ],
+      "evidence": "Recursive self-improvement requires agents to turn accumulated experience into better future behavior. Personal AI agents offer a concrete setting for studying this capability because they retain preferences, task histories, tool routines, and learned skills across sessions. Yet "
+    },
+    {
+      "source": "past-bench-benchmarking-the-foundations-of-recursive",
+      "target": "the-past-bench-benchmarking-the-foundations",
+      "relation": "belongs_to_region",
+      "confidence": 0.78,
+      "source_ids": [
+        "emergentmind-2608-04003-past-bench-benchmarking-the-foundations-of-recursive-self-2026"
+      ],
+      "evidence": "Routed into The Past Bench Benchmarking The under retrieval-augmented-generation from source title and abstract."
+    },
+    {
+      "source": "paper-2608-04373",
+      "target": "public-trader-identity-adverse-selection-and-return",
+      "relation": "paper_introduces",
+      "confidence": 0.82,
+      "source_ids": [
+        "emergentmind-2608-04373-public-trader-identity-adverse-selection-and-return-predictability-2026"
+      ],
+      "evidence": "EmergentMind homepage/page metadata identify arXiv 2608.04373, 'Public Trader Identity: Adverse Selection and Return Predictability', and summarize the method/problem."
+    },
+    {
+      "source": "public-trader-identity-adverse-selection-and-return",
+      "target": "public-trader-identity-adverse-selection-and-return-predictability",
+      "relation": "implements",
+      "confidence": 0.76,
+      "source_ids": [
+        "emergentmind-2608-04373-public-trader-identity-adverse-selection-and-return-predictability-2026"
+      ],
+      "evidence": "Informed traders are supposed to need anonymity: they profit by hiding among the uninformed. A decentralized exchange now publishes the counterparty: every committed order, cancellation, rejection, and fill carries a persistent pseudonymous wallet address. We reconstruct the full"
+    },
+    {
+      "source": "public-trader-identity-adverse-selection-and-return",
+      "target": "public-trader-identity-adverse-selection-and-return-predictability",
+      "relation": "evaluates_on",
+      "confidence": 0.72,
+      "source_ids": [
+        "emergentmind-2608-04373-public-trader-identity-adverse-selection-and-return-predictability-2026"
+      ],
+      "evidence": "Informed traders are supposed to need anonymity: they profit by hiding among the uninformed. A decentralized exchange now publishes the counterparty: every committed order, cancellation, rejection, and fill carries a persistent pseudonymous wallet address. We reconstruct the full"
+    },
+    {
+      "source": "public-trader-identity-adverse-selection-and-return",
+      "target": "the-public-trader-identity-adverse-selection",
+      "relation": "belongs_to_region",
+      "confidence": 0.78,
+      "source_ids": [
+        "emergentmind-2608-04373-public-trader-identity-adverse-selection-and-return-predictability-2026"
+      ],
+      "evidence": "Routed into The Public Trader Identity Adverse under perception-world-models from source title and abstract."
+    },
+    {
+      "source": "paper-2608-01509",
+      "target": "rolling-shutter-camera-self-calibration",
+      "relation": "paper_introduces",
+      "confidence": 0.82,
+      "source_ids": [
+        "emergentmind-2608-01509-rolling-shutter-camera-self-calibration-2026"
+      ],
+      "evidence": "EmergentMind homepage/page metadata identify arXiv 2608.01509, 'Rolling Shutter Camera Self-Calibration', and summarize the method/problem."
+    },
+    {
+      "source": "rolling-shutter-camera-self-calibration",
+      "target": "rolling-shutter-camera-self-calibration-learning-problem",
+      "relation": "implements",
+      "confidence": 0.76,
+      "source_ids": [
+        "emergentmind-2608-01509-rolling-shutter-camera-self-calibration-2026"
+      ],
+      "evidence": "Rolling shutter (RS) cameras are widely used in consumer devices, but their row-wise exposure causes distortions under motion, making geometric 3D vision problems dependent on both camera intrinsics and readout time ratio. Existing RS calibration methods rely on calibration targe"
+    },
+    {
+      "source": "rolling-shutter-camera-self-calibration",
+      "target": "rolling-shutter-camera-self-calibration-evaluation-signal",
+      "relation": "evaluates_on",
+      "confidence": 0.72,
+      "source_ids": [
+        "emergentmind-2608-01509-rolling-shutter-camera-self-calibration-2026"
+      ],
+      "evidence": "Rolling shutter (RS) cameras are widely used in consumer devices, but their row-wise exposure causes distortions under motion, making geometric 3D vision problems dependent on both camera intrinsics and readout time ratio. Existing RS calibration methods rely on calibration targe"
+    },
+    {
+      "source": "rolling-shutter-camera-self-calibration",
+      "target": "the-rolling-shutter-camera-self-calibration",
+      "relation": "belongs_to_region",
+      "confidence": 0.78,
+      "source_ids": [
+        "emergentmind-2608-01509-rolling-shutter-camera-self-calibration-2026"
+      ],
+      "evidence": "Routed into The Rolling Shutter Camera Self under perception-world-models from source title and abstract."
+    },
+    {
+      "source": "paper-2608-01659",
+      "target": "streamsplat-streaming-feed-forward-3d-gaussian-splatting",
+      "relation": "paper_introduces",
+      "confidence": 0.82,
+      "source_ids": [
+        "emergentmind-2608-01659-streamsplat-streaming-feed-forward-3d-gaussian-splatting-2026"
+      ],
+      "evidence": "EmergentMind homepage/page metadata identify arXiv 2608.01659, 'StreamSplat: Streaming Feed-Forward 3D Gaussian Splatting', and summarize the method/problem."
+    },
+    {
+      "source": "streamsplat-streaming-feed-forward-3d-gaussian-splatting",
+      "target": "streamsplat-streaming-feed-forward-3d-gaussian-splatting-learning",
+      "relation": "implements",
+      "confidence": 0.76,
+      "source_ids": [
+        "emergentmind-2608-01659-streamsplat-streaming-feed-forward-3d-gaussian-splatting-2026"
+      ],
+      "evidence": "Feed-forward 3D Gaussian Splatting enables efficient novel-view synthesis without per-scene optimization, but most existing methods assume a fixed set of context views and process them jointly. This limits their applicability to online scenarios where calibrated views arrive sequ"
+    },
+    {
+      "source": "streamsplat-streaming-feed-forward-3d-gaussian-splatting",
+      "target": "streamsplat-streaming-feed-forward-3d-gaussian-splatting-evaluation",
+      "relation": "evaluates_on",
+      "confidence": 0.72,
+      "source_ids": [
+        "emergentmind-2608-01659-streamsplat-streaming-feed-forward-3d-gaussian-splatting-2026"
+      ],
+      "evidence": "Feed-forward 3D Gaussian Splatting enables efficient novel-view synthesis without per-scene optimization, but most existing methods assume a fixed set of context views and process them jointly. This limits their applicability to online scenarios where calibrated views arrive sequ"
+    },
+    {
+      "source": "streamsplat-streaming-feed-forward-3d-gaussian-splatting",
+      "target": "the-streamsplat-streaming-feed-forward-3d",
+      "relation": "belongs_to_region",
+      "confidence": 0.78,
+      "source_ids": [
+        "emergentmind-2608-01659-streamsplat-streaming-feed-forward-3d-gaussian-splatting-2026"
+      ],
+      "evidence": "Routed into The Streamsplat Streaming Feed Forward under perception-world-models from source title and abstract."
+    },
+    {
+      "source": "paper-2608-00799",
+      "target": "cadena-stepwise-cad-reverse-engineering",
+      "relation": "paper_introduces",
+      "confidence": 0.82,
+      "source_ids": [
+        "emergentmind-2608-00799-cadena-stepwise-cad-reverse-engineering-2026"
+      ],
+      "evidence": "EmergentMind homepage/page metadata identify arXiv 2608.00799, 'CADENA: Stepwise CAD Reverse Engineering', and summarize the method/problem."
+    },
+    {
+      "source": "cadena-stepwise-cad-reverse-engineering",
+      "target": "cadena-stepwise-cad-reverse-engineering-learning-problem",
+      "relation": "implements",
+      "confidence": 0.76,
+      "source_ids": [
+        "emergentmind-2608-00799-cadena-stepwise-cad-reverse-engineering-2026"
+      ],
+      "evidence": "Computer-Aided Design (CAD) underpins modern engineering, yet converting existing shapes into editable models still demands substantial expert effort. Most AI systems emit the entire CAD program in a single pass, never inspecting the intermediate geometry. In contrast, human engi"
+    },
+    {
+      "source": "cadena-stepwise-cad-reverse-engineering",
+      "target": "cadena-stepwise-cad-reverse-engineering-evaluation-signal",
+      "relation": "evaluates_on",
+      "confidence": 0.72,
+      "source_ids": [
+        "emergentmind-2608-00799-cadena-stepwise-cad-reverse-engineering-2026"
+      ],
+      "evidence": "Computer-Aided Design (CAD) underpins modern engineering, yet converting existing shapes into editable models still demands substantial expert effort. Most AI systems emit the entire CAD program in a single pass, never inspecting the intermediate geometry. In contrast, human engi"
+    },
+    {
+      "source": "cadena-stepwise-cad-reverse-engineering",
+      "target": "the-cadena-stepwise-cad-reverse-engineering",
+      "relation": "belongs_to_region",
+      "confidence": 0.78,
+      "source_ids": [
+        "emergentmind-2608-00799-cadena-stepwise-cad-reverse-engineering-2026"
+      ],
+      "evidence": "Routed into The Cadena Stepwise Cad Reverse under perception-world-models from source title and abstract."
+    },
+    {
+      "source": "paper-2608-01735",
+      "target": "dapd-dual-anchored-policy-distillation",
+      "relation": "paper_introduces",
+      "confidence": 0.82,
+      "source_ids": [
+        "emergentmind-2608-01735-dapd-dual-anchored-policy-distillation-2026"
+      ],
+      "evidence": "EmergentMind homepage/page metadata identify arXiv 2608.01735, 'DAPD: Dual-Anchored Policy Distillation', and summarize the method/problem."
+    },
+    {
+      "source": "dapd-dual-anchored-policy-distillation",
+      "target": "dapd-dual-anchored-policy-distillation-learning-problem",
+      "relation": "implements",
+      "confidence": 0.76,
+      "source_ids": [
+        "emergentmind-2608-01735-dapd-dual-anchored-policy-distillation-2026"
+      ],
+      "evidence": "On-policy (self) distillation (OPSD) is increasingly adopted for language-model post-training. It strengthens the teacher with privileged information but can induce a privilege illusion: the student learns privilege-dependent behavior it cannot reproduce from its inference-time c"
+    },
+    {
+      "source": "dapd-dual-anchored-policy-distillation",
+      "target": "dapd-dual-anchored-policy-distillation-evaluation-signal",
+      "relation": "evaluates_on",
+      "confidence": 0.72,
+      "source_ids": [
+        "emergentmind-2608-01735-dapd-dual-anchored-policy-distillation-2026"
+      ],
+      "evidence": "On-policy (self) distillation (OPSD) is increasingly adopted for language-model post-training. It strengthens the teacher with privileged information but can induce a privilege illusion: the student learns privilege-dependent behavior it cannot reproduce from its inference-time c"
+    },
+    {
+      "source": "dapd-dual-anchored-policy-distillation",
+      "target": "the-dapd-dual-anchored-policy-distillation",
+      "relation": "belongs_to_region",
+      "confidence": 0.78,
+      "source_ids": [
+        "emergentmind-2608-01735-dapd-dual-anchored-policy-distillation-2026"
+      ],
+      "evidence": "Routed into The Dapd Dual Anchored Policy under retrieval-augmented-generation from source title and abstract."
     }
   ],
   "open_questions": [
@@ -28712,6 +29860,62 @@
       "edges_added": 0,
       "regions_added": 0,
       "quality_findings": [],
+      "verification": {
+        "json_parse": "passed",
+        "dkg_test": "passed",
+        "build": "passed",
+        "supabase_sync": "passed",
+        "roundtrip": "passed"
+      }
+    },
+    {
+      "run_id": "daily-emergentmind-all-topics-20260808T140144Z",
+      "completed_at": "2026-08-08T14:01:44Z",
+      "type": "daily-emergentmind-all-topics",
+      "homepage_url": "https://www.emergentmind.com/",
+      "homepage_status": 200,
+      "homepage_papers": 45,
+      "source_ids": [
+        "emergentmind-2608-05987-agentopsd-recursive-self-distillation-for-agentic-reinforcement-learning-2026",
+        "emergentmind-2608-03392-self-evolving-coding-agents-2026",
+        "emergentmind-2608-03223-agentic-reinforcement-learning-with-self-distilled-reward-shaping-2026",
+        "emergentmind-2608-06332-geniworld-a-generalizable-interactive-world-model-for-robotic-2026",
+        "emergentmind-2608-06117-confidence-matters-leveraging-multi-view-geometric-priors-for-2026",
+        "emergentmind-2608-04003-past-bench-benchmarking-the-foundations-of-recursive-self-2026",
+        "emergentmind-2608-04373-public-trader-identity-adverse-selection-and-return-predictability-2026",
+        "emergentmind-2608-01509-rolling-shutter-camera-self-calibration-2026",
+        "emergentmind-2608-01659-streamsplat-streaming-feed-forward-3d-gaussian-splatting-2026",
+        "emergentmind-2608-00799-cadena-stepwise-cad-reverse-engineering-2026",
+        "emergentmind-2608-01735-dapd-dual-anchored-policy-distillation-2026"
+      ],
+      "page_status": {
+        "2608.05987": 200,
+        "2608.03392": 200,
+        "2608.03223": 200,
+        "2608.06332": 200,
+        "2608.06117": 200,
+        "2608.04003": 200,
+        "2608.04373": 200,
+        "2608.01509": 200,
+        "2608.01659": 200,
+        "2608.00799": 200,
+        "2608.01735": 200
+      },
+      "sources_added": 11,
+      "sources_updated": 0,
+      "nodes_added": 38,
+      "nodes_updated": 0,
+      "edges_added": 44,
+      "worlds_touched": [
+        "perception-world-models",
+        "llm-systems-serving",
+        "retrieval-augmented-generation"
+      ],
+      "regions_added": 11,
+      "manual_review": [
+        "Skipped pure-math, astronomy/cosmology, and clinical/medical surfaced items in this bounded pass; clinical claims need deeper safety review before routing.",
+        "New visual-SLAM/event-camera/egocentric-video items are routed under Perception & World Models; DeepSearch is routed under Retrieval-Augmented Generation; beyond-human intelligence evaluation is routed under Agents."
+      ],
       "verification": {
         "json_parse": "passed",
         "dkg_test": "passed",

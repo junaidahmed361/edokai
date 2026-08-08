@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "updated_at": "2026-08-07T14:17:12Z",
+  "updated_at": "2026-08-08T14:01:44Z",
   "macro_worlds": {
     "agents": {
       "label": "Agents",
@@ -7428,6 +7428,300 @@
               ]
             }
           ]
+        },
+        {
+          "id": "the-agentopsd-recursive-self-distillation-for",
+          "label": "The Agentopsd Recursive Self Distillation",
+          "summary": "A source-backed case board for AgentOPSD: Recursive Self-Distillation for Agentic Reinforcement Learning: learners inspect the plain technical mechanism, the evaluation signal, and where the claim fits in Edokai's perception world models world.",
+          "source_ids": [
+            "emergentmind-2608-05987-agentopsd-recursive-self-distillation-for-agentic-reinforcement-learning-2026"
+          ],
+          "concept_ids": [
+            "agentopsd-recursive-self-distillation-for-agentic-reinforcement",
+            "agentopsd-recursive-self-distillation-for-agentic-reinforcement-learning",
+            "agentopsd-recursive-self-distillation-for-agentic-reinforcement-learning"
+          ],
+          "critical_concepts": [
+            "agentopsd-recursive-self-distillation-for-agentic-reinforcement",
+            "agentopsd-recursive-self-distillation-for-agentic-reinforcement-learning"
+          ],
+          "prerequisite_links": [],
+          "side_retention_duels": [
+            {
+              "id": "the-agentopsd-recursive-self-distillation-duel",
+              "prompt": "What should Edokai learners remember about **AgentOPSD**?",
+              "left": "Treat it as a title-only bookmark without checking the mechanism.",
+              "right": "Track the mechanism, evidence signal, and limits stated by the source.",
+              "answer": "Use the source-backed mechanism and evaluation signal; avoid inferring guarantees beyond the paper summary."
+            }
+          ],
+          "quiz_questions": [
+            {
+              "question": "In the source **AgentOPSD: Recursive Self-Distillation for Agentic Reinforcement Learning**, what is the main learner-facing mechanism Edokai should preserve?",
+              "choices": [
+                "It mainly replaces the user interface theme without changing the learning mechanism.",
+                "It uses the source's AgentOPSD mechanism to address the paper's stated ML/AI problem.",
+                "It is a clinical treatment protocol rather than a machine-learning research method.",
+                "It proves a pure-math theorem without a model, agent, or evaluation loop."
+              ],
+              "answer_index": 1,
+              "source_ids": [
+                "emergentmind-2608-05987-agentopsd-recursive-self-distillation-for-agentic-reinforcement-learning-2026"
+              ]
+            }
+          ]
+        },
+        {
+          "id": "the-agentic-reinforcement-learning-with-self",
+          "label": "The Agentic Reinforcement Learning With",
+          "summary": "A source-backed case board for Agentic Reinforcement Learning with Self-Distilled Reward Shaping: learners inspect the plain technical mechanism, the evaluation signal, and where the claim fits in Edokai's perception world models world.",
+          "source_ids": [
+            "emergentmind-2608-03223-agentic-reinforcement-learning-with-self-distilled-reward-shaping-2026"
+          ],
+          "concept_ids": [
+            "agentic-reinforcement-learning-with-self-distilled-reward",
+            "agentic-reinforcement-learning-with-self-distilled-reward-shaping",
+            "agentic-reinforcement-learning-with-self-distilled-reward-shaping"
+          ],
+          "critical_concepts": [
+            "agentic-reinforcement-learning-with-self-distilled-reward",
+            "agentic-reinforcement-learning-with-self-distilled-reward-shaping"
+          ],
+          "prerequisite_links": [],
+          "side_retention_duels": [
+            {
+              "id": "the-agentic-reinforcement-learning-with-duel",
+              "prompt": "What should Edokai learners remember about **Agentic Reinforcement Learning with Self-Distilled Reward Shaping**?",
+              "left": "Treat it as a title-only bookmark without checking the mechanism.",
+              "right": "Track the mechanism, evidence signal, and limits stated by the source.",
+              "answer": "Use the source-backed mechanism and evaluation signal; avoid inferring guarantees beyond the paper summary."
+            }
+          ],
+          "quiz_questions": [
+            {
+              "question": "In the source **Agentic Reinforcement Learning with Self-Distilled Reward Shaping**, what is the main learner-facing mechanism Edokai should preserve?",
+              "choices": [
+                "It mainly replaces the user interface theme without changing the learning mechanism.",
+                "It is a clinical treatment protocol rather than a machine-learning research method.",
+                "It proves a pure-math theorem without a model, agent, or evaluation loop.",
+                "It uses the source's Agentic Reinforcement Learning with Self-Distilled Reward Shaping mechanism to address the paper's stated ML/AI problem."
+              ],
+              "answer_index": 3,
+              "source_ids": [
+                "emergentmind-2608-03223-agentic-reinforcement-learning-with-self-distilled-reward-shaping-2026"
+              ]
+            }
+          ]
+        },
+        {
+          "id": "the-geniworld-a-generalizable-interactive-world",
+          "label": "The Geniworld A Generalizable Interactive",
+          "summary": "A source-backed case board for GeniWorld: A Generalizable Interactive World Model for Robotic Manipulation via Visual Actions: learners inspect the plain technical mechanism, the evaluation signal, and where the claim fits in Edokai's perception world models world.",
+          "source_ids": [
+            "emergentmind-2608-06332-geniworld-a-generalizable-interactive-world-model-for-robotic-2026"
+          ],
+          "concept_ids": [
+            "geniworld-a-generalizable-interactive-world-model-for",
+            "geniworld-a-generalizable-interactive-world-model-for-robotic",
+            "geniworld-a-generalizable-interactive-world-model-for-robotic"
+          ],
+          "critical_concepts": [
+            "geniworld-a-generalizable-interactive-world-model-for",
+            "geniworld-a-generalizable-interactive-world-model-for-robotic"
+          ],
+          "prerequisite_links": [],
+          "side_retention_duels": [
+            {
+              "id": "the-geniworld-a-generalizable-interactive-duel",
+              "prompt": "What should Edokai learners remember about **GeniWorld**?",
+              "left": "Treat it as a title-only bookmark without checking the mechanism.",
+              "right": "Track the mechanism, evidence signal, and limits stated by the source.",
+              "answer": "Use the source-backed mechanism and evaluation signal; avoid inferring guarantees beyond the paper summary."
+            }
+          ],
+          "quiz_questions": [
+            {
+              "question": "In the source **GeniWorld: A Generalizable Interactive World Model for Robotic Manipulation via Visual Actions**, what is the main learner-facing mechanism Edokai should preserve?",
+              "choices": [
+                "It uses the source's GeniWorld mechanism to address the paper's stated ML/AI problem.",
+                "It mainly replaces the user interface theme without changing the learning mechanism.",
+                "It is a clinical treatment protocol rather than a machine-learning research method.",
+                "It proves a pure-math theorem without a model, agent, or evaluation loop."
+              ],
+              "answer_index": 0,
+              "source_ids": [
+                "emergentmind-2608-06332-geniworld-a-generalizable-interactive-world-model-for-robotic-2026"
+              ]
+            }
+          ]
+        },
+        {
+          "id": "the-public-trader-identity-adverse-selection",
+          "label": "The Public Trader Identity Adverse",
+          "summary": "A source-backed case board for Public Trader Identity: Adverse Selection and Return Predictability: learners inspect the plain technical mechanism, the evaluation signal, and where the claim fits in Edokai's perception world models world.",
+          "source_ids": [
+            "emergentmind-2608-04373-public-trader-identity-adverse-selection-and-return-predictability-2026"
+          ],
+          "concept_ids": [
+            "public-trader-identity-adverse-selection-and-return",
+            "public-trader-identity-adverse-selection-and-return-predictability",
+            "public-trader-identity-adverse-selection-and-return-predictability"
+          ],
+          "critical_concepts": [
+            "public-trader-identity-adverse-selection-and-return",
+            "public-trader-identity-adverse-selection-and-return-predictability"
+          ],
+          "prerequisite_links": [],
+          "side_retention_duels": [
+            {
+              "id": "the-public-trader-identity-adverse-duel",
+              "prompt": "What should Edokai learners remember about **Public Trader Identity**?",
+              "left": "Treat it as a title-only bookmark without checking the mechanism.",
+              "right": "Track the mechanism, evidence signal, and limits stated by the source.",
+              "answer": "Use the source-backed mechanism and evaluation signal; avoid inferring guarantees beyond the paper summary."
+            }
+          ],
+          "quiz_questions": [
+            {
+              "question": "In the source **Public Trader Identity: Adverse Selection and Return Predictability**, what is the main learner-facing mechanism Edokai should preserve?",
+              "choices": [
+                "It mainly replaces the user interface theme without changing the learning mechanism.",
+                "It is a clinical treatment protocol rather than a machine-learning research method.",
+                "It proves a pure-math theorem without a model, agent, or evaluation loop.",
+                "It uses the source's Public Trader Identity mechanism to address the paper's stated ML/AI problem."
+              ],
+              "answer_index": 3,
+              "source_ids": [
+                "emergentmind-2608-04373-public-trader-identity-adverse-selection-and-return-predictability-2026"
+              ]
+            }
+          ]
+        },
+        {
+          "id": "the-rolling-shutter-camera-self-calibration",
+          "label": "The Rolling Shutter Camera Self",
+          "summary": "A source-backed case board for Rolling Shutter Camera Self-Calibration: learners inspect the plain technical mechanism, the evaluation signal, and where the claim fits in Edokai's perception world models world.",
+          "source_ids": [
+            "emergentmind-2608-01509-rolling-shutter-camera-self-calibration-2026"
+          ],
+          "concept_ids": [
+            "rolling-shutter-camera-self-calibration",
+            "rolling-shutter-camera-self-calibration-learning-problem",
+            "rolling-shutter-camera-self-calibration-evaluation-signal"
+          ],
+          "critical_concepts": [
+            "rolling-shutter-camera-self-calibration",
+            "rolling-shutter-camera-self-calibration-learning-problem"
+          ],
+          "prerequisite_links": [],
+          "side_retention_duels": [
+            {
+              "id": "the-rolling-shutter-camera-self-duel",
+              "prompt": "What should Edokai learners remember about **Rolling Shutter Camera Self-Calibration**?",
+              "left": "Treat it as a title-only bookmark without checking the mechanism.",
+              "right": "Track the mechanism, evidence signal, and limits stated by the source.",
+              "answer": "Use the source-backed mechanism and evaluation signal; avoid inferring guarantees beyond the paper summary."
+            }
+          ],
+          "quiz_questions": [
+            {
+              "question": "In the source **Rolling Shutter Camera Self-Calibration**, what is the main learner-facing mechanism Edokai should preserve?",
+              "choices": [
+                "It uses the source's Rolling Shutter Camera Self-Calibration mechanism to address the paper's stated ML/AI problem.",
+                "It mainly replaces the user interface theme without changing the learning mechanism.",
+                "It is a clinical treatment protocol rather than a machine-learning research method.",
+                "It proves a pure-math theorem without a model, agent, or evaluation loop."
+              ],
+              "answer_index": 0,
+              "source_ids": [
+                "emergentmind-2608-01509-rolling-shutter-camera-self-calibration-2026"
+              ]
+            }
+          ]
+        },
+        {
+          "id": "the-streamsplat-streaming-feed-forward-3d",
+          "label": "The Streamsplat Streaming Feed Forward",
+          "summary": "A source-backed case board for StreamSplat: Streaming Feed-Forward 3D Gaussian Splatting: learners inspect the plain technical mechanism, the evaluation signal, and where the claim fits in Edokai's perception world models world.",
+          "source_ids": [
+            "emergentmind-2608-01659-streamsplat-streaming-feed-forward-3d-gaussian-splatting-2026"
+          ],
+          "concept_ids": [
+            "streamsplat-streaming-feed-forward-3d-gaussian-splatting",
+            "streamsplat-streaming-feed-forward-3d-gaussian-splatting-learning",
+            "streamsplat-streaming-feed-forward-3d-gaussian-splatting-evaluation"
+          ],
+          "critical_concepts": [
+            "streamsplat-streaming-feed-forward-3d-gaussian-splatting",
+            "streamsplat-streaming-feed-forward-3d-gaussian-splatting-learning"
+          ],
+          "prerequisite_links": [],
+          "side_retention_duels": [
+            {
+              "id": "the-streamsplat-streaming-feed-forward-duel",
+              "prompt": "What should Edokai learners remember about **StreamSplat**?",
+              "left": "Treat it as a title-only bookmark without checking the mechanism.",
+              "right": "Track the mechanism, evidence signal, and limits stated by the source.",
+              "answer": "Use the source-backed mechanism and evaluation signal; avoid inferring guarantees beyond the paper summary."
+            }
+          ],
+          "quiz_questions": [
+            {
+              "question": "In the source **StreamSplat: Streaming Feed-Forward 3D Gaussian Splatting**, what is the main learner-facing mechanism Edokai should preserve?",
+              "choices": [
+                "It mainly replaces the user interface theme without changing the learning mechanism.",
+                "It uses the source's StreamSplat mechanism to address the paper's stated ML/AI problem.",
+                "It is a clinical treatment protocol rather than a machine-learning research method.",
+                "It proves a pure-math theorem without a model, agent, or evaluation loop."
+              ],
+              "answer_index": 1,
+              "source_ids": [
+                "emergentmind-2608-01659-streamsplat-streaming-feed-forward-3d-gaussian-splatting-2026"
+              ]
+            }
+          ]
+        },
+        {
+          "id": "the-cadena-stepwise-cad-reverse-engineering",
+          "label": "The Cadena Stepwise Cad Reverse",
+          "summary": "A source-backed case board for CADENA: Stepwise CAD Reverse Engineering: learners inspect the plain technical mechanism, the evaluation signal, and where the claim fits in Edokai's perception world models world.",
+          "source_ids": [
+            "emergentmind-2608-00799-cadena-stepwise-cad-reverse-engineering-2026"
+          ],
+          "concept_ids": [
+            "cadena-stepwise-cad-reverse-engineering",
+            "cadena-stepwise-cad-reverse-engineering-learning-problem",
+            "cadena-stepwise-cad-reverse-engineering-evaluation-signal"
+          ],
+          "critical_concepts": [
+            "cadena-stepwise-cad-reverse-engineering",
+            "cadena-stepwise-cad-reverse-engineering-learning-problem"
+          ],
+          "prerequisite_links": [],
+          "side_retention_duels": [
+            {
+              "id": "the-cadena-stepwise-cad-reverse-duel",
+              "prompt": "What should Edokai learners remember about **CADENA**?",
+              "left": "Treat it as a title-only bookmark without checking the mechanism.",
+              "right": "Track the mechanism, evidence signal, and limits stated by the source.",
+              "answer": "Use the source-backed mechanism and evaluation signal; avoid inferring guarantees beyond the paper summary."
+            }
+          ],
+          "quiz_questions": [
+            {
+              "question": "In the source **CADENA: Stepwise CAD Reverse Engineering**, what is the main learner-facing mechanism Edokai should preserve?",
+              "choices": [
+                "It mainly replaces the user interface theme without changing the learning mechanism.",
+                "It is a clinical treatment protocol rather than a machine-learning research method.",
+                "It uses the source's CADENA mechanism to address the paper's stated ML/AI problem.",
+                "It proves a pure-math theorem without a model, agent, or evaluation loop."
+              ],
+              "answer_index": 2,
+              "source_ids": [
+                "emergentmind-2608-00799-cadena-stepwise-cad-reverse-engineering-2026"
+              ]
+            }
+          ]
         }
       ]
     },
@@ -8468,6 +8762,48 @@
               "answer_index": 0,
               "source_ids": [
                 "emergentmind-2608-05784-activity-frames-deterministic-screen-activity-compilation-for-agent-2026"
+              ]
+            }
+          ]
+        },
+        {
+          "id": "the-self-evolving-coding-agents",
+          "label": "The Self Evolving Coding Agents",
+          "summary": "A source-backed case board for Self-Evolving Coding Agents: learners inspect the plain technical mechanism, the evaluation signal, and where the claim fits in Edokai's llm systems serving world.",
+          "source_ids": [
+            "emergentmind-2608-03392-self-evolving-coding-agents-2026"
+          ],
+          "concept_ids": [
+            "self-evolving-coding-agents",
+            "self-evolving-coding-agents-learning-problem",
+            "self-evolving-coding-agents-evaluation-signal"
+          ],
+          "critical_concepts": [
+            "self-evolving-coding-agents",
+            "self-evolving-coding-agents-learning-problem"
+          ],
+          "prerequisite_links": [],
+          "side_retention_duels": [
+            {
+              "id": "the-self-evolving-coding-agents-duel",
+              "prompt": "What should Edokai learners remember about **Self-Evolving Coding Agents**?",
+              "left": "Treat it as a title-only bookmark without checking the mechanism.",
+              "right": "Track the mechanism, evidence signal, and limits stated by the source.",
+              "answer": "Use the source-backed mechanism and evaluation signal; avoid inferring guarantees beyond the paper summary."
+            }
+          ],
+          "quiz_questions": [
+            {
+              "question": "In the source **Self-Evolving Coding Agents**, what is the main learner-facing mechanism Edokai should preserve?",
+              "choices": [
+                "It mainly replaces the user interface theme without changing the learning mechanism.",
+                "It is a clinical treatment protocol rather than a machine-learning research method.",
+                "It uses the source's Self-Evolving Coding Agents mechanism to address the paper's stated ML/AI problem.",
+                "It proves a pure-math theorem without a model, agent, or evaluation loop."
+              ],
+              "answer_index": 2,
+              "source_ids": [
+                "emergentmind-2608-03392-self-evolving-coding-agents-2026"
               ]
             }
           ]
@@ -11295,6 +11631,132 @@
               ]
             }
           ]
+        },
+        {
+          "id": "the-confidence-matters-leveraging-multi-view",
+          "label": "The Confidence Matters Leveraging Multi",
+          "summary": "A source-backed case board for Confidence matters: Leveraging Multi-view Geometric Priors for GS-based Reconstruction: learners inspect the plain technical mechanism, the evaluation signal, and where the claim fits in Edokai's retrieval augmented generation world.",
+          "source_ids": [
+            "emergentmind-2608-06117-confidence-matters-leveraging-multi-view-geometric-priors-for-2026"
+          ],
+          "concept_ids": [
+            "confidence-matters-leveraging-multi-view-geometric-priors",
+            "confidence-matters-leveraging-multi-view-geometric-priors-for",
+            "confidence-matters-leveraging-multi-view-geometric-priors-for"
+          ],
+          "critical_concepts": [
+            "confidence-matters-leveraging-multi-view-geometric-priors",
+            "confidence-matters-leveraging-multi-view-geometric-priors-for"
+          ],
+          "prerequisite_links": [],
+          "side_retention_duels": [
+            {
+              "id": "the-confidence-matters-leveraging-multi-duel",
+              "prompt": "What should Edokai learners remember about **Confidence matters**?",
+              "left": "Treat it as a title-only bookmark without checking the mechanism.",
+              "right": "Track the mechanism, evidence signal, and limits stated by the source.",
+              "answer": "Use the source-backed mechanism and evaluation signal; avoid inferring guarantees beyond the paper summary."
+            }
+          ],
+          "quiz_questions": [
+            {
+              "question": "In the source **Confidence matters: Leveraging Multi-view Geometric Priors for GS-based Reconstruction**, what is the main learner-facing mechanism Edokai should preserve?",
+              "choices": [
+                "It mainly replaces the user interface theme without changing the learning mechanism.",
+                "It uses the source's Confidence matters mechanism to address the paper's stated ML/AI problem.",
+                "It is a clinical treatment protocol rather than a machine-learning research method.",
+                "It proves a pure-math theorem without a model, agent, or evaluation loop."
+              ],
+              "answer_index": 1,
+              "source_ids": [
+                "emergentmind-2608-06117-confidence-matters-leveraging-multi-view-geometric-priors-for-2026"
+              ]
+            }
+          ]
+        },
+        {
+          "id": "the-past-bench-benchmarking-the-foundations",
+          "label": "The Past Bench Benchmarking The",
+          "summary": "A source-backed case board for PAST-Bench: Benchmarking the Foundations of Recursive Self-Improvement in Personal Agents: learners inspect the plain technical mechanism, the evaluation signal, and where the claim fits in Edokai's retrieval augmented generation world.",
+          "source_ids": [
+            "emergentmind-2608-04003-past-bench-benchmarking-the-foundations-of-recursive-self-2026"
+          ],
+          "concept_ids": [
+            "past-bench-benchmarking-the-foundations-of-recursive",
+            "past-bench-benchmarking-the-foundations-of-recursive-self",
+            "past-bench-benchmarking-the-foundations-of-recursive-self"
+          ],
+          "critical_concepts": [
+            "past-bench-benchmarking-the-foundations-of-recursive",
+            "past-bench-benchmarking-the-foundations-of-recursive-self"
+          ],
+          "prerequisite_links": [],
+          "side_retention_duels": [
+            {
+              "id": "the-past-bench-benchmarking-the-duel",
+              "prompt": "What should Edokai learners remember about **PAST-Bench**?",
+              "left": "Treat it as a title-only bookmark without checking the mechanism.",
+              "right": "Track the mechanism, evidence signal, and limits stated by the source.",
+              "answer": "Use the source-backed mechanism and evaluation signal; avoid inferring guarantees beyond the paper summary."
+            }
+          ],
+          "quiz_questions": [
+            {
+              "question": "In the source **PAST-Bench: Benchmarking the Foundations of Recursive Self-Improvement in Personal Agents**, what is the main learner-facing mechanism Edokai should preserve?",
+              "choices": [
+                "It mainly replaces the user interface theme without changing the learning mechanism.",
+                "It is a clinical treatment protocol rather than a machine-learning research method.",
+                "It uses the source's PAST-Bench mechanism to address the paper's stated ML/AI problem.",
+                "It proves a pure-math theorem without a model, agent, or evaluation loop."
+              ],
+              "answer_index": 2,
+              "source_ids": [
+                "emergentmind-2608-04003-past-bench-benchmarking-the-foundations-of-recursive-self-2026"
+              ]
+            }
+          ]
+        },
+        {
+          "id": "the-dapd-dual-anchored-policy-distillation",
+          "label": "The Dapd Dual Anchored Policy",
+          "summary": "A source-backed case board for DAPD: Dual-Anchored Policy Distillation: learners inspect the plain technical mechanism, the evaluation signal, and where the claim fits in Edokai's retrieval augmented generation world.",
+          "source_ids": [
+            "emergentmind-2608-01735-dapd-dual-anchored-policy-distillation-2026"
+          ],
+          "concept_ids": [
+            "dapd-dual-anchored-policy-distillation",
+            "dapd-dual-anchored-policy-distillation-learning-problem",
+            "dapd-dual-anchored-policy-distillation-evaluation-signal"
+          ],
+          "critical_concepts": [
+            "dapd-dual-anchored-policy-distillation",
+            "dapd-dual-anchored-policy-distillation-learning-problem"
+          ],
+          "prerequisite_links": [],
+          "side_retention_duels": [
+            {
+              "id": "the-dapd-dual-anchored-policy-duel",
+              "prompt": "What should Edokai learners remember about **DAPD**?",
+              "left": "Treat it as a title-only bookmark without checking the mechanism.",
+              "right": "Track the mechanism, evidence signal, and limits stated by the source.",
+              "answer": "Use the source-backed mechanism and evaluation signal; avoid inferring guarantees beyond the paper summary."
+            }
+          ],
+          "quiz_questions": [
+            {
+              "question": "In the source **DAPD: Dual-Anchored Policy Distillation**, what is the main learner-facing mechanism Edokai should preserve?",
+              "choices": [
+                "It mainly replaces the user interface theme without changing the learning mechanism.",
+                "It is a clinical treatment protocol rather than a machine-learning research method.",
+                "It proves a pure-math theorem without a model, agent, or evaluation loop.",
+                "It uses the source's DAPD mechanism to address the paper's stated ML/AI problem."
+              ],
+              "answer_index": 3,
+              "source_ids": [
+                "emergentmind-2608-01735-dapd-dual-anchored-policy-distillation-2026"
+              ]
+            }
+          ]
         }
       ]
     }
@@ -13114,6 +13576,45 @@
       "regions_added": 0,
       "new_worlds_created": [],
       "quality_findings": [],
+      "verification": {
+        "json_parse": "passed",
+        "dkg_test": "passed",
+        "build": "passed",
+        "supabase_sync": "passed",
+        "roundtrip": "passed"
+      }
+    },
+    {
+      "run_id": "daily-emergentmind-all-topics-20260808T140144Z",
+      "completed_at": "2026-08-08T14:01:44Z",
+      "event": "daily EmergentMind homepage all-topics ingestion",
+      "sources_added": 11,
+      "nodes_added": 38,
+      "edges_added": 44,
+      "worlds_enhanced": [
+        "perception-world-models",
+        "llm-systems-serving",
+        "retrieval-augmented-generation"
+      ],
+      "regions_enhanced": [
+        "the-agentopsd-recursive-self-distillation-for",
+        "the-self-evolving-coding-agents",
+        "the-agentic-reinforcement-learning-with-self",
+        "the-geniworld-a-generalizable-interactive-world",
+        "the-confidence-matters-leveraging-multi-view",
+        "the-past-bench-benchmarking-the-foundations",
+        "the-public-trader-identity-adverse-selection",
+        "the-rolling-shutter-camera-self-calibration",
+        "the-streamsplat-streaming-feed-forward-3d",
+        "the-cadena-stepwise-cad-reverse-engineering",
+        "the-dapd-dual-anchored-policy-distillation"
+      ],
+      "new_worlds_created": [],
+      "router_learning": "The 2026-07-12 homepage delta fits existing umbrellas: SLAM/event-camera/egocentric-video strengthen Perception & World Models, DeepSearch strengthens Retrieval-Augmented Generation, and beyond-human intelligence evaluation strengthens Agents.",
+      "manual_review": [
+        "Skipped pure-math, astronomy/cosmology, and clinical/medical surfaced items in this bounded pass; clinical claims need deeper safety review before routing.",
+        "New visual-SLAM/event-camera/egocentric-video items are routed under Perception & World Models; DeepSearch is routed under Retrieval-Augmented Generation; beyond-human intelligence evaluation is routed under Agents."
+      ],
       "verification": {
         "json_parse": "passed",
         "dkg_test": "passed",
