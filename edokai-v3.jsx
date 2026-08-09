@@ -1,7 +1,11 @@
 import React, { useState, useEffect, useRef, useMemo } from "react";
 import { dkgSyncConfigStatus, loadDkgSnapshot, subscribeDkgSnapshot, snapshotToEdokaiWorlds, mergeDkgWorlds, summarizeDkgSnapshot } from "./dkgLiveSync";
+import AtlasGraph from "./AtlasGraph.jsx";
+import ConceptdexDrawer from "./ConceptdexDrawer.jsx";
+import { withAlpha, tint, hueFor } from "./uiTheme.js";
+import RichText from "./RichText.jsx";
 
-const DkgThreeMap = React.lazy(() => import("./DkgThreeMap.jsx"));
+const EDOKAI_BUILD = "dojo-editor-cursor-20260713.1";
 
 /* ============================================================
    EDOKAI
@@ -15,23 +19,27 @@ const DkgThreeMap = React.lazy(() => import("./DkgThreeMap.jsx"));
    resource (URL, PDF, pasted text, or just a concept name).
    ============================================================ */
 
+/* Twilight-first design system: dreamy stylized-world palette (deep indigo
+   skies, aurora accents, glass panels) with an airy daylight counterpart. */
 const THEMES = {
   light: {
-    paper: "#EBEFF6", card: "#FFFFFF", ink: "#1B2440", inkSoft: "#5A6480",
-    line: "#D4DAE8", reward: "#1F9D6B", rewardSoft: "#E2F4EC",
-    penalty: "#D9534F", penaltySoft: "#FBE9E8", action: "#E8643F",
-    explore: "#5B4FD6", exploreSoft: "#ECEAFB", gold: "#C99A2C", night: "#232B47",
-    code: "#141A2E", codeText: "#D6DEF5", hud: "rgba(235,239,246,0.94)", shadow: "rgba(27,36,64,0.08)",
+    paper: "#E9EDF9", card: "rgba(255,255,255,0.82)", cardSolid: "#FFFFFF", ink: "#1C2442", inkSoft: "#5D6890",
+    line: "rgba(93,104,144,0.20)", reward: "#149E6E", rewardSoft: "rgba(20,158,110,0.10)",
+    penalty: "#D9534F", penaltySoft: "rgba(217,83,79,0.10)", action: "#E8643F",
+    explore: "#5B5BD6", exploreSoft: "rgba(91,91,214,0.10)", gold: "#C08A1E", teal: "#0FA7A0", night: "#232B54",
+    code: "#141A2E", codeText: "#D6DEF5", hud: "rgba(244,246,255,0.72)", shadow: "rgba(27,36,64,0.10)",
+    glow: "rgba(91,91,214,0.22)",
   },
   dark: {
-    paper: "#0B1020", card: "#141B31", ink: "#EDF2FF", inkSoft: "#A9B4D0",
-    line: "#2B3557", reward: "#5BE0A2", rewardSoft: "#123629",
-    penalty: "#FF7A76", penaltySoft: "#3B1E25", action: "#FF916B",
-    explore: "#9E94FF", exploreSoft: "#26214C", gold: "#FFD166", night: "#070B16",
-    code: "#050816", codeText: "#DDE7FF", hud: "rgba(11,16,32,0.94)", shadow: "rgba(0,0,0,0.35)",
+    paper: "#080B1A", card: "rgba(20,27,54,0.62)", cardSolid: "#141B36", ink: "#EEF2FF", inkSoft: "#9AA6CC",
+    line: "rgba(148,163,214,0.16)", reward: "#3DDC97", rewardSoft: "rgba(61,220,151,0.10)",
+    penalty: "#FF7A76", penaltySoft: "rgba(255,122,118,0.10)", action: "#FF8E5E",
+    explore: "#8D9BFF", exploreSoft: "rgba(141,155,255,0.12)", gold: "#FFC862", teal: "#3ED6C4", night: "#05070F",
+    code: "#0A0F22", codeText: "#D9E2FF", hud: "rgba(8,11,26,0.70)", shadow: "rgba(2,4,12,0.5)",
+    glow: "rgba(141,155,255,0.30)",
   },
 };
-const T = { ...THEMES.light };
+const T = { ...THEMES.dark };
 
 /* ============================================================
    MUSIC ENGINE — bundled low-volume lo-fi background track
@@ -212,29 +220,28 @@ function cleanRepeatedWords(text) {
   return out;
 }
 function compactOption(text) {
-  let out = sentenceCaseOption(text)
-    .replace(/\s*[-–—:]\s+.*$/g, "")
-    .replace(/\s*\([^)]{18,}\)\s*/g, " ")
-    .replace(/\b(?:primarily|mainly|exactly|actually|simply|just|always|never)\b/gi, "")
-    .replace(/\s+/g, " ")
-    .trim();
-  const ws = wordsOf(out);
-  if (ws.length > 8) out = ws.slice(0, 8).join(" ");
-  return cleanRepeatedWords(out).replace(/[.;:]+$/g, "") || "Nearby but wrong mechanism";
+  // Options are NEVER truncated (CLAUDE.md rule 3): only cleaned.
+  return cleanRepeatedWords(sentenceCaseOption(text)).replace(/[;:]+$/g, "") || "Nearby but wrong mechanism";
 }
+const OPTION_TAILS = [
+  "in this workflow", "for this scenario", "during this stage", "across these tasks",
+  "in this system", "under these constraints", "for this pipeline", "at this step",
+  "in day-to-day practice", "for the task at hand",
+];
 function balanceOptionLengths(options, seed = "edokai") {
   const base = (options || []).slice(0, 4).map(compactOption);
   while (base.length < 4) base.push(compactOption(`Nearby wrong mechanism ${base.length + 1}`));
-  const neutralPads = ["for this case", "in this setting", "under the same signal", "for the learner"];
-  const lens = base.map((o) => wordsOf(o).length);
-  const target = Math.max(5, Math.min(8, Math.round(lens.reduce((a, b) => a + b, 0) / lens.length)));
+  // Dissolve length tells by EXPANDING short options with varied natural
+  // tails (never by cutting long ones) until the spread is small.
+  const seedN = Math.abs(Array.from(String(seed)).reduce((h, ch) => ((h * 31 + ch.charCodeAt(0)) | 0), 0));
+  const maxLen = Math.max(...base.map((o) => wordsOf(o).length));
+  const used = new Set();
   return base.map((o, i) => {
-    let ws = wordsOf(o);
-    if (ws.length > target + 1) ws = ws.slice(0, target + 1);
-    let out = ws.join(" ");
+    let out = o;
     let guard = 0;
-    while (wordsOf(out).length < target - 1 && guard < 2) {
-      out = `${out} ${neutralPads[(i + guard + String(seed).length) % neutralPads.length]}`;
+    while (maxLen - wordsOf(out).length > 3 && guard < 3) {
+      const tail = OPTION_TAILS[(seedN + i * 3 + guard * 7 + out.length) % OPTION_TAILS.length];
+      if (!used.has(tail) && !out.toLowerCase().includes(tail)) { out = `${out} ${tail}`; used.add(tail); }
       guard += 1;
     }
     return cleanRepeatedWords(out).replace(/\s+/g, " ").trim();
@@ -317,7 +324,8 @@ function uniqueConceptName(name, section, used) {
   return out;
 }
 
-const QUALITY_RULES = `CRITICAL QUALITY RULES for questions: every question must have exactly 4 complete, non-truncated options with similar length (within ~3 words and similar punctuation); the correct option must NEVER be the longest or most detailed; do not make the correct answer the only option with examples/numbers; distractors must be technically plausible; vary "a" (0-3) across questions.`;
+const QUALITY_RULES = `CRITICAL QUALITY RULES for questions: every question must have exactly 4 complete, non-truncated options with similar length (within ~3 words and similar punctuation); the correct option must NEVER be the longest or most detailed; do not make the correct answer the only option with examples/numbers; distractors must be technically plausible; vary "a" (0-3) across questions. Stems and options are complete human-readable sentences — never trailing ellipses, never cut off mid-thought. A stem may use 1-2 short paragraphs or a "- " bullet list for scenario details when that aids readability.`;
+const NAMING_RULES = `NAMING RULES: every world, arc, region, concept encounter, and side duel gets an evocative in-world name — a place, character, or artifact that hints at the mechanism — NEVER a bare publication/section title or dry taxonomy label. Good: "The Cache Vaults", "The Asymmetry Chasm", "Mirage of Acronyms". Bad: "KV Caching", "Section 3: Attention". Pair each lore name with the plain technical term inside its blurb/lore so learners still recognize the topic.`;
 
 const TEACH_SOURCE = "mattpocock/skills productivity/teach";
 const TEACHING_PARADIGM = {
@@ -359,22 +367,22 @@ const teachRecordId = (worldId, conceptId) => `${worldId}:${conceptId}`;
 
 async function scanUrl(url, cfg) {
   return parseJSON(await askModel(
-    `Read the content at this URL (use web search): ${url}\nIdentify the title and 3-6 main learnable sections.\nRespond ONLY raw JSON: {"title":"...","sections":["...","..."]}`, cfg, { needsWeb: true }));
+    `Read the content at this URL (use web search): ${url}\nIdentify the title and 3-6 main learnable sections, plus an evocative game-world name for a learning RPG built from it (a lore name hinting at the core mechanism - never the raw publication title).\nRespond ONLY raw JSON: {"title":"...","worldName":"...","sections":["...","..."]}`, cfg, { needsWeb: true }));
 }
 async function scanText(text, cfg) {
   return parseJSON(await askModel(
-    `Here is learning material:\n"""${text.slice(0, 6000)}"""\nIdentify a title and 3-6 main learnable sections.\nRespond ONLY raw JSON: {"title":"...","sections":["...","..."]}`, cfg));
+    `Here is learning material:\n"""${text.slice(0, 6000)}"""\nIdentify a title and 3-6 main learnable sections, plus an evocative game-world name for a learning RPG built from it (a lore name hinting at the core mechanism - never the raw title).\nRespond ONLY raw JSON: {"title":"...","worldName":"...","sections":["...","..."]}`, cfg));
 }
 async function scanPdf(b64, cfg) {
   return parseJSON(await askModel(
-    `Identify this document's title and 3-6 main learnable sections.\nRespond ONLY raw JSON: {"title":"...","sections":["...","..."]}`, cfg, { pdfBase64: b64 }));
+    `Identify this document's title and 3-6 main learnable sections, plus an evocative game-world name for a learning RPG built from it (a lore name hinting at the core mechanism - never the raw document title).\nRespond ONLY raw JSON: {"title":"...","worldName":"...","sections":["...","..."]}`, cfg, { pdfBase64: b64 }));
 }
 async function findResource(concept, cfg) {
   return parseJSON(await askModel(
-    `Find the single best free online resource (article/primer/docs) with optimal coverage for learning: "${concept}". Use web search.\nRespond ONLY raw JSON: {"title":"...","url":"...","sections":["3-6 main learnable sections of that resource"]}`, cfg, { needsWeb: true }));
+    `Find the single best free online resource (article/primer/docs) with optimal coverage for learning: "${concept}". Use web search.\nRespond ONLY raw JSON: {"title":"...","url":"...","worldName":"evocative game-world lore name for this topic (never the raw article title)","sections":["3-6 main learnable sections of that resource"]}`, cfg, { needsWeb: true }));
 }
-const REGION_JSON_SPEC = `{"npcText":"40-word NPC summary of the key principle","referenceHint":"one sentence glossary/reference summary","concepts":[{"name":"unique concept name, not reused elsewhere in this generated world","sprite":"emoji","lore":"90-130 word cohesive lore paragraph: no bullet fragments, no TERM: clause lists; teach the concept as a memorable mechanism with a concrete scene, state change, stakes, and evidence","questions":[{"q":"clear complete question with enough scenario context to choose an answer without guessing","options":["complete plausible option","complete plausible option","complete plausible option","complete plausible option"],"a":0,"why":"complete explanation that ties the answer to the mechanism"},{...}]}],"side":{"name":"healing creature name","sprite":"emoji","recLevel":2,"desc":"side duel framed as healing retention practice","questions":[{"q":"HEALING SCENARIO: clear applied scenario that reinforces prerequisites and asks for the best conclusion/action","options":[4 complete, similar-length plausible options],"a":0,"why":"complete explanation of why this heals/reinforces"},{...}]}}
-Exactly 2 concepts (2 questions each) + 1 side (2 scenario questions). Concept names must be unique across the whole generated world, not generic duplicates. Lore must read like a short teaching story, not broken notes or colon-separated bullets. Critical questions are advancement gates; side questions are healing/retention gates that restore HP. Every question stem must be a complete sentence or scenario with a clear ask; avoid fragments like “X is...” or “failure:”. No option may be truncated or length-reveal the answer. Apply this teaching paradigm: ${TEACH_PROMPT} ${QUALITY_RULES}`;
+const REGION_JSON_SPEC = `{"regionName":"evocative in-world region name (a place/character/artifact hinting at the mechanism - do NOT reuse the source section title)","regionEmoji":"one emoji for the region","arc":"short lore-named category grouping related regions of this world (e.g. Foundations of Decision, The Craft of Reward)","npcText":"40-word NPC summary of the key principle","referenceHint":"one sentence glossary/reference summary","concepts":[{"name":"unique evocative concept name, not reused elsewhere in this generated world","sprite":"emoji","lore":"90-150 words written for humans: 1-2 short paragraphs, optionally a *dash* bullet list of 2-4 crisp points, **bold** the key technical term; teach the concept as a memorable mechanism with a concrete scene, state change, stakes, and evidence","questions":[{"q":"clear complete question with enough scenario context to choose an answer without guessing","options":["complete plausible option","complete plausible option","complete plausible option","complete plausible option"],"a":0,"why":"complete explanation that ties the answer to the mechanism"},{...}]}],"side":{"name":"healing creature name","sprite":"emoji","recLevel":2,"desc":"side duel framed as healing retention practice","questions":[{"q":"HEALING SCENARIO: clear applied scenario that reinforces prerequisites and asks for the best conclusion/action","options":[4 complete, similar-length plausible options],"a":0,"why":"complete explanation of why this heals/reinforces"},{...}]}}
+Exactly 2 concepts (2 questions each) + 1 side (2 scenario questions). Concept names must be unique across the whole generated world, not generic duplicates. Lore must read like a short teaching story, not broken notes or colon-separated bullets. Critical questions are advancement gates; side questions are healing/retention gates that restore HP. Every question stem must be a complete sentence or scenario with a clear ask; avoid fragments like “X is...” or “failure:”. No option may be truncated or length-reveal the answer. Apply this teaching paradigm: ${TEACH_PROMPT} ${QUALITY_RULES} ${NAMING_RULES}`;
 
 async function buildRegionFrom(sourceDesc, section, idx, cfg, pdfB64) {
   const prompt = pdfB64
@@ -402,13 +410,18 @@ async function buildRegionFrom(sourceDesc, section, idx, cfg, pdfB64) {
     desc: parsed.side.desc || "A generated healing retention duel: answer side questions to recover HP while strengthening prerequisites.",
     questions: (parsed.side.questions || []).map((q, qi) => balanceQuestion(q, `${section}-side-heal-${qi}`)).filter(Boolean).slice(0, 2),
   }] : [];
+  const regionName = String(parsed.regionName || "").trim();
   return {
-    id: `gr${idx}`, name: section, emoji: "🌀", intro: `Generated region: ${section}`,
+    id: `gr${idx}`,
+    name: regionName && regionName.toLowerCase() !== section.toLowerCase() ? regionName : `The ${section} Reaches`,
+    emoji: parsed.regionEmoji || "🌀",
+    arc: String(parsed.arc || "").trim() || undefined,
+    intro: `Forged from "${section}".`,
     npc: { name: "The Archivist", text: parsed.npcText || "Study this region's concepts carefully." },
     teachPhase: "resource-grounded mini lesson",
     referenceHint: parsed.referenceHint || `Reference terms: ${concepts.map((c) => c.name).join(", ")}.`,
     concepts, sides,
-    gym: { leader: "Region Warden", badge: `${section} Badge`, sprite: "🏛️", taunt: "Prove you absorbed everything in this region!", questions: concepts.flatMap((c) => c.questions || []).slice(0, 4) },
+    gym: { leader: "Region Warden", badge: `${regionName || section} Badge`, sprite: "🏛️", taunt: "Prove you absorbed everything in this region!", questions: concepts.flatMap((c) => c.questions || []).slice(0, 4) },
   };
 }
 function normalizeGeneratedWorld(w) {
@@ -437,7 +450,7 @@ function normalizeGeneratedWorld(w) {
 async function buildKataFrom(sourceDesc, cfg, pdfB64) {
   const prompt = `${pdfB64 ? "From this document" : "Read " + sourceDesc + (cfg && cfg.provider !== "builtin" ? "" : " (use web search)")}, design ONE hands-on implementation kata for its core method. Respond ONLY raw JSON:
 {"title":"Implement <method>","blurb":"40 words on what gets built","lore":"why this kata matters and what mechanism it teaches","frameworks":["pytorch"],"steps":[{"prompt":"TODO instruction referencing the code","lore":"why this TODO matters","hint":"small nudge, not the full answer","code":"short python snippet with ____ blank","options":["...","...","...","..."],"a":0,"why":"one line"},{...},{...}],"solution":"complete commented reference implementation, <60 lines"}
-Exactly 3 steps. Apply this teaching paradigm: ${TEACH_PROMPT} ${QUALITY_RULES}`;
+Exactly 3 steps. Apply this teaching paradigm: ${TEACH_PROMPT} ${QUALITY_RULES} ${NAMING_RULES}`;
   const parsed = parseJSON(await askModel(prompt, cfg, { needsWeb: !pdfB64 && (!cfg || cfg.provider === "builtin"), pdfBase64: pdfB64 }));
   return { id: "uk" + Date.now(), family: "custom", title: parsed.title || "Custom kata", blurb: parsed.blurb || "", lore: parsed.lore || "", frameworks: parsed.frameworks || ["pytorch"], steps: parsed.steps || [], solutions: { pytorch: parsed.solution || "" }, links: [] };
 }
@@ -450,6 +463,24 @@ async function reviewCode(kataTitle, framework, code, cfg) {
   return askModel(
     `You are a strict but encouraging ML code reviewer. The learner attempted the kata "${kataTitle}" in ${framework}. Review their code: correctness first (shapes, math, gradients, edge cases), then style. Give a grade out of 10, the top 3 issues, and one concrete improvement. Be concise (<200 words).\n\nCODE:\n${code.slice(0, 5000)}`, cfg);
 }
+
+
+/* ============================================================
+   WALKTHROUGH — first-run tour of every tab and why it exists.
+   New top-level features must add a step here (see CLAUDE.md).
+   ============================================================ */
+const TOUR_STEPS = [
+  { icon: "\u{1F5FA}\uFE0F", kicker: "LEARN", title: "The Atlas", target: '[data-tour="atlas"]', body: "Every **world** is a glowing hub in a living constellation, its **regions** orbiting as satellites. Click a world to focus it, click again to enter. Progress rings fill as you capture concepts, and golden threads join worlds that share sources." },
+  { icon: "\u{1F9ED}", kicker: "WORLDS", title: "Case boards & arcs", target: '[data-tour="tab-home"]', body: "Inside a world, case boards are grouped into **arcs** — lore-named chapters that keep growing content organized.\n- \u2B21 **Criticals** teach a new concept and gate the path\n- \u25C7 **Sides** are retention duels that heal your HP\n- \u{1F3DB} the **Gym** awards the region badge" },
+  { icon: "\u{1FAD8}", kicker: "HP & SENZU", title: "Harm, healing, and the Senzu bean", target: '[data-tour="hp"]', body: "This bar is your HP.\n- Missing a **critical** question draws a counterattack that costs HP\n- Winning **side duels** heals you back\n- When you are badly hurt, start the **\u{1FAD8} Senzu bean** quest: clear one Blind 75 kata and one ML kata in the Dojo to fully recover" },
+  { icon: "\u2328\uFE0F", kicker: "DOJO", title: "The Dojo", target: '[data-tour="tab-dojo"]', body: "Implementation katas: **Blind 75**, **TorchLeet**, ML engineering, and system design — with a focused runnable Python workspace, visible editor cursor, tests, and AI review. Senzu healing quests route here." },
+  { icon: "\u{1F33F}", kicker: "WILDS", title: "The Wilds", target: '[data-tour="tab-wildspick"]', body: "An episode generator over any world's lore. Each run forges **brand-new, verifiable questions** grounded strictly in the material — so practice never goes stale — and it biases toward the topics you miss most." },
+  { icon: "\u{1F9EA}", kicker: "COACH", title: "The Coach", target: '[data-tour="tab-coach"]', body: "Every answer feeds per-concept telemetry. The Coach reads your **miss patterns** and forges targeted scenario drills that join the world's question pool — the system teaches hardest where you are weakest." },
+  { icon: "\u2694\uFE0F", kicker: "GAUNTLET", title: "Trial Gauntlet", target: null, body: "The world exam, launched from any world or the Coach: **3 lives**, the entire shuffled question pool including coach-forged drills, and a weakest-topic report at the end. Run it to prove a world is truly cleared." },
+  { icon: "\u{1F4D6}", kicker: "CONCEPTDEX", title: "The Conceptdex", target: '[data-tour="dex"]', body: "Your field guide, sliding in from the right on any screen. Captured concepts shine in their region's colour; undiscovered ones stay ghost stars. During battles, tap **\uFF0B dex** to bank tricky questions into its review deck." },
+  { icon: "\u{1F4E1}", kicker: "MISSION & PAPERS", title: "Mission log & Paper scout", target: '[data-tour="tab-papers"]', body: "**Mission** is the teach workspace: mission, resources, glossary terms and learning records earned by wins. **Papers** scouts fresh research — any paper can be forged into a brand-new world with *+ Bring your own*." },
+  { icon: "\u{1F9E0}", kicker: "MODELS", title: "Bring your own brain", target: '[data-tour="settings"]', body: "Generation runs through whatever model you connect in **\u2699\uFE0F Settings**: sign into a **Claude Code** or **Codex** subscription (desktop app), paste an **Anthropic API key**, or point at any local OpenAI-compatible endpoint:\n- Ollama — `http://localhost:11434/v1`\n- LM Studio — `http://localhost:1234/v1`\nThis powers the Wilds, Coach, Deepen Lore, imports, and code review." },
+];
 
 /* ============================================================
    STORAGE
@@ -1590,8 +1621,12 @@ const SECURITY_AI_REGION = {
 SECURITY_AI_REGION.gym.questions = SECURITY_AI_REGION.concepts.flatMap(c => c.questions).slice(0, 4);
 
 const _g = (id) => ATLAS.find((w) => w.id === id).regions[0];
+/* Arcs group a world's case boards into lore-named chapters so worlds can
+   keep absorbing regions without the region list sprawling (see CLAUDE.md).
+   Ids never change; arcs are display grouping only. */
+const withArcs = (regions, arcs) => regions.map((r) => (arcs[r.id] ? { ...r, arc: arcs[r.id] } : r));
 const BUILTIN_WORLDS = [
-  { id: "w-rl", title: "Agents", emoji: "🤖",
+  { id: "w-rl", title: "The Agentic RL Frontier", emoji: "🤖", domain: "Agents & Agentic RL · post-training",
     blurb: "Agentic workflows → MDPs → SFT → tool rewards → PPO/GRPO/DPO → orchestration.",
     links: [
       { label: "Source primer · aman.ai Agentic RL", url: "https://aman.ai/primers/ai/agentic-RL/" },
@@ -1602,8 +1637,13 @@ const BUILTIN_WORLDS = [
       { label: "AdithyaSK · Ultimate Guide to RL Environments", url: "https://huggingface.co/spaces/AdithyaSK/rl-environments-guide" },
       { label: "RL_Envs_101 (companion repo)", url: "https://github.com/adithya-s-k/RL_Envs_101" },
     ],
-    regions: [SECURITY_AI_REGION, ...RL_REGIONS, _g("w-orch"), ENV_REGION] },
-  { id: "w-tf", title: "Transformer Architecture", emoji: "🏛️",
+    regions: withArcs([SECURITY_AI_REGION, ...RL_REGIONS, _g("w-orch"), ENV_REGION], {
+      "agentic-workflows-r": "Agents at Scale",
+      fields: "Foundations of Decision", village: "Foundations of Decision",
+      forest: "The Craft of Reward", foundry: "The Craft of Reward", peaks: "The Craft of Reward",
+      citadel: "Agents at Scale", "orch-r": "Agents at Scale", "env-r": "Agents at Scale",
+    }) },
+  { id: "w-tf", title: "The Attention Citadel", emoji: "🏛️", domain: "Transformer Architecture",
     blurb: "Position → attention variants → MoE → the modern block gallery.",
     links: [
       { label: "Transformer Explainer (interactive)", url: "https://poloclub.github.io/transformer-explainer/" },
@@ -1614,16 +1654,21 @@ const BUILTIN_WORLDS = [
       { label: "Karpathy · Let's build GPT from scratch", url: "https://www.youtube.com/watch?v=kCc8FmEb1nY" },
       { label: "Karpathy · nanoGPT", url: "https://github.com/karpathy/nanoGPT" },
     ],
-    regions: [_g("w-embed"), _g("w-attn"), _g("w-moe"), _g("w-arch")] },
-  { id: "w-gen", title: "Generative Models", emoji: "🌫️",
+    regions: withArcs([_g("w-embed"), _g("w-attn"), _g("w-moe"), _g("w-arch")], {
+      "emb-r": "Foundations of Signal", "attn-r": "Foundations of Signal",
+      "moe-r": "The Craft of Blocks", "arch-r": "The Craft of Blocks",
+    }) },
+  { id: "w-gen", title: "The Dreaming Depths", emoji: "🌫️", domain: "Generative Models",
     blurb: "KL's two personalities → autoencoder family → diffusion.",
     links: [
       { label: "Lilian Weng · From AE to VAE", url: "https://lilianweng.github.io/posts/2018-08-12-vae/" },
       { label: "Lilian Weng · Diffusion Models", url: "https://lilianweng.github.io/posts/2021-07-11-diffusion-models/" },
       { label: "Karpathy · Neural Networks: Zero to Hero (makemore→GPT)", url: "https://karpathy.ai/zero-to-hero.html" },
     ],
-    regions: [_g("w-kl"), _g("w-ae"), _g("w-diffusion")] },
-  { id: "w-percept", title: "Perception & World Models", emoji: "👁️",
+    regions: withArcs([_g("w-kl"), _g("w-ae"), _g("w-diffusion")], {
+      "kl-r": "The Craft of Dreams", "ae-r": "The Craft of Dreams", "diff-r": "The Craft of Dreams",
+    }) },
+  { id: "w-percept", title: "The Worldseer Observatory", emoji: "👁️", domain: "Perception & World Models",
     blurb: "Pixels → language (VLMs), and pixels → planning (JEPA, LeJEPA).",
     links: [
       { label: "CNN Explainer (interactive)", url: "https://poloclub.github.io/cnn-explainer/" },
@@ -1633,14 +1678,16 @@ const BUILTIN_WORLDS = [
       { label: "LeCun · A Path Towards Autonomous Machine Intelligence", url: "https://openreview.net/pdf?id=BZ5a1r-kVsf" },
     ],
     regions: [_g("w-vlm"), WM_REGION] },
-  { id: "w-sys", title: "LLM Systems & Serving", emoji: "⚙️",
+  { id: "w-sys", title: "The Throughput Shogunate", emoji: "⚙️", domain: "LLM Systems & Serving",
     blurb: "KV cache & quantization → parallelism, drafts, disaggregation.",
     links: [
       { label: "Raschka · Coding the KV Cache", url: "https://magazine.sebastianraschka.com/p/coding-the-kv-cache-in-llms" },
       { label: "vLLM · PagedAttention paper", url: "https://arxiv.org/abs/2309.06180" },
       { label: "Zero to Hero with vLLM (capacity planning §8.3)", url: "https://martinuke0.github.io/posts/2026-01-04-zero-to-hero-with-vllm-a-practical-guide-for-highthroughput-llm-inference/#83-capacity-planning" },
     ],
-    regions: [INF_REGION_A, INF_REGION_B] },
+    regions: withArcs([INF_REGION_A, INF_REGION_B], {
+      "inf-cache": "The Craft of Memory", "inf-flow": "The Way of Throughput",
+    }) },
 ];
 
 /* ============================================================
@@ -3239,6 +3286,14 @@ async function getPyodide(onStatus) {
   }
   throw new Error("Python runtime couldn't load (" + (lastErr && lastErr.message) + "). The claude.ai sandbox blocks some CDNs — the desktop build runs it reliably.");
 }
+function formatPythonError(e) {
+  const raw = String((e && (e.stack || e.message)) || e || "Python execution failed");
+  const cleaned = raw
+    .replace(/^Error:\s*/i, "")
+    .replace(/\n?\s*at pyodideCodeRunner[^]*$/m, "")
+    .trim();
+  return cleaned || raw;
+}
 async function runPython(code, needs, onStatus) {
   const py = await getPyodide(onStatus);
   if (onStatus) onStatus("⏳ runtime ready — executing…");
@@ -3246,7 +3301,11 @@ async function runPython(code, needs, onStatus) {
   let out = "";
   py.setStdout({ batched: (s) => { out += s + "\n"; } });
   py.setStderr({ batched: (s) => { out += s + "\n"; } });
-  try { await py.runPythonAsync(code); } catch (e) { out += String(e.message || e).split("\n").slice(-6).join("\n"); }
+  try {
+    await py.runPythonAsync(code);
+  } catch (e) {
+    out += `${out ? "\n" : ""}❌ Python error:\n${formatPythonError(e)}`;
+  }
   return out || "(no output)";
 }
 
@@ -3303,8 +3362,7 @@ export default function App() {
   const [gaunt, setGaunt] = useState(null);            // {pool, idx, lives, score, ord}
   const [deepLore, setDeepLore] = useState({});        // conceptId -> model-expanded lore
   const [wilds, setWilds] = useState(null);            // the knowledge RL environment
-  const [repl, setRepl] = useState("");                // REPL input line
-  const [darkMode, setDarkMode] = useState(false);
+  const [darkMode, setDarkMode] = useState(true);
   const [dojoOpen, setDojoOpen] = useState({ swe: true, torchleet: true, ml: true, sys: true, custom: true });
   const [kataAttempts, setKataAttempts] = useState(0);
   const [todoGuidance, setTodoGuidance] = useState(true);
@@ -3314,15 +3372,18 @@ export default function App() {
   const [dkgSync, setDkgSync] = useState({ ...dkgSyncConfigStatus(), status: "booting", updatedAt: null, stats: null, recentSources: [], recentRuns: [] });
   const [dkgWorlds, setDkgWorlds] = useState([]);
   const [mapFocus, setMapFocus] = useState(null);
-  const [homeView, setHomeView] = useState("list");
+  const [homeView, setHomeView] = useState("atlas");
+  const [dexOpen, setDexOpen] = useState(false);
+  const [tourStep, setTourStep] = useState(null);
+  const tourShownRef = useRef(false);
   const [sectionOpen, setSectionOpen] = useState({ liveDkg: true, teachPanel: true, studySources: true, teachMission: true, teachResources: true, teachGlossary: true, teachRecords: true });
 
   Object.assign(T, darkMode ? THEMES.dark : THEMES.light);
 
   useEffect(() => {
     (async () => {
-      const s = await loadStore("ru-save", { xp: 0, hp: 100, badges: [], captured: [], sides: [], katas: {}, qstats: {}, kataHints: {}, kataAttempts: {}, learningRecords: [], dexQuestions: [], senzu: null, pet: { mood: "idle", msg: "ready" }, player: null });
-      s.sides = s.sides || []; s.katas = s.katas || {}; s.qstats = s.qstats || {}; s.kataHints = s.kataHints || {}; s.kataAttempts = s.kataAttempts || {}; s.learningRecords = s.learningRecords || []; s.dexQuestions = s.dexQuestions || []; s.senzu = s.senzu || null; s.pet = s.pet || { mood: "idle", msg: "ready" };
+      const s = await loadStore("ru-save", { xp: 0, hp: 100, badges: [], captured: [], sides: [], katas: {}, qstats: {}, kataHints: {}, kataAttempts: {}, learningRecords: [], dexQuestions: [], dojoDex: [], senzu: null, pet: { mood: "idle", msg: "ready" }, player: null });
+      s.sides = s.sides || []; s.katas = s.katas || {}; s.qstats = s.qstats || {}; s.kataHints = s.kataHints || {}; s.kataAttempts = s.kataAttempts || {}; s.learningRecords = s.learningRecords || []; s.dexQuestions = s.dexQuestions || []; s.dojoDex = s.dojoDex || []; s.senzu = s.senzu || null; s.pet = s.pet || { mood: "idle", msg: "ready" };
       if (!s.player && typeof window !== "undefined" && window.edokaiDb && window.edokaiDb.auth) {
         try { s.player = await window.edokaiDb.auth("local-player"); } catch {}
       }
@@ -3333,7 +3394,7 @@ export default function App() {
       setUKatas(await loadStore("ru-ukatas", []));
       setAug(await loadStore("ru-aug", {}));
       setDeepLore(await loadStore("ru-lore", {}));
-      const c = await loadStore("ru-cfg", { provider: "builtin", baseUrl: "", apiKey: "", model: "", anthropicKey: "", darkMode: false });
+      const c = await loadStore("ru-cfg", { provider: "builtin", baseUrl: "", apiKey: "", model: "", anthropicKey: "", darkMode: true });
       if (!c.anthropicKey && typeof window !== "undefined" && window.edokaiAuth && window.edokaiAuth.anthropicKey) c.anthropicKey = window.edokaiAuth.anthropicKey;
       if (typeof window !== "undefined" && window.edokaiAuth && typeof window.edokaiAuth.claudeCodeStatus === "function") {
         window.edokaiAuth.claudeCodeStatus().then(setClaudeCodeAuth).catch((e) => setClaudeCodeAuth({ loggedIn: false, error: e.message || String(e) }));
@@ -3355,6 +3416,10 @@ export default function App() {
       }
     );
   }, []);
+
+  useEffect(() => {
+    if (save && !save.tourDone && screen === "home" && !tourShownRef.current) { tourShownRef.current = true; setTourStep(0); }
+  }, [screen, save]);
 
   const persist = (s) => { setSave(s); saveStore("ru-save", s); if (window.edokaiDb && window.edokaiDb.saveSession) window.edokaiDb.saveSession({ player: s.player, save: s }).catch(() => {}); };
   const persistWorlds = (w) => { setWorlds(w); saveStore("ru-worlds", w); };
@@ -3402,7 +3467,7 @@ export default function App() {
     if (deepLore[c.id] || busy === "lore") return;
     setBusy("lore");
     try {
-      const extra = await askModel(`You are a patient ML teacher using this paradigm: ${TEACH_PROMPT}\nA learner read this summary of "${c.name}":\n"""${c.lore}"""\nExpand it with ~150 words of deeper explanation: the intuition behind it, one concrete worked example with small numbers where possible, and the most common misconception. Plain text, no markdown headers.`, cfg);
+      const extra = await askModel(`You are a patient ML teacher using this paradigm: ${TEACH_PROMPT}\nA learner read this summary of "${c.name}":\n"""${c.lore}"""\nExpand it with ~150 words of deeper explanation: the intuition behind it, one concrete worked example with small numbers where possible, and the most common misconception. Write for humans: 1-2 short paragraphs and, where it helps, a "- " bullet list; **bold** the key term. No headers.`, cfg);
       if (extra && extra.length > 40) persistLore({ ...deepLore, [c.id]: extra.trim() });
     } catch (e) {
       showToast(`Deepen lore model call failed: ${e.message || "Check model settings."}`);
@@ -3488,6 +3553,25 @@ export default function App() {
   const worldLearningRecords = (w = world) => (save.learningRecords || []).filter((r) => r.worldId === w.id);
   const capturedConceptsFor = (w = world) => w.regions.flatMap((r) => r.concepts.map((c) => ({ ...c, regionName: r.name }))).filter((c) => capturedSet.has(c.id));
   const dexQuestionsFor = (w = world) => (save.dexQuestions || []).filter((q) => q.worldId === w.id);
+  const dojoDexEntries = () => (save.dojoDex || []).slice().sort((a, b) => (b.ts || 0) - (a.ts || 0));
+  const addDojoDexEntry = (kind = "snapshot") => {
+    if (!kata) return;
+    const entry = {
+      id: `dojo:${kata.id}:${Date.now()}`,
+      kataId: kata.id,
+      kataTitle: kata.title,
+      family: kata.family,
+      framework: fw,
+      kind,
+      code: labCode,
+      review: review || "",
+      output: labOut || "",
+      ts: Date.now(),
+    };
+    persist({ ...save, dojoDex: [entry, ...(save.dojoDex || [])].slice(0, 80) });
+    showToast(kind === "review" ? "AI review saved to Dojo Dex." : "Dojo problem snapshot saved to Dojo Dex.");
+  };
+  const removeDojoDexEntry = (id) => persist({ ...save, dojoDex: (save.dojoDex || []).filter((x) => x.id !== id) });
   const addDexQuestion = (q, srcId = battleSrc, srcName = conceptName(srcId)) => {
     if (!q) return;
     const qid = `${world.id}:${srcId}:${String(q.q || "").slice(0, 80)}`;
@@ -3559,9 +3643,9 @@ export default function App() {
     }
     const nQ = kind === "gym" ? region.gym.questions.length : kind === "side" ? pool.length : payload.questions.length;
     const max = nQ * DMG;
-    if (kind === "critical") setBattle({ kind, concept: payload, phase: "lore", enemyHp: max, enemyMax: max, qIdx: 0, streak: 0, ord: shuf4(), showCode: false, log: `${payload.name} blocks the path!` });
+    if (kind === "critical") setBattle({ kind, concept: payload, phase: "question", showLore: true, enemyHp: max, enemyMax: max, qIdx: 0, streak: 0, ord: shuf4(), showCode: false, log: `${payload.name} blocks the path!` });
     else if (kind === "side") setBattle({ kind, side: payload, pool, phase: "briefing", enemyHp: max, enemyMax: max, qIdx: 0, streak: 0, ord: shuf4(), showCode: true, log: payload.desc });
-    else setBattle({ kind, gym: region.gym, phase: "lore", enemyHp: max, enemyMax: max, qIdx: 0, streak: 0, ord: shuf4(), showCode: false, log: `${region.gym.leader}: "${region.gym.taunt}"` });
+    else setBattle({ kind, gym: region.gym, phase: "question", showLore: true, enemyHp: max, enemyMax: max, qIdx: 0, streak: 0, ord: shuf4(), showCode: false, log: `${region.gym.leader}: "${region.gym.taunt}"` });
     setScreen("battle");
   };
   const bQuestions = battle ? (battle.kind === "critical" ? battle.concept.questions : battle.kind === "side" ? (battle.pool || battle.side.questions) : battle.gym.questions) : [];
@@ -3604,7 +3688,7 @@ export default function App() {
       else showToast(`${region.gym.badge} earned! +150 XP`);
       setBattle(null); setScreen("region");
     } else if (battle.phase === "defeat") { setBattle(null); setAtNode("start"); setScreen("region"); }
-    else if (battle.phase === "feedback") setBattle({ ...battle, phase: "question", qIdx: battle.wrong ? battle.qIdx : battle.qIdx + 1, ord: shuf4(), wrong: false });
+    else if (battle.phase === "feedback") setBattle({ ...battle, phase: "question", qIdx: battle.wrong ? battle.qIdx : battle.qIdx + 1, ord: shuf4(), wrong: false, showLore: false });
     else setBattle({ ...battle, phase: "question", ord: shuf4() });
   };
 
@@ -3799,8 +3883,8 @@ ${QUALITY_RULES}`, cfg));
       if (resTab === "url") { if (!url.trim()) throw 0; r = await scanUrl(url.trim(), null); src = { type: "url", desc: url.trim() }; }
       else if (resTab === "pdf") { if (!pdfB64) throw 0; r = await scanPdf(pdfB64, null); src = { type: "pdf", desc: pdfName }; }
       else if (resTab === "text") { if (!pasteText.trim()) throw 0; r = await scanText(pasteText, cfg); src = { type: "text", desc: `this material: """${pasteText.slice(0, 4000)}"""` }; }
-      else { if (!conceptQ.trim()) throw 0; const f = await findResource(conceptQ.trim(), null); r = { title: f.title, sections: f.sections }; src = { type: "url", desc: f.url, foundUrl: f.url }; }
-      setScan({ title: r.title || "Untitled", sections: r.sections || [], picked: new Set((r.sections || []).slice(0, 3)), src });
+      else { if (!conceptQ.trim()) throw 0; const f = await findResource(conceptQ.trim(), null); r = { title: f.title, worldName: f.worldName, sections: f.sections }; src = { type: "url", desc: f.url, foundUrl: f.url }; }
+      setScan({ title: r.title || "Untitled", worldName: r.worldName || "", sections: r.sections || [], picked: new Set((r.sections || []).slice(0, 3)), src });
     } catch (e) {
       setScan({ error: e && e.message === "WEB_NEEDED" ? "Your custom model can't browse — URL/concept scans use the built-in model. Try the Paste tab for fully-local generation." : "Couldn't read that resource. Check it and try again." });
     }
@@ -3825,7 +3909,7 @@ ${QUALITY_RULES}`, cfg));
     }
     setBusy("");
     if (!out.length) { setScan({ ...scan, error: "Generation failed — try fewer sections." }); return; }
-    const w = normalizeGeneratedWorld({ id: "w" + Date.now(), title: scan.title, emoji: "🌀", blurb: "Custom world", links: scan.src.foundUrl ? [{ label: "Source", url: scan.src.foundUrl }] : [], regions: out });
+    const w = normalizeGeneratedWorld({ id: "w" + Date.now(), title: scan.worldName || scan.title, emoji: "🌀", blurb: scan.worldName ? `Custom world forged from "${scan.title}".` : "Custom world", links: scan.src.foundUrl ? [{ label: scan.title || "Source", url: scan.src.foundUrl }] : [], regions: out });
     persistWorlds([...worlds, w]);
     setScan(null); setUrl(""); setPasteText(""); setConceptQ(""); setPdfB64(null); setPdfName("");
     setActiveWorld(w.id); setRegionIdx(0); setAtNode("start"); setScreen("regionlist");
@@ -3954,6 +4038,11 @@ ${QUALITY_RULES}`, cfg));
       if (withTests && out.includes("ALL TESTS PASSED")) {
         setKataValidated((v) => ({ ...v, [kata.id]: true }));
         showToast("Tests passed — completion unlocked.");
+      } else if (withTests) {
+        setKataValidated((v) => ({ ...v, [kata.id]: false }));
+        const hasExactError = /Traceback|AssertionError|Python error|Error|Exception/i.test(out);
+        setLabOut(`${out}${hasExactError ? "" : "\n\n❌ Tests did not report ALL TESTS PASSED. Add explicit asserts/prints in the test block or inspect the output above."}`);
+        showToast("Tests failed — exact Python traceback/output is shown in the lab output.");
       }
     }
     catch (e) { setLabOut("⚠️ " + (e.message || e)); setKataValidated((v) => ({ ...v, [kata.id]: false })); }
@@ -4034,34 +4123,71 @@ ${QUALITY_RULES}`, cfg));
   const CodeEditor = useMemo(() => {
     const StableCodeEditor = ({ value, onChange, onRun, rows = 16 }) => {
       const preRef = useRef(null);
-      const shared = { fontFamily: "'JetBrains Mono', monospace", fontSize: 12, lineHeight: 1.55, tabSize: 4 };
+      const textRef = useRef(null);
+      const [focused, setFocused] = useState(false);
+      const [cursor, setCursor] = useState({ left: 12, top: 11 });
+      const fontSize = 12;
+      const lineHeight = 18.6;
+      const paddingX = 12;
+      const paddingY = 11;
+      const charWidth = 7.25;
+      const shared = { fontFamily: "'JetBrains Mono', monospace", fontSize, lineHeight: 1.55, tabSize: 4 };
       const isolate = (e) => e.stopPropagation();
+      const syncCursor = (el = textRef.current) => {
+        if (!el) return;
+        const before = String(value || "").slice(0, el.selectionStart || 0);
+        const line = before.split("\n").length - 1;
+        const col = before.length - (before.lastIndexOf("\n") + 1);
+        setCursor({ left: paddingX + col * charWidth - el.scrollLeft, top: paddingY + line * lineHeight - el.scrollTop });
+      };
+      const syncScroll = (el) => {
+        if (preRef.current) { preRef.current.scrollTop = el.scrollTop; preRef.current.scrollLeft = el.scrollLeft; }
+        syncCursor(el);
+      };
+      useEffect(() => { if (focused) syncCursor(); }, [value, focused]);
       return <div onMouseDown={isolate} onClick={isolate} style={{ position: "relative", marginTop: 8, border: `1px solid ${T.line}`, borderRadius: 10, background: T.code, minHeight: rows * 18.6, overflow: "hidden" }}>
-        <pre ref={preRef} aria-hidden="true" style={{ ...shared, position: "absolute", inset: 0, margin: 0, padding: "11px 12px", whiteSpace: "pre-wrap", overflow: "auto", color: T.codeText, pointerEvents: "none" }}>{highlightPython(value || " ")}</pre>
-        <textarea value={value} onChange={(e) => onChange(e.target.value)} onScroll={(e) => { if (preRef.current) { preRef.current.scrollTop = e.currentTarget.scrollTop; preRef.current.scrollLeft = e.currentTarget.scrollLeft; } }} onKeyDown={(e) => { e.stopPropagation(); editorKeys(e, value, onChange, onRun); }} onKeyUp={isolate} onInput={isolate} rows={rows} spellCheck={false} autoCapitalize="off" autoCorrect="off" style={{ ...shared, position: "relative", zIndex: 1, width: "100%", boxSizing: "border-box", border: "none", borderRadius: 10, padding: "11px 12px", resize: "vertical", background: "transparent", color: "transparent", caretColor: darkMode ? "#FFFFFF" : "#111827", outline: "none", overflow: "auto" }} />
+        <pre ref={preRef} aria-hidden="true" style={{ ...shared, position: "absolute", inset: 0, margin: 0, padding: `${paddingY}px ${paddingX}px`, whiteSpace: "pre-wrap", overflow: "auto", color: T.codeText, pointerEvents: "none" }}>{highlightPython(value || " ")}</pre>
+        {focused && <span aria-hidden="true" className="editorBlinkCursor" style={{ position: "absolute", zIndex: 3, left: cursor.left, top: cursor.top, width: 2, height: lineHeight, borderRadius: 2, background: darkMode ? "#FFFFFF" : "#111827", boxShadow: darkMode ? "0 0 10px rgba(255,255,255,.65)" : "0 0 8px rgba(17,24,39,.35)", pointerEvents: "none" }} />}
+        <textarea ref={textRef} value={value} onChange={(e) => { onChange(e.target.value); requestAnimationFrame(() => syncCursor(e.target)); }} onFocus={(e) => { setFocused(true); syncCursor(e.currentTarget); }} onBlur={() => setFocused(false)} onSelect={(e) => syncCursor(e.currentTarget)} onScroll={(e) => syncScroll(e.currentTarget)} onKeyDown={(e) => { e.stopPropagation(); editorKeys(e, value, onChange, onRun); requestAnimationFrame(() => syncCursor(e.currentTarget)); }} onKeyUp={(e) => { isolate(e); syncCursor(e.currentTarget); }} onInput={(e) => { isolate(e); requestAnimationFrame(() => syncCursor(e.currentTarget)); }} onClick={(e) => { isolate(e); syncCursor(e.currentTarget); }} rows={rows} spellCheck={false} autoCapitalize="off" autoCorrect="off" style={{ ...shared, position: "relative", zIndex: 2, width: "100%", boxSizing: "border-box", border: "none", borderRadius: 10, padding: `${paddingY}px ${paddingX}px`, resize: "vertical", background: "transparent", color: "transparent", caretColor: "transparent", outline: "none", overflow: "auto" }} />
       </div>;
     };
     return StableCodeEditor;
   }, [darkMode]);
 
-  /* ---------- styles ---------- */
+  /* ---------- styles: twilight glass system ---------- */
+  const appBg = darkMode
+    ? `radial-gradient(1100px 720px at 82% -12%, rgba(104,133,246,0.16), transparent 62%),
+       radial-gradient(900px 640px at -8% 26%, rgba(62,214,196,0.09), transparent 56%),
+       radial-gradient(880px 600px at 52% 112%, rgba(208,95,175,0.10), transparent 60%), ${T.paper}`
+    : `radial-gradient(1100px 720px at 82% -12%, rgba(122,143,255,0.20), transparent 62%),
+       radial-gradient(900px 640px at -8% 26%, rgba(63,196,182,0.14), transparent 56%),
+       radial-gradient(880px 600px at 52% 112%, rgba(235,142,205,0.15), transparent 60%), ${T.paper}`;
   const S = {
-    app: { minHeight: "100vh", background: T.paper, color: T.ink, fontFamily: "'Space Grotesk', system-ui, sans-serif" },
-    wrap: { maxWidth: 620, margin: "0 auto", padding: "0 14px 60px" },
-    card: { background: T.card, border: `1px solid ${T.line}`, borderRadius: 14, padding: 16 },
-    btn: (bg, c = "#fff") => ({ background: bg, color: c, border: "none", borderRadius: 10, padding: "11px 18px", fontWeight: 700, fontSize: 14, cursor: "pointer", fontFamily: "inherit" }),
-    chip: (on) => ({ border: `1.5px solid ${on ? T.explore : T.line}`, background: on ? T.exploreSoft : T.card, color: on ? T.explore : T.inkSoft, borderRadius: 999, padding: "7px 13px", fontSize: 13, fontWeight: 600, cursor: "pointer", fontFamily: "inherit" }),
-    mono: (size = 10.5, color = T.inkSoft) => ({ fontFamily: "'JetBrains Mono', monospace", fontSize: size, letterSpacing: "0.06em", color, fontWeight: 700 }),
-    pre: { background: T.code, color: T.codeText, borderRadius: 10, padding: "12px 14px", fontFamily: "'JetBrains Mono', monospace", fontSize: 11.5, lineHeight: 1.6, overflowX: "auto", whiteSpace: "pre", margin: 0 },
-    input: { width: "100%", boxSizing: "border-box", border: `1px solid ${T.line}`, borderRadius: 10, padding: "11px 12px", fontSize: 13.5, fontFamily: "'JetBrains Mono', monospace", background: T.card, color: T.ink, outline: "none" },
-    qbtn: { display: "block", width: "100%", textAlign: "left", marginBottom: 8, background: T.card, border: `1.5px solid ${T.line}`, color: T.ink, borderRadius: 10, padding: "11px 13px", fontSize: 13.5, fontWeight: 600, cursor: "pointer", fontFamily: "inherit", lineHeight: 1.45 },
+    app: { minHeight: "100vh", background: appBg, backgroundAttachment: "fixed", color: T.ink, fontFamily: "'Sora', 'Space Grotesk', system-ui, sans-serif" },
+    wrap: { maxWidth: 1160, margin: "0 auto", padding: "0 clamp(14px, 4vw, 40px) 80px" },
+    card: {
+      background: T.card, border: `1px solid ${T.line}`, borderRadius: 18, padding: 18,
+      backdropFilter: "blur(14px)", WebkitBackdropFilter: "blur(14px)",
+      boxShadow: darkMode ? "0 14px 40px rgba(2,4,12,0.35), inset 0 1px 0 rgba(255,255,255,0.05)" : "0 14px 40px rgba(27,36,64,0.08), inset 0 1px 0 rgba(255,255,255,0.7)",
+    },
+    btn: (bg, c = "#fff") => (String(bg)[0] === "#"
+      ? { background: `linear-gradient(180deg, ${tint(bg, 0.16)}, ${bg})`, color: c, border: "none", borderRadius: 12, padding: "11px 18px", fontWeight: 700, fontSize: 14, cursor: "pointer", fontFamily: "inherit", boxShadow: `0 6px 20px ${withAlpha(bg, 0.35)}, inset 0 1px 0 rgba(255,255,255,0.28)` }
+      : { background: bg, color: c, border: "none", borderRadius: 12, padding: "11px 18px", fontWeight: 700, fontSize: 14, cursor: "pointer", fontFamily: "inherit" }),
+    btnGhost: { background: "rgba(148,163,214,0.08)", border: `1px solid ${T.line}`, color: T.inkSoft, borderRadius: 10, padding: "6px 13px", fontSize: 12, cursor: "pointer", fontFamily: "inherit", fontWeight: 700 },
+    chip: (on) => ({ border: `1px solid ${on ? withAlpha(T.explore, 0.6) : T.line}`, background: on ? T.exploreSoft : (darkMode ? "rgba(255,255,255,0.04)" : "rgba(255,255,255,0.6)"), color: on ? T.explore : T.inkSoft, borderRadius: 999, padding: "7px 13px", fontSize: 13, fontWeight: 600, cursor: "pointer", fontFamily: "inherit" }),
+    mono: (size = 10.5, color = T.inkSoft) => ({ fontFamily: "'JetBrains Mono', monospace", fontSize: size, letterSpacing: "0.07em", color, fontWeight: 700 }),
+    pre: { background: T.code, color: T.codeText, border: `1px solid ${darkMode ? "rgba(148,163,214,0.14)" : "transparent"}`, borderRadius: 12, padding: "12px 14px", fontFamily: "'JetBrains Mono', monospace", fontSize: 11.5, lineHeight: 1.6, overflowX: "auto", whiteSpace: "pre", margin: 0 },
+    input: { width: "100%", boxSizing: "border-box", border: `1px solid ${T.line}`, borderRadius: 12, padding: "11px 12px", fontSize: 13.5, fontFamily: "'JetBrains Mono', monospace", background: darkMode ? "rgba(10,15,34,0.7)" : "rgba(255,255,255,0.85)", color: T.ink, outline: "none" },
+    qbtn: { display: "block", width: "100%", textAlign: "left", marginBottom: 8, background: darkMode ? "rgba(255,255,255,0.035)" : "rgba(255,255,255,0.75)", border: `1px solid ${T.line}`, color: T.ink, borderRadius: 12, padding: "12px 14px", fontSize: 13.5, fontWeight: 600, cursor: "pointer", fontFamily: "inherit", lineHeight: 1.45 },
+    inkBtn: darkMode ? "#3A4374" : "#1C2442",
+    grid: (min = 320) => ({ display: "grid", gridTemplateColumns: `repeat(auto-fill, minmax(min(${min}px, 100%), 1fr))`, gap: 12 }),
   };
 
   const NarutoPet = ({ pet = {} }) => {
     const mood = pet.mood || "idle";
     const msg = pet.msg || "Believe it — keep training.";
     const frame = mood === "harm" ? 2 : mood === "heal" || mood === "senzu" ? 3 : mood === "quest" ? 4 : mood === "done" ? 5 : 0;
-    return <div title={`Naruto pet · ${msg}`} style={{ width: 54, minWidth: 54, textAlign: "center", border: `1px solid ${T.line}`, borderRadius: 14, padding: "3px 4px", background: mood === "harm" ? T.penaltySoft : mood === "heal" || mood === "senzu" ? T.rewardSoft : T.card }}>
+    return <div className="hudPet" title={`Naruto pet · ${msg}`} style={{ width: 54, minWidth: 54, textAlign: "center", border: `1px solid ${T.line}`, borderRadius: 14, padding: "3px 4px", background: mood === "harm" ? T.penaltySoft : mood === "heal" || mood === "senzu" ? T.rewardSoft : T.card }}>
       <div style={{ width: 40, height: 43, margin: "0 auto", backgroundImage: "url('/pets/naruto-spritesheet.webp')", backgroundSize: "320px 387px", backgroundPosition: `-${(frame % 8) * 40}px -${Math.floor(frame / 8) * 43}px`, imageRendering: "auto", animation: mood === "harm" ? "shake .25s ease" : "bob 1.6s ease-in-out infinite" }} />
       <div style={S.mono(7, T.inkSoft)}>{mood}</div>
     </div>;
@@ -4069,38 +4195,114 @@ ${QUALITY_RULES}`, cfg));
 
   if (!save) return <div style={{ ...S.app, display: "flex", alignItems: "center", justifyContent: "center" }}><span style={S.mono()}>loading save file…</span></div>;
 
+  const iconBtn = () => ({ background: darkMode ? "rgba(255,255,255,0.045)" : "rgba(255,255,255,0.7)", border: `1px solid ${T.line}`, color: T.ink, borderRadius: 11, width: 34, height: 34, cursor: "pointer", fontSize: 15, display: "grid", placeItems: "center", flexShrink: 0 });
+  const xpIntoLevel = save ? save.xp - (level - 1) * 150 : 0;
   const HUD = ({ back }) => (
-    <div style={{ position: "sticky", top: 0, zIndex: 20, background: T.hud, backdropFilter: "blur(8px)", borderBottom: `1px solid ${T.line}` }}>
-      <div style={{ maxWidth: 620, margin: "0 auto", padding: "10px 14px", display: "flex", alignItems: "center", gap: 8 }}>
-        {back && <button onClick={back} aria-label="Back" style={{ background: "none", border: `1px solid ${T.line}`, borderRadius: 8, width: 30, height: 30, cursor: "pointer", color: T.ink, flexShrink: 0 }}>←</button>}
-        <div style={{ flex: 1, minWidth: 0 }}>
-          <div style={{ display: "flex", justifyContent: "space-between" }}>
-            <span style={S.mono(10, T.ink)}>LV.{level} · {save.xp} XP</span>
-            <span style={S.mono(10, T.gold)}>🎖 {save.badges.length}</span>
+    <div style={{ position: "sticky", top: 0, zIndex: 20, background: T.hud, backdropFilter: "blur(18px)", WebkitBackdropFilter: "blur(18px)", borderBottom: `1px solid ${T.line}` }}>
+      <div style={{ maxWidth: 1160, margin: "0 auto", padding: "10px clamp(14px, 4vw, 40px)", display: "flex", alignItems: "center", gap: 10 }}>
+        {back && <button onClick={back} aria-label="Back" style={iconBtn()}>←</button>}
+        <div title={`Level ${level} · ${xpIntoLevel}/150 XP into this level`} style={{ position: "relative", width: 40, height: 40, flexShrink: 0, borderRadius: "50%", display: "grid", placeItems: "center", background: `conic-gradient(${T.explore} ${Math.round((xpIntoLevel / 150) * 360)}deg, ${darkMode ? "rgba(255,255,255,0.10)" : "rgba(28,36,66,0.12)"} 0deg)`, boxShadow: `0 0 16px ${withAlpha(darkMode ? "#8D9BFF" : "#5B5BD6", 0.35)}` }}>
+          <div style={{ width: 32, height: 32, borderRadius: "50%", background: darkMode ? "#10162E" : "#FFFFFF", display: "grid", placeItems: "center" }}>
+            <span style={S.mono(10.5, T.ink)}>{level}</span>
           </div>
-          <div style={{ height: 7, background: T.line, borderRadius: 4, marginTop: 4, overflow: "hidden" }}>
-            <div style={{ height: "100%", width: `${(save.hp / maxHp) * 100}%`, background: save.hp / maxHp > 0.4 ? T.reward : T.penalty, transition: "width .4s" }} />
+        </div>
+        <div data-tour="hp" style={{ flex: 1, minWidth: 0 }}>
+          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", gap: 8 }}>
+            <span style={{ ...S.mono(9.5, T.ink), whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>LV.{level} · {save.xp} XP</span>
+            <span style={{ ...S.mono(9.5, T.gold), whiteSpace: "nowrap" }}>🎖 {save.badges.length}</span>
+          </div>
+          <div style={{ height: 7, background: darkMode ? "rgba(255,255,255,0.08)" : "rgba(28,36,66,0.10)", borderRadius: 4, marginTop: 5, overflow: "hidden" }}>
+            <div style={{ height: "100%", width: `${(save.hp / maxHp) * 100}%`, borderRadius: 4, background: save.hp / maxHp > 0.4 ? `linear-gradient(90deg, ${T.reward}, ${tint(darkMode ? "#3DDC97" : "#149E6E", 0.35)})` : `linear-gradient(90deg, ${T.penalty}, ${tint("#FF7A76", 0.25)})`, boxShadow: `0 0 10px ${withAlpha(save.hp / maxHp > 0.4 ? (darkMode ? "#3DDC97" : "#149E6E") : "#FF7A76", 0.5)}`, transition: "width .4s" }} />
           </div>
         </div>
         <NarutoPet pet={save.pet} />
-        <button onClick={toggleMusic} title="Low-volume background music" style={{ background: "none", border: `1px solid ${T.line}`, color: T.ink, borderRadius: 8, width: 30, height: 30, cursor: "pointer", fontSize: 14 }}>{musicOn ? "🎵" : "🔇"}</button>
-        <button onClick={toggleTheme} title={darkMode ? "Switch to light mode" : "Switch to dark mode"} style={{ background: "none", border: `1px solid ${T.line}`, color: T.ink, borderRadius: 8, width: 30, height: 30, cursor: "pointer", fontSize: 14 }}>{darkMode ? "☀️" : "🌙"}</button>
-        <button onClick={() => { setDexWorld(activeWorld); setScreen("dex"); }} style={{ ...S.btn(T.explore), padding: "7px 10px", fontSize: 12 }}>📖</button>
-        <button onClick={() => setScreen("settings")} style={{ background: "none", border: `1px solid ${T.line}`, color: T.ink, borderRadius: 8, width: 30, height: 30, cursor: "pointer", fontSize: 14 }}>⚙️</button>
+        <button className="hideSm" onClick={() => setTourStep(0)} title="Replay the walkthrough" style={iconBtn()}>?</button>
+        <button onClick={toggleMusic} title="Low-volume background music" style={iconBtn()}>{musicOn ? "🎵" : "🔇"}</button>
+        <button onClick={toggleTheme} title={darkMode ? "Switch to daylight" : "Switch to twilight"} style={iconBtn()}>{darkMode ? "☀️" : "🌙"}</button>
+        <button data-tour="dex" onClick={() => { setDexWorld(activeWorld); setDexOpen(true); }} title="Open the Conceptdex" style={{ ...S.btn(T.explore), padding: "8px 13px", fontSize: 12.5, display: "flex", alignItems: "center", gap: 6 }}>📖 <span className="dexLabel" style={{ fontWeight: 800 }}>Dex</span></button>
+        <button data-tour="settings" onClick={() => setScreen("settings")} title="Settings" style={iconBtn()}>⚙️</button>
       </div>
     </div>
   );
   const Tabs = () => (
-    <div style={{ display: "flex", gap: 6, marginTop: 14, flexWrap: "wrap" }}>
-      {[["home", "🌍 Learn"], ["dojo", "⌨️ Dojo"], ["wildspick", "🌿 Wilds"], ["coach", "🧪 Coach"], ["teachspace", "📚 Mission"], ["papers", "📡 Papers"]].map(([id, label]) => {
+    <div style={{ display: "inline-flex", gap: 4, marginTop: 16, flexWrap: "wrap", padding: 5, borderRadius: 999, background: darkMode ? "rgba(13,19,42,0.6)" : "rgba(255,255,255,0.55)", border: `1px solid ${T.line}`, backdropFilter: "blur(12px)", WebkitBackdropFilter: "blur(12px)" }}>
+      {[["home", "🌍", "Learn"], ["dojo", "⌨️", "Dojo"], ["wildspick", "🌿", "Wilds"], ["coach", "🧪", "Coach"], ["teachspace", "📚", "Mission"], ["papers", "📡", "Papers"]].map(([id, icon, label]) => {
         const on = screen === id || (id === "home" && ["home", "regionlist", "region"].includes(screen));
-        const activeBg = darkMode ? T.explore : T.ink;
-        const activeFg = darkMode ? "#FFFFFF" : "#FFFFFF";
-        return <button key={id} onClick={() => setScreen(id)} style={{ ...S.btn(on ? activeBg : T.card, on ? activeFg : T.inkSoft), border: `1px solid ${on ? activeBg : T.line}`, padding: "8px 14px", fontSize: 13 }}>{label}</button>;
+        return (
+          <button key={id} data-tour={"tab-" + id} onClick={() => setScreen(id)} style={{
+            border: "none", cursor: "pointer", fontFamily: "inherit", fontWeight: 700, fontSize: 13,
+            padding: "9px 16px", borderRadius: 999, display: "flex", alignItems: "center", gap: 7,
+            background: on ? `linear-gradient(180deg, ${tint(T.explore, 0.14)}, ${T.explore})` : "transparent",
+            color: on ? "#FFFFFF" : T.inkSoft,
+            boxShadow: on ? `0 6px 18px ${withAlpha(darkMode ? "#8D9BFF" : "#5B5BD6", 0.4)}, inset 0 1px 0 rgba(255,255,255,0.3)` : "none",
+          }}><span>{icon}</span>{label}</button>
+        );
       })}
     </div>
   );
-  const Toast = () => toast ? <div style={{ position: "fixed", bottom: 24, left: "50%", transform: "translateX(-50%)", zIndex: 60, background: T.ink, color: "#fff", padding: "10px 16px", borderRadius: 12, fontSize: 13.5, fontWeight: 700, animation: "slideUp .3s ease", maxWidth: "85%", textAlign: "center" }}>{toast}</div> : null;
+  const Toast = () => toast ? <div style={{ position: "fixed", bottom: 26, left: "50%", transform: "translateX(-50%)", zIndex: 80, background: darkMode ? "rgba(19,26,54,0.92)" : "rgba(28,36,66,0.94)", color: "#F2F5FF", border: "1px solid rgba(148,163,214,0.35)", backdropFilter: "blur(12px)", padding: "11px 18px", borderRadius: 14, fontSize: 13.5, fontWeight: 700, animation: "slideUp .3s ease", maxWidth: "85%", textAlign: "center", boxShadow: "0 16px 44px rgba(2,4,12,0.45)" }}>{toast}</div> : null;
+  const finishTour = () => { setTourStep(null); if (!save.tourDone) persist({ ...save, tourDone: true }); };
+  const walkthrough = tourStep === null ? null : (() => {
+    const step = TOUR_STEPS[Math.min(tourStep, TOUR_STEPS.length - 1)];
+    const last = tourStep >= TOUR_STEPS.length - 1;
+    // Spotlight: measure the step's target element and cut a glowing window
+    // around it in the scrim so the walkthrough points at the real UI.
+    let spot = null;
+    if (step.target && typeof document !== "undefined") {
+      const el = document.querySelector(step.target);
+      if (el) {
+        const r = el.getBoundingClientRect();
+        if (r.width > 0 && r.height > 0) spot = { left: r.left - 7, top: r.top - 7, width: r.width + 14, height: r.height + 14 };
+      }
+    }
+    const vh = typeof window !== "undefined" ? window.innerHeight : 800;
+    const placeLow = !!spot && spot.top + spot.height / 2 < vh * 0.45;
+    return (
+      <div style={{ position: "fixed", inset: 0, zIndex: 85, display: "flex", alignItems: placeLow ? "flex-end" : "center", justifyContent: "center", padding: 18, paddingBottom: placeLow ? "max(28px, 6vh)" : 18, background: spot ? "transparent" : "rgba(4,7,18,0.6)", backdropFilter: spot ? "none" : "blur(6px)", WebkitBackdropFilter: spot ? "none" : "blur(6px)", animation: "fadeIn .3s ease" }}>
+        {spot && <div aria-hidden style={{ position: "fixed", left: spot.left, top: spot.top, width: spot.width, height: spot.height, borderRadius: 16, border: `2px solid ${withAlpha(darkMode ? "#8D9BFF" : "#5B5BD6", 0.95)}`, boxShadow: `0 0 0 9999px rgba(4,7,18,0.62), 0 0 26px ${withAlpha("#8D9BFF", 0.6)}`, pointerEvents: "none", animation: "glowPulse 2.4s ease-in-out infinite" }} />}
+        <div key={tourStep} style={{ width: "min(560px, 100%)", borderRadius: 24, padding: "24px 24px 18px", background: darkMode ? "rgba(19,26,54,0.97)" : "rgba(255,255,255,0.97)", border: `1px solid ${withAlpha(darkMode ? "#8D9BFF" : "#5B5BD6", 0.45)}`, boxShadow: "0 30px 90px rgba(2,4,12,0.55)", animation: "fadeScale .35s ease", position: "relative", zIndex: 1 }}>
+          <button onClick={finishTour} style={{ position: "absolute", right: 14, top: 14, zIndex: 1, ...S.chip(false), padding: "5px 11px", fontSize: 11 }}>Skip tour</button>
+          <div aria-hidden style={{ fontSize: 44, pointerEvents: "none", filter: `drop-shadow(0 8px 20px ${withAlpha(darkMode ? "#8D9BFF" : "#5B5BD6", 0.45)})`, animation: "bob 2.6s ease-in-out infinite" }}>{step.icon}</div>
+          <span style={S.mono(9.5, T.explore)}>STEP {tourStep + 1}/{TOUR_STEPS.length} · {step.kicker}</span>
+          <h3 style={{ fontSize: 21, fontWeight: 800, margin: "6px 0 8px", fontFamily: "'Sora','Space Grotesk',sans-serif" }}>{step.title}</h3>
+          <RichText text={step.body} style={{ fontSize: 13.5, color: T.inkSoft, lineHeight: 1.65 }} />
+          <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginTop: 18 }}>
+            <div style={{ display: "flex", gap: 5 }}>
+              {TOUR_STEPS.map((_, i) => <span key={i} onClick={() => setTourStep(i)} style={{ width: i === tourStep ? 18 : 7, height: 7, borderRadius: 4, cursor: "pointer", background: i === tourStep ? T.explore : (darkMode ? "rgba(255,255,255,0.18)" : "rgba(28,36,66,0.18)"), transition: "all .25s ease" }} />)}
+            </div>
+            <div style={{ display: "flex", gap: 8 }}>
+              {tourStep > 0 && <button onClick={() => setTourStep(tourStep - 1)} style={S.btnGhost}>← Back</button>}
+              <button onClick={() => (last ? finishTour() : setTourStep(tourStep + 1))} style={{ ...S.btn(T.explore), padding: "9px 18px", fontSize: 13 }}>{last ? "Begin the journey \u2192" : "Next \u2192"}</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  })();
+  const chrome = (
+    <>
+      <style>{CSS}</style>
+      <Toast />
+      {walkthrough}
+      <ConceptdexDrawer
+        open={dexOpen}
+        onClose={() => setDexOpen(false)}
+        worlds={allWorlds}
+        dexWorld={dexWorld}
+        setDexWorld={setDexWorld}
+        capturedSet={capturedSet}
+        savedQuestions={dexQuestionsFor(allWorlds.find((w) => w.id === dexWorld) || world)}
+        dojoEntries={dojoDexEntries()}
+        onRemoveDojoEntry={removeDojoDexEntry}
+        onOpenDojoEntry={(entry) => { const k = allKatas.find((x) => x.id === entry.kataId); if (k) { openKata(k); setLabCode(entry.code || ""); setReview(entry.review || ""); setLabOut(entry.output || ""); setDexOpen(false); } }}
+        onRemoveQuestion={removeDexQuestion}
+        deepLore={deepLore}
+        onDeepen={deepenLore}
+        busy={busy}
+        conceptNote={conceptNote}
+      />
+    </>
+  );
   const SenzuPanel = ({ compact = false }) => {
     const q = save.senzu;
     const active = q && !q.claimed;
@@ -4137,7 +4339,7 @@ ${QUALITY_RULES}`, cfg));
         <span style={S.mono(10, color || T.explore)}>{label}</span>
         {onSave && <button onClick={(e) => { e.stopPropagation(); onSave(q); }} style={{ ...S.chip(false), padding: "4px 8px", fontSize: 11 }}>＋ Conceptdex</button>}
       </div>
-      <div style={{ fontWeight: 700, fontSize: 15, lineHeight: 1.55, margin: "8px 0 12px" }}>{q.q}</div>
+      <RichText text={q.q} style={{ fontWeight: 700, fontSize: 15, lineHeight: 1.55, margin: "8px 0 12px" }} />
       {ord.map((optIdx, i) => (
         <button key={i} onClick={() => onAnswer(i)} style={S.qbtn}>
           <span style={S.mono(10, T.explore)}>{String.fromCharCode(65 + i)}</span>&nbsp;&nbsp;{q.options[optIdx]}
@@ -4187,30 +4389,47 @@ ${QUALITY_RULES}`, cfg));
 
   /* ============ TITLE ============ */
   if (screen === "title") return (
-    <div style={{ ...S.app, display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", textAlign: "center", padding: 20 }}>
-      <style>{CSS}</style>
-      <div style={{ fontSize: 60, animation: "bob 2.5s ease-in-out infinite" }}>🧢</div>
-      <h1 style={{ fontSize: 32, fontWeight: 800, letterSpacing: "-0.02em", margin: "8px 0 2px" }}>EDOKAI</h1>
-      <span style={S.mono(11, T.explore)}>5 UMBRELLA WORLDS · TORCHLEET DOJO · SELF-IMPROVING COACH</span>
-      <p style={{ color: T.inkSoft, maxWidth: 430, lineHeight: 1.6, fontSize: 14.5, marginTop: 14 }}>
-        Board worlds for <b style={{ color: T.action }}>concepts</b>, a <b style={{ color: T.explore }}>Dojo</b> with runnable Python katas, per-world <b>Trial Gauntlets</b>, and a <b style={{ color: T.reward }}>Coach</b> that watches your misses and forges new drills. The teaching loop is mission-grounded, resource-first, and built for storage strength.
-      </p>
-      <button onClick={() => setScreen("home")} style={{ ...S.btn(T.explore), fontSize: 16, padding: "13px 30px", marginTop: 18 }}>{save.xp > 0 ? "Continue journey →" : "Begin journey →"}</button>
+    <div style={{ ...S.app, position: "relative", overflow: "hidden", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", textAlign: "center", padding: 20 }}>
+      {chrome}
+      <div aria-hidden style={{ position: "absolute", inset: "-25%", pointerEvents: "none", background: `radial-gradient(34% 30% at 26% 30%, ${withAlpha(darkMode ? "#6885F6" : "#7A8FFF", 0.22)}, transparent 70%), radial-gradient(30% 26% at 74% 22%, ${withAlpha("#3ED6C4", darkMode ? 0.13 : 0.18)}, transparent 70%), radial-gradient(36% 30% at 60% 84%, ${withAlpha("#D05FAF", darkMode ? 0.12 : 0.16)}, transparent 70%)`, animation: "auroraDrift 24s ease-in-out infinite alternate" }} />
+      {["🌍", "⚛️", "🌊", "👁️", "🚄"].map((e, i) => (
+        <span key={i} aria-hidden style={{ position: "absolute", fontSize: 24 + (i % 3) * 8, opacity: darkMode ? 0.5 : 0.55, filter: `saturate(1.1) drop-shadow(0 0 14px ${withAlpha("#8D9BFF", 0.55)})`, left: `${[8, 84, 14, 78, 48][i]}%`, top: `${[22, 18, 74, 70, 88][i]}%`, animation: `floatY ${7 + i * 1.7}s ease-in-out ${i * 0.9}s infinite`, pointerEvents: "none" }}>{e}</span>
+      ))}
+      <div style={{ position: "relative", animation: "fadeScale .7s ease" }}>
+        <div style={{ fontSize: 62, animation: "bob 3s ease-in-out infinite", filter: `drop-shadow(0 10px 26px ${withAlpha("#8D9BFF", 0.45)})` }}>🧢</div>
+        <h1 style={{ fontSize: "clamp(44px, 8vw, 72px)", fontWeight: 800, letterSpacing: "0.06em", margin: "10px 0 6px", fontFamily: "'Sora','Space Grotesk',sans-serif", background: `linear-gradient(115deg, ${darkMode ? "#EEF2FF" : "#1C2442"} 25%, ${T.explore} 55%, ${T.teal} 85%)`, WebkitBackgroundClip: "text", backgroundClip: "text", color: "transparent", textShadow: "none" }}>EDOKAI</h1>
+        <span style={S.mono(11, T.explore)}>CONCEPT WORLDS · TORCHLEET DOJO · SELF-IMPROVING COACH</span>
+        <p style={{ color: T.inkSoft, maxWidth: 470, lineHeight: 1.65, fontSize: 15, margin: "16px auto 0" }}>
+          A living atlas of <b style={{ color: T.action }}>concept worlds</b>, a <b style={{ color: T.explore }}>Dojo</b> with a focused runnable Python workspace, per-world <b style={{ color: T.gold }}>Trial Gauntlets</b>, and a <b style={{ color: T.reward }}>Coach</b> that watches your misses and forges new drills.
+        </p>
+        <div style={{ display: "flex", gap: 8, justifyContent: "center", flexWrap: "wrap", marginTop: 18 }}>
+          {[["🗺️", "force-directed atlas"], ["📖", "conceptdex"], ["⚔️", "gauntlets"], ["🐍", "runnable workspace"]].map(([icon, label]) => (
+            <span key={label} style={{ ...S.mono(9.5, T.inkSoft), background: T.card, border: `1px solid ${T.line}`, borderRadius: 999, padding: "7px 12px", backdropFilter: "blur(10px)" }}>{icon} {label}</span>
+          ))}
+        </div>
+        <button onClick={() => setScreen("home")} style={{ ...S.btn(T.explore), fontSize: 16.5, padding: "15px 38px", marginTop: 26, borderRadius: 16, boxShadow: `0 10px 34px ${withAlpha(darkMode ? "#8D9BFF" : "#5B5BD6", 0.5)}, inset 0 1px 0 rgba(255,255,255,0.35)`, animation: "glowPulse 3.2s ease-in-out infinite" }}>{save.xp > 0 ? "Continue journey →" : "Begin journey →"}</button>
+        {save.xp > 0 && <div style={{ ...S.mono(9.5, T.inkSoft), marginTop: 12 }}>LV.{level} · {save.xp} XP · {save.captured.length} CONCEPTS CAPTURED</div>}
+      </div>
     </div>
   );
 
   /* ============ HOME ============ */
   if (screen === "home") return (
-    <div style={S.app}><style>{CSS}</style><Toast /><HUD back={() => setScreen("title")} />
+    <div style={S.app}>{chrome}<HUD back={() => setScreen("title")} />
       <div style={{ ...S.wrap }}>
         <Tabs />
-        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", marginTop: 14 }}>
-          <h2 style={{ fontSize: 20, fontWeight: 800, margin: 0 }}>Concept Worlds</h2>
-          <button onClick={() => { setScan(null); setScreen("spawn"); }} style={{ ...S.btn(T.action), padding: "7px 12px", fontSize: 12 }}>+ Bring your own</button>
-        </div>
-        <div style={{ display: "flex", gap: 6, marginTop: 10, background: darkMode ? "#101832" : "#F2F4FA", border: `1px solid ${T.line}`, borderRadius: 999, padding: 4 }}>
-          <button onClick={() => setHomeView("list")} style={{ ...S.btn(homeView === "list" ? T.explore : "transparent", homeView === "list" ? "#fff" : T.inkSoft), flex: 1, padding: "7px 10px", fontSize: 12, borderRadius: 999 }}>☰ List view</button>
-          <button onClick={() => setHomeView("atlas")} style={{ ...S.btn(homeView === "atlas" ? T.explore : "transparent", homeView === "atlas" ? "#fff" : T.inkSoft), flex: 1, padding: "7px 10px", fontSize: 12, borderRadius: 999 }}>🗺️ Atlas view</button>
+        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: 12, marginTop: 20, flexWrap: "wrap" }}>
+          <div>
+            <h2 style={{ fontSize: "clamp(24px, 3.4vw, 32px)", fontWeight: 800, margin: 0, letterSpacing: "-0.02em", fontFamily: "'Sora','Space Grotesk',sans-serif" }}>Concept Worlds</h2>
+            <span style={S.mono(9.5, T.inkSoft)}>{allWorlds.length} WORLDS · {save.captured.length} CONCEPTS CAPTURED · LV.{level}</span>
+          </div>
+          <div style={{ display: "flex", gap: 8, alignItems: "center", flexWrap: "wrap" }}>
+            <div style={{ display: "inline-flex", gap: 4, padding: 4, borderRadius: 999, background: darkMode ? "rgba(13,19,42,0.6)" : "rgba(255,255,255,0.55)", border: `1px solid ${T.line}` }}>
+              <button onClick={() => setHomeView("atlas")} style={{ ...S.btn(homeView === "atlas" ? T.explore : "transparent", homeView === "atlas" ? "#fff" : T.inkSoft), padding: "7px 14px", fontSize: 12, borderRadius: 999 }}>🗺️ Atlas</button>
+              <button onClick={() => setHomeView("list")} style={{ ...S.btn(homeView === "list" ? T.explore : "transparent", homeView === "list" ? "#fff" : T.inkSoft), padding: "7px 14px", fontSize: 12, borderRadius: 999 }}>☰ List</button>
+            </div>
+            <button onClick={() => { setScan(null); setScreen("spawn"); }} style={{ ...S.btn(T.action), padding: "9px 14px", fontSize: 12.5 }}>+ Bring your own</button>
+          </div>
         </div>
         <TeachingPanel target={world} compact />
         <Collapsible id="liveDkg" title={`LIVE DKG · ${dkgSync.status.toUpperCase()}`} color={dkgSync.status === "error" ? T.penalty : T.explore} style={{ marginTop: 10, background: dkgSync.status === "error" ? T.penaltySoft : dkgSync.status === "disabled" ? T.card : T.exploreSoft }} right={<button onClick={(e) => { e.stopPropagation(); refreshDkgNow(); }} style={{ ...S.chip(false), fontSize: 11, padding: "5px 9px" }}>{dkgSync.status === "refreshing" ? "Pulling…" : "Pull latest"}</button>}>
@@ -4227,7 +4446,7 @@ ${QUALITY_RULES}`, cfg));
             <span style={S.mono(9, T.inkSoft)}>source: {dkgSync.source || "auto"}</span>
             {dkgSync.updatedAt && <span style={S.mono(9, T.inkSoft)}>updated: {new Date(dkgSync.updatedAt).toLocaleString()}</span>}
             {dkgSync.realtimeStatus && <span style={S.mono(9, T.inkSoft)}>realtime: {dkgSync.realtimeStatus}</span>}
-            {!dkgSync.browserSupabaseConfigured && <span style={S.mono(9, T.gold)}>browser anon key absent; using server proxy/GitHub fallback</span>}
+            {!dkgSync.browserSupabaseConfigured && <span style={S.mono(9, dkgSync.desktopBridgeConfigured ? T.reward : T.gold)}>{dkgSync.desktopBridgeConfigured ? "desktop Supabase bridge active" : "browser anon key absent; using server proxy/GitHub fallback"}</span>}
           </div>
           {!!(dkgSync.recentSources || []).length && <Collapsible id="liveDkgSources" title="RECENT LIVE INGESTS / SOURCES" color={T.inkSoft} style={{ marginTop: 10, padding: 10, background: T.card }}>
             <div style={{ display: "grid", gap: 6 }}>
@@ -4249,50 +4468,50 @@ ${QUALITY_RULES}`, cfg));
           </Collapsible>}
         </Collapsible>
         {homeView === "atlas" && (
-          <div style={{ marginTop: 12 }}>
-            <React.Suspense fallback={<div style={{ ...S.card, height: 390, display: "grid", placeItems: "center", color: T.inkSoft }}><span style={S.mono(10)}>loading three.js atlas…</span></div>}>
-              <DkgThreeMap
-                worlds={allWorlds}
-                focusedWorld={focusedMapWorld}
-                mapStats={mapStats}
-                capturedSet={capturedSet}
-                darkMode={darkMode}
-                T={T}
-                onFocus={(id) => { setMapFocus(id); setActiveWorld(id); }}
-                onStudy={(id) => { setActiveWorld(id); setRegionIdx(0); setAtNode("start"); setScreen("regionlist"); }}
-              />
-            </React.Suspense>
-            <div style={{ ...S.card, marginTop: 10, background: darkMode ? "#101832" : "#FAFBFF" }}>
-              <span style={S.mono(10, T.action)}>ATLAS FOCUS</span>
-              <div style={{ display: "flex", justifyContent: "space-between", gap: 10, alignItems: "center", marginTop: 6 }}>
-                <div>
-                  <div style={{ fontWeight: 900 }}>{focusedMapWorld.emoji} {focusedMapWorld.title}</div>
-                  <div style={{ fontSize: 12.5, color: T.inkSoft }}>{mapStats(focusedMapWorld).concepts} concepts · {focusedMapWorld.regions.length} regions · switch back to list any time.</div>
-                </div>
-                <button onClick={() => { setActiveWorld(focusedMapWorld.id); setRegionIdx(0); setAtNode("start"); setScreen("regionlist"); }} style={{ ...S.btn(T.explore), padding: "8px 11px", fontSize: 12 }}>Study →</button>
-              </div>
-            </div>
+          <div data-tour="atlas" style={{ marginTop: 14, animation: "fadeScale .5s ease" }}>
+            <AtlasGraph
+              worlds={allWorlds}
+              focusedWorld={focusedMapWorld}
+              mapStats={mapStats}
+              capturedSet={capturedSet}
+              height={Math.max(440, Math.min(620, typeof window !== "undefined" ? window.innerHeight * 0.62 : 540))}
+              onFocus={(id) => { setMapFocus(id); setActiveWorld(id); }}
+              onStudy={(id) => { setActiveWorld(id); setRegionIdx(0); setAtNode("start"); setScreen("regionlist"); }}
+            />
           </div>
         )}
-        {homeView === "list" && allWorlds.map((w) => {
-          const total = w.regions.reduce((n, r) => n + r.concepts.length, 0);
-          const got = w.regions.reduce((n, r) => n + r.concepts.filter((c) => capturedSet.has(c.id)).length, 0);
-          const badges = w.regions.filter((r) => save.badges.includes(r.gym.badge)).length;
-          const custom = !BUILTIN_WORLDS.find((b) => b.id === w.id);
-          return (
-            <div key={w.id} onClick={() => { setActiveWorld(w.id); setRegionIdx(0); setAtNode("start"); setScreen("regionlist"); }}
-              style={{ ...S.card, marginTop: 10, display: "flex", alignItems: "center", gap: 14, cursor: "pointer" }}>
-              <div style={{ fontSize: 30 }}>{w.emoji}</div>
-              <div style={{ flex: 1 }}>
-                <div style={{ fontWeight: 800, fontSize: 15.5 }}>{w.title} {badges === w.regions.length && badges > 0 ? "🎖" : ""}</div>
-                {w.blurb && <div style={{ fontSize: 12, color: T.inkSoft, lineHeight: 1.4 }}>{w.blurb}</div>}
-                <span style={S.mono(9.5, got === total && total > 0 ? T.reward : T.inkSoft)}>{got}/{total} CONCEPTS · {w.regions.length} REGION{w.regions.length === 1 ? "" : "S"}{custom ? " · CUSTOM" : ""}</span>
-              </div>
-              {custom && <button onClick={(e) => { e.stopPropagation(); persistWorlds(worlds.filter((x) => x.id !== w.id)); }} style={{ background: "none", border: "none", color: T.inkSoft, cursor: "pointer", fontSize: 15 }}>✕</button>}
-              <span style={{ color: T.explore, fontWeight: 800, fontSize: 20 }}>›</span>
-            </div>
-          );
-        })}
+        {homeView === "list" && (
+          <div style={{ ...S.grid(330), marginTop: 14 }}>
+            {allWorlds.map((w, wi) => {
+              const total = w.regions.reduce((n, r) => n + r.concepts.length, 0);
+              const got = w.regions.reduce((n, r) => n + r.concepts.filter((c) => capturedSet.has(c.id)).length, 0);
+              const badges = w.regions.filter((r) => save.badges.includes(r.gym.badge)).length;
+              const custom = !BUILTIN_WORLDS.find((b) => b.id === w.id);
+              const pct = total ? Math.round((got / total) * 100) : 0;
+              return (
+                <div key={w.id} onClick={() => { setActiveWorld(w.id); setRegionIdx(0); setAtNode("start"); setScreen("regionlist"); }}
+                  className="worldCard" style={{ ...S.card, display: "flex", flexDirection: "column", gap: 10, cursor: "pointer", position: "relative", overflow: "hidden" }}>
+                  <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
+                    <div style={{ width: 46, height: 46, borderRadius: 15, display: "grid", placeItems: "center", fontSize: 25, flexShrink: 0, background: T.exploreSoft, border: `1px solid ${withAlpha(darkMode ? "#8D9BFF" : "#5B5BD6", 0.3)}` }}>{w.emoji}</div>
+                    <div style={{ flex: 1, minWidth: 0 }}>
+                      <div style={{ fontWeight: 800, fontSize: 15.5, fontFamily: "'Sora','Space Grotesk',sans-serif" }}>{w.title} {badges === w.regions.length && badges > 0 ? "🎖" : ""}</div>
+                      <span style={S.mono(9, got === total && total > 0 ? T.reward : T.inkSoft)}>{w.domain ? `${w.domain.toUpperCase()} · ` : ""}{got}/{total} CONCEPTS · {w.regions.length} REGION{w.regions.length === 1 ? "" : "S"}{custom ? " · CUSTOM" : ""}</span>
+                    </div>
+                    {custom && <button onClick={(e) => { e.stopPropagation(); persistWorlds(worlds.filter((x) => x.id !== w.id)); }} style={{ background: "none", border: "none", color: T.inkSoft, cursor: "pointer", fontSize: 15 }}>✕</button>}
+                  </div>
+                  {w.blurb && <div style={{ fontSize: 12.3, color: T.inkSoft, lineHeight: 1.5, flex: 1 }}>{w.blurb}</div>}
+                  <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+                    <div style={{ flex: 1, height: 5, background: darkMode ? "rgba(255,255,255,0.08)" : "rgba(28,36,66,0.10)", borderRadius: 4, overflow: "hidden" }}>
+                      <div style={{ height: "100%", width: `${pct}%`, borderRadius: 4, background: `linear-gradient(90deg, ${T.explore}, ${T.teal})`, boxShadow: `0 0 8px ${withAlpha(darkMode ? "#8D9BFF" : "#5B5BD6", 0.55)}` }} />
+                    </div>
+                    <span style={S.mono(9, pct === 100 ? T.reward : T.inkSoft)}>{pct}%</span>
+                    <span style={{ color: T.explore, fontWeight: 800, fontSize: 18 }}>›</span>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        )}
       </div>
     </div>
   );
@@ -4301,28 +4520,25 @@ ${QUALITY_RULES}`, cfg));
   if (screen === "map") {
     const focusStats = mapStats(focusedMapWorld);
     return (
-      <div style={S.app}><style>{CSS}</style><Toast /><HUD back={() => setScreen("home")} />
+      <div style={S.app}>{chrome}<HUD back={() => setScreen("home")} />
         <div style={{ ...S.wrap }}>
           <Tabs />
-          <div style={{ ...S.card, marginTop: 14, background: darkMode ? "linear-gradient(135deg,#101832,#17203f)" : "linear-gradient(135deg,#F5F8FF,#FFFFFF)" }}>
-            <span style={S.mono(10, T.explore)}>EDOKAI ATLAS · THREE.JS TERRITORY MAP</span>
-            <h2 style={{ fontSize: 21, fontWeight: 800, margin: "6px 0 4px" }}>A spatial DKG map you can read at a glance.</h2>
-            <p style={{ fontSize: 13, color: T.inkSoft, lineHeight: 1.55, margin: 0 }}>Each island is a macro-world, orbiting dots are its regions, green arcs show capture progress, and source-overlap lines show nearby territories. Click an island to focus it; use Study to jump into the learner path.</p>
+          <div style={{ ...S.card, marginTop: 16 }}>
+            <span style={S.mono(10, T.explore)}>EDOKAI ATLAS · LIVING CONSTELLATION</span>
+            <h2 style={{ fontSize: 22, fontWeight: 800, margin: "6px 0 4px", fontFamily: "'Sora','Space Grotesk',sans-serif" }}>Your knowledge graph, laid out by physics.</h2>
+            <p style={{ fontSize: 13, color: T.inkSoft, lineHeight: 1.55, margin: 0 }}>Worlds are glowing hubs sized by concept count; regions orbit them as satellites; capture progress rings each node, and dashed golden threads join worlds that share sources. Drag anything — the layout breathes and settles on its own.</p>
           </div>
 
-          <div style={{ marginTop: 10 }}>
-            <React.Suspense fallback={<div style={{ ...S.card, height: 390, display: "grid", placeItems: "center", color: T.inkSoft }}><span style={S.mono(10)}>loading three.js atlas…</span></div>}>
-              <DkgThreeMap
-                worlds={allWorlds}
-                focusedWorld={focusedMapWorld}
-                mapStats={mapStats}
-                capturedSet={capturedSet}
-                darkMode={darkMode}
-                T={T}
-                onFocus={(id) => { setMapFocus(id); setActiveWorld(id); }}
-                onStudy={(id) => { setActiveWorld(id); setRegionIdx(0); setAtNode("start"); setScreen("regionlist"); }}
-              />
-            </React.Suspense>
+          <div style={{ marginTop: 12 }}>
+            <AtlasGraph
+              worlds={allWorlds}
+              focusedWorld={focusedMapWorld}
+              mapStats={mapStats}
+              capturedSet={capturedSet}
+              height={Math.max(460, Math.min(640, typeof window !== "undefined" ? window.innerHeight * 0.64 : 560))}
+              onFocus={(id) => { setMapFocus(id); setActiveWorld(id); }}
+              onStudy={(id) => { setActiveWorld(id); setRegionIdx(0); setAtNode("start"); setScreen("regionlist"); }}
+            />
           </div>
 
           <div style={{ ...S.card, marginTop: 12 }}>
@@ -4385,10 +4601,13 @@ ${QUALITY_RULES}`, cfg));
 
   /* ============ REGION LIST ============ */
   if (screen === "regionlist") return (
-    <div style={S.app}><style>{CSS}</style><Toast /><HUD back={() => setScreen("home")} />
+    <div style={S.app}>{chrome}<HUD back={() => setScreen("home")} />
       <div style={{ ...S.wrap, paddingTop: 16 }}>
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-          <h2 style={{ fontSize: 20, fontWeight: 800, margin: 0 }}>{world.emoji} {world.title}</h2>
+          <div>
+            <h2 style={{ fontSize: "clamp(22px, 3vw, 28px)", fontWeight: 800, margin: 0, letterSpacing: "-0.02em", fontFamily: "'Sora','Space Grotesk',sans-serif" }}>{world.emoji} {world.title}</h2>
+            {world.domain && <span style={S.mono(9.5, T.inkSoft)}>{world.domain.toUpperCase()}</span>}
+          </div>
           <button onClick={() => startGauntlet()} style={{ ...S.btn(T.gold), padding: "8px 12px", fontSize: 12 }}>⚔️ Trial Gauntlet</button>
         </div>
         {(world.links || []).length > 0 && (
@@ -4400,23 +4619,43 @@ ${QUALITY_RULES}`, cfg));
         )}
         <TeachingPanel target={world} />
         <SenzuPanel />
-        {regions.map((r, i) => {
-          const locked = !(i === 0 || save.badges.includes(regions[i - 1].gym.badge));
-          const got = r.concepts.filter((c) => capturedSet.has(c.id)).length;
-          const sGot = (r.sides || []).filter((s) => sidesSet.has(s.id)).length;
-          return (
-            <div key={r.id} onClick={() => { if (!locked) { setRegionIdx(i); setAtNode("start"); setScreen("region"); } }}
-              style={{ ...S.card, marginTop: 10, display: "flex", alignItems: "center", gap: 14, opacity: locked ? 0.5 : 1, cursor: locked ? "default" : "pointer" }}>
-              <div style={{ fontSize: 32 }}>{locked ? "🔒" : r.emoji}</div>
-              <div style={{ flex: 1 }}>
-                <div style={{ fontWeight: 800, fontSize: 15.5 }}>{r.name} {save.badges.includes(r.gym.badge) && "🎖"}</div>
-                <div style={{ fontSize: 12.5, color: T.inkSoft }}>{r.intro}</div>
-                <span style={S.mono(9.5, got === r.concepts.length ? T.reward : T.inkSoft)}>{got}/{r.concepts.length} CRITICALS · {sGot}/{(r.sides || []).length} SIDES</span>
+        {(() => {
+          const renderRegion = (r, i) => {
+            const locked = !(i === 0 || save.badges.includes(regions[i - 1].gym.badge));
+            const got = r.concepts.filter((c) => capturedSet.has(c.id)).length;
+            const sGot = (r.sides || []).filter((s) => sidesSet.has(s.id)).length;
+            return (
+              <div key={r.id} onClick={() => { if (!locked) { setRegionIdx(i); setAtNode("start"); setScreen("region"); } }}
+                className="worldCard" style={{ ...S.card, display: "flex", alignItems: "center", gap: 14, opacity: locked ? 0.55 : 1, cursor: locked ? "default" : "pointer" }}>
+                <div style={{ fontSize: 32 }}>{locked ? "🔒" : r.emoji}</div>
+                <div style={{ flex: 1 }}>
+                  <div style={{ fontWeight: 800, fontSize: 15.5 }}>{r.name} {save.badges.includes(r.gym.badge) && "🎖"}</div>
+                  <div style={{ fontSize: 12.5, color: T.inkSoft }}>{r.intro}</div>
+                  <span style={S.mono(9.5, got === r.concepts.length ? T.reward : T.inkSoft)}>{got}/{r.concepts.length} CRITICALS · {sGot}/{(r.sides || []).length} SIDES</span>
+                </div>
+                {!locked && <span style={{ color: T.explore, fontWeight: 800, fontSize: 20 }}>›</span>}
               </div>
-              {!locked && <span style={{ color: T.explore, fontWeight: 800, fontSize: 20 }}>›</span>}
-            </div>
-          );
-        })}
+            );
+          };
+          const arcs = [];
+          regions.forEach((r) => { const a = r.arc || null; if (!arcs.includes(a)) arcs.push(a); });
+          if (arcs.length === 1 && arcs[0] === null) return <div style={{ ...S.grid(340), marginTop: 14 }}>{regions.map(renderRegion)}</div>;
+          return arcs.map((arc, ai) => {
+            const members = regions.map((r, i) => [r, i]).filter(([r]) => (r.arc || null) === arc);
+            const done = members.filter(([r]) => save.badges.includes(r.gym.badge)).length;
+            const hue = hueFor(ai % 8);
+            return (
+              <div key={arc || "uncharted"} style={{ marginTop: ai ? 22 : 16 }}>
+                <div style={{ display: "flex", alignItems: "baseline", gap: 10 }}>
+                  <span style={{ ...S.mono(10.5, tint(hue, darkMode ? 0.45 : 0)), letterSpacing: "0.1em" }}>◆ {String(arc || "Uncharted Paths").toUpperCase()}</span>
+                  <span style={{ flex: 1, height: 1, background: `linear-gradient(90deg, ${withAlpha(hue, 0.45)}, transparent)` }} />
+                  <span style={S.mono(8.5, done === members.length ? T.reward : T.inkSoft)}>{done}/{members.length} BADGES</span>
+                </div>
+                <div style={{ ...S.grid(340), marginTop: 10 }}>{members.map(([r, i]) => renderRegion(r, i))}</div>
+              </div>
+            );
+          });
+        })()}
       </div>
     </div>
   );
@@ -4426,7 +4665,7 @@ ${QUALITY_RULES}`, cfg));
     if (gaunt.done) {
       const weak = coachRows().slice(0, 3);
       return (
-        <div style={S.app}><style>{CSS}</style><Toast /><HUD back={() => { setGaunt(null); setScreen("regionlist"); }} />
+        <div style={S.app}>{chrome}<HUD back={() => { setGaunt(null); setScreen("regionlist"); }} />
           <div style={{ ...S.wrap, paddingTop: 20 }}>
             <div style={{ ...S.card, textAlign: "center" }}>
               <div style={{ fontSize: 42 }}>{gaunt.lives > 0 ? "🏆" : "💀"}</div>
@@ -4446,21 +4685,21 @@ ${QUALITY_RULES}`, cfg));
     }
     const q = gaunt.pool[gaunt.idx];
     return (
-      <div style={{ ...S.app, background: T.night }}><style>{CSS}</style><Toast />
-        <div style={{ maxWidth: 620, margin: "0 auto", padding: "16px 14px 60px" }}>
-          <button onClick={() => { setGaunt(null); setScreen("regionlist"); }} style={{ background: "none", border: "1px solid #46548F", color: "#9FA8CC", borderRadius: 8, padding: "5px 12px", fontSize: 12, cursor: "pointer", fontFamily: "inherit", fontWeight: 700, marginBottom: 8 }}>← Exit gauntlet</button>
-          <div style={{ display: "flex", justifyContent: "space-between", color: "#9FA8CC" }}>
-            <span style={S.mono(10, "#9FA8CC")}>{gaunt.focus ? `FOCUSED DRILL · ${gaunt.focus.toUpperCase()}` : `TRIAL GAUNTLET · ${world.title.toUpperCase()}`}</span>
-            <span style={S.mono(10, "#9FA8CC")}>Q{gaunt.idx + 1}/{gaunt.pool.length} · {"❤️".repeat(gaunt.lives)}{"🖤".repeat(3 - gaunt.lives)} · {gaunt.score} ✓</span>
+      <div style={S.app}>{chrome}
+        <div style={{ maxWidth: 780, margin: "0 auto", padding: "16px clamp(14px, 3vw, 28px) 60px" }}>
+          <button onClick={() => { setGaunt(null); setScreen("regionlist"); }} style={{ background: "rgba(148,163,214,0.10)", border: `1px solid ${T.line}`, color: T.inkSoft, borderRadius: 10, backdropFilter: "blur(8px)", padding: "5px 12px", fontSize: 12, cursor: "pointer", fontFamily: "inherit", fontWeight: 700, marginBottom: 8 }}>← Exit gauntlet</button>
+          <div style={{ display: "flex", justifyContent: "space-between", color: T.inkSoft }}>
+            <span style={S.mono(10, T.inkSoft)}>{gaunt.focus ? `FOCUSED DRILL · ${gaunt.focus.toUpperCase()}` : `TRIAL GAUNTLET · ${world.title.toUpperCase()}`}</span>
+            <span style={S.mono(10, T.inkSoft)}>Q{gaunt.idx + 1}/{gaunt.pool.length} · {"❤️".repeat(gaunt.lives)}{"🖤".repeat(3 - gaunt.lives)} · {gaunt.score} ✓</span>
           </div>
           <div style={{ marginTop: 10 }}>
             <QCard q={q} ord={gaunt.ord} onAnswer={answerGauntlet} label={`FROM: ${q.name} · +8 XP`} color={T.gold} onSave={(qq) => addDexQuestion(qq, q.src || "gauntlet", q.name || "Gauntlet")} />
           </div>
           {gaunt.fb && (
-            <div style={{ background: gaunt.fb.ok ? T.rewardSoft : T.penaltySoft, borderRadius: 14, padding: 14, marginTop: 12, animation: "slideUp .25s ease" }}>
+            <div style={{ ...S.card, background: gaunt.fb.ok ? T.rewardSoft : T.penaltySoft, border: `1px solid ${gaunt.fb.ok ? withAlpha(darkMode ? "#3DDC97" : "#149E6E", 0.4) : withAlpha("#FF7A76", 0.4)}`, marginTop: 12, animation: "slideUp .25s ease" }}>
               <b style={{ color: gaunt.fb.ok ? T.reward : T.penalty, fontSize: 13 }}>{gaunt.fb.ok ? "✓ Correct" : "✗ Miss"}</b>
-              <p style={{ fontSize: 13, lineHeight: 1.55, margin: "6px 0 10px" }}>{gaunt.fb.msg}</p>
-              <button onClick={nextGauntlet} style={{ ...S.btn(T.ink), width: "100%" }}>Next →</button>
+              <RichText text={gaunt.fb.msg} style={{ fontSize: 13, lineHeight: 1.55, margin: "6px 0 10px" }} />
+              <button onClick={nextGauntlet} style={{ ...S.btn(S.inkBtn), width: "100%" }}>Next →</button>
             </div>
           )}
         </div>
@@ -4473,7 +4712,7 @@ ${QUALITY_RULES}`, cfg));
     const rows = coachRows();
     const augCount = (aug[world.id] || []).length;
     return (
-      <div style={S.app}><style>{CSS}</style><Toast /><HUD back={() => setScreen("home")} />
+      <div style={S.app}>{chrome}<HUD back={() => setScreen("home")} />
         <div style={{ ...S.wrap }}>
           <Tabs />
           <h2 style={{ fontSize: 20, fontWeight: 800, margin: "14px 0 2px" }}>🧪 The Coach — {world.title}</h2>
@@ -4505,7 +4744,7 @@ ${QUALITY_RULES}`, cfg));
   /* ============ WILDS PICKER ============ */
   if (screen === "wildspick") {
     return (
-      <div style={S.app}><style>{CSS}</style><Toast /><HUD back={() => setScreen("home")} />
+      <div style={S.app}>{chrome}<HUD back={() => setScreen("home")} />
         <div style={{ ...S.wrap }}>
           <Tabs />
           <h2 style={{ fontSize: 20, fontWeight: 800, margin: "14px 0 2px" }}>🌿 The Wilds — {world.title}</h2>
@@ -4529,19 +4768,19 @@ ${QUALITY_RULES}`, cfg));
   /* ============ WILDS EPISODE ============ */
   if (screen === "wilds" && wilds) {
     if (wilds.busy) return (
-      <div style={{ ...S.app, background: T.night, display: "flex", alignItems: "center", justifyContent: "center", flexDirection: "column", gap: 12 }}><style>{CSS}</style>
+      <div style={{ ...S.app, display: "flex", alignItems: "center", justifyContent: "center", flexDirection: "column", gap: 12 }}>{chrome}
         <div style={{ fontSize: 48, animation: "bob 1.6s ease-in-out infinite" }}>🌿</div>
-        <span style={{ ...S.mono(11, "#9FA8CC") }}>THE ENV IS FORGING TASKS: {wilds.name.toUpperCase()}…</span>
-        <button onClick={() => { setWilds(null); setScreen("wildspick"); }} style={{ background: "none", border: "1px solid #46548F", color: "#9FA8CC", borderRadius: 8, padding: "6px 14px", cursor: "pointer", fontFamily: "inherit", fontWeight: 700 }}>← Back</button>
+        <span style={{ ...S.mono(11, T.inkSoft) }}>THE ENV IS FORGING TASKS: {wilds.name.toUpperCase()}…</span>
+        <button onClick={() => { setWilds(null); setScreen("wildspick"); }} style={{ background: "rgba(148,163,214,0.10)", border: `1px solid ${T.line}`, color: T.inkSoft, borderRadius: 10, backdropFilter: "blur(8px)", padding: "6px 14px", cursor: "pointer", fontFamily: "inherit", fontWeight: 700 }}>← Back</button>
       </div>
     );
     if (wilds.error) return (
-      <div style={S.app}><style>{CSS}</style><HUD back={() => { setWilds(null); setScreen("wildspick"); }} />
+      <div style={S.app}>{chrome}<HUD back={() => { setWilds(null); setScreen("wildspick"); }} />
         <div style={{ ...S.wrap, paddingTop: 20 }}><div style={{ ...S.card, color: T.penalty, fontSize: 13.5 }}>{wilds.error}</div></div>
       </div>
     );
     if (wilds.done) return (
-      <div style={S.app}><style>{CSS}</style><Toast /><HUD back={() => { setWilds(null); setScreen("wildspick"); }} />
+      <div style={S.app}>{chrome}<HUD back={() => { setWilds(null); setScreen("wildspick"); }} />
         <div style={{ ...S.wrap, paddingTop: 20 }}>
           <div style={{ ...S.card, textAlign: "center" }}>
             <div style={{ fontSize: 42 }}>🌿</div>
@@ -4557,22 +4796,22 @@ ${QUALITY_RULES}`, cfg));
     );
     const q = wilds.qs[wilds.idx];
     return (
-      <div style={{ ...S.app, background: T.night }}><style>{CSS}</style><Toast />
-        <div style={{ maxWidth: 620, margin: "0 auto", padding: "16px 14px 60px" }}>
-          <button onClick={() => { setWilds(null); setScreen("wildspick"); }} style={{ background: "none", border: "1px solid #46548F", color: "#9FA8CC", borderRadius: 8, padding: "5px 12px", fontSize: 12, cursor: "pointer", fontFamily: "inherit", fontWeight: 700, marginBottom: 8 }}>← Leave the Wilds</button>
+      <div style={S.app}>{chrome}
+        <div style={{ maxWidth: 780, margin: "0 auto", padding: "16px clamp(14px, 3vw, 28px) 60px" }}>
+          <button onClick={() => { setWilds(null); setScreen("wildspick"); }} style={{ background: "rgba(148,163,214,0.10)", border: `1px solid ${T.line}`, color: T.inkSoft, borderRadius: 10, backdropFilter: "blur(8px)", padding: "5px 12px", fontSize: 12, cursor: "pointer", fontFamily: "inherit", fontWeight: 700, marginBottom: 8 }}>← Leave the Wilds</button>
           <div style={{ display: "flex", justifyContent: "space-between" }}>
-            <span style={S.mono(10, "#9FA8CC")}>🌿 WILDS EPISODE · {wilds.name.toUpperCase()}</span>
-            <span style={S.mono(10, "#9FA8CC")}>Q{wilds.idx + 1}/{wilds.qs.length} · {wilds.score} ✓</span>
+            <span style={S.mono(10, T.inkSoft)}>🌿 WILDS EPISODE · {wilds.name.toUpperCase()}</span>
+            <span style={S.mono(10, T.inkSoft)}>Q{wilds.idx + 1}/{wilds.qs.length} · {wilds.score} ✓</span>
           </div>
           <div style={{ marginTop: 10 }}>
             <QCard q={q} ord={wilds.ord} onAnswer={answerWilds} label="FRESH TASK — GROUNDED IN LORE · +10 XP" color={T.reward} />
           </div>
           {wilds.fb && (
-            <div style={{ background: wilds.fb.ok ? T.rewardSoft : T.penaltySoft, borderRadius: 14, padding: 14, marginTop: 12, animation: "slideUp .25s ease" }}>
+            <div style={{ ...S.card, background: wilds.fb.ok ? T.rewardSoft : T.penaltySoft, border: `1px solid ${wilds.fb.ok ? withAlpha(darkMode ? "#3DDC97" : "#149E6E", 0.4) : withAlpha("#FF7A76", 0.4)}`, marginTop: 12, animation: "slideUp .25s ease" }}>
               <b style={{ color: wilds.fb.ok ? T.reward : T.penalty, fontSize: 13 }}>{wilds.fb.ok ? "✓ Verified correct" : "✗ Miss"}</b>
-              <p style={{ fontSize: 13, lineHeight: 1.55, margin: "6px 0 4px" }}>{wilds.fb.msg}</p>
+              <RichText text={wilds.fb.msg} style={{ fontSize: 13, lineHeight: 1.55, margin: "6px 0 4px" }} />
               {wilds.fb.ev && <p style={{ fontSize: 12, color: T.inkSoft, margin: "0 0 10px" }}>📜 EVIDENCE: "{wilds.fb.ev}"</p>}
-              <button onClick={nextWilds} style={{ ...S.btn(T.ink), width: "100%" }}>Next →</button>
+              <button onClick={nextWilds} style={{ ...S.btn(S.inkBtn), width: "100%" }}>Next →</button>
             </div>
           )}
         </div>
@@ -4582,7 +4821,7 @@ ${QUALITY_RULES}`, cfg));
 
   /* ============ SPAWN ============ */
   if (screen === "spawn") return (
-    <div style={S.app}><style>{CSS}</style><Toast /><HUD back={() => setScreen("home")} />
+    <div style={S.app}>{chrome}<HUD back={() => setScreen("home")} />
       <div style={{ ...S.wrap, paddingTop: 18 }}>
         <h2 style={{ fontSize: 20, fontWeight: 800, margin: "0 0 4px" }}>Bring your own resource</h2>
         <p style={{ color: T.inkSoft, fontSize: 13.5, lineHeight: 1.55 }}>Paste a link or text, upload a PDF, or just name a concept — Edokai finds or uses the best resource first. Then choose: <b>learn</b> it as a mission-grounded board world, or <b>implement</b> it as a dojo kata with feedback loops.</p>
@@ -4609,7 +4848,7 @@ ${QUALITY_RULES}`, cfg));
           <button onClick={() => setGoal("learn")} style={S.chip(goal === "learn")}>🌍 Learn concepts</button>
           <button onClick={() => setGoal("implement")} style={S.chip(goal === "implement")}>⌨️ Implement solution</button>
         </div>
-        <button onClick={doScan} disabled={busy === "scan"} style={{ ...S.btn(T.ink), width: "100%", marginTop: 12 }}>{busy === "scan" ? "Reading resource…" : "Scan resource"}</button>
+        <button onClick={doScan} disabled={busy === "scan"} style={{ ...S.btn(S.inkBtn), width: "100%", marginTop: 12 }}>{busy === "scan" ? "Reading resource…" : "Scan resource"}</button>
         {scan && scan.error && <div style={{ marginTop: 12, color: T.penalty, fontSize: 13.5 }}>{scan.error}</div>}
         {scan && !scan.error && (
           <div style={{ ...S.card, marginTop: 14 }}>
@@ -4642,7 +4881,7 @@ ${QUALITY_RULES}`, cfg));
     const glossary = capturedConceptsFor(teachW);
     const records = worldLearningRecords(teachW);
     return (
-      <div style={S.app}><style>{CSS}</style><Toast /><HUD back={() => setScreen("home")} />
+      <div style={S.app}>{chrome}<HUD back={() => setScreen("home")} />
         <div style={{ ...S.wrap, paddingTop: 16 }}>
           <h2 style={{ fontSize: 20, fontWeight: 800, margin: "0 0 6px" }}>📚 Teach Workspace</h2>
           <div style={{ display: "flex", gap: 6, flexWrap: "wrap" }}>
@@ -4666,65 +4905,9 @@ ${QUALITY_RULES}`, cfg));
     );
   }
 
-  /* ============ CONCEPTDEX (per world) ============ */
-  if (screen === "dex") {
-    const dexW = allWorlds.find((w) => w.id === dexWorld) || world;
-    const dTotal = dexW.regions.reduce((n, r) => n + r.concepts.length, 0);
-    const dGot = dexW.regions.reduce((n, r) => n + r.concepts.filter((c) => capturedSet.has(c.id)).length, 0);
-    const savedQs = dexQuestionsFor(dexW);
-    const capturedByRegion = dexW.regions.map((r) => ({ ...r, capturedConcepts: r.concepts.filter((c) => capturedSet.has(c.id)) })).filter((r) => r.capturedConcepts.length || r.concepts.length);
-    return (
-      <div style={S.app}><style>{CSS}</style><Toast /><HUD back={() => setScreen("home")} />
-        <div style={{ ...S.wrap, paddingTop: 16 }}>
-          <h2 style={{ fontSize: 20, fontWeight: 800, margin: "0 0 6px" }}>Conceptdex</h2>
-          <p style={{ fontSize: 12.5, color: T.inkSoft, lineHeight: 1.55, margin: "0 0 10px" }}>A compact field guide: captured concepts are summarized as decision notes, and saved questions live in a separate review deck. Use the + dex button during battles or gauntlets to save questions that are worth drilling again.</p>
-          <div style={{ display: "flex", gap: 6, flexWrap: "wrap" }}>
-            {allWorlds.map((w) => <button key={w.id} onClick={() => setDexWorld(w.id)} style={S.chip(dexWorld === w.id)}>{w.emoji} {w.title}</button>)}
-          </div>
-          <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 8, marginTop: 10 }}>
-            <div style={{ ...S.card, padding: 10 }}><span style={S.mono(9, T.gold)}>CAPTURED</span><div style={{ fontWeight: 900 }}>{dGot}/{dTotal}</div></div>
-            <div style={{ ...S.card, padding: 10 }}><span style={S.mono(9, T.explore)}>SAVED Q</span><div style={{ fontWeight: 900 }}>{savedQs.length}</div></div>
-            <div style={{ ...S.card, padding: 10 }}><span style={S.mono(9, T.reward)}>REGIONS</span><div style={{ fontWeight: 900 }}>{dexW.regions.length}</div></div>
-          </div>
-
-          <Collapsible id={`dex-q-${dexW.id}`} title={`SAVED QUESTION DECK · ${savedQs.length}`} color={T.explore} style={{ marginTop: 12 }}>
-            {savedQs.length ? savedQs.map((sq) => (
-              <div key={sq.id} style={{ borderTop: `1px solid ${T.line}`, paddingTop: 9, marginTop: 9 }}>
-                <div style={{ display: "flex", justifyContent: "space-between", gap: 8, alignItems: "baseline" }}>
-                  <span style={S.mono(9, T.explore)}>{sq.sourceName || conceptName(sq.src)}</span>
-                  <button onClick={() => removeDexQuestion(sq.id)} style={{ ...S.chip(false), padding: "3px 8px", fontSize: 10 }}>remove</button>
-                </div>
-                <p style={{ fontSize: 13, fontWeight: 800, lineHeight: 1.45, margin: "6px 0" }}>{sq.q}</p>
-                <div style={{ display: "grid", gap: 4 }}>
-                  {(sq.options || []).map((o, i) => <div key={i} style={{ fontSize: 12.5, color: i === sq.a ? T.reward : T.inkSoft }}><b>{String.fromCharCode(65 + i)}.</b> {o}{i === sq.a ? " ✓" : ""}</div>)}
-                </div>
-                <p style={{ fontSize: 12.5, color: T.inkSoft, lineHeight: 1.5, margin: "6px 0 0" }}>{sq.why}</p>
-              </div>
-            )) : <p style={{ fontSize: 12.5, color: T.inkSoft, lineHeight: 1.5 }}>No saved questions yet. During any battle, tap <b>＋ dex</b>; during gauntlets, tap <b>＋ Conceptdex</b>.</p>}
-          </Collapsible>
-
-          {capturedByRegion.map((r) => {
-            const got = r.capturedConcepts.length;
-            return <Collapsible key={r.id} id={`dex-r-${dexW.id}-${r.id}`} title={`${r.emoji} ${r.name} · ${got}/${r.concepts.length} captured`} color={got ? T.gold : T.inkSoft} style={{ marginTop: 10 }}>
-              {got ? r.capturedConcepts.map((c) => { const n = conceptNote(c, deepLore[c.id]); return (
-                <div key={c.id} style={{ borderTop: `1px solid ${T.line}`, paddingTop: 9, marginTop: 9 }}>
-                  <div style={{ display: "flex", gap: 8, alignItems: "center" }}><span style={{ fontSize: 20 }}>{c.sprite}</span><b style={{ fontSize: 14 }}>{c.name}</b><span style={{ ...S.mono(9, T.reward), marginLeft: "auto" }}>CAPTURED</span></div>
-                  <p style={{ fontSize: 12.8, lineHeight: 1.55, margin: "6px 0 0" }}>{n.mechanism}</p>
-                  <p style={{ fontSize: 12.5, color: T.inkSoft, lineHeight: 1.5, margin: "5px 0 0" }}><b>Decision note:</b> {n.consequence}</p>
-                  <p style={{ fontSize: 12, color: T.explore, lineHeight: 1.5, margin: "5px 0 0" }}>{n.checkpoint}</p>
-                  {deepLore[c.id] ? <p style={{ fontSize: 12, color: T.inkSoft, lineHeight: 1.5, margin: "5px 0 0" }}>🔍 {n.deep}</p> : <button onClick={() => deepenLore(c)} disabled={busy === "lore"} style={{ ...S.chip(false), marginTop: 7, fontSize: 11 }}>🔍 Deepen</button>}
-                </div>
-              ); }) : <p style={{ fontSize: 12.5, color: T.inkSoft, lineHeight: 1.5 }}>No captures in this region yet. Locked concepts stay off the page so the dex remains short and useful.</p>}
-            </Collapsible>;
-          })}
-        </div>
-      </div>
-    );
-  }
-
   /* ============ SETTINGS ============ */
   if (screen === "settings") return (
-    <div style={S.app}><style>{CSS}</style><Toast /><HUD back={() => setScreen("home")} />
+    <div style={S.app}>{chrome}<HUD back={() => setScreen("home")} />
       <div style={{ ...S.wrap, paddingTop: 18 }}>
         <h2 style={{ fontSize: 20, fontWeight: 800, margin: "0 0 4px" }}>Model settings</h2>
         <p style={{ color: T.inkSoft, fontSize: 13, lineHeight: 1.55 }}>Generation can run through the Claude bridge, the desktop Claude Code OAuth bridge, the Netlify Anthropic proxy, a user-supplied Anthropic key, or any OpenAI-compatible endpoint. On desktop, signing in once with <code>claude auth login</code> lets Edokai use Claude Code's browser-based authentication without an explicit API-key environment variable.</p>
@@ -4807,7 +4990,7 @@ ${QUALITY_RULES}`, cfg));
         <div style={{ ...S.card, marginTop: 12 }}>
           <span style={S.mono(10)}>SAVE DATA</span>
           <p style={{ fontSize: 12.5, color: T.inkSoft, margin: "6px 0 10px" }}>Player {save.player?.name || "local-player"} · UUID {save.player?.id || "pending"} · Session {save.player?.sessionId || "pending"}<br />XP {save.xp} · {save.captured.length} concepts · {save.badges.length} badges · {Object.keys(save.katas).length} katas · telemetry on {Object.keys(save.qstats).length} topics</p>
-          <button onClick={() => { persist({ xp: 0, hp: 100, badges: [], captured: [], sides: [], katas: {}, qstats: {}, kataHints: {}, kataAttempts: {}, learningRecords: [], dexQuestions: [], senzu: null, pet: { mood: "idle", msg: "ready" }, player: save.player }); persistAug({}); showToast("Save reset."); }} style={{ ...S.btn(T.penalty), padding: "8px 14px", fontSize: 12.5 }}>Reset progress</button>
+          <button onClick={() => { persist({ xp: 0, hp: 100, badges: [], captured: [], sides: [], katas: {}, qstats: {}, kataHints: {}, kataAttempts: {}, learningRecords: [], dexQuestions: [], dojoDex: [], senzu: null, pet: { mood: "idle", msg: "ready" }, player: save.player }); persistAug({}); showToast("Save reset."); }} style={{ ...S.btn(T.penalty), padding: "8px 14px", fontSize: 12.5 }}>Reset progress</button>
         </div>
       </div>
     </div>
@@ -4815,14 +4998,14 @@ ${QUALITY_RULES}`, cfg));
 
   /* ============ PAPER SCOUT ============ */
   if (screen === "papers") return (
-    <div style={S.app}><style>{CSS}</style><Toast /><HUD back={() => setScreen("home")} />
+    <div style={S.app}>{chrome}<HUD back={() => setScreen("home")} />
       <div style={{ ...S.wrap }}>
         <Tabs />
         <h2 style={{ fontSize: 20, fontWeight: 800, margin: "14px 0 4px" }}>📡 Paper Scout</h2>
         <p style={{ color: T.inkSoft, fontSize: 13, lineHeight: 1.55 }}>Live search over arXiv / Hugging Face Papers via the built-in model (Papers with Code was sunset in 2025). Found something good? Make it a world.</p>
         <div style={{ display: "flex", gap: 8, marginTop: 8 }}>
           <input value={paperQ} onChange={(e) => setPaperQ(e.target.value)} placeholder="e.g. JEPA world models, KV cache compression" style={{ ...S.input, flex: 1, minWidth: 0 }} />
-          <button onClick={doPapers} disabled={busy === "papers"} style={S.btn(T.ink)}>{busy === "papers" ? "…" : "Scout"}</button>
+          <button onClick={doPapers} disabled={busy === "papers"} style={S.btn(S.inkBtn)}>{busy === "papers" ? "…" : "Scout"}</button>
         </div>
         {papers && papers.error && <div style={{ marginTop: 12, color: T.penalty, fontSize: 13.5 }}>Scout failed — try a broader topic.</div>}
         {Array.isArray(papers) && papers.map((p, i) => (
@@ -4844,11 +5027,15 @@ ${QUALITY_RULES}`, cfg));
   if (screen === "dojo") {
     const fams = [["swe", "🧩 Software Engineering · Blind 75"], ["sys", "🏰 System Design"], ["ml", "🧠 ML Engineering · ranked for current interviews"], ["torchleet", "🔥 TorchLeet · PyTorch practice"], ["custom", "🌀 Your forged katas"]];
     return (
-      <div style={S.app}><style>{CSS}</style><Toast /><HUD back={() => setScreen("home")} />
+      <div style={S.app}>{chrome}<HUD back={() => setScreen("home")} />
         <div style={{ ...S.wrap }}>
           <Tabs />
           <h2 style={{ fontSize: 20, fontWeight: 800, margin: "14px 0 0" }}>⌨️ The Dojo</h2>
-          <span style={S.mono(10)}>code-first workthroughs · TorchLeet set · in-browser Python lab · AI review</span>
+          <span style={S.mono(10)}>code-first workthroughs · TorchLeet set · in-browser Python lab · AI review · Dojo Dex · BUILD {EDOKAI_BUILD}</span>
+          <div style={{ display: "flex", gap: 8, flexWrap: "wrap", marginTop: 10 }}>
+            <button onClick={() => { setDexWorld(activeWorld); setDexOpen(true); }} style={S.chip(false)}>📖 Open Conceptdex</button>
+            <span style={{ ...S.mono(9, T.gold), alignSelf: "center" }}>Dojo Dex stores kata snapshots, failing test output, and AI reviews separately from concept questions.</span>
+          </div>
           <div style={{ ...S.card, marginTop: 10, background: T.rewardSoft }}>
             <div style={{ display: "flex", justifyContent: "space-between", gap: 10, alignItems: "center" }}>
               <div><b>🫘 Senzu bean recovery quest</b><p style={{ fontSize: 12.5, color: T.inkSoft, margin: "4px 0 0" }}>Started from Concept Worlds: clear both exercises here, then return healed.</p></div>
@@ -4865,10 +5052,10 @@ ${QUALITY_RULES}`, cfg));
             return (
               <div key={fam} style={{ marginTop: 16 }}>
                 <button onClick={() => setDojoOpen({ ...dojoOpen, [fam]: !dojoOpen[fam] })} style={{ width: "100%", textAlign: "left", background: "none", border: "none", color: T.ink, fontWeight: 800, fontSize: 14.5, cursor: "pointer", padding: "4px 0", fontFamily: "inherit" }}>{dojoOpen[fam] ? "⌄" : "›"} {label} <span style={S.mono(9, T.inkSoft)}>({ks.length})</span></button>
-                {dojoOpen[fam] && ks.map((k, rankIdx) => {
+                {dojoOpen[fam] && <div style={{ ...S.grid(360), marginTop: 10 }}>{ks.map((k, rankIdx) => {
                   const p = kProgress(k.id); const done = p >= (k.steps.length || 1);
                   return (
-                    <div key={k.id} onClick={() => openKata(k)} style={{ ...S.card, marginTop: 8, padding: 13, display: "flex", gap: 12, alignItems: "center", cursor: "pointer", background: done ? T.rewardSoft : T.card }}>
+                    <div key={k.id} onClick={() => openKata(k)} className="worldCard" style={{ ...S.card, padding: 14, display: "flex", gap: 12, alignItems: "center", cursor: "pointer", background: done ? T.rewardSoft : T.card }}>
                       <span style={{ fontSize: 22 }}>{k.emoji || "⌨️"}</span>
                       <div style={{ flex: 1 }}>
                         <div style={{ fontWeight: 700, fontSize: 14 }}>{fam === "ml" && <span style={S.mono(9, T.gold)}>#{rankIdx + 1} interview&nbsp;</span>}{k.title} {LABS[k.id] ? "🧪" : ""}</div>
@@ -4878,7 +5065,7 @@ ${QUALITY_RULES}`, cfg));
                       <span style={{ color: T.explore, fontWeight: 800 }}>›</span>
                     </div>
                   );
-                })}
+                })}</div>}
               </div>
             );
           })}
@@ -4896,7 +5083,7 @@ ${QUALITY_RULES}`, cfg));
     const showSol = kPhase === "sol";
     const showHints = kPhase === "hints";
     return (
-      <div style={S.app}><style>{CSS}</style><Toast /><HUD back={() => setScreen("dojo")} />
+      <div style={S.app}>{chrome}<HUD back={() => setScreen("dojo")} />
         <div style={{ ...S.wrap, paddingTop: 16 }}>
           <h2 style={{ fontSize: 19, fontWeight: 800, margin: 0 }}>{kata.emoji || "⌨️"} {kata.title} {done && "✓"}</h2>
           <div style={{ fontSize: 12.5, color: T.inkSoft, lineHeight: 1.5, margin: "4px 0 8px" }}>{kata.blurb}</div>
@@ -4926,48 +5113,22 @@ ${QUALITY_RULES}`, cfg));
             <CodeEditor value={labCode} onChange={setLabCode} onRun={lab ? () => runLab(false) : null} rows={16} />
             <span style={S.mono(8.5)}>syntax-highlighted Python · TAB completes/indents · SHIFT+TAB dedents · ENTER auto-indents · {navigator.platform && navigator.platform.includes("Mac") ? "⌘" : "CTRL"}+ENTER runs</span>
             <div style={{ display: "flex", gap: 8, marginTop: 8, flexWrap: "wrap" }}>
-              {(lab || kata.family === "swe") && <button onClick={() => runLab(false)} disabled={busy === "lab"} style={{ ...S.btn(T.ink), flex: 1, minWidth: 90 }}>{busy === "lab" ? "Running…" : "▶ Run"}</button>}
+              {(lab || kata.family === "swe") && <button onClick={() => runLab(false)} disabled={busy === "lab"} style={{ ...S.btn(S.inkBtn), flex: 1, minWidth: 90 }}>{busy === "lab" ? "Running…" : "▶ Run"}</button>}
               {(LABS[kata.id]?.test || enrichSWEKata(kata).test) && <button onClick={() => runLab(true)} disabled={busy === "lab"} style={{ ...S.btn(kataValidated[kata.id] ? T.reward : T.card, kataValidated[kata.id] ? "#fff" : T.reward), border: `1px solid ${T.reward}`, flex: 1, minWidth: 110 }}>{busy === "lab" ? "Running…" : kataValidated[kata.id] ? "✓ Tests passed" : "✓ Run tests"}</button>}
               <button onClick={doReview} disabled={busy === "review"} style={{ ...S.btn(T.explore), flex: 1, minWidth: 120 }}>{busy === "review" ? "Reviewing…" : "🔍 AI review"}</button>
+              <button onClick={() => addDojoDexEntry(review ? "review" : "snapshot")} disabled={!labCode.trim()} style={{ ...S.btn(T.gold), flex: 1, minWidth: 110 }}>＋ Dojo Dex</button>
             </div>
             {labOut && <pre style={{ ...S.pre, marginTop: 8, maxHeight: 220, overflowY: "auto", background: "#0B0F1E" }}>{labOut}</pre>}
-            {lab && (
-              <div style={{ display: "flex", gap: 6, marginTop: 8, alignItems: "center" }}>
-                <span style={{ ...S.mono(12, T.reward) }}>&gt;&gt;&gt;</span>
-                <input value={repl} onChange={(e) => setRepl(e.target.value)} onKeyDown={async (e) => {
-                  e.stopPropagation();
-                  if (e.key === "Tab") {
-                    e.preventDefault();
-                    const el = e.currentTarget;
-                    const completed = completeStem(repl, el.selectionStart || repl.length, el.selectionEnd || repl.length, labCode.match(/[A-Za-z_][A-Za-z0-9_]{2,}/g) || []);
-                    if (completed) { setRepl(completed.value); requestAnimationFrame(() => { el.selectionStart = el.selectionEnd = completed.pos; }); showToast(`REPL completed: ${completed.label}`); }
-                    return;
-                  }
-                  if (e.key !== "Enter" || !repl.trim() || busy === "lab") return;
-                  e.preventDefault();
-                  const line = repl; setRepl(""); setBusy("lab");
-                  setLabOut((o) => (o ? o + "\n" : "") + ">>> " + line);
-                  try {
-                    const py = await getPyodide();
-                    let out = "";
-                    py.setStdout({ batched: (s) => { out += s + "\n"; } });
-                    py.setStderr({ batched: (s) => { out += s + "\n"; } });
-                    let val;
-                    try { val = await py.runPythonAsync(line); } catch (err) { out += String(err.message || err).split("\n").slice(-3).join("\n"); }
-                    if (val !== undefined && val !== null) out += String(val);
-                    setLabOut((o) => o + (out ? "\n" + out.trimEnd() : ""));
-                  } catch (err) { setLabOut((o) => o + "\n⚠️ " + (err.message || err)); }
-                  setBusy("");
-                }} onKeyUp={(e) => e.stopPropagation()} onClick={(e) => e.stopPropagation()} placeholder="REPL — shares the session with ▶ Run (try: out.shape)" spellCheck={false} style={{ ...S.input, flex: 1, padding: "8px 10px", fontSize: 12 }} />
-              </div>
-            )}
-            {review && <div style={{ marginTop: 10, fontSize: 13, lineHeight: 1.6, whiteSpace: "pre-wrap", padding: "10px 12px", background: T.exploreSoft, borderRadius: 10 }}>{review}</div>}
+            {review && <div style={{ marginTop: 10, fontSize: 13, lineHeight: 1.6, whiteSpace: "pre-wrap", padding: "10px 12px", background: T.exploreSoft, borderRadius: 10 }}>
+              {review}
+              <div style={{ marginTop: 8 }}><button onClick={() => addDojoDexEntry("review")} style={{ ...S.chip(false), fontSize: 11 }}>＋ save review to Dojo Dex</button></div>
+            </div>}
           </div>
 
           {/* TODO lore / hints / solution / completion controls */}
           <div style={{ display: "flex", gap: 8, marginTop: 10, flexWrap: "wrap" }}>
-            {todoSteps.length > 0 && <button onClick={() => setKPhase(showHints ? "work" : "hints")} style={{ ...S.btn(showHints ? T.ink : T.card, showHints ? "#fff" : T.inkSoft), border: `1px solid ${T.line}`, flex: 1 }}>🧭 TODO lore & hints ({Object.keys(save.kataHints || {}).filter((h) => h.startsWith(kata.id + ":")).length}/{todoSteps.length})</button>}
-            <button onClick={() => setKPhase(showSol ? "work" : "sol")} style={{ ...S.btn(showSol ? T.ink : T.card, showSol ? "#fff" : T.inkSoft), border: `1px solid ${T.line}`, flex: 1 }}>{showSol ? "Hide solution" : "📖 Reveal final solution"}</button>
+            {todoSteps.length > 0 && <button onClick={() => setKPhase(showHints ? "work" : "hints")} style={{ ...S.btn(showHints ? S.inkBtn : T.card, showHints ? "#fff" : T.inkSoft), border: `1px solid ${T.line}`, flex: 1 }}>🧭 TODO lore & hints ({Object.keys(save.kataHints || {}).filter((h) => h.startsWith(kata.id + ":")).length}/{todoSteps.length})</button>}
+            <button onClick={() => setKPhase(showSol ? "work" : "sol")} style={{ ...S.btn(showSol ? S.inkBtn : T.card, showSol ? "#fff" : T.inkSoft), border: `1px solid ${T.line}`, flex: 1 }}>{showSol ? "Hide solution" : "📖 Reveal final solution"}</button>
             {!done && <button onClick={markKataComplete} style={{ ...S.btn(kataValidated[kata.id] ? T.gold : T.card, kataValidated[kata.id] ? "#1B2440" : T.inkSoft), border: `1px solid ${kataValidated[kata.id] ? T.gold : T.line}`, flex: 1 }}>🏁 Mark complete {kataValidated[kata.id] ? "(+60 XP)" : "(locked)"}</button>}
           </div>
 
@@ -5018,37 +5179,43 @@ ${QUALITY_RULES}`, cfg));
     const kindColor = battle.kind === "critical" ? T.action : battle.kind === "side" ? T.explore : T.gold;
     const side = battle.kind === "side" ? battle.side : null;
     return (
-      <div style={{ ...S.app, background: T.night }}><style>{CSS}</style><Toast />
-        <div style={{ maxWidth: 620, margin: "0 auto", padding: "16px 14px 60px" }}>
+      <div style={S.app}>{chrome}
+        <div style={{ maxWidth: 780, margin: "0 auto", padding: "16px clamp(14px, 3vw, 28px) 60px" }}>
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 4 }}>
-            <button onClick={() => { setBattle(null); setScreen("region"); }} style={{ background: "none", border: "1px solid #46548F", color: "#9FA8CC", borderRadius: 8, padding: "5px 12px", fontSize: 12, cursor: "pointer", fontFamily: "inherit", fontWeight: 700 }}>← Retreat & review</button>
-            <span style={{ ...S.mono(10, "#9FA8CC") }}>{kindLabel} · {Math.min(battle.qIdx + 1, bQuestions.length)}/{bQuestions.length} Q</span>
+            <button onClick={() => { setBattle(null); setScreen("region"); }} style={{ background: "rgba(148,163,214,0.10)", border: `1px solid ${T.line}`, color: T.inkSoft, borderRadius: 10, backdropFilter: "blur(8px)", padding: "5px 12px", fontSize: 12, cursor: "pointer", fontFamily: "inherit", fontWeight: 700 }}>← Retreat & review</button>
+            <span style={{ ...S.mono(10, T.inkSoft) }}>{kindLabel} · {Math.min(battle.qIdx + 1, bQuestions.length)}/{bQuestions.length} Q</span>
           </div>
-          <div style={{ background: "linear-gradient(180deg,#2E3A66 0%,#3D4E85 100%)", borderRadius: 16, padding: "18px 16px 14px", border: "1px solid #46548F", marginTop: 6 }}>
-            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start" }}>
-              <div style={{ background: "rgba(255,255,255,0.95)", borderRadius: 10, padding: "8px 12px", minWidth: 165 }}>
-                <div style={{ fontWeight: 800, fontSize: 13.5 }}>{battle.kind === "gym" ? "👑 " : ""}{enemyName}</div>
-                <div style={{ height: 7, background: T.line, borderRadius: 4, marginTop: 5 }}>
-                  <div style={{ height: "100%", width: `${enemyPct}%`, background: enemyPct > 40 ? T.reward : T.penalty, borderRadius: 4, transition: "width .5s" }} />
-                </div>
-                <span style={S.mono(9, T.inkSoft)}>HP {battle.enemyHp}/{battle.enemyMax}</span>
-              </div>
-              <div style={{ fontSize: 56, animation: battle.phase === "feedback" && !battle.wrong ? "hit .4s" : "bob 2.4s ease-in-out infinite" }}>{enemy.sprite}</div>
-            </div>
-            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-end", marginTop: 14 }}>
-              <div style={{ fontSize: 44, animation: battle.wrong && battle.phase === "feedback" ? "hit .4s" : "none" }}>🧢</div>
-              <div style={{ background: "rgba(255,255,255,0.95)", borderRadius: 10, padding: "8px 12px", minWidth: 165 }}>
-                <div style={{ fontWeight: 800, fontSize: 13.5 }}>YOU · LV.{level}</div>
-                <div style={{ height: 7, background: T.line, borderRadius: 4, marginTop: 5 }}>
-                  <div style={{ height: "100%", width: `${(save.hp / maxHp) * 100}%`, background: save.hp / maxHp > 0.4 ? T.reward : T.penalty, borderRadius: 4, transition: "width .5s" }} />
-                </div>
-                <span style={S.mono(9, T.inkSoft)}>HP {save.hp}/{maxHp} · STREAK ×{battle.streak}</span>
-              </div>
-            </div>
+          <div style={{ position: "relative", overflow: "hidden", background: "radial-gradient(120% 130% at 50% -20%, #2A3468 0%, #1B2450 42%, #101736 78%, #0B102A 100%)", borderRadius: 20, padding: "12px 14px 10px", border: "1px solid rgba(148,163,214,0.28)", marginTop: 8, boxShadow: "0 18px 48px rgba(3,6,18,0.5), inset 0 1px 0 rgba(255,255,255,0.08)" }}>
+            <div aria-hidden style={{ position: "absolute", inset: "-30%", pointerEvents: "none", background: `radial-gradient(36% 30% at 26% 22%, ${withAlpha(String(kindColor)[0] === "#" ? kindColor : "#8D9BFF", 0.22)}, transparent 70%), radial-gradient(30% 26% at 76% 78%, rgba(62,214,196,0.10), transparent 70%)`, animation: "auroraDrift 18s ease-in-out infinite alternate" }} />
+            {(() => {
+              const plate = { position: "relative", background: "rgba(9,13,30,0.72)", border: "1px solid rgba(148,163,214,0.3)", backdropFilter: "blur(10px)", borderRadius: 12, padding: "6px 11px", minWidth: 150, color: "#EEF2FF" };
+              const track = { height: 7, background: "rgba(255,255,255,0.10)", borderRadius: 4, marginTop: 6, overflow: "hidden" };
+              const fill = (pct, good) => ({ height: "100%", width: `${pct}%`, borderRadius: 4, background: good ? "linear-gradient(90deg,#3DDC97,#7FF0C0)" : "linear-gradient(90deg,#FF7A76,#FFA69E)", boxShadow: `0 0 10px ${good ? "rgba(61,220,151,0.6)" : "rgba(255,122,118,0.6)"}`, transition: "width .5s" });
+              return (
+                <>
+                  <div style={{ position: "relative", display: "flex", justifyContent: "space-between", alignItems: "flex-start" }}>
+                    <div style={plate}>
+                      <div style={{ fontWeight: 800, fontSize: 12.5 }}>{battle.kind === "gym" ? "👑 " : ""}{enemyName}</div>
+                      <div style={track}><div style={fill(enemyPct, enemyPct > 40)} /></div>
+                      <span style={S.mono(9, "#A5B1D6")}>HP {battle.enemyHp}/{battle.enemyMax}</span>
+                    </div>
+                    <div style={{ fontSize: 40, filter: "drop-shadow(0 8px 22px rgba(141,155,255,0.4))", animation: battle.phase === "feedback" && !battle.wrong ? "hit .4s" : "bob 2.4s ease-in-out infinite" }}>{enemy.sprite}</div>
+                  </div>
+                  <div style={{ position: "relative", display: "flex", justifyContent: "space-between", alignItems: "flex-end", marginTop: 8 }}>
+                    <div style={{ fontSize: 32, filter: "drop-shadow(0 6px 16px rgba(62,214,196,0.35))", animation: battle.wrong && battle.phase === "feedback" ? "hit .4s" : "none" }}>🧢</div>
+                    <div style={plate}>
+                      <div style={{ fontWeight: 800, fontSize: 12.5 }}>YOU · LV.{level}</div>
+                      <div style={track}><div style={fill((save.hp / maxHp) * 100, save.hp / maxHp > 0.4)} /></div>
+                      <span style={S.mono(9, "#A5B1D6")}>HP {save.hp}/{maxHp} · STREAK ×{battle.streak}</span>
+                    </div>
+                  </div>
+                </>
+              );
+            })()}
           </div>
 
           {battle.phase === "briefing" && side && (
-            <div style={{ background: T.card, borderRadius: 14, padding: 16, marginTop: 12, animation: "slideUp .3s ease" }}>
+            <div style={{ ...S.card, marginTop: 12, animation: "slideUp .3s ease" }}>
               <span style={S.mono(10, kindColor)}>MISSION BRIEFING — RETENTION DUEL</span>
               <p style={{ fontSize: 14, lineHeight: 1.6, margin: "8px 0 10px" }}>{side.desc}</p>
               <span style={{ ...S.mono(10, level >= (side.recLevel || 1) ? T.reward : T.penalty), background: level >= (side.recLevel || 1) ? T.rewardSoft : T.penaltySoft, padding: "5px 10px", borderRadius: 999 }}>
@@ -5076,40 +5243,37 @@ ${QUALITY_RULES}`, cfg));
             </div>
           )}
 
-          {battle.phase === "lore" && (
-            <div style={{ background: T.card, borderRadius: 14, padding: 16, marginTop: 12, animation: "slideUp .3s ease" }}>
-              <span style={S.mono(10, kindColor)}>{battle.kind === "critical" ? "LORE — READ TO ARM YOURSELF" : "GYM RECAP — EVERYTHING THIS REGION TAUGHT"}</span>
-              {battle.kind === "critical" ? (
+          {battle.phase === "question" && battle.kind !== "side" && (
+            <div style={{ ...S.card, marginTop: 12, animation: "slideUp .3s ease" }}>
+              <button onClick={() => setBattle({ ...battle, showLore: !battle.showLore })} style={{ width: "100%", textAlign: "left", background: "none", border: "none", cursor: "pointer", padding: 0, fontFamily: "inherit", display: "flex", justifyContent: "space-between", alignItems: "center", gap: 8 }}>
+                <span style={S.mono(10, kindColor)}>{battle.showLore ? "⌄" : "›"} {battle.kind === "critical" ? "LORE — READ TO ARM YOURSELF" : "GYM RECAP — EVERYTHING THIS REGION TAUGHT"}</span>
+                <span style={S.mono(9, T.inkSoft)}>{battle.showLore ? "collapse" : "expand"}</span>
+              </button>
+              {battle.showLore && (battle.kind === "critical" ? (
                 <>
-                  <p style={{ fontSize: 14, lineHeight: 1.65, margin: "8px 0 0" }}>{battle.concept.lore}</p>
-                  <div style={{ marginTop: 10, padding: "10px 12px", background: T.paper, borderRadius: 10 }}>
-                    <span style={S.mono(9.5, T.explore)}>TEACH LESSON LOOP</span>
-                    <p style={{ fontSize: 12.5, color: T.inkSoft, lineHeight: 1.55, margin: "5px 0 0" }}><b>One win:</b> use {battle.concept.name} correctly in an applied scenario. <b>Storage strength:</b> answer from memory first; open notes only after you commit. A win adds this concept to your glossary and learning records.</p>
-                  </div>
+                  <RichText text={battle.concept.lore} style={{ fontSize: 14, lineHeight: 1.65, marginTop: 8 }} />
                   {deepLore[battle.concept.id]
-                    ? <p style={{ fontSize: 13.5, lineHeight: 1.65, margin: "10px 0 0", padding: "10px 12px", background: T.exploreSoft, borderRadius: 10 }}>🔍 {deepLore[battle.concept.id]}</p>
+                    ? <div style={{ fontSize: 13.5, lineHeight: 1.65, margin: "10px 0 0", padding: "10px 12px", background: T.exploreSoft, borderRadius: 10 }}><RichText text={`🔍 ${deepLore[battle.concept.id]}`} /></div>
                     : <button onClick={() => deepenLore(battle.concept)} disabled={busy === "lore"} style={{ ...S.btn(T.card, T.explore), border: `1.5px solid ${T.explore}`, width: "100%", marginTop: 10, fontSize: 13 }}>{busy === "lore" ? "Asking the sage…" : "🔍 Deepen this lore (intuition + worked example)"}</button>}
                 </>
               ) : (
                 <>
-                  <p style={{ fontSize: 13, color: T.inkSoft, lineHeight: 1.55, margin: "8px 0 0" }}>{battle.log} The gym tests every concept below — review before engaging. You can also retreat and replay any encounter.</p>
-                  <div style={{ maxHeight: 300, overflowY: "auto", marginTop: 10, paddingRight: 4 }}>
+                  <p style={{ fontSize: 13, color: T.inkSoft, lineHeight: 1.55, margin: "8px 0 0" }}>{battle.log} The gym tests every concept below — review before answering. You can retreat and replay any encounter.</p>
+                  <div style={{ maxHeight: 260, overflowY: "auto", marginTop: 10, paddingRight: 4 }}>
                     {region.concepts.map((c) => (
                       <div key={c.id} style={{ marginBottom: 10, padding: "10px 12px", background: T.paper, borderRadius: 10 }}>
                         <div style={{ fontWeight: 800, fontSize: 13.5 }}>{c.sprite} {c.name}</div>
-                        <p style={{ fontSize: 12.5, lineHeight: 1.6, margin: "4px 0 0" }}>{c.lore}</p>
-                        {deepLore[c.id] && <p style={{ fontSize: 12.5, lineHeight: 1.6, margin: "6px 0 0", color: T.explore }}>🔍 {deepLore[c.id]}</p>}
+                        <RichText text={c.lore} style={{ fontSize: 12.5, lineHeight: 1.6, marginTop: 4 }} />
                       </div>
                     ))}
                   </div>
                 </>
-              )}
-              <button onClick={continueBattle} style={{ ...S.btn(T.action), width: "100%", marginTop: 14 }}>⚔️ Engage</button>
+              ))}
             </div>
           )}
 
           {battle.phase === "question" && q && (
-            <div style={{ background: T.card, borderRadius: 14, padding: 16, marginTop: 12, animation: "slideUp .3s ease" }}>
+            <div style={{ ...S.card, marginTop: 12, animation: "slideUp .3s ease" }}>
               <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: 6 }}>
                 <span style={S.mono(10, kindColor)}>{battle.kind === "side" ? "APPLIED SCENARIO" : "CHOOSE YOUR MOVE"} · wrong = −{battle.kind === "gym" ? 22 : 16} HP</span>
                 <span style={{ display: "flex", gap: 6 }}>
@@ -5134,7 +5298,7 @@ ${QUALITY_RULES}`, cfg));
                 </div>
               )}
               {side && side.code && battle.showCode && <pre style={{ ...S.pre, marginTop: 8, maxHeight: 180, overflowY: "auto" }}>{side.code}</pre>}
-              <div style={{ fontWeight: 700, fontSize: 15, lineHeight: 1.55, margin: "8px 0 12px" }}>{q.q}</div>
+              <RichText text={q.q} style={{ fontWeight: 700, fontSize: 15, lineHeight: 1.55, margin: "8px 0 12px" }} />
               {battle.ord.map((optIdx, i) => (
                 <button key={i} onClick={() => answerBattle(i)} style={S.qbtn}>
                   <span style={S.mono(10, T.explore)}>{String.fromCharCode(65 + i)}</span>&nbsp;&nbsp;{q.options[optIdx]}
@@ -5144,12 +5308,12 @@ ${QUALITY_RULES}`, cfg));
           )}
 
           {["feedback", "victory", "defeat"].includes(battle.phase) && (
-            <div style={{ background: battle.phase === "victory" ? T.rewardSoft : battle.wrong || battle.phase === "defeat" ? T.penaltySoft : T.rewardSoft, borderRadius: 14, padding: 16, marginTop: 12, animation: "slideUp .3s ease" }}>
+            <div style={{ ...S.card, background: battle.phase === "victory" ? T.rewardSoft : battle.wrong || battle.phase === "defeat" ? T.penaltySoft : T.rewardSoft, border: `1px solid ${battle.phase === "victory" ? withAlpha(darkMode ? "#3DDC97" : "#149E6E", 0.4) : battle.wrong || battle.phase === "defeat" ? withAlpha("#FF7A76", 0.4) : withAlpha(darkMode ? "#3DDC97" : "#149E6E", 0.4)}`, marginTop: 12, animation: "slideUp .3s ease" }}>
               <span style={S.mono(10, battle.phase === "victory" ? T.reward : battle.wrong || battle.phase === "defeat" ? T.penalty : T.reward)}>
                 {battle.phase === "victory" ? (battle.kind === "critical" ? "CONCEPT CAPTURED!" : battle.kind === "side" ? "KNOWLEDGE REINFORCED!" : "BADGE EARNED!") : battle.phase === "defeat" ? "YOU BLACKED OUT" : battle.wrong ? "COUNTERATTACK!" : "DIRECT HIT!"}
               </span>
-              <p style={{ fontSize: 13.5, lineHeight: 1.6, margin: "8px 0 0" }}>{battle.log}</p>
-              <button onClick={continueBattle} style={{ ...S.btn(battle.phase === "victory" ? T.reward : T.ink), width: "100%", marginTop: 12 }}>
+              <RichText text={battle.log} style={{ fontSize: 13.5, lineHeight: 1.6, marginTop: 8 }} />
+              <button onClick={continueBattle} style={{ ...S.btn(battle.phase === "victory" ? T.reward : S.inkBtn), width: "100%", marginTop: 12 }}>
                 {battle.phase === "victory" ? "Return to the board →" : battle.phase === "defeat" ? "Wake up at entrance" : battle.wrong ? "Face the question again (reshuffled)" : "Next question →"}
               </button>
             </div>
@@ -5165,8 +5329,8 @@ ${QUALITY_RULES}`, cfg));
     const gymUnlocked = criticalsDone === region.concepts.length;
     const at = board.nodes.find((n) => n.id === atNode) || board.nodes[0];
     return (
-      <div style={S.app}><style>{CSS}</style><Toast /><HUD back={() => setScreen("regionlist")} />
-        <div style={{ maxWidth: 620, margin: "0 auto", padding: "12px 14px 50px" }}>
+      <div style={S.app}>{chrome}<HUD back={() => setScreen("regionlist")} />
+        <div style={{ ...S.wrap, paddingTop: 14 }}>
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline" }}>
             <div style={{ fontWeight: 800, fontSize: 17 }}>{region.emoji} {region.name}</div>
             <span style={S.mono(10, gymUnlocked ? T.reward : T.inkSoft)}>{criticalsDone}/{region.concepts.length} criticals{gymUnlocked ? " · GYM OPEN" : ""}</span>
@@ -5178,8 +5342,8 @@ ${QUALITY_RULES}`, cfg));
           </div>
           <TeachingPanel target={world} region={region} compact />
           <SenzuPanel compact />
-          <div style={{ position: "relative", width: "100%", aspectRatio: "5/4", background: "linear-gradient(160deg,#A8D8A0 0%,#7BC47F 45%,#69B583 100%)", borderRadius: 16, border: `3px solid ${T.ink}`, overflow: "hidden", boxShadow: "0 8px 28px rgba(27,36,64,0.2)", marginTop: 10 }}>
-            <div style={{ position: "absolute", inset: 0, opacity: 0.35, fontSize: 18, pointerEvents: "none" }}>
+          <div style={{ position: "relative", width: "100%", maxWidth: 900, margin: "12px auto 0", aspectRatio: "16/10", background: "radial-gradient(130% 110% at 50% -14%, #9FDCAE 0%, #5CBB88 40%, #35997A 74%, #237664 100%)", borderRadius: 26, border: "1px solid rgba(16,64,52,0.35)", overflow: "hidden", boxShadow: "0 24px 60px rgba(8,34,28,0.35), inset 0 2px 0 rgba(255,255,255,0.3), inset 0 -30px 60px rgba(12,50,42,0.35)" }}>
+            <div style={{ position: "absolute", inset: 0, opacity: 0.4, fontSize: 26, pointerEvents: "none" }}>
               <span style={{ position: "absolute", left: "4%", top: "8%" }}>🌲</span>
               <span style={{ position: "absolute", left: "88%", top: "12%" }}>🌲</span>
               <span style={{ position: "absolute", left: "14%", top: "78%" }}>🌳</span>
@@ -5229,9 +5393,9 @@ ${QUALITY_RULES}`, cfg));
             </div>
           </Collapsible>}
 
-          <div style={{ marginTop: 12 }}>
+          <div style={{ ...S.grid(340), marginTop: 14 }}>
             {region.concepts.map((c) => (
-              <div key={c.id} onClick={() => tapNode("c:" + c.id)} style={{ display: "flex", alignItems: "center", gap: 10, padding: "8px 10px", borderRadius: 10, background: capturedSet.has(c.id) ? T.rewardSoft : T.card, border: `1px solid ${T.line}`, marginBottom: 6, cursor: "pointer" }}>
+              <div key={c.id} onClick={() => tapNode("c:" + c.id)} style={{ display: "flex", alignItems: "center", gap: 10, padding: "11px 13px", borderRadius: 14, background: capturedSet.has(c.id) ? T.rewardSoft : T.card, border: `1px solid ${capturedSet.has(c.id) ? withAlpha(darkMode ? "#3DDC97" : "#149E6E", 0.35) : T.line}`, cursor: "pointer", backdropFilter: "blur(10px)" }}>
                 <span style={{ fontSize: 18 }}>{c.sprite}</span>
                 <span style={{ fontWeight: 700, fontSize: 13.5, flex: 1 }}>{c.name}</span>
                 <span style={S.mono(9, capturedSet.has(c.id) ? T.reward : T.action)}>{capturedSet.has(c.id) ? "CAPTURED · re-read lore" : `CRITICAL · ${c.questions.length}Q`}</span>
@@ -5240,7 +5404,7 @@ ${QUALITY_RULES}`, cfg));
             {(region.sides || []).map((s) => {
               const met = (s.prereqs || []).every((p) => capturedSet.has(p));
               return (
-                <div key={s.id} onClick={() => tapNode("s:" + s.id)} style={{ display: "flex", alignItems: "center", gap: 10, padding: "8px 10px", borderRadius: 10, background: sidesSet.has(s.id) ? T.exploreSoft : T.card, border: `1px dashed ${T.explore}`, marginBottom: 6, cursor: "pointer" }}>
+                <div key={s.id} onClick={() => tapNode("s:" + s.id)} style={{ display: "flex", alignItems: "center", gap: 10, padding: "11px 13px", borderRadius: 14, background: sidesSet.has(s.id) ? T.exploreSoft : T.card, border: `1px dashed ${withAlpha(darkMode ? "#8D9BFF" : "#5B5BD6", 0.55)}`, cursor: "pointer", backdropFilter: "blur(10px)" }}>
                   <span style={{ fontSize: 18 }}>{s.sprite}</span>
                   <div style={{ flex: 1 }}>
                     <span style={{ fontWeight: 700, fontSize: 13.5 }}>{s.name}</span>
@@ -5256,7 +5420,7 @@ ${QUALITY_RULES}`, cfg));
         </div>
         {dialog && (
           <div onClick={() => setDialog(null)} style={{ position: "fixed", left: 0, right: 0, bottom: 0, zIndex: 40, padding: 12 }}>
-            <div style={{ maxWidth: 620, margin: "0 auto", background: T.card, border: `3px solid ${T.ink}`, borderRadius: 14, padding: "14px 16px", animation: "slideUp .25s ease", boxShadow: "0 -4px 24px rgba(27,36,64,0.25)" }}>
+            <div style={{ maxWidth: 720, margin: "0 auto", background: darkMode ? "rgba(19,26,54,0.94)" : "rgba(255,255,255,0.96)", border: `1px solid ${withAlpha(darkMode ? "#8D9BFF" : "#5B5BD6", 0.4)}`, borderRadius: 18, padding: "16px 18px", animation: "slideUp .25s ease", backdropFilter: "blur(16px)", boxShadow: "0 -8px 40px rgba(2,4,12,0.45)" }}>
               <span style={S.mono(10.5, T.explore)}>{dialog.name.toUpperCase()}</span>
               <p style={{ fontSize: 14, lineHeight: 1.6, margin: "6px 0 8px" }}>{dialog.text}</p>
               <span style={S.mono(9.5)}>tap to close ▾</span>
@@ -5271,12 +5435,45 @@ ${QUALITY_RULES}`, cfg));
 }
 
 const CSS = `
-@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;600;700;800&family=JetBrains+Mono:wght@400;600;800&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Sora:wght@400;600;700;800&family=Space+Grotesk:wght@400;600;700;800&family=JetBrains+Mono:wght@400;600;800&display=swap');
 @keyframes bob { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-4px); } }
 @keyframes tokenBob { 0%,100% { transform: translate(-50%,-130%) translateY(0); } 50% { transform: translate(-50%,-130%) translateY(-5px); } }
 @keyframes hit { 0%,100% { transform: translateX(0); filter: none; } 30% { transform: translateX(-7px); filter: brightness(1.6); } 60% { transform: translateX(7px); } }
 @keyframes slideUp { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: translateY(0); } }
 @keyframes pulse { 0%,100% { transform: translate(-50%,-50%) scale(1); } 50% { transform: translate(-50%,-50%) scale(1.08); } }
-button:focus-visible { outline: 2px solid #5B4FD6; outline-offset: 2px; }
+@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+@keyframes fadeScale { from { opacity: 0; transform: scale(.975) translateY(8px); } to { opacity: 1; transform: scale(1) translateY(0); } }
+@keyframes floatY { 0%,100% { transform: translateY(0) rotate(-2deg); } 50% { transform: translateY(-14px) rotate(2deg); } }
+@keyframes auroraDrift { 0% { transform: translate3d(-2.5%, -1.5%, 0) scale(1); } 100% { transform: translate3d(2.5%, 2%, 0) scale(1.06); } }
+@keyframes glowPulse { 0%,100% { filter: brightness(1); } 50% { filter: brightness(1.12); } }
+@keyframes starTwinkle { 0%,100% { opacity: .85; } 50% { opacity: .4; } }
+html { scrollbar-color: rgba(140,158,220,.35) transparent; }
+body { margin: 0; }
+::selection { background: rgba(141,155,255,.35); }
+::-webkit-scrollbar { width: 10px; height: 10px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: rgba(140,158,220,.28); border-radius: 8px; border: 2px solid transparent; background-clip: content-box; }
+::-webkit-scrollbar-thumb:hover { background: rgba(140,158,220,.45); border: 2px solid transparent; background-clip: content-box; }
+button { transition: filter .18s ease, box-shadow .25s ease, background .2s ease, border-color .2s ease, color .2s ease, opacity .2s ease; }
+button:hover:not(:disabled) { filter: brightness(1.09) saturate(1.05); }
+button:active:not(:disabled) { filter: brightness(.96); }
+button:disabled { opacity: .6; cursor: default; }
+a { transition: color .2s ease, filter .2s ease; }
+a:hover { filter: brightness(1.15); }
+input, textarea { transition: border-color .2s ease, box-shadow .25s ease; }
+input:focus, textarea:focus { border-color: rgba(141,155,255,.65) !important; box-shadow: 0 0 0 3px rgba(141,155,255,.18); }
+.editorBlinkCursor { animation: editorCaretBlink 1s steps(1,end) infinite; }
+@keyframes editorCaretBlink { 0%,49% { opacity: 1; } 50%,100% { opacity: 0; } }
+.worldCard { transition: transform .22s cubic-bezier(.3,.7,.3,1), box-shadow .25s ease, border-color .25s ease; }
+.rt ul, .rt ol { margin: .55em 0 0; }
+@media (max-width: 640px) {
+  .hudPet { display: none !important; }
+  .hideSm { display: none !important; }
+}
+@media (max-width: 500px) {
+  .dexLabel { display: none; }
+}
+.worldCard:hover { transform: translateY(-3px); box-shadow: 0 22px 55px rgba(2,4,12,.4); border-color: rgba(141,155,255,.45); }
+button:focus-visible, [tabindex]:focus-visible { outline: 2px solid #8D9BFF; outline-offset: 2px; }
 @media (prefers-reduced-motion: reduce) { * { animation: none !important; transition: none !important; } }
 `;

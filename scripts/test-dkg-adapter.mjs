@@ -15,12 +15,14 @@ ok(live.length > 0, `produced ${live.length} live worlds from non-empty umbrella
 for (const w of live) {
   ok(w.title && w.id && Array.isArray(w.regions), `world ${w.title} has shape`);
   ok(w.regions.length > 0, `world ${w.title} has ${w.regions.length} regions`);
+  ok(w.regions.length <= 8, `world ${w.title} consolidated to ${w.regions.length} curriculum regions`);
   for (const r of w.regions) {
     ok(Array.isArray(r.concepts) && r.concepts.length > 0, `region ${w.title}/${r.name} has ${(r.concepts||[]).length} concepts`);
     for (const c of r.concepts) {
       ok(c.id && c.name && c.lore && Array.isArray(c.questions) && c.questions.length > 0, `concept ${c.name} fully formed`);
       for (const q of c.questions) {
         ok(Array.isArray(q.options) && q.options.length >= 2 && Number.isInteger(q.a) && q.a >= 0 && q.a < q.options.length, `question answer index valid in ${c.name}`);
+        ok(!/\bin the source\b|main learner-facing mechanism|edokai should preserve/i.test(q.q), `question is curriculum-facing in ${c.name}`);
       }
     }
     ok(r.gym && Array.isArray(r.gym.questions), `region ${r.name} has gym`);

@@ -315,17 +315,25 @@ function quizToQuestion(quiz) {
   };
 }
 
+const broadDistractors = [
+  "It is mostly a citation-management detail rather than a model behavior.",
+  "It only changes the UI label while leaving the technical mechanism untouched.",
+  "It is a deployment footnote unrelated to the learner's conceptual model.",
+  "It replaces the whole topic with a single paper-specific memory hook.",
+];
+const sourceCentricQuestion = (q) => /\bin the source\b|main learner-facing mechanism|edokai should preserve/i.test(String(q || ""));
+
 // Synthesize an honest recall question for a node using sibling summaries as distractors.
-function nodeRecallQuestion(node, siblingSummaries) {
+function nodeRecallQuestion(node, siblingSummaries, regionName = "this case board") {
   const label = nodeLabel(node);
   const correct = compactSentence(node.summary || node.description || node.lore || label);
   const distractors = siblingSummaries
     .filter((s) => s && s !== (node.summary || node.description || node.lore))
     .map((s) => compactSentence(s))
     .filter((s, i, arr) => s !== correct && arr.indexOf(s) === i);
-  const normalized = normalizeOptions([correct, ...distractors], 0, node.id || label);
+  const normalized = normalizeOptions([correct, ...distractors, ...broadDistractors], 0, node.id || label);
   return {
-    q: cleanRepeatedWords(`Which source-backed mechanism advances mastery of "${label}"?`),
+    q: cleanRepeatedWords(`In ${regionName}, what role does "${label}" play in the shared technical mechanism?`),
     options: normalized.options,
     a: normalized.a,
     why: compactSentence(node.summary || node.description || `Source-grounded summary for ${label}.`, `Source-grounded summary for ${label}`),
@@ -343,8 +351,8 @@ function nodeToConcept(node, regionSlug, siblingSummaries, assignedQuiz, usedNam
   }
   usedNames.add(label.toLowerCase());
   const questions = [];
-  if (assignedQuiz) questions.push(assignedQuiz);
-  questions.push(nodeRecallQuestion(node, siblingSummaries));
+  if (assignedQuiz && !sourceCentricQuestion(assignedQuiz.q)) questions.push(assignedQuiz);
+  questions.push(nodeRecallQuestion(node, siblingSummaries, regionName));
   const sourceNote = Array.isArray(node.source_ids) && node.source_ids.length
     ? ` Sources: ${node.source_ids.join(", ")}.`
     : "";
@@ -375,6 +383,77 @@ function duelToSide(duel, idx, regionSlug, conceptIds, fallbackQuestions) {
     desc: `Healing retention duel: answer these side questions to recover HP while reinforcing the prerequisite path. ${prompt}${desc ? `  —  ${desc}` : ""}${duel.answer ? `  →  ${duel.answer}` : ""}`,
     questions: fallbackQuestions.length ? fallbackQuestions.slice(0, 2) : [],
   };
+}
+
+function regionContextText(region, resolved) {
+  return [
+    region.label, region.name, region.title, region.summary, region.description,
+    ...(resolved || []).flatMap((n) => [n.label, n.name, n.title, n.summary, n.description, n.lore]),
+  ].filter(Boolean).join(" ");
+}
+
+function curriculumQuestion(title, concepts, seed = title) {
+  const summaries = (concepts || [])
+    .map((c) => compactSentence(c.lore || c.name))
+    .filter(Boolean);
+  const correct = summaries[0] || `It connects ${title} to a reusable mechanism learners can transfer across papers.`;
+  const options = normalizeOptions([correct, ...summaries.slice(1, 4), ...broadDistractors], 0, seed);
+  return {
+    q: cleanRepeatedWords(`Across ${title}, which idea best explains why these concepts belong on the same case board?`),
+    options: options.options,
+    a: options.a,
+    why: correct,
+  };
+}
+
+function consolidateCurriculumRegions(regions) {
+  if (!Array.isArray(regions) || regions.length <= 12) return regions;
+  const groups = new Map();
+  for (const r of regions) {
+    const key = r.arc || "Integrated Mechanisms";
+    if (!groups.has(key)) groups.set(key, []);
+    groups.get(key).push(r);
+  }
+  let entries = [...groups.entries()];
+  if (entries.length > 8) {
+    const keep = entries.slice(0, 7);
+    const overflow = entries.slice(7).flatMap(([, members]) => members);
+    const existing = keep.find(([arc]) => arc === "Integrated Mechanisms" || arc === "Uncharted Paths");
+    if (existing) existing[1].push(...overflow);
+    else keep.push(["Integrated Mechanisms", overflow]);
+    entries = keep;
+  }
+  return entries.map(([arc, members], idx) => {
+    const concepts = [];
+    const seen = new Set();
+    for (const r of members) {
+      for (const c of r.concepts || []) {
+        if (seen.has(c.id)) continue;
+        seen.add(c.id);
+        concepts.push(c);
+      }
+    }
+    const name = arc === "Uncharted Paths" ? "The Integration Crossroads" : arc;
+    const memberNames = members.map((r) => r.name).slice(0, 4).join(", ");
+    const questions = [curriculumQuestion(name, concepts, `gym-${name}`), ...concepts.flatMap((c) => c.questions || []).filter((q) => !sourceCentricQuestion(q.q)).slice(0, 3)];
+    return {
+      id: `dkg-arc-${slug(arc)}-${idx}`,
+      name,
+      emoji: members[0]?.emoji || "🧭",
+      arc: null,
+      intro: `A consolidated case board that folds ${members.length} source-specific fragments into one curriculum path: ${memberNames}${members.length > 4 ? ", and related sources" : ""}. Focus on the shared mechanism, not the paper title.`,
+      npc: { name: "Curriculum Cartographer", text: `This board compresses ${members.length} related DKG cases into one route. Compare the mechanisms, then use individual papers as evidence.` },
+      concepts: concepts.map((c) => ({ ...c, questions: (c.questions || []).filter((q) => !sourceCentricQuestion(q.q)).length ? (c.questions || []).filter((q) => !sourceCentricQuestion(q.q)) : [curriculumQuestion(c.name, [c], c.id)] })),
+      sides: members.flatMap((r) => r.sides || []).slice(0, 4),
+      gym: {
+        leader: "Curriculum Cartographer",
+        badge: `${name} Badge`,
+        sprite: "🧭",
+        taunt: "Explain the pattern across the cluster, not a single source title.",
+        questions,
+      },
+    };
+  }).sort((a, b) => regionRelevanceRank(a) - regionRelevanceRank(b));
 }
 
 function buildRegion(region, idx, nodesById, worldLabel) {
@@ -412,7 +491,7 @@ function buildRegion(region, idx, nodesById, worldLabel) {
     id: regionSlug,
     name,
     emoji: region.emoji || "🛰️",
-    arc: region.arc || (lore && lore.arc) || inferArc(plainName),
+    arc: region.arc || (lore && lore.arc) || inferArc(regionContextText(region, resolved)),
     intro: region.summary || region.description || `${plainName} — live DKG region synced into ${worldLabel}.`,
     npc: {
       name: "Graph Curator",
@@ -508,6 +587,8 @@ const DKG_ARC_RULES = [
   [/serving|deployment|throughput|latency/i, "The Way of Throughput"],
   [/memory|cache|benchmark|evaluation|efficiency/i, "The Craft of Memory"],
   [/retrieval|rag|graph|index|sensemaking/i, "The Craft of Retrieval"],
+  [/3d|structure.?from.?motion|slam|pose|camera|geometry|splat|visual|vision|image|video|perception|pixel/i, "The Way of Seeing"],
+  [/robot|tactile|embod|control|manipulat|sim/i, "The Embodied Forge"],
   [/token|loss|attention|emergence|sparse|depth|embedding/i, "The Deep Mechanics"],
 ];
 const inferArc = (name) => {
@@ -527,9 +608,9 @@ export function snapshotToEdokaiWorlds(payload) {
     const rawRegions = (Array.isArray(world.regions) ? world.regions : [])
       .slice()
       .sort((a, b) => regionRelevanceRank(a) - regionRelevanceRank(b));
-    const regions = rawRegions
+    const regions = consolidateCurriculumRegions(rawRegions
       .map((region, idx) => buildRegion(region, idx, nodesById, friendlyName(world.label || worldId, worldId)))
-      .filter(Boolean);
+      .filter(Boolean));
     if (!regions.length) return []; // empty umbrellas (e.g. seeded but unrouted) add nothing.
 
     const sourceIds = [...new Set(rawRegions.flatMap((r) => (Array.isArray(r.source_ids) ? r.source_ids : [])))];
