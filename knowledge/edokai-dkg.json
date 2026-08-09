@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "updated_at": "2026-08-08T14:01:44Z",
+  "updated_at": "2026-08-09T14:03:15Z",
   "sources": {
     "hf-space-trl-distillation-trainer-2026": {
       "id": "hf-space-trl-distillation-trainer-2026",
@@ -4396,6 +4396,38 @@
       "provenance": [
         "Discovered from https://www.emergentmind.com/ bootstrapped trending papers on 2026-08-08.",
         "EmergentMind homepage abstract metadata: On-policy (self) distillation (OPSD) is increasingly adopted for language-model post-training. It strengthens the teacher with privileged information but can induce a privilege illusion: the student learns privilege-dependent behavior it cannot reproduce from its inference-time context, yet behaves as if the training-time privileged information remained available, ultimately degrading performance. In this paper, we identify information asymmetry between the privileged teacher and the student at inference as the root cause of this failure in OPSD. To resolve this asymmetry, we propose Dual-Anchored Policy Distillation (DAPD), a unifi"
+      ],
+      "confidence": 0.86
+    },
+    "emergentmind-2608-05004-delusioneval-measuring-delusion-linked-behaviors-in-ai-chatbots-2026": {
+      "id": "emergentmind-2608-05004-delusioneval-measuring-delusion-linked-behaviors-in-ai-chatbots-2026",
+      "url": "https://www.emergentmind.com/papers/2608.05004",
+      "arxiv_url": "https://arxiv.org/abs/2608.05004",
+      "title": "DelusionEval: Measuring Delusion-Linked Behaviors in AI Chatbots",
+      "source_type": "emergentmind-trending-paper",
+      "authors": [],
+      "published": "2026-08-05",
+      "discovered_at": "2026-08-09T14:03:15Z",
+      "last_read_at": "2026-08-09T14:03:15Z",
+      "provenance": [
+        "Discovered from https://www.emergentmind.com/ bootstrapped trending papers on 2026-08-09.",
+        "EmergentMind homepage abstract metadata: Mental health professionals have raised concerns about risks of psychological harm from interaction with large language models (LLMs), including \"delusional spirals\" in which concerning human and LLM behaviors reinforce each other over time. With growing public use of LLM-powered chatbots, there is an urgent need to build evaluations grounded in real-world episodes of psychological harm experienced by users. We developed DelusionEval, an evaluation protocol that tests a model's tendencies to exhibit behaviors linked to promoting user delusions. We prompt each model with 589 unique conversation histories from 18 participants, compris"
+      ],
+      "confidence": 0.86
+    },
+    "emergentmind-2608-06375-0-a-latent-predictive-world-action-model-for-2026": {
+      "id": "emergentmind-2608-06375-0-a-latent-predictive-world-action-model-for-2026",
+      "url": "https://www.emergentmind.com/papers/2608.06375",
+      "arxiv_url": "https://arxiv.org/abs/2608.06375",
+      "title": "$ω$-0: A Latent Predictive World Action Model for Concurrent Humanoid Loco-Manipulation",
+      "source_type": "emergentmind-trending-paper",
+      "authors": [],
+      "published": "2026-08-06",
+      "discovered_at": "2026-08-09T14:03:15Z",
+      "last_read_at": "2026-08-09T14:03:15Z",
+      "provenance": [
+        "Discovered from https://www.emergentmind.com/ bootstrapped trending papers on 2026-08-09.",
+        "EmergentMind homepage abstract metadata: Humanoid household tasks often require concurrent loco-manipulation, where the robot must move, adjust posture, maintain balance, and manipulate objects as a single coordinated behavior. Yet existing humanoid policies typically decompose locomotion and manipulation, while recent world-action models remain either arm-centric or video-centered. We present $ω$-0, a latent predictive whole-body world-action model for real-world humanoid concurrent loco-manipulation. Given a language instruction, current visual observation, and robot proprioceptive state, $ω$-0 directly predicts controller-compatible whole-body action latents for real-ro"
       ],
       "confidence": 0.86
     }
@@ -16878,6 +16910,90 @@
       "first_seen": "2026-08-08T14:01:44Z",
       "last_seen": "2026-08-08T14:01:44Z",
       "world_hint": "retrieval-augmented-generation"
+    },
+    "delusioneval-measuring-delusion-linked-behaviors-in-ai": {
+      "id": "delusioneval-measuring-delusion-linked-behaviors-in-ai",
+      "label": "DelusionEval",
+      "type": "method",
+      "summary": "Source-grounded method/approach from 'DelusionEval: Measuring Delusion-Linked Behaviors in AI Chatbots': Mental health professionals have raised concerns about risks of psychological harm from interaction with large language models (LLMs), including \"delusional spirals\" in which concerning human and LLM behaviors reinforce each other over time. With growing public use of LLM-powered chatbots, there is an urgent need to build evaluations grounded in real-world e...",
+      "aliases": [],
+      "source_ids": [
+        "emergentmind-2608-05004-delusioneval-measuring-delusion-linked-behaviors-in-ai-chatbots-2026"
+      ],
+      "confidence": 0.78,
+      "first_seen": "2026-08-09T14:03:15Z",
+      "last_seen": "2026-08-09T14:03:15Z",
+      "world_hint": "retrieval-augmented-generation"
+    },
+    "delusioneval-measuring-delusion-linked-behaviors-in-ai-chatbots": {
+      "id": "delusioneval-measuring-delusion-linked-behaviors-in-ai-chatbots",
+      "label": "DelusionEval problem setting",
+      "type": "concept",
+      "summary": "The learning or systems problem described by the source: Mental health professionals have raised concerns about risks of psychological harm from interaction with large language models (LLMs), including \"delusional spirals\" in which concerning human and LLM behaviors reinforce each other over time. With growing public use of LLM-powered chatbots, there is an urgent need to build evaluations grounded in real-world e...",
+      "aliases": [],
+      "source_ids": [
+        "emergentmind-2608-05004-delusioneval-measuring-delusion-linked-behaviors-in-ai-chatbots-2026"
+      ],
+      "confidence": 0.78,
+      "first_seen": "2026-08-09T14:03:15Z",
+      "last_seen": "2026-08-09T14:03:15Z",
+      "world_hint": "retrieval-augmented-generation"
+    },
+    "paper-2608-05004": {
+      "id": "paper-2608-05004",
+      "label": "DelusionEval: Measuring Delusion-Linked Behaviors in AI Chatbots",
+      "type": "paper",
+      "summary": "EmergentMind surfaced arXiv paper 2608.05004: Mental health professionals have raised concerns about risks of psychological harm from interaction with large language models (LLMs), including \"delusional spirals\" in which concerning human and LLM behaviors reinforce each other over time. With growing public use of LLM-powered chatbots, there is an urgent need to build evaluations grounded in real-world e...",
+      "aliases": [],
+      "source_ids": [
+        "emergentmind-2608-05004-delusioneval-measuring-delusion-linked-behaviors-in-ai-chatbots-2026"
+      ],
+      "confidence": 0.78,
+      "first_seen": "2026-08-09T14:03:15Z",
+      "last_seen": "2026-08-09T14:03:15Z",
+      "world_hint": "retrieval-augmented-generation"
+    },
+    "0-a-latent-predictive-world-action-model": {
+      "id": "0-a-latent-predictive-world-action-model",
+      "label": "$ω$-0",
+      "type": "method",
+      "summary": "Source-grounded method/approach from '$ω$-0: A Latent Predictive World Action Model for Concurrent Humanoid Loco-Manipulation': Humanoid household tasks often require concurrent loco-manipulation, where the robot must move, adjust posture, maintain balance, and manipulate objects as a single coordinated behavior. Yet existing humanoid policies typically decompose locomotion and manipulation, while recent world-action models remain either arm-centric or video-centered. We present $ω$-...",
+      "aliases": [],
+      "source_ids": [
+        "emergentmind-2608-06375-0-a-latent-predictive-world-action-model-for-2026"
+      ],
+      "confidence": 0.78,
+      "first_seen": "2026-08-09T14:03:15Z",
+      "last_seen": "2026-08-09T14:03:15Z",
+      "world_hint": "retrieval-augmented-generation"
+    },
+    "0-a-latent-predictive-world-action-model-for": {
+      "id": "0-a-latent-predictive-world-action-model-for",
+      "label": "$ω$-0 problem setting",
+      "type": "concept",
+      "summary": "The learning or systems problem described by the source: Humanoid household tasks often require concurrent loco-manipulation, where the robot must move, adjust posture, maintain balance, and manipulate objects as a single coordinated behavior. Yet existing humanoid policies typically decompose locomotion and manipulation, while recent world-action models remain either arm-centric or video-centered. We present $ω$-...",
+      "aliases": [],
+      "source_ids": [
+        "emergentmind-2608-06375-0-a-latent-predictive-world-action-model-for-2026"
+      ],
+      "confidence": 0.78,
+      "first_seen": "2026-08-09T14:03:15Z",
+      "last_seen": "2026-08-09T14:03:15Z",
+      "world_hint": "retrieval-augmented-generation"
+    },
+    "paper-2608-06375": {
+      "id": "paper-2608-06375",
+      "label": "$ω$-0: A Latent Predictive World Action Model for Concurrent Humanoid Loco-Manipulation",
+      "type": "paper",
+      "summary": "EmergentMind surfaced arXiv paper 2608.06375: Humanoid household tasks often require concurrent loco-manipulation, where the robot must move, adjust posture, maintain balance, and manipulate objects as a single coordinated behavior. Yet existing humanoid policies typically decompose locomotion and manipulation, while recent world-action models remain either arm-centric or video-centered. We present $ω$-...",
+      "aliases": [],
+      "source_ids": [
+        "emergentmind-2608-06375-0-a-latent-predictive-world-action-model-for-2026"
+      ],
+      "confidence": 0.78,
+      "first_seen": "2026-08-09T14:03:15Z",
+      "last_seen": "2026-08-09T14:03:15Z",
+      "world_hint": "retrieval-augmented-generation"
     }
   },
   "edges": [
@@ -27781,6 +27897,86 @@
         "emergentmind-2608-01735-dapd-dual-anchored-policy-distillation-2026"
       ],
       "evidence": "Routed into The Dapd Dual Anchored Policy under retrieval-augmented-generation from source title and abstract."
+    },
+    {
+      "source": "paper-2608-05004",
+      "target": "delusioneval-measuring-delusion-linked-behaviors-in-ai",
+      "relation": "paper_introduces",
+      "confidence": 0.82,
+      "source_ids": [
+        "emergentmind-2608-05004-delusioneval-measuring-delusion-linked-behaviors-in-ai-chatbots-2026"
+      ],
+      "evidence": "EmergentMind homepage/page metadata identify arXiv 2608.05004, 'DelusionEval: Measuring Delusion-Linked Behaviors in AI Chatbots', and summarize the method/problem."
+    },
+    {
+      "source": "delusioneval-measuring-delusion-linked-behaviors-in-ai",
+      "target": "delusioneval-measuring-delusion-linked-behaviors-in-ai-chatbots",
+      "relation": "implements",
+      "confidence": 0.76,
+      "source_ids": [
+        "emergentmind-2608-05004-delusioneval-measuring-delusion-linked-behaviors-in-ai-chatbots-2026"
+      ],
+      "evidence": "Mental health professionals have raised concerns about risks of psychological harm from interaction with large language models (LLMs), including \"delusional spirals\" in which concerning human and LLM behaviors reinforce each other over time. With growing public use of LLM-powered"
+    },
+    {
+      "source": "delusioneval-measuring-delusion-linked-behaviors-in-ai",
+      "target": "delusioneval-measuring-delusion-linked-behaviors-in-ai-chatbots",
+      "relation": "evaluates_on",
+      "confidence": 0.72,
+      "source_ids": [
+        "emergentmind-2608-05004-delusioneval-measuring-delusion-linked-behaviors-in-ai-chatbots-2026"
+      ],
+      "evidence": "Mental health professionals have raised concerns about risks of psychological harm from interaction with large language models (LLMs), including \"delusional spirals\" in which concerning human and LLM behaviors reinforce each other over time. With growing public use of LLM-powered"
+    },
+    {
+      "source": "delusioneval-measuring-delusion-linked-behaviors-in-ai",
+      "target": "the-delusioneval-measuring-delusion-linked-behaviors",
+      "relation": "belongs_to_region",
+      "confidence": 0.78,
+      "source_ids": [
+        "emergentmind-2608-05004-delusioneval-measuring-delusion-linked-behaviors-in-ai-chatbots-2026"
+      ],
+      "evidence": "Routed into The Delusioneval Measuring Delusion Linked under retrieval-augmented-generation from source title and abstract."
+    },
+    {
+      "source": "paper-2608-06375",
+      "target": "0-a-latent-predictive-world-action-model",
+      "relation": "paper_introduces",
+      "confidence": 0.82,
+      "source_ids": [
+        "emergentmind-2608-06375-0-a-latent-predictive-world-action-model-for-2026"
+      ],
+      "evidence": "EmergentMind homepage/page metadata identify arXiv 2608.06375, '$ω$-0: A Latent Predictive World Action Model for Concurrent Humanoid Loco-Manipulation', and summarize the method/problem."
+    },
+    {
+      "source": "0-a-latent-predictive-world-action-model",
+      "target": "0-a-latent-predictive-world-action-model-for",
+      "relation": "implements",
+      "confidence": 0.76,
+      "source_ids": [
+        "emergentmind-2608-06375-0-a-latent-predictive-world-action-model-for-2026"
+      ],
+      "evidence": "Humanoid household tasks often require concurrent loco-manipulation, where the robot must move, adjust posture, maintain balance, and manipulate objects as a single coordinated behavior. Yet existing humanoid policies typically decompose locomotion and manipulation, while recent "
+    },
+    {
+      "source": "0-a-latent-predictive-world-action-model",
+      "target": "0-a-latent-predictive-world-action-model-for",
+      "relation": "evaluates_on",
+      "confidence": 0.72,
+      "source_ids": [
+        "emergentmind-2608-06375-0-a-latent-predictive-world-action-model-for-2026"
+      ],
+      "evidence": "Humanoid household tasks often require concurrent loco-manipulation, where the robot must move, adjust posture, maintain balance, and manipulate objects as a single coordinated behavior. Yet existing humanoid policies typically decompose locomotion and manipulation, while recent "
+    },
+    {
+      "source": "0-a-latent-predictive-world-action-model",
+      "target": "the-0-a-latent-predictive-world",
+      "relation": "belongs_to_region",
+      "confidence": 0.78,
+      "source_ids": [
+        "emergentmind-2608-06375-0-a-latent-predictive-world-action-model-for-2026"
+      ],
+      "evidence": "Routed into The 0 A Latent Predictive under retrieval-augmented-generation from source title and abstract."
     }
   ],
   "open_questions": [
@@ -29934,6 +30130,42 @@
       "edges_added": 0,
       "regions_added": 0,
       "quality_findings": [],
+      "verification": {
+        "json_parse": "passed",
+        "dkg_test": "passed",
+        "build": "passed",
+        "supabase_sync": "passed",
+        "roundtrip": "passed"
+      }
+    },
+    {
+      "run_id": "daily-emergentmind-all-topics-20260809T140315Z",
+      "completed_at": "2026-08-09T14:03:15Z",
+      "type": "daily-emergentmind-all-topics",
+      "homepage_url": "https://www.emergentmind.com/",
+      "homepage_status": 200,
+      "homepage_papers": 45,
+      "source_ids": [
+        "emergentmind-2608-05004-delusioneval-measuring-delusion-linked-behaviors-in-ai-chatbots-2026",
+        "emergentmind-2608-06375-0-a-latent-predictive-world-action-model-for-2026"
+      ],
+      "page_status": {
+        "2608.05004": 200,
+        "2608.06375": 200
+      },
+      "sources_added": 2,
+      "sources_updated": 0,
+      "nodes_added": 6,
+      "nodes_updated": 0,
+      "edges_added": 8,
+      "worlds_touched": [
+        "retrieval-augmented-generation"
+      ],
+      "regions_added": 2,
+      "manual_review": [
+        "Skipped pure-math, astronomy/cosmology, and clinical/medical surfaced items in this bounded pass; clinical claims need deeper safety review before routing.",
+        "New visual-SLAM/event-camera/egocentric-video items are routed under Perception & World Models; DeepSearch is routed under Retrieval-Augmented Generation; beyond-human intelligence evaluation is routed under Agents."
+      ],
       "verification": {
         "json_parse": "passed",
         "dkg_test": "passed",

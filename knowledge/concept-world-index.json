@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "updated_at": "2026-08-08T14:01:44Z",
+  "updated_at": "2026-08-09T14:03:15Z",
   "macro_worlds": {
     "agents": {
       "label": "Agents",
@@ -11757,6 +11757,90 @@
               ]
             }
           ]
+        },
+        {
+          "id": "the-delusioneval-measuring-delusion-linked-behaviors",
+          "label": "The Delusioneval Measuring Delusion Linked",
+          "summary": "A source-backed case board for DelusionEval: Measuring Delusion-Linked Behaviors in AI Chatbots: learners inspect the plain technical mechanism, the evaluation signal, and where the claim fits in Edokai's retrieval augmented generation world.",
+          "source_ids": [
+            "emergentmind-2608-05004-delusioneval-measuring-delusion-linked-behaviors-in-ai-chatbots-2026"
+          ],
+          "concept_ids": [
+            "delusioneval-measuring-delusion-linked-behaviors-in-ai",
+            "delusioneval-measuring-delusion-linked-behaviors-in-ai-chatbots",
+            "delusioneval-measuring-delusion-linked-behaviors-in-ai-chatbots"
+          ],
+          "critical_concepts": [
+            "delusioneval-measuring-delusion-linked-behaviors-in-ai",
+            "delusioneval-measuring-delusion-linked-behaviors-in-ai-chatbots"
+          ],
+          "prerequisite_links": [],
+          "side_retention_duels": [
+            {
+              "id": "the-delusioneval-measuring-delusion-linked-duel",
+              "prompt": "What should Edokai learners remember about **DelusionEval**?",
+              "left": "Treat it as a title-only bookmark without checking the mechanism.",
+              "right": "Track the mechanism, evidence signal, and limits stated by the source.",
+              "answer": "Use the source-backed mechanism and evaluation signal; avoid inferring guarantees beyond the paper summary."
+            }
+          ],
+          "quiz_questions": [
+            {
+              "question": "In the source **DelusionEval: Measuring Delusion-Linked Behaviors in AI Chatbots**, what is the main learner-facing mechanism Edokai should preserve?",
+              "choices": [
+                "It mainly replaces the user interface theme without changing the learning mechanism.",
+                "It uses the source's DelusionEval mechanism to address the paper's stated ML/AI problem.",
+                "It is a clinical treatment protocol rather than a machine-learning research method.",
+                "It proves a pure-math theorem without a model, agent, or evaluation loop."
+              ],
+              "answer_index": 1,
+              "source_ids": [
+                "emergentmind-2608-05004-delusioneval-measuring-delusion-linked-behaviors-in-ai-chatbots-2026"
+              ]
+            }
+          ]
+        },
+        {
+          "id": "the-0-a-latent-predictive-world",
+          "label": "The 0 A Latent Predictive",
+          "summary": "A source-backed case board for $ω$-0: A Latent Predictive World Action Model for Concurrent Humanoid Loco-Manipulation: learners inspect the plain technical mechanism, the evaluation signal, and where the claim fits in Edokai's retrieval augmented generation world.",
+          "source_ids": [
+            "emergentmind-2608-06375-0-a-latent-predictive-world-action-model-for-2026"
+          ],
+          "concept_ids": [
+            "0-a-latent-predictive-world-action-model",
+            "0-a-latent-predictive-world-action-model-for",
+            "0-a-latent-predictive-world-action-model-for"
+          ],
+          "critical_concepts": [
+            "0-a-latent-predictive-world-action-model",
+            "0-a-latent-predictive-world-action-model-for"
+          ],
+          "prerequisite_links": [],
+          "side_retention_duels": [
+            {
+              "id": "the-0-a-latent-predictive-duel",
+              "prompt": "What should Edokai learners remember about **$ω$-0**?",
+              "left": "Treat it as a title-only bookmark without checking the mechanism.",
+              "right": "Track the mechanism, evidence signal, and limits stated by the source.",
+              "answer": "Use the source-backed mechanism and evaluation signal; avoid inferring guarantees beyond the paper summary."
+            }
+          ],
+          "quiz_questions": [
+            {
+              "question": "In the source **$ω$-0: A Latent Predictive World Action Model for Concurrent Humanoid Loco-Manipulation**, what is the main learner-facing mechanism Edokai should preserve?",
+              "choices": [
+                "It mainly replaces the user interface theme without changing the learning mechanism.",
+                "It is a clinical treatment protocol rather than a machine-learning research method.",
+                "It uses the source's $ω$-0 mechanism to address the paper's stated ML/AI problem.",
+                "It proves a pure-math theorem without a model, agent, or evaluation loop."
+              ],
+              "answer_index": 2,
+              "source_ids": [
+                "emergentmind-2608-06375-0-a-latent-predictive-world-action-model-for-2026"
+              ]
+            }
+          ]
         }
       ]
     }
@@ -13634,6 +13718,34 @@
       "regions_added": 0,
       "new_worlds_created": [],
       "quality_findings": [],
+      "verification": {
+        "json_parse": "passed",
+        "dkg_test": "passed",
+        "build": "passed",
+        "supabase_sync": "passed",
+        "roundtrip": "passed"
+      }
+    },
+    {
+      "run_id": "daily-emergentmind-all-topics-20260809T140315Z",
+      "completed_at": "2026-08-09T14:03:15Z",
+      "event": "daily EmergentMind homepage all-topics ingestion",
+      "sources_added": 2,
+      "nodes_added": 6,
+      "edges_added": 8,
+      "worlds_enhanced": [
+        "retrieval-augmented-generation"
+      ],
+      "regions_enhanced": [
+        "the-delusioneval-measuring-delusion-linked-behaviors",
+        "the-0-a-latent-predictive-world"
+      ],
+      "new_worlds_created": [],
+      "router_learning": "The 2026-07-12 homepage delta fits existing umbrellas: SLAM/event-camera/egocentric-video strengthen Perception & World Models, DeepSearch strengthens Retrieval-Augmented Generation, and beyond-human intelligence evaluation strengthens Agents.",
+      "manual_review": [
+        "Skipped pure-math, astronomy/cosmology, and clinical/medical surfaced items in this bounded pass; clinical claims need deeper safety review before routing.",
+        "New visual-SLAM/event-camera/egocentric-video items are routed under Perception & World Models; DeepSearch is routed under Retrieval-Augmented Generation; beyond-human intelligence evaluation is routed under Agents."
+      ],
       "verification": {
         "json_parse": "passed",
         "dkg_test": "passed",
