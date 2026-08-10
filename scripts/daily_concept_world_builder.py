@@ -1,9 +1,8 @@
 #!/usr/bin/env python3
-"""Deterministic Edokai daily concept-world builder.
+"""Model-curated Edokai daily concept-world builder.
 
-This script is cron-safe: it does not call an LLM, finishes quickly, appends a
-builder observability entry only when needed, validates the DKG/app adapter, syncs
-Supabase, and prints the exact Telegram-ready completion message.
+Raw paper evidence is first synthesized into stable mechanism boards, then the
+DKG/app adapter is validated and synced.
 """
 from __future__ import annotations
 
@@ -74,12 +73,22 @@ def count_state(dkg: dict, idx: dict) -> dict:
     }
 
 
-def scan_quality(idx: dict) -> list[str]:
+def scan_quality(idx: dict, dkg: dict) -> list[str]:
     issues: list[str] = []
-    generic = re.compile(r"generic paper-title|memorized paper title|\.\.\.", re.I)
+    generic = re.compile(r"generic paper-title|memorized paper title|\.\.\.|(?:in|from|according to) (?:the )?(?:source|paper|study)|learner-facing|edokai (?:learners|should preserve)|shared technical mechanism|what role does|role .{0,60} play|primarily contribute|belong on (?:the )?same|source-grounded fact matters most", re.I)
+    source_titles = [str(s.get("title", "")).strip().lower() for s in dkg.get("sources", {}).values() if len(str(s.get("title", "")).strip()) > 20]
     for wid, world in idx.get("macro_worlds", {}).items():
         for r in world.get("regions", []):
-            for q in r.get("quiz_questions", []) or []:
+            nested_questions = list(r.get("quiz_questions", []) or [])
+            nested_questions.extend(r.get("gym", {}).get("questions", []) or [])
+            for duel in r.get("side_retention_duels", []) or []:
+                nested_questions.extend(duel.get("questions", []) or [])
+            for q in nested_questions:
+                stem = str(q.get("question", ""))
+                if generic.search(stem):
+                    issues.append(f"{wid}/{r.get('id')}: meta-curriculum quiz")
+                if any(title in stem.lower() for title in source_titles):
+                    issues.append(f"{wid}/{r.get('id')}: paper-title quiz")
                 choices = q.get("choices", []) or []
                 if len(choices) != 4:
                     issues.append(f"{wid}/{r.get('id')}: quiz has {len(choices)} choices")
@@ -140,8 +149,8 @@ def append_builder_if_needed(dkg: dict, idx: dict, counts: dict, issues: list[st
         "verification": status.copy(),
     })
     LOG.write_text(LOG.read_text() + f"\n## {run_id}\n\n"
-        f"- Trigger: scheduled deterministic concept-world builder after `{latest_id}`.\n"
-        f"- Maker/checker result: upstream already added {latest.get('sources_added', 0)} sources, {latest.get('nodes_added', 0)} nodes, {latest.get('edges_added', 0)} edges, and {latest.get('regions_added', 0)} preliminary regions. Builder found {len(issues)} quality findings and made no broad app/UI changes.\n"
+        f"- Trigger: scheduled model-curated concept-world builder after `{latest_id}`.\n"
+        f"- Maker/checker result: upstream added {latest.get('sources_added', 0)} sources, {latest.get('nodes_added', 0)} evidence nodes, and {latest.get('edges_added', 0)} edges. The curator synthesized stable mechanism boards and found {len(issues)} quality findings.\n"
         f"- Counts before sync: {counts['sources']} sources / {counts['nodes']} nodes / {counts['edges']} edges / {counts['worlds']} macro worlds / {counts['regions']} regions / {counts['quizzes']} quizzes / {counts['duels']} duels.\n"
         f"- Verification: JSON parse passed; `npm run dkg:test` passed; `npm run build` passed; `npm run dkg:sync` passed; `node scripts/test-dkg-roundtrip.mjs` passed.\n"
         f"- Escalations/manual review: {('quality findings need manual review: ' + '; '.join(issues[:5])) if issues else 'none.'}\n", encoding="utf-8")
@@ -150,10 +159,25 @@ def append_builder_if_needed(dkg: dict, idx: dict, counts: dict, issues: list[st
 
 def main() -> int:
     dkg, idx = load()
-    issues = scan_quality(idx)
+    latest = latest_growth_run(dkg)
+    already_curated = latest and any(
+        h.get("event") == "daily concept-world builder pass" and h.get("upstream_run_id") == latest.get("run_id")
+        for h in idx.get("routing_history", [])
+    )
+    if latest and latest.get("sources_added", 0) and not already_curated:
+        for world in latest.get("worlds_touched", []):
+            ok, out = run(["python3", "scripts/curate_dkg_curriculum.py", "--world", world, "--generate", "--apply"], timeout=1200)
+            if not ok:
+                print(f"❌ Edokai curriculum curation failed for {world}.\n\n{out[-6000:]}")
+                return 1
+        dkg, idx = load()
+    issues = scan_quality(idx, dkg)
     counts = count_state(dkg, idx)
     if counts["one_case_arcs"]:
         issues.extend(f"one-case arc {x}" for x in counts["one_case_arcs"])
+    if issues:
+        print("❌ Edokai curriculum quality gate blocked publication:\n- " + "\n- ".join(issues[:30]))
+        return 1
 
     checks = []
     for cmd, label, timeout in [

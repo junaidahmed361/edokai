@@ -1,0 +1,947 @@
+{
+  "boards": [
+    {
+      "board_key": "retrieval",
+      "summary": "A route through query formation, relevance scoring, and grounded verification.",
+      "npc_name": "Archivist Sera",
+      "npc_text": "The first gate is not storage. It is the chain that turns a need into candidates, turns candidates into an ordering, and keeps the final answer tied to recoverable signals.",
+      "concepts": [
+        {
+          "concept_key": "query-and-candidate-generation",
+          "name": "Query and Candidate Generation",
+          "lore": "A search system first has to decide what shape of request the world will understand. Free-form natural-language queries are flexible, but repeated attempts can collapse into different strings that recover nearly the same items, wasting turns without expanding information. Boolean retrieval shows the opposite pressure: a constrained query language can still create strong first-stage candidates when substring matches are dense enough, even without learned weights or global statistics. The changed flow is from hoping a generated sentence is useful to deliberately controlling the candidate set. The boundary is aliasing: if new queries keep landing on the same evidence set, more query variety is only cosmetic.",
+          "source_ids": [
+            "emergentmind-2607-11362-boolean-queries-are-all-you-need-2026",
+            "emergentmind-2607-27652-harness-g-a-graph-structured-harness-for-search-2026"
+          ],
+          "questions": [
+            {
+              "q": "Why can a constrained Boolean engine still produce useful first-stage candidates?",
+              "options": [
+                "It can express dense substring-matching constraints that collect relevant segments without learned weights.",
+                "It replaces ranking with final-answer generation, so candidate quality no longer matters.",
+                "It requires global corpus statistics to estimate semantic distance before matching text.",
+                "It prevents multi-turn search by forcing every topic into one fixed query string."
+              ],
+              "a": 0,
+              "why": "Candidate generation can work when the query language controls which substrings must appear and ranking uses match density. The mechanism does not require supervision or learned term weights in the described setup.",
+              "source_ids": [
+                "emergentmind-2607-11362-boolean-queries-are-all-you-need-2026"
+              ]
+            },
+            {
+              "q": "What indicates retrieval-equivalence collapse during multi-turn search?",
+              "options": [
+                "Later queries become shorter, but each one requires more model calls to parse.",
+                "Distinct query strings increasingly retrieve overlapping accumulated evidence sets.",
+                "The retriever switches from sparse matching to dense embeddings without warning.",
+                "The answer model improves because it stops reading retrieved passages entirely."
+              ],
+              "a": 1,
+              "why": "The failure is at the policy-environment interface: surface-form query diversity stops meaningfully changing what information is gathered. New strings do not create new candidate coverage.",
+              "source_ids": [
+                "emergentmind-2607-27652-harness-g-a-graph-structured-harness-for-search-2026"
+              ]
+            }
+          ]
+        },
+        {
+          "concept_key": "ranking-and-relevance",
+          "name": "Ranking and Relevance",
+          "lore": "After candidates appear, retrieval becomes a scoring problem: what evidence should rise first under the available compute? Late-interaction models keep token-level matching through MaxSim, which can represent relevance patterns that a single document vector may compress away. ColBERT-style open training shows this family can be built reproducibly for multilingual, long-context, and code search, while query-network retrieval changes the cost surface by scoring precomputed document embeddings with a query-specific shallow network. Matryoshka sizing adds a deployment dial: smaller active query networks trade some capacity for throughput. The boundary is operational: richer relevance functions help only if their scoring cost matches latency and scale constraints.",
+          "source_ids": [
+            "emergentmind-2607-05803-quantifying-and-expanding-the-theoretical-capacity-of-2026",
+            "emergentmind-2607-27178-denseon-with-the-lateon-fully-open-dense-and-2026",
+            "emergentmind-2607-17457-the-matryoshka-hypencoder-2026"
+          ],
+          "questions": [
+            {
+              "q": "What changes when a retriever keeps late token-level interactions instead of compressing each document to one vector?",
+              "options": [
+                "It removes the need to compare queries with documents at scoring time.",
+                "It can preserve fine-grained matching patterns that a single-vector representation may lose.",
+                "It forces all documents to be regenerated whenever a query is submitted.",
+                "It ranks only by substring density and cannot use neural document embeddings."
+              ],
+              "a": 1,
+              "why": "Late interaction lets query and document token representations meet at scoring time, so relevance can depend on localized matches. A single vector must compress those signals earlier.",
+              "source_ids": [
+                "emergentmind-2607-05803-quantifying-and-expanding-the-theoretical-capacity-of-2026",
+                "emergentmind-2607-27178-denseon-with-the-lateon-fully-open-dense-and-2026"
+              ]
+            },
+            {
+              "q": "Why does supporting multiple query-network sizes matter in deployment?",
+              "options": [
+                "It makes document embeddings unnecessary for relevance estimation.",
+                "It guarantees identical rankings for every domain and model size.",
+                "It lets the system trade active parameters for scoring throughput under a fixed index.",
+                "It converts a neural ranker into a Boolean substring counter."
+              ],
+              "a": 2,
+              "why": "Matryoshka-sized query networks expose an effectiveness-efficiency dial while reusing precomputed document embeddings. The mechanism changes active scoring cost without rebuilding the whole retrieval interface.",
+              "source_ids": [
+                "emergentmind-2607-17457-the-matryoshka-hypencoder-2026"
+              ]
+            }
+          ]
+        },
+        {
+          "concept_key": "evidence-grounding",
+          "name": "Evidence Grounding",
+          "lore": "Grounding asks whether an output can be traced back to the signal it claims to use. A multimodal reward can avoid direct preference labels by checking whether the original prompt is recoverable from the generated image under an image-conditioned pass; the reward comes from alignment already learned by the model. In age verification, the same principle reveals a boundary: a system that claims visual judgment may be brittle when simple appearance changes shift the signal it relies on. Grounding therefore is not just adding a verifier. It is choosing a recoverable measurement and then testing whether superficial perturbations can break the intended connection between observation and decision.",
+          "source_ids": [
+            "emergentmind-2607-11886-read-it-back-pretrained-mllms-are-zero-shot-2026",
+            "emergentmind-2607-24194-face-age-verification-vulnerabilities-under-simple-appearance-manipulations-2026"
+          ],
+          "questions": [
+            {
+              "q": "Why can prompt recovery serve as a reward for image generation?",
+              "options": [
+                "It checks whether the image contains enough conditioned information to make the prompt likely again.",
+                "It trains a separate preference model from pairwise human rankings before scoring images.",
+                "It decomposes every prompt into manually labeled visual facts and votes across them.",
+                "It ignores image content and rewards only the fluency of the original prompt text."
+              ],
+              "a": 0,
+              "why": "The reward uses image-conditioned prompt log-likelihood, so higher score means the generated image helps recover the conditioning text. This reuses pretrained image-text alignment without fine-tuning a reward model.",
+              "source_ids": [
+                "emergentmind-2607-11886-read-it-back-pretrained-mllms-are-zero-shot-2026"
+              ]
+            },
+            {
+              "q": "What does vulnerability to simple appearance manipulation imply about a visual verification system?",
+              "options": [
+                "The system has proven robust because small edits cannot affect the target attribute.",
+                "The decision may depend on superficial cues rather than stable evidence for the target property.",
+                "The system can be fixed by removing all multimodal models from evaluation.",
+                "The task becomes purely textual once makeup or facial hair is present."
+              ],
+              "a": 1,
+              "why": "If easy visual alterations change age-verification outcomes, the grounding link between image evidence and age decision is fragile. Robustness has to be tested under plausible perturbations.",
+              "source_ids": [
+                "emergentmind-2607-24194-face-age-verification-vulnerabilities-under-simple-appearance-manipulations-2026"
+              ]
+            }
+          ]
+        }
+      ],
+      "side": {
+        "name": "Causeway Gate",
+        "description": "Applied checks for candidate coverage and grounded scoring.",
+        "questions": [
+          {
+            "q": "A search agent keeps issuing new phrasings, but the saved passages after each turn are nearly identical. What engineering change targets the real failure?",
+            "options": [
+              "Add a larger final-answer decoder while keeping the same query interface.",
+              "Track evidence-set overlap and penalize turns that do not expand retrieved information.",
+              "Increase the number of paraphrases generated for every search turn.",
+              "Disable passage reading so the agent must rely on query strings alone."
+            ],
+            "a": 1,
+            "why": "The failure is not lack of wording variety; it is lack of new information. Measuring overlap attacks retrieval-equivalence collapse directly.",
+            "source_ids": [
+              "emergentmind-2607-27652-harness-g-a-graph-structured-harness-for-search-2026"
+            ]
+          },
+          {
+            "q": "A team needs faster search on mobile hardware but cannot rebuild all document embeddings. Which ranking change best matches that constraint?",
+            "options": [
+              "Use adjustable-size query scoring networks over the existing document embeddings.",
+              "Replace the retriever with a full corpus re-index after every user query.",
+              "Require every query to use supervised global term weights from fresh labels.",
+              "Move all relevance decisions into an unverified final-answer prompt."
+            ],
+            "a": 0,
+            "why": "Smaller active query networks can reduce scoring cost while preserving the precomputed document side. That directly addresses deployment throughput constraints.",
+            "source_ids": [
+              "emergentmind-2607-17457-the-matryoshka-hypencoder-2026"
+            ]
+          }
+        ]
+      },
+      "gym": {
+        "leader": "Master Relevance",
+        "badge": "Grounded Rank Badge",
+        "taunt": "Bring me candidates that change what the answer can know.",
+        "questions": [
+          {
+            "q": "You are building a multi-turn retrieval agent under a strict call budget. Which combination best balances exploration and relevance?",
+            "options": [
+              "Generate many unconstrained paraphrases and ignore whether retrieved sets overlap.",
+              "Use controlled query operators, monitor evidence-set novelty, and rank candidates by explicit matching or learned relevance.",
+              "Skip first-stage retrieval and ask the answer model to infer missing passages.",
+              "Force a single dense vector for every query and disable all lexical constraints."
+            ],
+            "a": 1,
+            "why": "Controlled candidate generation is useful only when turns gather new information, and relevance scoring must still order the expanded set. This combines query control with anti-collapse monitoring.",
+            "source_ids": [
+              "emergentmind-2607-11362-boolean-queries-are-all-you-need-2026",
+              "emergentmind-2607-27652-harness-g-a-graph-structured-harness-for-search-2026"
+            ]
+          },
+          {
+            "q": "A generated image looks plausible, but the conditioning prompt cannot be recovered from it. What is the most direct interpretation?",
+            "options": [
+              "The image is grounded because human preference labels were not used.",
+              "The retrieval ranker has too few active parameters for late interaction.",
+              "The image may fail prompt-image alignment even if it appears visually coherent.",
+              "The Boolean query language is too weak to express the prompt."
+            ],
+            "a": 2,
+            "why": "Prompt recoverability measures whether image content supports the original conditioning text. Visual plausibility alone does not prove grounded alignment.",
+            "source_ids": [
+              "emergentmind-2607-11886-read-it-back-pretrained-mllms-are-zero-shot-2026"
+            ]
+          },
+          {
+            "q": "A multilingual code-search product needs reproducibility and strong ranking. Which design pressure follows from open late-interaction training?",
+            "options": [
+              "Use only closed training mixtures because reproducibility is unrelated to retrieval deployment.",
+              "Prefer an auditable training recipe while evaluating whether late interaction's scoring cost is acceptable.",
+              "Avoid hard negatives because they make first-stage retrieval impossible to compare.",
+              "Replace all document-token matching with age-verification perturbation tests."
+            ],
+            "a": 1,
+            "why": "Open recipes reduce reproducibility gaps, and late interaction can improve relevance by preserving token-level matches. The trade-off is scoring cost at deployment scale.",
+            "source_ids": [
+              "emergentmind-2607-27178-denseon-with-the-lateon-fully-open-dense-and-2026",
+              "emergentmind-2607-05803-quantifying-and-expanding-the-theoretical-capacity-of-2026"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "board_key": "indexing",
+      "summary": "A workshop for representation programs, partitioned access paths, and changing vocabularies.",
+      "npc_name": "Mason Ivo",
+      "npc_text": "Indexes are built decisions. The stones decide what can be found quickly, what must be recomputed, and what breaks when the world shifts.",
+      "concepts": [
+        {
+          "concept_key": "representation-and-indexing",
+          "name": "Representation and Indexing",
+          "lore": "Indexing is not only choosing a retriever; it is deciding what representation the retriever is allowed to see. Representation programs make this explicit by transforming raw documents before indexing: they can slice, enrich, normalize, reweight, or reorganize content, then keep only changes that improve validation retrieval. Physics-informed beam shaping shows the same representation discipline in another domain: a learned phase profile is constrained by energy-conserving ray mappings and then checked with diffraction simulation. In both cases, the mechanism is structured transformation before downstream evaluation. The boundary is overfitting the transformation: a representation that improves one validation path can still fail when the task distribution or physical assumptions change.",
+          "source_ids": [
+            "emergentmind-2607-18603-autoindex-learning-representation-programs-for-retrieval-2026",
+            "emergentmind-2607-18012-physics-informed-neural-networks-for-optimal-beam-shaping-2026"
+          ],
+          "questions": [
+            {
+              "q": "What does learning a representation program change in a retrieval pipeline?",
+              "options": [
+                "It replaces document transformation with answer-only reinforcement learning.",
+                "It searches executable document transformations before indexing, not just retriever hyperparameters.",
+                "It prevents validation feedback from affecting the index construction process.",
+                "It requires every document to remain in its raw form until final answer generation."
+              ],
+              "a": 1,
+              "why": "The transformation becomes part of the optimized system: documents can be reorganized or enriched before indexing. Validation keeps only changes that improve retrieval quality under the resulting index.",
+              "source_ids": [
+                "emergentmind-2607-18603-autoindex-learning-representation-programs-for-retrieval-2026"
+              ]
+            },
+            {
+              "q": "Why is downstream validation essential after a structured transformation?",
+              "options": [
+                "A transformation can encode useful constraints, but its value is only shown by the behavior it enables.",
+                "Validation proves that every future query will improve by the same margin.",
+                "Structured transformations remove the need to compare outputs against target behavior.",
+                "Physical or textual constraints guarantee relevance without evaluation."
+              ],
+              "a": 0,
+              "why": "A representation is useful because it changes what the next system can recover or simulate. Validation checks that the transformed representation improves the intended outcome rather than merely looking structured.",
+              "source_ids": [
+                "emergentmind-2607-18603-autoindex-learning-representation-programs-for-retrieval-2026",
+                "emergentmind-2607-18012-physics-informed-neural-networks-for-optimal-beam-shaping-2026"
+              ]
+            }
+          ]
+        },
+        {
+          "concept_key": "hierarchy-and-partitioning",
+          "name": "Hierarchy and Partitioning",
+          "lore": "Large retrieval workloads fail when the access pattern fights the hardware layout. Analytical vector search with very large k needs thousands to hundreds of thousands of neighbors for joins, filters, and aggregation; per-segment vector indexes can behave like black boxes, causing read and compute amplification. Long-context sparse attention faces a related partitioning problem: scattered key-value entries harm memory coalescing, so streaming-aware indexing converts some entries into contiguous layouts and hierarchical cross-layer indexing reduces expensive scoring overhead. The changed state is a hierarchy that decides what is scanned, skipped, grouped, or aligned. The boundary is workload specificity: a layout that helps large-k analytics or long-context attention may not optimize small interactive lookups.",
+          "source_ids": [
+            "emergentmind-2608-00650-tenginedb-v-an-olap-native-vector-search-system-2026",
+            "emergentmind-2608-01662-longcat-sparse-attention-taming-the-lightning-via-streaming-2026"
+          ],
+          "questions": [
+            {
+              "q": "Why do black-box per-segment vector indexes become a problem for large-k analytical search?",
+              "options": [
+                "They always return too few results because k must equal one.",
+                "They can amplify reads and compute while limiting integration with filtering, joins, and aggregation.",
+                "They remove all tail-latency constraints from vector retrieval systems.",
+                "They make vector search impossible unless every embedding is stored as text."
+              ],
+              "a": 1,
+              "why": "Large-k analytics needs vector retrieval to cooperate with OLAP operations. Isolated per-segment indexes can force extra work and block efficient query planning.",
+              "source_ids": [
+                "emergentmind-2608-00650-tenginedb-v-an-olap-native-vector-search-system-2026"
+              ]
+            },
+            {
+              "q": "What does streaming-aware indexing improve in sparse attention deployment?",
+              "options": [
+                "It changes final-answer rewards into dense supervision for search agents.",
+                "It converts selected scattered key-value entries into contiguous hardware-aligned layouts.",
+                "It expands the tokenizer vocabulary to reduce words per token.",
+                "It replaces all hierarchy with an unpartitioned quadratic scoring pass."
+              ],
+              "a": 1,
+              "why": "The mechanism targets memory access: contiguous layouts enable more coalesced HBM reads. This addresses hardware inefficiency caused by discontinuous indexer outputs.",
+              "source_ids": [
+                "emergentmind-2608-01662-longcat-sparse-attention-taming-the-lightning-via-streaming-2026"
+              ]
+            }
+          ]
+        },
+        {
+          "concept_key": "update-and-freshness",
+          "name": "Update and Freshness",
+          "lore": "An index grows stale when its fixed representation no longer matches deployment demand. Tokenizers show this directly: a vocabulary chosen at pretraining reflects the corpus priorities of that moment, so later languages may fragment into many tokens per word, raising latency, compute, and energy. In-place tokenizer expansion attacks freshness without restarting the entire model lifecycle. Modular teleoperation adds a systems analogue: a shared wearable interface supports plug-and-play capability modules, letting perception, haptics, mobility, and data capture evolve across embodiments. The changed flow is from monolithic rebuilding to controlled extension. The boundary is compatibility: every fresh module or token must integrate with existing computation, bandwidth, and interface assumptions.",
+          "source_ids": [
+            "emergentmind-2607-15232-in-place-tokenizer-expansion-for-pre-trained-llms-2026",
+            "emergentmind-2607-19479-modpack-an-extensible-teleoperation-interface-for-bimanual-mobile-2026"
+          ],
+          "questions": [
+            {
+              "q": "Why can a fixed tokenizer become unfairly expensive for later-added languages?",
+              "options": [
+                "It stores every later language as images instead of text tokens.",
+                "Its vocabulary mirrors earlier corpus priorities, so new languages may be split into more tokens per word.",
+                "It prevents compact models from using any embedding matrix at decode time.",
+                "It makes cloud models smaller whenever a language is added."
+              ],
+              "a": 1,
+              "why": "Vocabulary allocation is frozen around pretraining data. If deployment priorities shift, underrepresented languages can suffer token fragmentation and higher per-token costs.",
+              "source_ids": [
+                "emergentmind-2607-15232-in-place-tokenizer-expansion-for-pre-trained-llms-2026"
+              ]
+            },
+            {
+              "q": "What is the main engineering value of a plug-and-play capability interface?",
+              "options": [
+                "It removes onboard computation and storage from the robot system.",
+                "It lets every task require a new hardware-specific teleoperation stack.",
+                "It allows capabilities to change while preserving a common integration surface.",
+                "It guarantees haptic feedback is unnecessary for manipulation."
+              ],
+              "a": 2,
+              "why": "A modular interface separates capability additions from the whole system scaffold. Fresh functions can be attached without rebuilding every embodiment-specific path.",
+              "source_ids": [
+                "emergentmind-2607-19479-modpack-an-extensible-teleoperation-interface-for-bimanual-mobile-2026"
+              ]
+            }
+          ]
+        }
+      ],
+      "side": {
+        "name": "Mason Trial",
+        "description": "Applied checks for index construction and deployment drift.",
+        "questions": [
+          {
+            "q": "Your retrieval quality improves after chunk-size tuning, then stalls. Which next move best follows representation-program thinking?",
+            "options": [
+              "Search over richer document transformations such as slicing, enrichment, normalization, and reweighting.",
+              "Freeze raw documents permanently and tune only the answer prompt.",
+              "Remove validation so more transformations can be accepted quickly.",
+              "Use larger k for every query regardless of downstream workload."
+            ],
+            "a": 0,
+            "why": "The mechanism expands the optimization target from a few preprocessing knobs to executable transformations before indexing. Validation decides which transformed index is better.",
+            "source_ids": [
+              "emergentmind-2607-18603-autoindex-learning-representation-programs-for-retrieval-2026"
+            ]
+          },
+          {
+            "q": "A long-context model spends too much time on indexer scoring and scattered memory reads. Which fix addresses both system bottlenecks?",
+            "options": [
+              "Use final-answer rewards to supervise all sparse attention heads.",
+              "Introduce hierarchical scoring and convert selected key-value accesses into contiguous layouts.",
+              "Increase tokenizer fragmentation so each word spans more positions.",
+              "Store vector indexes inside independent black boxes for every segment."
+            ],
+            "a": 1,
+            "why": "Hierarchical cross-layer indexing reduces scoring overhead, while streaming-aware layout improves memory coalescing. Both target deployment bottlenecks rather than model output text.",
+            "source_ids": [
+              "emergentmind-2608-01662-longcat-sparse-attention-taming-the-lightning-via-streaming-2026"
+            ]
+          }
+        ]
+      },
+      "gym": {
+        "leader": "Foreman Patch",
+        "badge": "Fresh Index Badge",
+        "taunt": "Show me the index that still works after the workload changes.",
+        "questions": [
+          {
+            "q": "A search platform shifts from short lookups to analytical retrieval with joins and aggregation. What index design pressure becomes central?",
+            "options": [
+              "Optimizing only the top one result because aggregation ignores the rest.",
+              "Integrating vector search with OLAP planning so large-k retrieval does not amplify reads and compute.",
+              "Replacing filters with prompt recovery because both are grounding signals.",
+              "Expanding the tokenizer vocabulary for every query at runtime."
+            ],
+            "a": 1,
+            "why": "Large-k workloads need many retrieved vectors to feed analytical operators. Treating vector indexes as isolated segment-level boxes can waste work and block efficient planning.",
+            "source_ids": [
+              "emergentmind-2608-00650-tenginedb-v-an-olap-native-vector-search-system-2026"
+            ]
+          },
+          {
+            "q": "A compact on-device model faces rising latency for a newly important language. Which trade-off is most relevant?",
+            "options": [
+              "Adding vocabulary can reduce fragmentation, but embedding and LM-head bandwidth matter more on compact models.",
+              "Increasing answer length always reduces compute because fewer words are tokenized.",
+              "Keeping the original vocabulary guarantees equal cost across languages.",
+              "Moving to a Boolean engine eliminates tokenizer costs during decoding."
+            ],
+            "a": 0,
+            "why": "Tokenizer expansion can reduce tokens per word for underrepresented languages. The trade-off is that vocabulary matrices are a material share of compact-model decode bandwidth.",
+            "source_ids": [
+              "emergentmind-2607-15232-in-place-tokenizer-expansion-for-pre-trained-llms-2026"
+            ]
+          },
+          {
+            "q": "You want a representation change that is both structured and testable. Which pattern is strongest?",
+            "options": [
+              "Make a transformation, evaluate the resulting behavior, and keep it only if it improves the target objective.",
+              "Apply the most complex transformation available and skip validation to avoid bias.",
+              "Force every representation to be raw text because structure prevents retrieval.",
+              "Optimize only hardware layout even when the failure is semantic mismatch."
+            ],
+            "a": 0,
+            "why": "Structured transformations change the information exposed downstream, but usefulness must be measured against the intended behavior. This is the common discipline behind validation-guided indexing and simulation-checked design.",
+            "source_ids": [
+              "emergentmind-2607-18603-autoindex-learning-representation-programs-for-retrieval-2026",
+              "emergentmind-2607-18012-physics-informed-neural-networks-for-optimal-beam-shaping-2026"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "board_key": "graph-memory",
+      "summary": "A hall for remembered entities, relation paths, hidden state, and long-lived agent context.",
+      "npc_name": "Keeper Nalia",
+      "npc_text": "Memory is not a pile of notes. It is a changing structure of entities, relations, confidence, and internal state that decides what can be inferred later.",
+      "concepts": [
+        {
+          "concept_key": "entity-and-relation-memory",
+          "name": "Entity and Relation Memory",
+          "lore": "Graph memory begins by keeping objects and their relations available for later reasoning. Structure-guided molecule design treats a protein pocket and a candidate ligand as interacting entities, then alternates optimization with projection through structure predictors to seek high-affinity, target-specific molecules. Multi-view reconstruction uses normal and depth priors across views so geometry is not inferred only from photometric matching, which can fail on specular objects. In both settings, the important state is relational: molecule-pocket interaction or cross-view geometric agreement. The boundary is confidence. Predicted structures, normals, and depths guide search, but their errors can mislead the memory if treated as certain facts.",
+          "source_ids": [
+            "emergentmind-2607-19237-dbmol-design-of-high-affinity-target-specific-small-2026",
+            "emergentmind-2608-06117-confidence-matters-leveraging-multi-view-geometric-priors-for-2026"
+          ],
+          "questions": [
+            {
+              "q": "Why do geometric priors help when photometric optimization struggles on specular objects?",
+              "options": [
+                "They add normal and depth constraints that can stabilize reconstruction beyond appearance matching.",
+                "They remove the need for multiple views by converting every object into a text query.",
+                "They guarantee perfect geometry whenever a single image has strong highlights.",
+                "They replace sparse scene representation with large-k vector aggregation."
+              ],
+              "a": 0,
+              "why": "Specularity can break appearance-only matching. Multi-view normal and depth priors add relational geometric constraints that guide reconstruction.",
+              "source_ids": [
+                "emergentmind-2608-06117-confidence-matters-leveraging-multi-view-geometric-priors-for-2026"
+              ]
+            },
+            {
+              "q": "What is the key relational state in structure-guided small-molecule design?",
+              "options": [
+                "The number of model calls used by a web search agent.",
+                "The interaction between a candidate ligand and a specific protein pocket.",
+                "The density of corpus substrings that match a Boolean query.",
+                "The memory alignment of sparse-attention key-value entries."
+              ],
+              "a": 1,
+              "why": "The design objective depends on how a small molecule binds to a target pocket. Structure predictors guide optimization by evaluating that interaction.",
+              "source_ids": [
+                "emergentmind-2607-19237-dbmol-design-of-high-affinity-target-specific-small-2026"
+              ]
+            }
+          ]
+        },
+        {
+          "concept_key": "multi-hop-reasoning",
+          "name": "Multi-Hop Reasoning",
+          "lore": "Multi-hop reasoning is a path problem: the answer is reached by chaining intermediate entities or facts rather than retrieving one obvious item. A deterministic search environment can construct hundreds of thousands of multi-hop QA tasks from entity-level random walks, giving agents reproducible tools for search and page reading. Spillover estimation has a related causal-chain issue: treatment assigned to one unit can affect another through a known exposure mapping, so the design must trade off spillover signal strength against diffusion of variation, then analyze with an estimator that leverages that variation. The changed information flow is from isolated observations to linked paths. The boundary is path validity: wrong exposure mappings or weak intermediate checks corrupt the chain.",
+          "source_ids": [
+            "emergentmind-2607-07820-deepsearch-world-self-distillation-for-deep-search-agents-2026",
+            "emergentmind-2607-18601-robust-signal-maximization-in-spillover-experiments-2026"
+          ],
+          "questions": [
+            {
+              "q": "Why are entity-level random walks useful for training search agents on multi-hop tasks?",
+              "options": [
+                "They create linked question paths that require gathering information across intermediate entities.",
+                "They prevent agents from using search or page-reading tools during training.",
+                "They reduce every answer to a single substring-density ranking decision.",
+                "They make final rewards dense at every token without any environment checks."
+              ],
+              "a": 0,
+              "why": "Random walks over entities produce chains where intermediate nodes matter. That creates reproducible multi-hop tasks for practicing search and reading behavior.",
+              "source_ids": [
+                "emergentmind-2607-07820-deepsearch-world-self-distillation-for-deep-search-agents-2026"
+              ]
+            },
+            {
+              "q": "In a spillover experiment, why does treatment assignment need to consider diffusion of variation?",
+              "options": [
+                "Spillover effects are estimated only by ignoring exposure mappings.",
+                "Too little diffusion can weaken usable spillover variation even if assigned treatment is strong.",
+                "Regression estimators cannot use instrumental variables under any exposure mapping.",
+                "Treatment assignment is irrelevant once unobservables have broad distributions."
+              ],
+              "a": 1,
+              "why": "The design trades off spillover signal strength against how variation spreads through exposure. Estimation depends on having usable variation, not just strong direct assignment.",
+              "source_ids": [
+                "emergentmind-2607-18601-robust-signal-maximization-in-spillover-experiments-2026"
+              ]
+            }
+          ]
+        },
+        {
+          "concept_key": "persistent-agent-memory",
+          "name": "Persistent Agent Memory",
+          "lore": "An agent's memory is not limited to visible tokens. Long-horizon tool use benefits from progress verification and self-distillation, where an agent improves from reproducible experience rather than only fixed teacher trajectories or sparse final rewards. But reasoning can also hide in semantically irrelevant filler tokens: models may improve synthetic task performance using tokens that do not visibly explain the answer, and the effect varies by token and model. The changed state is internal computation carried across steps, traces, and feedback loops. The boundary is auditability. If memory or reasoning is useful but invisible, verification must inspect behavior and state changes rather than trusting that the visible chain contains the whole computation.",
+          "source_ids": [
+            "emergentmind-2607-07820-deepsearch-world-self-distillation-for-deep-search-agents-2026",
+            "emergentmind-2607-22925-not-all-llm-reasoning-is-visible-in-the-2026"
+          ],
+          "questions": [
+            {
+              "q": "Why is sparse final-answer reward weak supervision for long-horizon tool use?",
+              "options": [
+                "It gives little information about which intermediate searches, reads, or checks caused success.",
+                "It prevents agents from interacting with deterministic tools at all.",
+                "It makes every reasoning step visible in the output tokens.",
+                "It guarantees that fixed teacher trajectories cover all future behaviors."
+              ],
+              "a": 0,
+              "why": "A final reward arrives after many decisions, so credit assignment across tool actions is hard. Progress verification and self-distillation add more informative experience signals.",
+              "source_ids": [
+                "emergentmind-2607-07820-deepsearch-world-self-distillation-for-deep-search-agents-2026"
+              ]
+            },
+            {
+              "q": "What does improvement from semantically irrelevant filler tokens show about visible reasoning?",
+              "options": [
+                "All reasoning is faithfully expressed in the chain-of-thought text.",
+                "Some useful computation may occur in token patterns that do not carry meaningful visible explanations.",
+                "Filler tokens can only reduce accuracy because they add no semantic content.",
+                "Hidden reasoning is impossible when the task is synthetic."
+              ],
+              "a": 1,
+              "why": "If irrelevant tokens improve performance, the model is using output positions for computation not captured by their apparent meaning. Visible text may not reveal all internal reasoning.",
+              "source_ids": [
+                "emergentmind-2607-22925-not-all-llm-reasoning-is-visible-in-the-2026"
+              ]
+            }
+          ]
+        }
+      ],
+      "side": {
+        "name": "Memory Trial",
+        "description": "Applied checks for relation paths and hidden computation.",
+        "questions": [
+          {
+            "q": "A reconstruction system fails on shiny objects because image brightness no longer tracks shape reliably. What memory change is most appropriate?",
+            "options": [
+              "Add multi-view normal and depth priors with confidence handling.",
+              "Rank views by substring overlap with the object name.",
+              "Use only a single photometric loss and ignore geometry.",
+              "Convert the camera path into a Boolean query language."
+            ],
+            "a": 0,
+            "why": "Specular appearance can mislead photometric optimization. Geometric priors add relational constraints across views, but their confidence still matters.",
+            "source_ids": [
+              "emergentmind-2608-06117-confidence-matters-leveraging-multi-view-geometric-priors-for-2026"
+            ]
+          },
+          {
+            "q": "A tool-use agent solves tasks but its visible explanations omit the decisive computation. What evaluation stance follows?",
+            "options": [
+              "Trust the explanation if it is fluent and ignore tool traces.",
+              "Evaluate behavior, intermediate state changes, and verification signals rather than only visible reasoning text.",
+              "Remove all filler tokens and assume the remaining trace is complete.",
+              "Use only final-answer accuracy because hidden computation cannot affect outcomes."
+            ],
+            "a": 1,
+            "why": "Invisible reasoning means the visible chain may be incomplete. Auditing must include behavior and verifiable state transitions.",
+            "source_ids": [
+              "emergentmind-2607-22925-not-all-llm-reasoning-is-visible-in-the-2026",
+              "emergentmind-2607-07820-deepsearch-world-self-distillation-for-deep-search-agents-2026"
+            ]
+          }
+        ]
+      },
+      "gym": {
+        "leader": "Keeper of Paths",
+        "badge": "Linked Memory Badge",
+        "taunt": "A memory that cannot justify its links is only a rumor with storage.",
+        "questions": [
+          {
+            "q": "A multi-hop agent improves in a deterministic environment, but later fails when entity links are noisy. Which boundary was exposed?",
+            "options": [
+              "The agent had too many reproducible tools, so it could not read pages.",
+              "The reasoning path depended on valid intermediate links and checks, not just final-answer reward.",
+              "The tokenizer vocabulary was too large for protein-pocket binding.",
+              "The vector search k was too high for sparse attention memory."
+            ],
+            "a": 1,
+            "why": "Multi-hop behavior relies on correct path construction through entities or facts. Deterministic practice helps, but noisy links require verification at intermediate steps.",
+            "source_ids": [
+              "emergentmind-2607-07820-deepsearch-world-self-distillation-for-deep-search-agents-2026"
+            ]
+          },
+          {
+            "q": "A molecule generator proposes candidates that look diverse but bind poorly to the target pocket. What is the likely missing control signal?",
+            "options": [
+              "A structure-predictor-guided check of ligand-pocket interaction during optimization.",
+              "A large-k OLAP aggregation over advertising vectors.",
+              "A visual age-estimation perturbation test using makeup changes.",
+              "A Boolean substring density score over document segments."
+            ],
+            "a": 0,
+            "why": "The objective is target-specific binding, so diversity alone is insufficient. Alternating optimization with structure prediction keeps the relational interaction in the loop.",
+            "source_ids": [
+              "emergentmind-2607-19237-dbmol-design-of-high-affinity-target-specific-small-2026"
+            ]
+          },
+          {
+            "q": "Which combination best protects a persistent search agent from misleading memory?",
+            "options": [
+              "Rely on visible chain-of-thought only and reward the final answer after all actions.",
+              "Use reproducible tools, progress verification, and checks for useful but invisible computation.",
+              "Remove entity paths so every task becomes single-hop retrieval.",
+              "Accept every filler-token trace as a faithful explanation of reasoning."
+            ],
+            "a": 1,
+            "why": "Reproducibility and progress checks improve credit assignment, while invisible-reasoning tests prevent overtrusting visible traces. Together they audit both behavior and stated rationale.",
+            "source_ids": [
+              "emergentmind-2607-07820-deepsearch-world-self-distillation-for-deep-search-agents-2026",
+              "emergentmind-2607-22925-not-all-llm-reasoning-is-visible-in-the-2026"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "board_key": "search-agents",
+      "summary": "An expedition through iterative search, stopping rules, and long-horizon research plans.",
+      "npc_name": "Scout Renn",
+      "npc_text": "A search expedition is won by deciding where to look next, when to trust what was found, and when further travel stops buying information.",
+      "concepts": [
+        {
+          "concept_key": "iterative-search",
+          "name": "Iterative Search",
+          "lore": "Iterative search changes retrieval from a one-shot lookup into a loop of action, observation, and revision. Self-distilling web agents use reproducible search and page-reading tools so experience can generate improved behavior, while graph-structured harnessing argues that the loop must expose the right environment state, not merely reward fluent query strings. Representation-program search applies the same iterative engine to indexes: diagnose failures, synthesize candidate transformations, rebuild, and retain only improvements. The changed flow is feedback after each attempt, allowing the next action to target an observed failure. The boundary is cost and aliasing: iterations that do not create new candidates, better indexes, or clearer checks only burn budget.",
+          "source_ids": [
+            "emergentmind-2607-07820-deepsearch-world-self-distillation-for-deep-search-agents-2026",
+            "emergentmind-2607-27652-harness-g-a-graph-structured-harness-for-search-2026",
+            "emergentmind-2607-18603-autoindex-learning-representation-programs-for-retrieval-2026"
+          ],
+          "questions": [
+            {
+              "q": "What makes iterative search different from a single retrieval call?",
+              "options": [
+                "It loops through action, observation, diagnosis, and revision before committing to the next step.",
+                "It forbids tool use after the first query string is generated.",
+                "It ranks documents only once and never changes the information state.",
+                "It removes validation because repeated attempts are enough."
+              ],
+              "a": 0,
+              "why": "Iteration uses feedback from previous actions to change later actions. The mechanism only helps when observations diagnose a failure or reveal new information.",
+              "source_ids": [
+                "emergentmind-2607-07820-deepsearch-world-self-distillation-for-deep-search-agents-2026",
+                "emergentmind-2607-18603-autoindex-learning-representation-programs-for-retrieval-2026"
+              ]
+            },
+            {
+              "q": "When does another search iteration become wasteful?",
+              "options": [
+                "When it adds new evidence that changes the answer state.",
+                "When it rebuilds an index after diagnosing a concrete failure.",
+                "When it produces a different surface action but no new candidates, checks, or improvements.",
+                "When it uses page-reading tools in a deterministic environment."
+              ],
+              "a": 2,
+              "why": "Iteration has value through changed information flow. If the next action is only cosmetically different, aliasing and budget loss dominate.",
+              "source_ids": [
+                "emergentmind-2607-27652-harness-g-a-graph-structured-harness-for-search-2026"
+              ]
+            }
+          ]
+        },
+        {
+          "concept_key": "verification-and-stopping",
+          "name": "Verification and Stopping",
+          "lore": "Stopping is a technical decision, not a feeling of confidence. Verifiable environments give search agents deterministic tools and progress checks, making it possible to compare trajectories and know whether intermediate work is improving. Prompt-recovery rewards verify generated images by measuring whether the original text is recoverable from image-conditioned likelihood, while simple appearance manipulations test whether visual age decisions remain stable under plausible perturbations. The changed state is an explicit check that gates continuation or acceptance. The boundary is check validity: if the verifier measures a proxy that misses the real failure, the system can stop early with a convincing but unsupported result, or continue long after useful evidence has saturated.",
+          "source_ids": [
+            "emergentmind-2607-07820-deepsearch-world-self-distillation-for-deep-search-agents-2026",
+            "emergentmind-2607-11886-read-it-back-pretrained-mllms-are-zero-shot-2026",
+            "emergentmind-2607-24194-face-age-verification-vulnerabilities-under-simple-appearance-manipulations-2026"
+          ],
+          "questions": [
+            {
+              "q": "Why does a deterministic verifiable environment help stopping decisions?",
+              "options": [
+                "It ensures every trajectory is identical regardless of actions.",
+                "It makes search and reading outcomes reproducible enough to compare progress across attempts.",
+                "It eliminates the need for intermediate checks by making final answers always correct.",
+                "It converts all multi-hop tasks into supervised teacher trajectories."
+              ],
+              "a": 1,
+              "why": "Reproducible tools let the agent's progress be assessed consistently. That supports deciding whether another step is improving the state or repeating work.",
+              "source_ids": [
+                "emergentmind-2607-07820-deepsearch-world-self-distillation-for-deep-search-agents-2026"
+              ]
+            },
+            {
+              "q": "What is the stopping risk when a verifier measures the wrong proxy?",
+              "options": [
+                "The system may accept a result that passes the proxy while failing the intended grounding or robustness condition.",
+                "The system will necessarily search forever because proxies cannot produce scores.",
+                "The verifier automatically becomes a stronger ranker for all retrieval tasks.",
+                "The model cannot use the verifier unless it was trained with human preference labels."
+              ],
+              "a": 0,
+              "why": "A check gates acceptance only for what it actually measures. Prompt recovery and perturbation robustness illustrate different grounding properties, so the wrong proxy can miss the real failure.",
+              "source_ids": [
+                "emergentmind-2607-11886-read-it-back-pretrained-mllms-are-zero-shot-2026",
+                "emergentmind-2607-24194-face-age-verification-vulnerabilities-under-simple-appearance-manipulations-2026"
+              ]
+            }
+          ]
+        },
+        {
+          "concept_key": "deep-research-planning",
+          "name": "Deep Research Planning",
+          "lore": "Deep research planning coordinates many searches, reads, checks, and revisions under a budget. Long-horizon web agents struggle because fixed teacher trajectories underfit new situations and sparse rewards do not explain which step worked. Self-distillation in a deterministic multi-hop world creates a path for agents to improve from their own verifiable experience. But planning must also choose the interface: Boolean query operators can deliver strong candidate retrieval under a model-call budget, while graph-structured harnessing shows that natural-language query generation can collapse into equivalent evidence sets. The boundary is planning granularity. A plan must schedule query forms, reading, verification, and stopping criteria; otherwise longer horizons amplify waste.",
+          "source_ids": [
+            "emergentmind-2607-07820-deepsearch-world-self-distillation-for-deep-search-agents-2026",
+            "emergentmind-2607-11362-boolean-queries-are-all-you-need-2026",
+            "emergentmind-2607-27652-harness-g-a-graph-structured-harness-for-search-2026"
+          ],
+          "questions": [
+            {
+              "q": "Why are fixed teacher trajectories limited for deep search agents?",
+              "options": [
+                "They can prescribe paths, but they do not let the agent improve from its own new tool-use experience.",
+                "They make every Boolean query illegal inside the search environment.",
+                "They remove the need for page reading by encoding all answers in the prompt.",
+                "They guarantee dense credit for every future long-horizon interaction."
+              ],
+              "a": 0,
+              "why": "Fixed trajectories are static supervision. Self-distillation from verifiable experience lets the agent adapt behavior based on outcomes it produces itself.",
+              "source_ids": [
+                "emergentmind-2607-07820-deepsearch-world-self-distillation-for-deep-search-agents-2026"
+              ]
+            },
+            {
+              "q": "What should a deep search plan track besides final-answer accuracy?",
+              "options": [
+                "Only the number of words in each generated query string.",
+                "Candidate novelty, page-reading progress, verification results, and remaining call budget.",
+                "The size of the LM-head matrix for every retrieved document.",
+                "Whether every query is phrased in natural language rather than operators."
+              ],
+              "a": 1,
+              "why": "Long-horizon search needs control over information gain and cost before the final answer. Tracking novelty and verification prevents repeated or unsupported work.",
+              "source_ids": [
+                "emergentmind-2607-07820-deepsearch-world-self-distillation-for-deep-search-agents-2026",
+                "emergentmind-2607-27652-harness-g-a-graph-structured-harness-for-search-2026"
+              ]
+            }
+          ]
+        }
+      ],
+      "side": {
+        "name": "Expedition Trial",
+        "description": "Applied checks for loops, verification, and budgeted plans.",
+        "questions": [
+          {
+            "q": "A research agent has 100 model calls and a large segment collection. Which plan best uses the budget?",
+            "options": [
+              "Spend all calls paraphrasing one natural-language query before reading anything.",
+              "Use expressive query operators for candidate generation, read high-value results, and stop when verification shows saturation.",
+              "Ignore retrieval and ask for a final answer on the first call.",
+              "Keep searching after retrieved evidence sets stop changing."
+            ],
+            "a": 1,
+            "why": "Budgeted planning has to balance candidate generation, reading, and stopping. Boolean-style control and saturation checks reduce waste.",
+            "source_ids": [
+              "emergentmind-2607-11362-boolean-queries-are-all-you-need-2026",
+              "emergentmind-2607-27652-harness-g-a-graph-structured-harness-for-search-2026"
+            ]
+          },
+          {
+            "q": "A verifier says an image is good because the prompt is recoverable, but a safety task needs robustness to simple visual edits. What should the plan do?",
+            "options": [
+              "Accept prompt recovery as the only check because all visual tasks share one verifier.",
+              "Add perturbation tests that match the safety failure mode before stopping.",
+              "Replace the verifier with substring-density ranking over text documents.",
+              "Stop using images because robustness cannot be measured."
+            ],
+            "a": 1,
+            "why": "Prompt recovery checks image-text alignment, while appearance manipulation tests decision robustness. The stopping rule must match the failure mode.",
+            "source_ids": [
+              "emergentmind-2607-11886-read-it-back-pretrained-mllms-are-zero-shot-2026",
+              "emergentmind-2607-24194-face-age-verification-vulnerabilities-under-simple-appearance-manipulations-2026"
+            ]
+          }
+        ]
+      },
+      "gym": {
+        "leader": "Expedition Captain",
+        "badge": "Deep Search Badge",
+        "taunt": "Longer search is not deeper search unless each step changes the map.",
+        "questions": [
+          {
+            "q": "A deep-search agent improves during training but stalls at deployment with repeated evidence. Which diagnosis best connects planning and interface?",
+            "options": [
+              "The final reward is too dense, so every intermediate action is overexplained.",
+              "The query interface allows surface variation without enforcing information gain.",
+              "The page-reading tool is deterministic, so progress cannot be verified.",
+              "The model needs a smaller tokenizer to create more candidate documents."
+            ],
+            "a": 1,
+            "why": "Repeated evidence despite different queries is retrieval-equivalence collapse. The plan must constrain or evaluate actions by new information, not surface form.",
+            "source_ids": [
+              "emergentmind-2607-27652-harness-g-a-graph-structured-harness-for-search-2026",
+              "emergentmind-2607-07820-deepsearch-world-self-distillation-for-deep-search-agents-2026"
+            ]
+          },
+          {
+            "q": "Which stopping rule is strongest for a multi-hop web task?",
+            "options": [
+              "Stop after a fixed number of paraphrases, even if no pages were read.",
+              "Stop when accumulated evidence supports each hop and additional queries no longer add distinct information.",
+              "Stop as soon as the answer model produces a fluent chain-of-thought.",
+              "Stop whenever a Boolean query returns more than one segment."
+            ],
+            "a": 1,
+            "why": "Multi-hop tasks require support for intermediate links, and saturation checks prevent wasted search. Fluency or arbitrary counts do not verify the path.",
+            "source_ids": [
+              "emergentmind-2607-07820-deepsearch-world-self-distillation-for-deep-search-agents-2026",
+              "emergentmind-2607-27652-harness-g-a-graph-structured-harness-for-search-2026"
+            ]
+          },
+          {
+            "q": "A team wants an autonomous research agent to improve over time. Which training signal mix is most defensible from these mechanisms?",
+            "options": [
+              "Only fixed teacher trajectories, because new experience creates unverifiable variation.",
+              "Only sparse final-answer rewards, because intermediate behavior is irrelevant.",
+              "Self-distilled experience in reproducible tasks, with progress verification and evidence-novelty checks.",
+              "Random filler tokens as the sole training signal for all tool actions."
+            ],
+            "a": 2,
+            "why": "Self-distillation provides adaptable experience, deterministic tools make comparisons reproducible, and progress plus novelty checks improve credit assignment. Sparse final rewards alone are too weak for long horizons.",
+            "source_ids": [
+              "emergentmind-2607-07820-deepsearch-world-self-distillation-for-deep-search-agents-2026",
+              "emergentmind-2607-27652-harness-g-a-graph-structured-harness-for-search-2026"
+            ]
+          }
+        ]
+      }
+    }
+  ],
+  "source_assignments": [
+    {
+      "source_id": "emergentmind-2607-05803-quantifying-and-expanding-the-theoretical-capacity-of-2026",
+      "board_key": "retrieval",
+      "concept_key": "ranking-and-relevance"
+    },
+    {
+      "source_id": "emergentmind-2607-07820-deepsearch-world-self-distillation-for-deep-search-agents-2026",
+      "board_key": "search-agents",
+      "concept_key": "deep-research-planning"
+    },
+    {
+      "source_id": "emergentmind-2607-11886-read-it-back-pretrained-mllms-are-zero-shot-2026",
+      "board_key": "retrieval",
+      "concept_key": "evidence-grounding"
+    },
+    {
+      "source_id": "emergentmind-2607-11362-boolean-queries-are-all-you-need-2026",
+      "board_key": "retrieval",
+      "concept_key": "query-and-candidate-generation"
+    },
+    {
+      "source_id": "emergentmind-2607-15232-in-place-tokenizer-expansion-for-pre-trained-llms-2026",
+      "board_key": "indexing",
+      "concept_key": "update-and-freshness"
+    },
+    {
+      "source_id": "emergentmind-2607-17457-the-matryoshka-hypencoder-2026",
+      "board_key": "retrieval",
+      "concept_key": "ranking-and-relevance"
+    },
+    {
+      "source_id": "emergentmind-2607-18603-autoindex-learning-representation-programs-for-retrieval-2026",
+      "board_key": "indexing",
+      "concept_key": "representation-and-indexing"
+    },
+    {
+      "source_id": "emergentmind-2607-18601-robust-signal-maximization-in-spillover-experiments-2026",
+      "board_key": "graph-memory",
+      "concept_key": "multi-hop-reasoning"
+    },
+    {
+      "source_id": "emergentmind-2607-18012-physics-informed-neural-networks-for-optimal-beam-shaping-2026",
+      "board_key": "indexing",
+      "concept_key": "representation-and-indexing"
+    },
+    {
+      "source_id": "emergentmind-2607-19237-dbmol-design-of-high-affinity-target-specific-small-2026",
+      "board_key": "graph-memory",
+      "concept_key": "entity-and-relation-memory"
+    },
+    {
+      "source_id": "emergentmind-2607-19479-modpack-an-extensible-teleoperation-interface-for-bimanual-mobile-2026",
+      "board_key": "indexing",
+      "concept_key": "update-and-freshness"
+    },
+    {
+      "source_id": "emergentmind-2607-24194-face-age-verification-vulnerabilities-under-simple-appearance-manipulations-2026",
+      "board_key": "retrieval",
+      "concept_key": "evidence-grounding"
+    },
+    {
+      "source_id": "emergentmind-2607-27178-denseon-with-the-lateon-fully-open-dense-and-2026",
+      "board_key": "retrieval",
+      "concept_key": "ranking-and-relevance"
+    },
+    {
+      "source_id": "emergentmind-2607-22925-not-all-llm-reasoning-is-visible-in-the-2026",
+      "board_key": "graph-memory",
+      "concept_key": "persistent-agent-memory"
+    },
+    {
+      "source_id": "emergentmind-2607-27652-harness-g-a-graph-structured-harness-for-search-2026",
+      "board_key": "retrieval",
+      "concept_key": "query-and-candidate-generation"
+    },
+    {
+      "source_id": "emergentmind-2608-00650-tenginedb-v-an-olap-native-vector-search-system-2026",
+      "board_key": "indexing",
+      "concept_key": "hierarchy-and-partitioning"
+    },
+    {
+      "source_id": "emergentmind-2608-01662-longcat-sparse-attention-taming-the-lightning-via-streaming-2026",
+      "board_key": "indexing",
+      "concept_key": "hierarchy-and-partitioning"
+    },
+    {
+      "source_id": "emergentmind-2608-06117-confidence-matters-leveraging-multi-view-geometric-priors-for-2026",
+      "board_key": "graph-memory",
+      "concept_key": "entity-and-relation-memory"
+    }
+  ]
+}

@@ -42,94 +42,43 @@ def run_check(cmd, timeout=160):
     return p.stdout.strip()
 
 def pick_world(title, abstract):
-    t = (title + " " + abstract).lower()
-    if any(x in t for x in ["retrieval", "search agent", "deep search", "rag", "maxsim"]):
-        return "retrieval-augmented-generation"
-    if any(x in t for x in ["slam", "event camera", "egocentric", "pose", "simulator", "robot", "3d", "vision"]):
-        return "perception-world-models"
-    if any(x in t for x in ["serving", "latency", "gpu", "dram", "memory", "inference", "decoding"]):
-        return "llm-systems-serving"
-    if any(x in t for x in ["attention", "rnn", "concept", "geometry", "representation"]):
-        return "transformer-architecture"
-    if any(x in t for x in ["distillation", "diffusion", "training", "memorization"]):
-        return "generative-models"
-    return "agents"
-
-def lore_region(title, arxiv):
-    t = title.lower()
-    presets = [
-        ("whareformer", "the-wherewatcher-lantern", "The Wherewatcher Lantern", "Foundations of Perception"),
-        ("deepsearch", "the-verifiable-search-depths", "The Verifiable Search Depths", None),
-        ("intelligence beyond human", "the-beyond-human-measure", "The Beyond-Human Measure", "The Long Roads"),
-        ("event camera", "the-event-camera-workshop", "The Event Camera Workshop", "Foundations of Perception"),
-        ("visual slam", "the-slam-mirror-cavern", "The SLAM Mirror Cavern", "Foundations of Perception"),
-        ("geogs", "the-geometry-splatting-citadel", "The Geometry Splatting Citadel", "Foundations of Perception"),
-        ("sketch", "the-cultural-concept-gallery", "The Cultural Concept Gallery", "Foundations of Perception"),
-    ]
-    for key, rid, label, arc in presets:
-        if key in t:
-            return rid, label, arc
-    return "the-" + slug(title, 5), "The " + " ".join(w.capitalize() for w in slug(title, 4).split("-")), None
-
-def balanced_choices(correct, distractors, pos):
-    choices = distractors[:]
-    choices.insert(pos % 4, correct)
-    return choices[:4], pos % 4
+    title_text, abstract_text = title.lower(), abstract.lower()
+    terms = {
+        "agents": ["agent", "human-ai", "multi-agent", "tool use", "tool-use", "planning", "autonomous", "scientific discovery", "coordination"],
+        "retrieval-augmented-generation": ["retrieval", "search agent", "deep search", "rag", "maxsim", "index", "knowledge graph"],
+        "perception-world-models": ["slam", "event camera", "egocentric", "pose", "simulator", "robot", "3d", "vision", "camera", "scene reconstruction", "gaussian splat"],
+        "llm-systems-serving": ["serving", "latency", "gpu", "dram", "memory bandwidth", "inference", "decoding", "throughput", "kv cache"],
+        "transformer-architecture": ["attention", "rnn", "embedding", "representation geometry", "transformer architecture", "sparse layer"],
+        "generative-models": ["distillation", "diffusion", "generative", "memorization", "flow matching", "world model"],
+    }
+    scores = {world: sum(4 for term in words if term in title_text) + sum(1 for term in words if term in abstract_text) for world, words in terms.items()}
+    best = max(scores, key=lambda world: scores[world])
+    return best if scores[best] else "agents"
 
 def make_content(p, source_id, pos):
+    """Add source-backed evidence nodes; curriculum boards are model-curated later."""
     title = p["title"]
     aid = p["arxiv_paper_id"]
     abstract = re.sub(r"\s+", " ", p.get("abstract", "")).strip()
     world = pick_world(title, abstract)
-    rid, rlabel, arc = lore_region(title, aid)
     base = slug(title, 7)
     method_id = base
     problem_id = slug(title + " learning problem", 8)
     eval_id = slug(title + " evaluation signal", 8)
     paper_id = "paper-" + aid.replace(".", "-")
-    summary = abstract[:360].rstrip()
-    if len(abstract) > 360: summary += "..."
-    concepts = [method_id, problem_id, eval_id, paper_id]
+    concepts = [method_id, problem_id, eval_id]
     node_specs = [
-        (method_id, title.split(":")[0], "method", f"Source-grounded method/approach from '{title}': {summary}"),
-        (problem_id, title.split(":")[0] + " problem setting", "concept", f"The learning or systems problem described by the source: {summary}"),
-        (eval_id, title.split(":")[0] + " evaluation signal", "concept", f"The source's evaluation/benchmark signal for judging the method; Edokai keeps this claim source-qualified."),
-        (paper_id, title, "paper", f"EmergentMind surfaced arXiv paper {aid}: {summary}"),
+        (method_id, title.split(":")[0], "method", abstract),
+        (problem_id, title.split(":")[0] + " problem setting", "concept", abstract),
+        (eval_id, title.split(":")[0] + " evaluation signal", "concept", abstract),
+        (paper_id, title, "paper", abstract),
     ]
-    correct = f"It uses the source's {title.split(':')[0]} mechanism to address the paper's stated ML/AI problem."
-    distractors = [
-        "It mainly replaces the user interface theme without changing the learning mechanism.",
-        "It is a clinical treatment protocol rather than a machine-learning research method.",
-        "It proves a pure-math theorem without a model, agent, or evaluation loop.",
-    ]
-    choices, answer_index = balanced_choices(correct, distractors, pos)
-    duel = {
-        "id": slug(rlabel + " duel", 8),
-        "prompt": f"What should Edokai learners remember about **{title.split(':')[0]}**?",
-        "left": "Treat it as a title-only bookmark without checking the mechanism.",
-        "right": "Track the mechanism, evidence signal, and limits stated by the source.",
-        "answer": "Use the source-backed mechanism and evaluation signal; avoid inferring guarantees beyond the paper summary."
-    }
-    region = {
-        "id": rid,
-        "label": rlabel,
-        "summary": f"A source-backed case board for {title}: learners inspect the plain technical mechanism, the evaluation signal, and where the claim fits in Edokai's {world.replace('-', ' ')} world.",
-        "source_ids": [source_id],
-        "concept_ids": concepts[:3],
-        "critical_concepts": concepts[:2],
-        "prerequisite_links": [],
-        "side_retention_duels": [duel],
-        "quiz_questions": [{"question": f"In the source **{title}**, what is the main learner-facing mechanism Edokai should preserve?", "choices": choices, "answer_index": answer_index, "source_ids": [source_id]}]
-    }
-    if arc:
-        region["arc"] = arc
     edges = [
-        {"source": paper_id, "target": method_id, "relation":"paper_introduces", "confidence":0.82, "source_ids":[source_id], "evidence": f"EmergentMind homepage/page metadata identify arXiv {aid}, '{title}', and summarize the method/problem."},
-        {"source": method_id, "target": problem_id, "relation":"implements", "confidence":0.76, "source_ids":[source_id], "evidence": abstract[:280]},
-        {"source": method_id, "target": eval_id, "relation":"evaluates_on", "confidence":0.72, "source_ids":[source_id], "evidence": abstract[:280]},
-        {"source": method_id, "target": rid, "relation":"belongs_to_region", "confidence":0.78, "source_ids":[source_id], "evidence": f"Routed into {rlabel} under {world} from source title and abstract."},
+        {"source": paper_id, "target": method_id, "relation":"paper_introduces", "confidence":0.82, "source_ids":[source_id], "evidence": abstract[:600]},
+        {"source": method_id, "target": problem_id, "relation":"addresses", "confidence":0.76, "source_ids":[source_id], "evidence": abstract[:600]},
+        {"source": method_id, "target": eval_id, "relation":"evaluates_on", "confidence":0.72, "source_ids":[source_id], "evidence": abstract[:600]},
     ]
-    return world, region, node_specs, edges
+    return world, None, node_specs, edges
 
 def main():
     dkg = json.loads(DKG_PATH.read_text())
@@ -188,7 +137,8 @@ def main():
         sources_added += 1; source_ids.append(sid)
         world, region, node_specs, new_edges = make_content(p, sid, n+1)
         if world not in worlds_touched: worlds_touched.append(world)
-        regions_enhanced.append(region["id"])
+        if region:
+            regions_enhanced.append(region["id"])
         for node_id, label, typ, summary in node_specs:
             if node_id not in dkg["nodes"]:
                 dkg["nodes"][node_id] = {"id":node_id,"label":label,"type":typ,"summary":summary,"aliases":[],"source_ids":[sid],"confidence":0.78,"first_seen":NOW,"last_seen":NOW,"world_hint":world}
@@ -200,9 +150,10 @@ def main():
         for e in new_edges:
             if (e["source"], e["target"], e["relation"]) not in edge_keys:
                 dkg.setdefault("edges",[]).append(e); edges_added += 1
-        world_obj = idx["macro_worlds"][world]
-        if not any(r.get("id") == region["id"] for r in world_obj.get("regions", [])):
-            world_obj.setdefault("regions", []).append(region); regions_added += 1
+        if region:
+            world_obj = idx["macro_worlds"][world]
+            if not any(r.get("id") == region["id"] for r in world_obj.get("regions", [])):
+                world_obj.setdefault("regions", []).append(region); regions_added += 1
     completed = NOW
     dkg["updated_at"] = completed
     idx["updated_at"] = completed

@@ -1,0 +1,1440 @@
+{
+  "boards": [
+    {
+      "board_key": "global-geometry",
+      "summary": "Geometry becomes reliable when local predictions are tied into one optimized world.",
+      "npc_name": "Astra Cartographer",
+      "npc_text": "The Observatory starts where isolated views fail: every image is useful, but none is sovereign.",
+      "concepts": [
+        {
+          "concept_key": "geometric-priors",
+          "name": "Geometric Priors",
+          "lore": "The first chamber asks why reconstruction cannot rely on texture alone. Sparse views, shiny surfaces, agricultural fields, and query-based splats all expose the same problem: pixels provide evidence, but geometry constrains what evidence can mean. Pretrained geometric backbones, depth priors, multi-resolution field structure, and latent predictive encoders change the information flow by giving the model a spatial hypothesis before appearance details are filled in. That prior can reduce floating geometry, improve view transfer, or make large-scale boundaries less brittle. The evidence is strongest where the abstracts describe explicit 3D, depth, scale, or structure signals. The boundary is that a prior is not truth: if scale is ambiguous, topology is unusual, or the prior is mismatched, optimization can confidently preserve the wrong shape.",
+          "source_ids": [
+            "emergentmind-2608-01186-querysplat-decoupling-geometry-and-appearance-representations-in-3dgs-2026",
+            "emergentmind-2608-01588-d-2-4dgs-dual-depth-guided-sparse-camera-2026",
+            "emergentmind-2607-19069-delineate-anything-v2-a-global-foundation-model-for-2026",
+            "emergentmind-2607-11270-towards-predictive-aligned-and-scalable-robot-learning-2026"
+          ],
+          "questions": [
+            {
+              "q": "Why can a geometric prior help sparse-view 4D reconstruction?",
+              "options": [
+                "It supplies structure that compensates when few cameras provide weak geometric constraints.",
+                "It removes the need to estimate motion because all objects are treated as static.",
+                "It makes every monocular depth estimate metrically correct without alignment.",
+                "It replaces rendering with classification so floating primitives cannot appear."
+              ],
+              "a": 0,
+              "why": "Sparse views weaken triangulation and can create missing structures or floating primitives. Depth or geometry priors add constraints before appearance fitting tries to explain the pixels.",
+              "source_ids": [
+                "emergentmind-2608-01588-d-2-4dgs-dual-depth-guided-sparse-camera-2026"
+              ]
+            },
+            {
+              "q": "What is the benefit of decoupling geometry and appearance in a feed-forward 3DGS model?",
+              "options": [
+                "It prevents camera poses from affecting any rendered color values.",
+                "It lets the geometry branch use 3D priors while appearance is modeled separately for sharper rendering.",
+                "It guarantees a compact texture atlas without any optimization.",
+                "It removes the need for calibrated views in all online settings."
+              ],
+              "a": 1,
+              "why": "Entangling geometry with appearance can produce blurry, pose-dependent results. A separate geometry path can anchor shape while appearance handles radiance details.",
+              "source_ids": [
+                "emergentmind-2608-01186-querysplat-decoupling-geometry-and-appearance-representations-in-3dgs-2026"
+              ]
+            }
+          ]
+        },
+        {
+          "concept_key": "global-consistency",
+          "name": "Global Consistency",
+          "lore": "The second chamber begins with a contradiction: feed-forward 3D models can predict poses and points quickly, but long sequences and unordered collections expose drift, inconsistent chunks, and local coordinate conflicts. The mechanism is global reconciliation. Dense matching heads can turn feed-forward predictions into image warp constraints, global SfM-style optimization can pull chunks into one frame, temporal ordering can regularize video SfM, and Sim(3) backend refinement can merge heterogeneous local predictions. The changed state is a map whose parts agree with each other instead of merely looking plausible in isolation. The evidence spans long image sets, unconstrained video, and online SLAM. The failure boundary is latency and initialization: global constraints improve coherence, but online systems still trade immediate tracking speed against richer multi-view correction.",
+          "source_ids": [
+            "emergentmind-2607-09225-glob3r-global-structure-from-motion-with-3d-foundation-2026",
+            "emergentmind-2607-27194-vidmap-exploiting-temporal-structure-for-video-based-structure-2026",
+            "emergentmind-2608-01706-unisim-slam-feed-forward-slam-with-unified-sim-2026"
+          ],
+          "questions": [
+            {
+              "q": "A feed-forward reconstructor processes a long unordered photo set in chunks and the partial maps disagree. What mechanism directly targets the failure?",
+              "options": [
+                "Increase image resolution while keeping each chunk optimized independently.",
+                "Use only two-view tracking so the system never sees inconsistent multi-view constraints.",
+                "Optimize feed-forward geometric predictions with dense matching and global SfM-style consistency.",
+                "Discard pose estimates and train a language model to describe the scene layout."
+              ],
+              "a": 2,
+              "why": "Chunk-wise processing can introduce drift and inconsistency. Dense matching plus global optimization turns local predictions into constraints that must agree across the whole set.",
+              "source_ids": [
+                "emergentmind-2607-09225-glob3r-global-structure-from-motion-with-3d-foundation-2026"
+              ]
+            },
+            {
+              "q": "Why does an online SLAM system benefit from periodic multi-view backend refinement after fast two-view tracking?",
+              "options": [
+                "The backend replaces all geometry with photorealistic texture to improve control.",
+                "Two-view tracking is low latency, while multi-view refinement adds constraints that reduce drift across local coordinates.",
+                "The frontend can ignore calibration because the backend only uses language commands.",
+                "Periodic refinement prevents the need for keyframes by rendering every frame independently."
+              ],
+              "a": 1,
+              "why": "Fast two-view tracking keeps latency low but provides limited constraints. Backend multi-view refinement reconciles local predictions and reduces accumulated trajectory inconsistency.",
+              "source_ids": [
+                "emergentmind-2608-01706-unisim-slam-feed-forward-slam-with-unified-sim-2026"
+              ]
+            }
+          ]
+        },
+        {
+          "concept_key": "correspondence-and-optimization",
+          "name": "Correspondence And Optimization",
+          "lore": "The third chamber teaches that perception improves when matches are uncertain but optimizable. Classical pipelines can fail under blur, low texture, poor illumination, or perceptual aliasing because fixed correspondences become brittle. Learned 2D association and learned uncertainty change the flow: instead of committing equally to every match, the system weights evidence and passes it into differentiable geometric optimization. Other variants replace preprocessing boundaries with residual-driven Gaussian allocation, or estimate pose directly against a differentiable map when image-to-image matching is weak. The evidence supports a hybrid mechanism: learning proposes associations, uncertainties, residuals, or map comparisons, while geometry enforces consistency. The boundary is that optimization can only repair evidence that remains informative; severe aliasing, weak overlap, or bad initialization can still leave multiple plausible poses.",
+          "source_ids": [
+            "emergentmind-2607-06023-why-does-deep-learning-improve-visual-slam-2026",
+            "emergentmind-2607-11285-salientgs-unified-sfm-to-3dgs-with-importance-guided-2026",
+            "emergentmind-2607-22147-visual-relocalization-from-sparse-views-in-aliased-and-2026"
+          ],
+          "questions": [
+            {
+              "q": "Why can learned uncertainty improve visual SLAM under poor illumination or blur?",
+              "options": [
+                "It makes every feature detector invariant to lighting before optimization begins.",
+                "It lets the system weight unreliable associations differently inside differentiable geometric optimization.",
+                "It removes bundle adjustment because confidence scores are already final poses.",
+                "It converts monocular video into dense depth maps without camera motion."
+              ],
+              "a": 1,
+              "why": "The mechanism is not just better features; learned association and uncertainty alter how evidence enters optimization. Unreliable matches can be downweighted instead of corrupting the pose estimate.",
+              "source_ids": [
+                "emergentmind-2607-06023-why-does-deep-learning-improve-visual-slam-2026"
+              ]
+            },
+            {
+              "q": "In a 3DGS reconstruction, why use multi-view residuals to guide Gaussian birth and relocation?",
+              "options": [
+                "Residuals identify underfit regions, shifting capacity away from well-fit areas without changing the stochastic allocation framework.",
+                "Residuals prove the camera calibration is exact, so no pose interface is needed.",
+                "Residuals eliminate appearance modeling and leave only obstacle geometry.",
+                "Residuals convert unordered images into a real-time event stream."
+              ],
+              "a": 0,
+              "why": "Aggregated residuals reveal where the model is underfit or redundant. Importance-guided allocation spends new or moved Gaussians where they reduce reconstruction error most.",
+              "source_ids": [
+                "emergentmind-2607-11285-salientgs-unified-sfm-to-3dgs-with-importance-guided-2026"
+              ]
+            }
+          ]
+        }
+      ],
+      "side": {
+        "name": "The Calibration Balcony",
+        "description": "A gantry compares local reconstructions before the dome accepts them into the shared map.",
+        "questions": [
+          {
+            "q": "Your rover sees low-texture terrain with weak overlap between forward views. Which design is most likely to reduce relocalization failure?",
+            "options": [
+              "Match only current RGB images and reject the differentiable map during pose estimation.",
+              "Estimate pose directly against a differentiable 3DGS map instead of relying only on image-to-image correspondences.",
+              "Disable geometry priors so aliasing cannot bias the reconstructed terrain.",
+              "Use only photorealistic rendering quality as the localization objective."
+            ],
+            "a": 1,
+            "why": "Sparse, aliased, low-texture views degrade matching pipelines. Direct pose estimation against a differentiable map uses the accumulated scene representation as the comparison target.",
+            "source_ids": [
+              "emergentmind-2607-22147-visual-relocalization-from-sparse-views-in-aliased-and-2026"
+            ]
+          },
+          {
+            "q": "A phone video has motion distortion from row-wise exposure. What must self-calibrating bundle adjustment estimate beyond ordinary intrinsics?",
+            "options": [
+              "A texture atlas resolution that matches the rolling shutter rows.",
+              "The readout time ratio coupled to the camera intrinsics.",
+              "A binary contact label for each moving object.",
+              "A prompt distribution that maps camera frames into robot actions."
+            ],
+            "a": 1,
+            "why": "Rolling shutter geometry depends on both intrinsics and row readout timing under motion. Estimating only ordinary camera parameters leaves the distortion mechanism unmodeled.",
+            "source_ids": [
+              "emergentmind-2608-01509-rolling-shutter-camera-self-calibration-2026"
+            ]
+          }
+        ]
+      },
+      "gym": {
+        "leader": "Director Meridian",
+        "badge": "Atlas Badge",
+        "taunt": "A map that is locally beautiful but globally contradictory is still lost.",
+        "questions": [
+          {
+            "q": "You need fast online tracking and coherent long-horizon geometry. Which trade-off is most defensible?",
+            "options": [
+              "Run only dense global optimization every frame, accepting high latency as irrelevant.",
+              "Use fast local tracking for latency and periodic multi-view refinement to repair accumulated inconsistency.",
+              "Avoid backend refinement because drift is always caused by appearance detail.",
+              "Use random view chunks so no local coordinate frame becomes dominant."
+            ],
+            "a": 1,
+            "why": "Low-latency tracking and globally constrained reconstruction optimize different pressures. A frontend-backend split keeps motion current while later constraints reduce drift.",
+            "source_ids": [
+              "emergentmind-2608-01706-unisim-slam-feed-forward-slam-with-unified-sim-2026",
+              "emergentmind-2607-09225-glob3r-global-structure-from-motion-with-3d-foundation-2026"
+            ]
+          },
+          {
+            "q": "A reconstruction allocates many primitives to flat, already-correct walls but misses thin structures. What correction matches the mechanism taught here?",
+            "options": [
+              "Freeze primitive locations because redistribution would break differentiability.",
+              "Use underfit and redundancy signals from multi-view residuals to bias birth and relocation.",
+              "Increase language supervision so the wall can be described more accurately.",
+              "Remove all geometric priors because thin objects only require texture."
+            ],
+            "a": 1,
+            "why": "Residual aggregation can distinguish well-fit from underfit regions. Capacity should move toward places where errors remain instead of expanding redundant areas.",
+            "source_ids": [
+              "emergentmind-2607-11285-salientgs-unified-sfm-to-3dgs-with-importance-guided-2026"
+            ]
+          },
+          {
+            "q": "Why is a global consistency step especially valuable after feed-forward 3D prediction on a large unordered image set?",
+            "options": [
+              "Feed-forward models never predict camera poses, so global optimization supplies the first pose estimate.",
+              "Independent predictions can be robust locally but inconsistent across chunks, so shared constraints align poses and points.",
+              "Unordered images contain no geometric information until rendered as video.",
+              "Global consistency mainly improves color saturation, which is the limiting factor in SfM."
+            ],
+            "a": 1,
+            "why": "Feed-forward prediction can produce useful local geometry while still drifting across long or chunked inputs. Shared geometric constraints make the separate predictions agree in one world frame.",
+            "source_ids": [
+              "emergentmind-2607-09225-glob3r-global-structure-from-motion-with-3d-foundation-2026"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "board_key": "localization",
+      "summary": "Pose is maintained by calibrating cameras, correcting drift, and fusing complementary sensing.",
+      "npc_name": "Keeper Parallax",
+      "npc_text": "Every corridor moves unless the observer knows where seeing begins.",
+      "concepts": [
+        {
+          "concept_key": "camera-pose-estimation",
+          "name": "Camera Pose Estimation",
+          "lore": "The labyrinth opens with a simple demand: know the observer’s position even when the scene gives little help. Monocular pose tracking struggles when objects are transparent, reflective, textureless, or seen without depth maps and object models. Rover-like terrain adds aliasing, harsh illumination, and weak overlap. Rolling shutter cameras add another complication because each image row is captured at a different time during motion. The mechanism is to move from brittle input assumptions toward pose estimation that models the actual capture process or compares views against differentiable geometry. The changed information flow is from raw images to camera parameters, timing parameters, or map-aligned poses. The boundary is observability: if views lack overlap or the geometry admits many matches, pose may remain ambiguous.",
+          "source_ids": [
+            "emergentmind-2607-06555-proxypose-6-dof-pose-tracking-via-video-2026",
+            "emergentmind-2608-01509-rolling-shutter-camera-self-calibration-2026",
+            "emergentmind-2607-22147-visual-relocalization-from-sparse-views-in-aliased-and-2026"
+          ],
+          "questions": [
+            {
+              "q": "Why is 6-DoF pose tracking from monocular video difficult for reflective or transparent objects?",
+              "options": [
+                "The object pose has only two rotational degrees of freedom in monocular video.",
+                "Appearance cues can be weak or misleading, and many existing approaches require extra inputs such as 3D models, masks, or depth.",
+                "The camera intrinsics are never needed when the object surface is reflective.",
+                "Transparent objects always produce fully labeled event streams."
+              ],
+              "a": 1,
+              "why": "Textureless, transparent, and reflective surfaces reduce reliable visual evidence. Methods that depend on auxiliary geometry or masks fail when only video is available.",
+              "source_ids": [
+                "emergentmind-2607-06555-proxypose-6-dof-pose-tracking-via-video-2026"
+              ]
+            },
+            {
+              "q": "What changes when a rolling-shutter camera is calibrated from ordinary image sequences rather than a target rig?",
+              "options": [
+                "The method must infer both intrinsics and readout timing from natural motion constraints.",
+                "The method can ignore row-wise exposure because bundle adjustment removes it automatically.",
+                "The camera becomes equivalent to an event sensor with asynchronous pixels.",
+                "The scene must be rendered as Gaussians before any calibration variable can be estimated."
+              ],
+              "a": 0,
+              "why": "Rolling shutter distortion depends on row timing during motion. Self-calibrating bundle adjustment must estimate the readout time ratio along with camera intrinsics.",
+              "source_ids": [
+                "emergentmind-2608-01509-rolling-shutter-camera-self-calibration-2026"
+              ]
+            }
+          ]
+        },
+        {
+          "concept_key": "drift-and-loop-closure",
+          "name": "Drift And Loop Closure",
+          "lore": "The next corridor shows why a tracker that is correct now may be wrong later. Dense monocular SLAM and Gaussian mapping accumulate small inconsistencies over long trajectories, and large outdoor scenes punish systems that are short-horizon, offline, or memory hungry. The mechanism is to separate tracking from mapping while preserving a coherent spatial state: robust feature-based frontends keep pose updates lightweight, sparse anchor grids or geometry-only splats keep maps tractable, and spatial decomposition controls memory. Visual-inertial incremental splatting adds immediate reconstruction while the pose system supplies real-time motion estimates. The evidence supports reducing drift through structured map maintenance, not by maximizing photorealism. The failure boundary is scale and dynamics: long scenes still need bounded memory, reliable frontend tracking, and corrections when the path revisits or reobserves geometry.",
+          "source_ids": [
+            "emergentmind-2607-21416-glam-slam-real-time-gaussian-large-scale-mapping-2026",
+            "emergentmind-2608-00931-stipple-real-time-incremental-gaussian-splatting-with-visual-2026",
+            "emergentmind-2607-07452-geogs-slam-geometry-only-gaussian-splatting-for-dense-2026"
+          ],
+          "questions": [
+            {
+              "q": "Why can a geometry-only Gaussian map be reasonable for robotic SLAM?",
+              "options": [
+                "Navigation and obstacle avoidance depend primarily on spatial geometry, not photorealistic appearance.",
+                "Robots cannot use dense maps unless every primitive stores high-frequency color.",
+                "Geometry-only maps remove the need for tracking because rendering supplies the pose.",
+                "Appearance modeling is always less expensive than storing spatial structure."
+              ],
+              "a": 0,
+              "why": "For downstream robotic tasks, accurate spatial layout can matter more than view synthesis quality. Dropping appearance modeling can focus capacity on geometry needed for motion decisions.",
+              "source_ids": [
+                "emergentmind-2607-07452-geogs-slam-geometry-only-gaussian-splatting-for-dense-2026"
+              ]
+            },
+            {
+              "q": "Why split a large-scale Gaussian SLAM system into a feature-based tracking frontend and a structured mapping backend?",
+              "options": [
+                "The frontend makes photorealistic textures, while the backend guesses camera intrinsics from text.",
+                "Lightweight tracking keeps real-time pose updates, while structured sparse mapping controls memory and scene coherence.",
+                "The split prevents loop closure because old anchors cannot affect new map regions.",
+                "The backend replaces all observations with a fixed batch of unordered images."
+              ],
+              "a": 1,
+              "why": "Large outdoor scenes stress memory and speed. A decoupled design lets tracking remain fast while mapping uses structured anchors and decomposition to scale.",
+              "source_ids": [
+                "emergentmind-2607-21416-glam-slam-real-time-gaussian-large-scale-mapping-2026"
+              ]
+            }
+          ]
+        },
+        {
+          "concept_key": "sensor-and-view-fusion",
+          "name": "Sensor And View Fusion",
+          "lore": "The last labyrinth gate asks what changes when one view or modality is not enough. Visual-inertial tracking brings motion cues into real-time splatting, event simulation supplies high-rate labeled streams where physical cameras would be costly, and multimodal pretraining studies how language, visual understanding, and visual generation transfer knowledge across channels. Unified multimodal architectures and cross-modal prediction show a common mechanism: each sensor or view contributes a partial constraint, and the system must align them without letting one stream erase the useful structure of another. The changed state is a representation that can update from sequential views, patches, events, or language-conditioned signals. The boundary is mismatch: simulated events, raw patches, and unified training only help if timing, scale, and modality alignment preserve the physics of the scene.",
+          "source_ids": [
+            "emergentmind-2608-00931-stipple-real-time-incremental-gaussian-splatting-with-visual-2026",
+            "emergentmind-2607-08098-evis-a-physics-grounded-event-camera-plugin-for-2026",
+            "emergentmind-2608-05000-towards-physics-of-multimodal-pretraining-knowledge-flow-modality-2026",
+            "emergentmind-2607-02770-gemma-4-technical-report-2026"
+          ],
+          "questions": [
+            {
+              "q": "Why are event streams attractive for robotic perception?",
+              "options": [
+                "They provide low-latency, high-dynamic-range changes at very fine temporal resolution.",
+                "They replace all physics simulation with static RGB segmentation masks.",
+                "They remove the need for labels because every event is a final action.",
+                "They encode only language tokens, avoiding camera calibration entirely."
+              ],
+              "a": 0,
+              "why": "Event cameras report asynchronous brightness changes with microsecond-scale timing and high dynamic range. That makes them useful when fast motion or lighting variation challenges frame cameras.",
+              "source_ids": [
+                "emergentmind-2607-08098-evis-a-physics-grounded-event-camera-plugin-for-2026"
+              ]
+            },
+            {
+              "q": "In unified multimodal pretraining, why study knowledge flow between language, visual understanding, and visual generation?",
+              "options": [
+                "Because modalities can transfer useful structure, but poor alignment can limit synergy.",
+                "Because language always dominates vision once the model has enough parameters.",
+                "Because visual generation prevents any need for visual understanding tasks.",
+                "Because audio and image patches cannot be used in one architecture."
+              ],
+              "a": 0,
+              "why": "Unified training can let modalities help each other, but the interaction mechanism is not automatic. Measuring transfer and synergy clarifies when integration helps rather than interferes.",
+              "source_ids": [
+                "emergentmind-2608-05000-towards-physics-of-multimodal-pretraining-knowledge-flow-modality-2026"
+              ]
+            }
+          ]
+        }
+      ],
+      "side": {
+        "name": "The Sensor Crossing",
+        "description": "A moving bridge only stabilizes when its cameras, events, and inertial traces agree.",
+        "questions": [
+          {
+            "q": "You are building an XR mapper that must show reconstruction while the user walks. Which fusion choice matches the constraint?",
+            "options": [
+              "Perform offline 3DGS training after all images are captured.",
+              "Use visual-inertial tracking with incremental Gaussian updates for simultaneous tracking and reconstruction.",
+              "Disable inertial measurements so the renderer controls all pose estimates.",
+              "Batch all context views jointly and prevent causal updates."
+            ],
+            "a": 1,
+            "why": "XR needs immediate pose and map updates. Visual-inertial tracking supplies real-time motion estimates while incremental splatting updates the rendered scene.",
+            "source_ids": [
+              "emergentmind-2608-00931-stipple-real-time-incremental-gaussian-splatting-with-visual-2026"
+            ]
+          },
+          {
+            "q": "A robotics team lacks labeled event-camera data for a target scene. What is the most direct simulation strategy?",
+            "options": [
+              "Use a physics-grounded event plugin that generates labeled event streams from a simulated camera.",
+              "Train only on still RGB images and infer events from class labels.",
+              "Ask the controller to synthesize tactile readings from every event pixel.",
+              "Replace event streams with a larger language prompt."
+            ],
+            "a": 0,
+            "why": "The stated bottleneck is scarce labeled event data. A simulator with a log-intensity contrast event model can generate high-rate labeled streams for the robot and scene.",
+            "source_ids": [
+              "emergentmind-2607-08098-evis-a-physics-grounded-event-camera-plugin-for-2026"
+            ]
+          }
+        ]
+      },
+      "gym": {
+        "leader": "Warden Baseline",
+        "badge": "Parallax Badge",
+        "taunt": "Lose the frame, and every clever sensor becomes a rumor.",
+        "questions": [
+          {
+            "q": "A mobile robot has accurate short-term tracking but its Gaussian map becomes inconsistent over a campus route. What combination best addresses the issue?",
+            "options": [
+              "Keep the frontend fast, use structured sparse mapping, and apply long-term coherence constraints as the map grows.",
+              "Increase texture resolution in every splat and ignore spatial decomposition.",
+              "Switch to event simulation only, since drift is caused by RGB cameras.",
+              "Remove loop correction so each segment remains locally independent."
+            ],
+            "a": 0,
+            "why": "The failure is long-horizon drift and memory pressure. Robust lightweight tracking plus structured large-scale mapping targets both real-time operation and coherence.",
+            "source_ids": [
+              "emergentmind-2607-21416-glam-slam-real-time-gaussian-large-scale-mapping-2026"
+            ]
+          },
+          {
+            "q": "Which failure is most likely if a unified multimodal model aligns modalities poorly?",
+            "options": [
+              "The model gains perfect geometric scale from text alone.",
+              "One channel can interfere with another, reducing the intended transfer between language and visual capabilities.",
+              "The camera readout ratio becomes exactly known without motion.",
+              "Every generated frame becomes a calibrated SLAM keyframe."
+            ],
+            "a": 1,
+            "why": "The benefit of unified training depends on useful knowledge transfer. Poor modality alignment can blunt or distort that transfer.",
+            "source_ids": [
+              "emergentmind-2608-05000-towards-physics-of-multimodal-pretraining-knowledge-flow-modality-2026"
+            ]
+          },
+          {
+            "q": "Why might a robot SLAM stack prioritize geometry fidelity over novel-view realism?",
+            "options": [
+              "Control tasks such as navigation and obstacle avoidance use spatial layout more directly than photorealistic color.",
+              "Novel-view realism always increases pose accuracy with no compute cost.",
+              "Geometry fidelity is irrelevant once a policy has language input.",
+              "Obstacle avoidance only requires matching image histograms across frames."
+            ],
+            "a": 0,
+            "why": "For control, the map is often used to decide where the robot can move. Accurate geometry supports those decisions even if appearance is simplified.",
+            "source_ids": [
+              "emergentmind-2607-07452-geogs-slam-geometry-only-gaussian-splatting-for-dense-2026"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "board_key": "temporal-perception",
+      "summary": "Time turns perception into memory, motion, and causal continuity.",
+      "npc_name": "Chrona Lenswright",
+      "npc_text": "A single frame tells you what flashed; a sequence tells you what endured.",
+      "concepts": [
+        {
+          "concept_key": "motion-and-event-streams",
+          "name": "Motion And Event Streams",
+          "lore": "The Lensworks begin with motion that is too fast, too long, or too structured for independent frames. Event cameras encode asynchronous brightness changes with low latency and high dynamic range, while video models must learn how earlier generated states should support later predictions. Dynamic reconstruction adds another demand: object motion is not a cloud of unrelated displacements, because many points move together under rigid-body transformations. The mechanism is temporal structure: event streams preserve high-rate changes, gradient-through-history trains generated context to be useful later, and structured motion geometry groups points by physically meaningful transformations. The changed state is a memory-bearing perceptual process rather than a frame classifier. The boundary is supervision: simulated events, generated histories, and motion groups must match the real temporal physics they claim to represent.",
+          "source_ids": [
+            "emergentmind-2607-08098-evis-a-physics-grounded-event-camera-plugin-for-2026",
+            "emergentmind-2607-20368-self-gradient-forcing-native-long-video-extrapolation-2026",
+            "emergentmind-2607-22534-sm4rt-learning-structured-motion-geometry-for-4d-reconstruction-2026"
+          ],
+          "questions": [
+            {
+              "q": "What problem does training future losses through earlier generated video context address?",
+              "options": [
+                "Earlier generated latents may be written into keys and values that are not useful for later frames.",
+                "The model cannot render any frame unless it has a calibrated camera target.",
+                "Motion blur is eliminated by replacing video with unordered image sets.",
+                "Rigid-body motion must be ignored so each point can move independently."
+              ],
+              "a": 0,
+              "why": "If historical cache states are frozen, future errors cannot teach earlier generated context how to support later generation. Passing gradients through that history closes the context-supervision gap.",
+              "source_ids": [
+                "emergentmind-2607-20368-self-gradient-forcing-native-long-video-extrapolation-2026"
+              ]
+            },
+            {
+              "q": "Why model dynamic 4D motion with structured SE(3)-like transformations instead of independent point flows?",
+              "options": [
+                "Independent point flows always enforce rigid body kinematics automatically.",
+                "Real objects often move collectively, so structured transformations encode physical motion more faithfully.",
+                "SE(3) transformations remove the need for visual observations.",
+                "Structured motion is only useful for static field boundary delineation."
+              ],
+              "a": 1,
+              "why": "Physical objects often undergo coherent rigid-body motion. Treating every point independently can miss the shared geometry of that motion.",
+              "source_ids": [
+                "emergentmind-2607-22534-sm4rt-learning-structured-motion-geometry-for-4d-reconstruction-2026"
+              ]
+            }
+          ]
+        },
+        {
+          "concept_key": "egocentric-context",
+          "name": "Egocentric Context",
+          "lore": "The second lens is mounted on a person or robot, where objects vanish, hands occlude them, and actions are defined relative to a body. Online egocentric tracking must remember object instances after they leave view; robot data synthesis must retarget human manipulation into robot observations and actions; robot-centric pointmaps reduce the mismatch between camera-frame perception and robot-frame control. The mechanism is body-centered memory and transformation. A track memory preserves what is where, retargeting converts human demonstrations into robot-format trajectories, and robot-centric maps express scene structure in the frame where actions are issued. The changed information flow is from camera snapshots to persistent, body-relative state. The boundary is embodiment mismatch: human hands, camera viewpoints, and robot kinematics must be transformed carefully or the policy memorizes viewpoint-specific shortcuts.",
+          "source_ids": [
+            "emergentmind-2607-08537-whareformer-learning-to-track-what-is-where-in-2026",
+            "emergentmind-2608-02580-ego2robot-scalable-robot-data-synthesis-from-egocentric-human-2026",
+            "emergentmind-2607-11498-see-like-a-robot-robot-centric-pointmaps-for-2026"
+          ],
+          "questions": [
+            {
+              "q": "Why does egocentric object tracking need memory beyond current detections?",
+              "options": [
+                "Objects moved by the camera wearer may leave view or become occluded while their locations still matter.",
+                "Current detections always include every object touched earlier in the video.",
+                "Egocentric cameras provide perfect global maps at each frame.",
+                "Object identity is unnecessary once the wearer stops looking at it."
+              ],
+              "a": 0,
+              "why": "The task requires maintaining instance locations online even when objects are out of sight. A track memory carries state across occlusions and viewpoint changes.",
+              "source_ids": [
+                "emergentmind-2607-08537-whareformer-learning-to-track-what-is-where-in-2026"
+              ]
+            },
+            {
+              "q": "Why express visual observations as robot-centric pointmaps for action prediction?",
+              "options": [
+                "Actions are defined in the robot's 3D frame, so robot-centered geometry reduces camera-view mismatch.",
+                "Pointmaps replace language instructions with field-boundary labels.",
+                "Camera-frame observations always generalize across all viewpoints without transformation.",
+                "Robot-centric geometry prevents any need for large-scale demonstrations."
+              ],
+              "a": 0,
+              "why": "VLA actions live in the robot coordinate frame, while cameras may vary across datasets. Expressing scene geometry robot-centrically aligns perception with the action frame.",
+              "source_ids": [
+                "emergentmind-2607-11498-see-like-a-robot-robot-centric-pointmaps-for-2026"
+              ]
+            }
+          ]
+        },
+        {
+          "concept_key": "temporal-correspondence",
+          "name": "Temporal Correspondence",
+          "lore": "The final lens aligns decisions across time. Chunked robot policies satisfy real-time constraints but can disagree at overlapping boundaries, producing jitter. Multi-frame action denoising recognizes that the same behavior may be simple in one coordinate frame and complex in another, so synchronized denoisers share a canonical state across frames. B-spline actions replace discrete chunks with continuous curves that can be temporally scaled and executed at higher controller frequencies. The mechanism is correspondence between adjacent predictions, coordinate frames, and execution time. The changed state is a policy whose outputs form a coherent trajectory rather than a sequence of isolated proposals. The boundary is bias: blending inconsistent chunks after inference cannot fix a training process that never learned boundary consistency.",
+          "source_ids": [
+            "emergentmind-2607-12992-chunkflow-towards-continuity-consistent-chunked-policy-learning-2026",
+            "emergentmind-2607-11884-mixture-of-frames-policy-multi-frame-action-denoising-2026",
+            "emergentmind-2607-09648-b-spline-policy-accelerating-manipulation-policies-via-b-2026"
+          ],
+          "questions": [
+            {
+              "q": "Why can overlapping action chunks cause boundary jitter?",
+              "options": [
+                "Consecutive chunks may predict inconsistent actions for the same time region.",
+                "Chunked policies always run slower than single-step policies.",
+                "The robot changes its camera intrinsics at each chunk boundary.",
+                "Boundary overlap removes all temporal information from the policy."
+              ],
+              "a": 0,
+              "why": "When overlapping regions disagree, execution switches between mismatched proposals. Training and execution must align chunk boundaries rather than only reweighting them later.",
+              "source_ids": [
+                "emergentmind-2607-12992-chunkflow-towards-continuity-consistent-chunked-policy-learning-2026"
+              ]
+            },
+            {
+              "q": "What is the advantage of predicting B-spline action parameters instead of discrete-time action chunks?",
+              "options": [
+                "The policy emits smooth continuous trajectories that can be temporally scaled for faster low-level control.",
+                "The policy no longer needs observations because knots encode the whole scene.",
+                "The spline forces every manipulation task into the camera frame.",
+                "The controller can ignore contact because curves are always collision-free."
+              ],
+              "a": 0,
+              "why": "B-splines parameterize continuous trajectories with knots and control points. Low-level controllers can execute them at higher frequency or adjusted speed without discrete chunk jitter.",
+              "source_ids": [
+                "emergentmind-2607-09648-b-spline-policy-accelerating-manipulation-policies-via-b-2026"
+              ]
+            }
+          ]
+        }
+      ],
+      "side": {
+        "name": "The Memory Rail",
+        "description": "A conveyor tests whether predictions remain coherent after the object leaves sight.",
+        "questions": [
+          {
+            "q": "A mobile manipulator jitters whenever it switches between overlapping action chunks. Which fix targets the cause rather than masking it?",
+            "options": [
+              "Use seam-aware training and execution so chunk boundaries are learned consistently.",
+              "Average the two chunks only at inference and leave training unchanged.",
+              "Shorten the camera exposure until the chunk overlap disappears visually.",
+              "Move all actions into text tokens and decode them later."
+            ],
+            "a": 0,
+            "why": "Inference-time blending can reweight mismatched proposals but does not correct why they disagree. Boundary-aware training changes the predictions themselves.",
+            "source_ids": [
+              "emergentmind-2607-12992-chunkflow-towards-continuity-consistent-chunked-policy-learning-2026"
+            ]
+          },
+          {
+            "q": "You are converting head-mounted human manipulation videos into robot training data. What transformation is essential?",
+            "options": [
+              "Retarget actions and render robot-format observations so the data matches robot embodiment.",
+              "Keep human hands visible and ask the robot to imitate pixel positions directly.",
+              "Discard synchronization because only task labels affect policy learning.",
+              "Convert every frame into an unordered SfM collection."
+            ],
+            "a": 0,
+            "why": "Human egocentric data differs from robot embodiment and action space. Retargeting and robot-arm visual synthesis make the demonstrations usable for robot policy training.",
+            "source_ids": [
+              "emergentmind-2608-02580-ego2robot-scalable-robot-data-synthesis-from-egocentric-human-2026"
+            ]
+          }
+        ]
+      },
+      "gym": {
+        "leader": "Archivist Nowline",
+        "badge": "Continuity Badge",
+        "taunt": "Show me a motion plan that survives its next second.",
+        "questions": [
+          {
+            "q": "A robot must carry an upright object while driving its base and moving both arms. Why might multiple action frames help?",
+            "options": [
+              "Some parts of the action are simpler in end-effector frames, while transport and whole-body coordination can be simpler in a base-aligned frame.",
+              "Multiple frames remove the need for a shared canonical action state.",
+              "Every denoiser should optimize an unrelated future trajectory.",
+              "A single camera frame is always the easiest coordinate system for contact control."
+            ],
+            "a": 0,
+            "why": "Manipulation is multi-frame: local and whole-body components can have different natural coordinates. Synchronized denoising across frames keeps them tied to one canonical trajectory.",
+            "source_ids": [
+              "emergentmind-2607-11884-mixture-of-frames-policy-multi-frame-action-denoising-2026"
+            ]
+          },
+          {
+            "q": "A generated long video becomes less coherent as early generated context is reused. What training signal is missing?",
+            "options": [
+              "A loss path that teaches earlier generated history how to become useful context for later frames.",
+              "A contact-following reward for every rendered object boundary.",
+              "A visual-inertial odometry frontend for all latent tokens.",
+              "A field delineation dataset with physical scale labels."
+            ],
+            "a": 0,
+            "why": "If future losses cannot update historical cache states, earlier generated latents are not trained for their later conditioning role. Restoring that gradient path targets long-horizon extrapolation.",
+            "source_ids": [
+              "emergentmind-2607-20368-self-gradient-forcing-native-long-video-extrapolation-2026"
+            ]
+          },
+          {
+            "q": "Why combine egocentric memory with robot-centric geometry in a household manipulation system?",
+            "options": [
+              "Memory keeps track of hidden objects, while robot-centric geometry expresses where actions should happen relative to the robot body.",
+              "Egocentric memory replaces coordinate transforms and makes all viewpoints identical.",
+              "Robot-centric maps only help after objects leave the field of view.",
+              "Both mechanisms mainly improve photorealistic rendering rather than control."
+            ],
+            "a": 0,
+            "why": "Hidden-object state and action-frame alignment solve different temporal problems. Together they preserve object continuity and make the retained state actionable.",
+            "source_ids": [
+              "emergentmind-2607-08537-whareformer-learning-to-track-what-is-where-in-2026",
+              "emergentmind-2607-11498-see-like-a-robot-robot-centric-pointmaps-for-2026"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "board_key": "embodied-perception",
+      "summary": "Perception becomes embodied when sensing changes the next action and contact changes belief.",
+      "npc_name": "Master Kinest",
+      "npc_text": "The hand learns what the eye cannot see, and the body pays for every wrong estimate.",
+      "concepts": [
+        {
+          "concept_key": "active-perception",
+          "name": "Active Perception",
+          "lore": "The Sensorium starts with perception as an action, not a passive snapshot. Local sequential vision tests whether foveated glimpses can track visual state and generalize to longer sequences. Interactive robot policy synthesis exposes another route: when a black-box VLA fails, modular programs can call perception and control tools, inspect intermediate state, and be corrected. Human-aware demonstrations add the missing social scene dynamics: a robot may need to collaborate, share space, or operate under supervision, and its observations must include people as part of the task. The mechanism is closed-loop information gathering: choose what to inspect, update state, and adapt the next action. The boundary is brittleness under unmodeled context; active sensing helps only when the chosen observations are relevant and the controller can exploit them.",
+          "source_ids": [
+            "emergentmind-2607-09061-on-locality-and-length-generalization-in-visual-reasoning-2026",
+            "emergentmind-2607-23784-a-few-words-go-a-long-way-language-2026",
+            "emergentmind-2606-31682-habit-human-aware-behavior-and-interaction-2026"
+          ],
+          "questions": [
+            {
+              "q": "Why can local sequential glimpses help visual state tracking?",
+              "options": [
+                "They force the model to update state over observations rather than solve the task from one global image.",
+                "They eliminate the need for memory because each glimpse contains the full image.",
+                "They make every vision problem independent of sequence length.",
+                "They convert camera motion into tactile pressure readings."
+              ],
+              "a": 0,
+              "why": "Sequential glimpses require maintaining and updating state as evidence arrives. That can test length generalization differently from one-shot global image processing.",
+              "source_ids": [
+                "emergentmind-2607-09061-on-locality-and-length-generalization-in-visual-reasoning-2026"
+              ]
+            },
+            {
+              "q": "What does a modular robot program make easier after a manipulation failure?",
+              "options": [
+                "It exposes intermediate perception and control calls that can be inspected or corrected.",
+                "It guarantees zero distribution shift by hiding every internal decision.",
+                "It removes the need for perception tools because actions are hard-coded.",
+                "It turns all robot actions into photorealistic renderings."
+              ],
+              "a": 0,
+              "why": "Modular programs decompose policy execution into interpretable tool calls. Failures can be localized and edited more directly than in an opaque end-to-end policy.",
+              "source_ids": [
+                "emergentmind-2607-23784-a-few-words-go-a-long-way-language-2026"
+              ]
+            }
+          ]
+        },
+        {
+          "concept_key": "tactile-and-visual-fusion",
+          "name": "Tactile And Visual Fusion",
+          "lore": "The second forge table handles contact, where vision often arrives late or lies by omission. Visual policies trained from videos and demonstrations can provide scalable motion priors, but contact-rich tasks depend on local force and contact geometry. Tactile feedback supplies the missing signal, yet real tactile data are scarce, hardware-specific, and costly. The mechanisms include residual tactile adaptation on top of visual policies, generating latent tactile pressure images from RGB, and scaling action-conditioned visuo-tactile world models with real and simulated interaction data. The changed state is a controller that updates belief about pressure, slip, and contact even when the camera is occluded. The boundary is transfer: synthetic or adapted touch helps only if sensor differences and contact dynamics are represented well enough for the real hand.",
+          "source_ids": [
+            "emergentmind-2607-03723-omnitactune-policy-agnostic-real-world-rl-for-tactile-2026",
+            "emergentmind-2607-20683-felt-generating-tactile-signals-from-vision-for-visuo-2026",
+            "emergentmind-2607-22530-vitacworld-scaling-visuo-tactile-world-models-for-contact-2026"
+          ],
+          "questions": [
+            {
+              "q": "Why add tactile residual adaptation to a pretrained visual manipulation policy?",
+              "options": [
+                "Contact success may depend on local force and contact geometry that vision does not capture.",
+                "The visual policy cannot move unless every tactile sensor is disabled.",
+                "Tactile residuals replace all demonstrations with hand-written geometry rules.",
+                "Residual adaptation makes sensor hardware identical across robots."
+              ],
+              "a": 0,
+              "why": "Visual priors can guide motion but miss contact details. A tactile residual can adjust actions using force and contact cues during manipulation.",
+              "source_ids": [
+                "emergentmind-2607-03723-omnitactune-policy-agnostic-real-world-rl-for-tactile-2026"
+              ]
+            },
+            {
+              "q": "What problem does generating tactile pressure images from RGB try to reduce?",
+              "options": [
+                "The scarcity and hardware cost of collecting tactile-equipped training data.",
+                "The need for visual observations in all manipulation policies.",
+                "The dimensionality of camera poses in bundle adjustment.",
+                "The latency of remote GPU scheduling for robot fleets."
+              ],
+              "a": 0,
+              "why": "Tactile datasets are harder to collect and standardize than visual data. Synthesizing tactile signals from RGB can expand supervision for visuo-tactile policies.",
+              "source_ids": [
+                "emergentmind-2607-20683-felt-generating-tactile-signals-from-vision-for-visuo-2026"
+              ]
+            }
+          ]
+        },
+        {
+          "concept_key": "perception-for-control",
+          "name": "Perception For Control",
+          "lore": "The final Sensorium floor connects perception to action under physical constraints. Humanoid and manipulation systems must coordinate balance, contact, object motion, actuator error, and real-time serving. Contact commands can decouple pose tracking from meaningful object interaction, while retargeting-guided RL preserves hand-object motion from a single demonstration. Robot-centric pointmaps align observed geometry with action coordinates, direct V+L-to-action models reduce invocation cost, and neural actuator models reduce sim-to-real mismatch while estimating external force through contact gating. The mechanism is control-relevant representation: perceive variables in the frame, frequency, and physical form the controller needs. The boundary is hidden coupling. A successful pose, language decision, or simulated torque can still fail when contact modes, actuator dynamics, or compute schedules are wrong.",
+          "source_ids": [
+            "emergentmind-2607-08742-contactmimic-humanoid-object-interaction-via-contact-control-2026",
+            "emergentmind-2607-11874-a-minimalist-retargeting-guided-reinforcement-learning-recipe-for-2026",
+            "emergentmind-2607-11734-neuralactuator-neural-actuation-modeling-for-robot-dynamics-and-2026",
+            "emergentmind-2607-27205-turbovla-real-time-vision-language-action-model-at-2026"
+          ],
+          "questions": [
+            {
+              "q": "Why are explicit contact commands useful for humanoid object interaction?",
+              "options": [
+                "A body can reach the correct keypoint pose without making the contact needed to affect the object.",
+                "Contact commands remove the need for any whole-body controller.",
+                "Keypoint tracking already guarantees wiping, sitting, and pushing interactions.",
+                "Binary contact labels make visual observations unnecessary."
+              ],
+              "a": 0,
+              "why": "Object interaction often depends on whether the correct body part actually touches the object. Contact commands separate physical interaction from mere pose imitation.",
+              "source_ids": [
+                "emergentmind-2607-08742-contactmimic-humanoid-object-interaction-via-contact-control-2026"
+              ]
+            },
+            {
+              "q": "Why can actuator dynamics create sim-to-real error on low-cost servo platforms?",
+              "options": [
+                "The simple current-to-torque relation can break under friction, hysteresis, backlash, and thermal effects.",
+                "Low-cost servos never experience external contact forces.",
+                "Actuator models only affect rendering, not trajectory propagation.",
+                "Backlash is removed by increasing camera resolution."
+              ],
+              "a": 0,
+              "why": "A simulator that assumes linear torque response can mispredict real motion. Modeling actuator behavior and contact-gated external force perception reduces that mismatch.",
+              "source_ids": [
+                "emergentmind-2607-11734-neuralactuator-neural-actuation-modeling-for-robot-dynamics-and-2026"
+              ]
+            }
+          ]
+        }
+      ],
+      "side": {
+        "name": "The Contact Bench",
+        "description": "Hands, cameras, and controllers are tested against tasks where pose alone is not enough.",
+        "questions": [
+          {
+            "q": "A robot wipes a board but often hovers just above the surface while matching the demonstration pose. What signal should be added?",
+            "options": [
+              "Explicit part-level contact targets with rewards for following them.",
+              "A higher-resolution RGB camera with no contact supervision.",
+              "A language-only instruction that repeats the wiping verb.",
+              "A Gaussian map that removes all tactile feedback."
+            ],
+            "a": 0,
+            "why": "The failure is not pose tracking; it is missing physical contact. Contact labels and rewards teach the controller when and where touch must occur.",
+            "source_ids": [
+              "emergentmind-2607-08742-contactmimic-humanoid-object-interaction-via-contact-control-2026"
+            ]
+          },
+          {
+            "q": "A fleet must call a large robot policy from a remote GPU under tight latency. What system issue must be handled?",
+            "options": [
+              "Scheduling action chunks across robots with heterogeneous compute and timing demands.",
+              "Replacing every robot controller with an offline CAD reconstruction loop.",
+              "Ignoring batching because all robots always consume identical action chunks.",
+              "Using tactile synthesis to set network bandwidth automatically."
+            ],
+            "a": 0,
+            "why": "Serving robot foundation models remotely turns control into a scheduling problem. Simple heuristics can fail when robots have different action consumption patterns.",
+            "source_ids": [
+              "emergentmind-2608-00337-action-chunk-scheduling-for-batched-robot-policy-serving-2026"
+            ]
+          }
+        ]
+      },
+      "gym": {
+        "leader": "Captain Torque",
+        "badge": "Contact Badge",
+        "taunt": "If your plan cannot feel the table, it cannot clear it.",
+        "questions": [
+          {
+            "q": "A contact-rich policy works in videos but fails when grasp force matters. Which combined response is most grounded?",
+            "options": [
+              "Keep the visual motion prior, add tactile adaptation or tactile prediction, and validate on real contact behavior.",
+              "Discard vision entirely because contact makes images useless.",
+              "Use keypoint tracking alone since reaching the object proves interaction.",
+              "Increase language prompts until force feedback is unnecessary."
+            ],
+            "a": 0,
+            "why": "Vision supplies scalable priors, but contact geometry and force are separate signals. Tactile adaptation or synthesized touch can provide the missing feedback channel.",
+            "source_ids": [
+              "emergentmind-2607-03723-omnitactune-policy-agnostic-real-world-rl-for-tactile-2026",
+              "emergentmind-2607-20683-felt-generating-tactile-signals-from-vision-for-visuo-2026"
+            ]
+          },
+          {
+            "q": "Why might direct V+L-to-action decoding be preferred for a high-rate VLA controller?",
+            "options": [
+              "It avoids invoking a large language-model-centered pathway at every control step, reducing compute and memory overhead.",
+              "It makes the model independent of visual observations during control.",
+              "It guarantees contact stability without tactile or actuator modeling.",
+              "It turns all robot commands into globally optimized camera poses."
+            ],
+            "a": 0,
+            "why": "An LLM-centered visual-to-language-to-action path can be expensive at each policy call. Directly encoding vision and language for action targets real-time constraints.",
+            "source_ids": [
+              "emergentmind-2607-27205-turbovla-real-time-vision-language-action-model-at-2026"
+            ]
+          },
+          {
+            "q": "A dexterous hand learns from one human demonstration. What must retargeting preserve for RL to be useful?",
+            "options": [
+              "Hand-object motion and contact-relevant references that the robot can physically track.",
+              "Only the final object category, because contact modes emerge automatically.",
+              "The human camera image exactly, even if robot kinematics differ.",
+              "A text summary of the motion with no kinematic reference."
+            ],
+            "a": 0,
+            "why": "Retargeting gives RL a physically meaningful reference. For manipulation, preserving hand-object relations matters because contact-rich dynamics are delicate.",
+            "source_ids": [
+              "emergentmind-2607-11874-a-minimalist-retargeting-guided-reinforcement-learning-recipe-for-2026"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "board_key": "neural-rendering",
+      "summary": "Rendering systems become tools for editable scenes, new views, and scalable reconstruction.",
+      "npc_name": "Smith Radiance",
+      "npc_text": "A scene is not finished when it looks right once; it must render, update, and scale.",
+      "concepts": [
+        {
+          "concept_key": "scene-representation",
+          "name": "Scene Representation",
+          "lore": "The Foundry starts by asking what a scene should be made of. Pixel-space 3D systems try to unify reconstruction and generation without losing information through latent encoders. Unified 3D models combine understanding, generation, editing, and part creation, but need geometrically consistent data at scale. CAD reconstruction takes a different route: grow an editable program step by step and inspect intermediate geometry after each operation. Deformable triangle splats change primitive shape, allowing curved or concave boundaries without excessive convex pieces. The mechanism is representation choice: pixels, programs, parts, and flexible primitives determine what can be edited, rendered, or optimized. The boundary is capacity and supervision. A representation that is compact or editable can still fail if it lacks the data or geometry checks needed to preserve shape.",
+          "source_ids": [
+            "emergentmind-2607-05373-pixworld-unifying-3d-scene-generation-and-reconstruction-2026",
+            "emergentmind-2608-02711-hunyuan3d-buffalo-1-0-a-unified-multimodal-model-2026",
+            "emergentmind-2608-00799-cadena-stepwise-cad-reverse-engineering-2026",
+            "emergentmind-2607-22446-deformable-triangle-splatting-flexible-primitives-for-real-time-2026"
+          ],
+          "questions": [
+            {
+              "q": "Why might a 3D system avoid a latent VAE-style bottleneck when unifying generation and reconstruction?",
+              "options": [
+                "Latent encoding can lose information about the underlying 3D representation.",
+                "Latent encoding always prevents text-conditioned generation.",
+                "Pixel-space methods cannot represent geometry at all.",
+                "Reconstruction and generation require unrelated coordinate systems."
+              ],
+              "a": 0,
+              "why": "A compressed latent space may discard details needed by both reconstruction and generation. Operating closer to pixel or representation space can reduce that information loss.",
+              "source_ids": [
+                "emergentmind-2607-05373-pixworld-unifying-3d-scene-generation-and-reconstruction-2026"
+              ]
+            },
+            {
+              "q": "What is the benefit of stepwise CAD reconstruction with intermediate geometry checks?",
+              "options": [
+                "The model can compare the current shape to the target after each operation instead of emitting the entire program blindly.",
+                "The model avoids parametric operations and stores only dense video frames.",
+                "The model guarantees every mesh becomes a photorealistic Gaussian field.",
+                "The model removes the need for editable geometry by rasterizing the final image."
+              ],
+              "a": 0,
+              "why": "Building feature by feature creates opportunities to inspect what remains wrong. That is better aligned with editable CAD than a single opaque program emission.",
+              "source_ids": [
+                "emergentmind-2608-00799-cadena-stepwise-cad-reverse-engineering-2026"
+              ]
+            }
+          ]
+        },
+        {
+          "concept_key": "novel-view-synthesis",
+          "name": "Novel View Synthesis",
+          "lore": "The second Foundry line renders worlds from viewpoints never directly observed. Radiance fields and splats must balance geometric alignment, appearance detail, and speed. Texture-atlas splatting separates low-frequency geometry and view-dependent appearance features from high-frequency baked textures, then prunes weak surfels for faster rendering. Deformable triangle splatting lets primitive boundaries bend inward or outward, reducing the number of convex pieces needed for curved and concave structures. Sparse-camera 4DGS uses complementary depth cues to constrain dynamic novel views when dense multi-view capture is unavailable. The mechanism is to choose primitives and appearance storage that preserve visible detail without exploding render cost. The boundary is view dependence and geometry error: fast textures or flexible shapes cannot compensate for missing structure or unreliable depth.",
+          "source_ids": [
+            "emergentmind-2607-13808-bake-it-till-you-make-it-ultrafast-spatial-2026",
+            "emergentmind-2607-22446-deformable-triangle-splatting-flexible-primitives-for-real-time-2026",
+            "emergentmind-2608-01588-d-2-4dgs-dual-depth-guided-sparse-camera-2026"
+          ],
+          "questions": [
+            {
+              "q": "Why bake high-frequency texture into a compact atlas while keeping lower-frequency geometry features on surfels?",
+              "options": [
+                "It reduces fragment rendering cost while preserving detailed appearance.",
+                "It removes all view dependence from the geometry representation.",
+                "It forces every primitive to become a convex triangle.",
+                "It makes camera calibration unnecessary for novel views."
+              ],
+              "a": 0,
+              "why": "High-frequency appearance can be expensive during rendering. Baking it into an atlas and pruning weak surfels targets speed while retaining visible texture detail.",
+              "source_ids": [
+                "emergentmind-2607-13808-bake-it-till-you-make-it-ultrafast-spatial-2026"
+              ]
+            },
+            {
+              "q": "Why add deformable boundaries to triangle splats?",
+              "options": [
+                "Curved and concave structures may require too many primitives when boundaries must stay convex.",
+                "Triangle splats cannot lie on a 3D plane unless they become non-convex.",
+                "Deformable boundaries replace differentiable rasterization with bundle adjustment.",
+                "The control points estimate robot contact forces during rendering."
+              ],
+              "a": 0,
+              "why": "Convex primitive boundaries can inefficiently approximate curved or concave shapes. Learnable boundary displacements add shape flexibility while retaining the base triangle plane.",
+              "source_ids": [
+                "emergentmind-2607-22446-deformable-triangle-splatting-flexible-primitives-for-real-time-2026"
+              ]
+            }
+          ]
+        },
+        {
+          "concept_key": "scalable-reconstruction",
+          "name": "Scalable Reconstruction",
+          "lore": "The last Foundry hall treats reconstruction as an online and large-scale service. Streaming feed-forward 3DGS must update a scene as calibrated views arrive sequentially instead of assuming a fixed context batch. Large-scale mapping uses spatial decomposition and sparse anchors to control memory outdoors. Community robot data engines show a parallel scaling pattern: browser teleoperation, automatic task generation, validation, filtering, and smoothing convert varied demonstrations into usable training data. Field delineation also scales by pairing massive multi-resolution data with domain structure such as physical scale and topology. The mechanism is incremental state plus automated quality control. The boundary is accumulated error: scaling collection or streaming updates is useful only when validation, anchoring, and persistent state prevent noisy inputs from becoming permanent geometry.",
+          "source_ids": [
+            "emergentmind-2608-01659-streamsplat-streaming-feed-forward-3d-gaussian-splatting-2026",
+            "emergentmind-2607-21416-glam-slam-real-time-gaussian-large-scale-mapping-2026",
+            "emergentmind-2607-21588-axis-a-growable-community-driven-data-engine-for-2026",
+            "emergentmind-2607-19069-delineate-anything-v2-a-global-foundation-model-for-2026"
+          ],
+          "questions": [
+            {
+              "q": "Why does streaming feed-forward 3DGS need a persistent scene state?",
+              "options": [
+                "Sequential calibrated views arrive causally, so the system must retain historical 3D information for later updates.",
+                "Streaming views are unordered, so no geometry can be reused across chunks.",
+                "A persistent state prevents any new Gaussian from being rendered.",
+                "Feed-forward reconstruction only works after per-scene offline optimization."
+              ],
+              "a": 0,
+              "why": "Online settings cannot process all context views jointly from the start. A persistent geometry-grounded cache lets each new chunk update an accumulated scene.",
+              "source_ids": [
+                "emergentmind-2608-01659-streamsplat-streaming-feed-forward-3d-gaussian-splatting-2026"
+              ]
+            },
+            {
+              "q": "Why include automatic success checking, quality filtering, and trajectory smoothing in a scalable demonstration engine?",
+              "options": [
+                "Large community-collected data are variable, so automated checks convert raw demonstrations into training-ready trajectories.",
+                "Filtering is only needed when every task is hand-designed by a central operator.",
+                "Trajectory smoothing replaces the need for diverse manipulation tasks.",
+                "Success checking prevents robots from collecting browser teleoperation data."
+              ],
+              "a": 0,
+              "why": "Scaling data collection increases heterogeneity and noise. Validation and filtering protect policy training from low-quality or failed demonstrations.",
+              "source_ids": [
+                "emergentmind-2607-21588-axis-a-growable-community-driven-data-engine-for-2026"
+              ]
+            }
+          ]
+        }
+      ],
+      "side": {
+        "name": "The Render Conveyor",
+        "description": "A furnace streams views, prunes excess detail, and rejects unstable geometry before it hardens.",
+        "questions": [
+          {
+            "q": "An online viewer receives calibrated images one chunk at a time. Which design best supports causal updates?",
+            "options": [
+              "Maintain a voxel-aligned cache of historical 3D tokens and decode new Gaussians after each chunk.",
+              "Wait until every possible view has arrived, then run a single fixed-context pass.",
+              "Discard historical geometry so each chunk renders independently.",
+              "Bake a texture atlas before any camera view is observed."
+            ],
+            "a": 0,
+            "why": "Streaming reconstruction needs memory of earlier geometry. A causal cache stores accumulated 3D state while allowing new calibrated views to update the scene.",
+            "source_ids": [
+              "emergentmind-2608-01659-streamsplat-streaming-feed-forward-3d-gaussian-splatting-2026"
+            ]
+          },
+          {
+            "q": "A global farm-boundary mapper fails on cropland textures and topologically complex regions. What capability is most relevant?",
+            "options": [
+              "Domain-specific scale and topology awareness trained across broad multi-resolution field data.",
+              "A generic zero-shot mask model with no geospatial adaptation.",
+              "A humanoid contact policy that tracks board-wiping commands.",
+              "A rolling-shutter camera model for indoor phone video only."
+            ],
+            "a": 0,
+            "why": "Cropland boundaries have domain-specific texture, topology, and scale issues. A wide-area foundation model for field delineation targets those geospatial constraints.",
+            "source_ids": [
+              "emergentmind-2607-19069-delineate-anything-v2-a-global-foundation-model-for-2026"
+            ]
+          }
+        ]
+      },
+      "gym": {
+        "leader": "Foreman Splat",
+        "badge": "Radiance Badge",
+        "taunt": "Render it once and you have a picture; update it forever and you have a world.",
+        "questions": [
+          {
+            "q": "You need editable mechanical geometry rather than only a realistic rendering. Which representation choice is most appropriate?",
+            "options": [
+              "A stepwise parametric CAD program checked against target geometry after each operation.",
+              "A texture atlas that stores high-frequency color but no editable construction history.",
+              "An event-camera stream that records brightness changes at each pixel.",
+              "A chunked action policy that smooths robot commands."
+            ],
+            "a": 0,
+            "why": "Editable CAD requires explicit operations and intermediate geometry checks. A radiance-only representation may look good but does not provide the same parametric editability.",
+            "source_ids": [
+              "emergentmind-2608-00799-cadena-stepwise-cad-reverse-engineering-2026"
+            ]
+          },
+          {
+            "q": "A sparse-camera dynamic capture has missing structures and floating Gaussians. Which intervention matches the failure?",
+            "options": [
+              "Use complementary depth priors to strengthen geometry supervision under limited views.",
+              "Bake high-frequency texture earlier so missing shape becomes invisible.",
+              "Increase action chunk length because trajectory continuity creates depth.",
+              "Remove all priors so the sparse cameras decide scale alone."
+            ],
+            "a": 0,
+            "why": "Sparse cameras weaken geometric constraints. Combining depth cues can supply denser or more reliable structure, reducing missing regions and floating primitives.",
+            "source_ids": [
+              "emergentmind-2608-01588-d-2-4dgs-dual-depth-guided-sparse-camera-2026"
+            ]
+          },
+          {
+            "q": "Why combine streaming reconstruction with automated quality control in a growing 3D or robot-data system?",
+            "options": [
+              "Incremental state preserves continuity, while validation prevents bad updates or demonstrations from accumulating into the model.",
+              "Streaming alone guarantees every new input is geometrically correct.",
+              "Quality control matters only for final images, not for training trajectories.",
+              "A fixed context batch is always more scalable than causal updates."
+            ],
+            "a": 0,
+            "why": "Scaling systems accumulate errors unless incoming data are checked. Persistent state gives continuity, and validation reduces the chance that noisy inputs become lasting structure or training signal.",
+            "source_ids": [
+              "emergentmind-2608-01659-streamsplat-streaming-feed-forward-3d-gaussian-splatting-2026",
+              "emergentmind-2607-21588-axis-a-growable-community-driven-data-engine-for-2026"
+            ]
+          }
+        ]
+      }
+    }
+  ],
+  "source_assignments": [
+    {
+      "source_id": "emergentmind-2606-24251-misalignment-thinking-probes-2026",
+      "board_key": "temporal-perception",
+      "concept_key": "temporal-correspondence"
+    },
+    {
+      "source_id": "emergentmind-2607-00784-levljepa-2026",
+      "board_key": "global-geometry",
+      "concept_key": "geometric-priors"
+    },
+    {
+      "source_id": "emergentmind-2606-31682-habit-human-aware-behavior-and-interaction-2026",
+      "board_key": "embodied-perception",
+      "concept_key": "active-perception"
+    },
+    {
+      "source_id": "emergentmind-2607-01487-how-to-allocate-your-tokens-scaling-laws-w-2026",
+      "board_key": "neural-rendering",
+      "concept_key": "scalable-reconstruction"
+    },
+    {
+      "source_id": "emergentmind-2607-01181-right-in-the-right-way-lm-training-with-ve-2026",
+      "board_key": "embodied-perception",
+      "concept_key": "perception-for-control"
+    },
+    {
+      "source_id": "emergentmind-2607-02512-program-as-weights-a-programming-paradigm-2026",
+      "board_key": "neural-rendering",
+      "concept_key": "scene-representation"
+    },
+    {
+      "source_id": "emergentmind-2607-01490-don-t-let-gains-fade-breaking-down-policy-2026",
+      "board_key": "embodied-perception",
+      "concept_key": "perception-for-control"
+    },
+    {
+      "source_id": "emergentmind-2606-31958-adapting-generalist-robot-policies-with-se-2026",
+      "board_key": "embodied-perception",
+      "concept_key": "perception-for-control"
+    },
+    {
+      "source_id": "emergentmind-2607-05391-llm-as-a-verifier-a-general-purpose-verification-2026",
+      "board_key": "global-geometry",
+      "concept_key": "correspondence-and-optimization"
+    },
+    {
+      "source_id": "emergentmind-2607-02770-gemma-4-technical-report-2026",
+      "board_key": "localization",
+      "concept_key": "sensor-and-view-fusion"
+    },
+    {
+      "source_id": "emergentmind-2607-04434-robodojo-a-unified-sim-and-real-benchmark-for-2026",
+      "board_key": "embodied-perception",
+      "concept_key": "perception-for-control"
+    },
+    {
+      "source_id": "emergentmind-2607-03723-omnitactune-policy-agnostic-real-world-rl-for-tactile-2026",
+      "board_key": "embodied-perception",
+      "concept_key": "tactile-and-visual-fusion"
+    },
+    {
+      "source_id": "emergentmind-2607-04044-siamjepa-on-the-role-of-siamese-student-encoders-2026",
+      "board_key": "global-geometry",
+      "concept_key": "geometric-priors"
+    },
+    {
+      "source_id": "emergentmind-2607-04728-turning-off-policy-tokens-on-policy-a-plug-2026",
+      "board_key": "temporal-perception",
+      "concept_key": "temporal-correspondence"
+    },
+    {
+      "source_id": "emergentmind-2607-05373-pixworld-unifying-3d-scene-generation-and-reconstruction-2026",
+      "board_key": "neural-rendering",
+      "concept_key": "scene-representation"
+    },
+    {
+      "source_id": "emergentmind-2607-06555-proxypose-6-dof-pose-tracking-via-video-2026",
+      "board_key": "localization",
+      "concept_key": "camera-pose-estimation"
+    },
+    {
+      "source_id": "emergentmind-2607-06701-spear-a-simulator-for-photorealistic-embodied-ai-2026",
+      "board_key": "embodied-perception",
+      "concept_key": "active-perception"
+    },
+    {
+      "source_id": "emergentmind-2607-07452-geogs-slam-geometry-only-gaussian-splatting-for-dense-2026",
+      "board_key": "localization",
+      "concept_key": "drift-and-loop-closure"
+    },
+    {
+      "source_id": "emergentmind-2607-07040-measuring-intelligence-beyond-human-scale-2026",
+      "board_key": "global-geometry",
+      "concept_key": "global-consistency"
+    },
+    {
+      "source_id": "emergentmind-2607-08098-evis-a-physics-grounded-event-camera-plugin-for-2026",
+      "board_key": "temporal-perception",
+      "concept_key": "motion-and-event-streams"
+    },
+    {
+      "source_id": "emergentmind-2607-06023-why-does-deep-learning-improve-visual-slam-2026",
+      "board_key": "global-geometry",
+      "concept_key": "correspondence-and-optimization"
+    },
+    {
+      "source_id": "emergentmind-2607-08537-whareformer-learning-to-track-what-is-where-in-2026",
+      "board_key": "temporal-perception",
+      "concept_key": "egocentric-context"
+    },
+    {
+      "source_id": "emergentmind-2607-09024-video-generation-models-are-general-purpose-vision-learners-2026",
+      "board_key": "global-geometry",
+      "concept_key": "geometric-priors"
+    },
+    {
+      "source_id": "emergentmind-2607-09061-on-locality-and-length-generalization-in-visual-reasoning-2026",
+      "board_key": "embodied-perception",
+      "concept_key": "active-perception"
+    },
+    {
+      "source_id": "emergentmind-2607-08742-contactmimic-humanoid-object-interaction-via-contact-control-2026",
+      "board_key": "embodied-perception",
+      "concept_key": "perception-for-control"
+    },
+    {
+      "source_id": "emergentmind-2607-08974-clap-direct-vlm-to-vla-adaptation-via-language-2026",
+      "board_key": "embodied-perception",
+      "concept_key": "perception-for-control"
+    },
+    {
+      "source_id": "emergentmind-2607-11884-mixture-of-frames-policy-multi-frame-action-denoising-2026",
+      "board_key": "temporal-perception",
+      "concept_key": "temporal-correspondence"
+    },
+    {
+      "source_id": "emergentmind-2607-09648-b-spline-policy-accelerating-manipulation-policies-via-b-2026",
+      "board_key": "temporal-perception",
+      "concept_key": "temporal-correspondence"
+    },
+    {
+      "source_id": "emergentmind-2607-11874-a-minimalist-retargeting-guided-reinforcement-learning-recipe-for-2026",
+      "board_key": "embodied-perception",
+      "concept_key": "perception-for-control"
+    },
+    {
+      "source_id": "emergentmind-2607-09225-glob3r-global-structure-from-motion-with-3d-foundation-2026",
+      "board_key": "global-geometry",
+      "concept_key": "global-consistency"
+    },
+    {
+      "source_id": "emergentmind-2607-11270-towards-predictive-aligned-and-scalable-robot-learning-2026",
+      "board_key": "global-geometry",
+      "concept_key": "geometric-priors"
+    },
+    {
+      "source_id": "emergentmind-2607-11734-neuralactuator-neural-actuation-modeling-for-robot-dynamics-and-2026",
+      "board_key": "embodied-perception",
+      "concept_key": "perception-for-control"
+    },
+    {
+      "source_id": "emergentmind-2607-11736-met-theory-grounded-and-culture-aware-multilingual-moral-2026",
+      "board_key": "localization",
+      "concept_key": "sensor-and-view-fusion"
+    },
+    {
+      "source_id": "emergentmind-2607-11498-see-like-a-robot-robot-centric-pointmaps-for-2026",
+      "board_key": "temporal-perception",
+      "concept_key": "egocentric-context"
+    },
+    {
+      "source_id": "emergentmind-2607-12992-chunkflow-towards-continuity-consistent-chunked-policy-learning-2026",
+      "board_key": "temporal-perception",
+      "concept_key": "temporal-correspondence"
+    },
+    {
+      "source_id": "emergentmind-2607-13808-bake-it-till-you-make-it-ultrafast-spatial-2026",
+      "board_key": "neural-rendering",
+      "concept_key": "novel-view-synthesis"
+    },
+    {
+      "source_id": "emergentmind-2607-11285-salientgs-unified-sfm-to-3dgs-with-importance-guided-2026",
+      "board_key": "global-geometry",
+      "concept_key": "correspondence-and-optimization"
+    },
+    {
+      "source_id": "emergentmind-2607-15163-scaling-behavior-foundation-model-for-humanoid-robots-2026",
+      "board_key": "embodied-perception",
+      "concept_key": "perception-for-control"
+    },
+    {
+      "source_id": "emergentmind-2607-14506-non-vacuous-generalization-bounds-for-reinforcement-learning-with-2026",
+      "board_key": "global-geometry",
+      "concept_key": "global-consistency"
+    },
+    {
+      "source_id": "emergentmind-2607-18110-llm-as-a-coach-experiential-learning-for-non-2026",
+      "board_key": "embodied-perception",
+      "concept_key": "active-perception"
+    },
+    {
+      "source_id": "emergentmind-2607-17052-searching-for-task-specific-vision-paths-evolutionary-block-2026",
+      "board_key": "global-geometry",
+      "concept_key": "geometric-priors"
+    },
+    {
+      "source_id": "emergentmind-2607-21416-glam-slam-real-time-gaussian-large-scale-mapping-2026",
+      "board_key": "localization",
+      "concept_key": "drift-and-loop-closure"
+    },
+    {
+      "source_id": "emergentmind-2607-17991-optimal-market-making-in-prediction-markets-2026",
+      "board_key": "global-geometry",
+      "concept_key": "global-consistency"
+    },
+    {
+      "source_id": "emergentmind-2607-19069-delineate-anything-v2-a-global-foundation-model-for-2026",
+      "board_key": "neural-rendering",
+      "concept_key": "scalable-reconstruction"
+    },
+    {
+      "source_id": "emergentmind-2607-19987-unirank-benchmarking-ranking-models-for-unified-sequential-modeling-2026",
+      "board_key": "temporal-perception",
+      "concept_key": "temporal-correspondence"
+    },
+    {
+      "source_id": "emergentmind-2607-20683-felt-generating-tactile-signals-from-vision-for-visuo-2026",
+      "board_key": "embodied-perception",
+      "concept_key": "tactile-and-visual-fusion"
+    },
+    {
+      "source_id": "emergentmind-2607-21588-axis-a-growable-community-driven-data-engine-for-2026",
+      "board_key": "neural-rendering",
+      "concept_key": "scalable-reconstruction"
+    },
+    {
+      "source_id": "emergentmind-2607-22147-visual-relocalization-from-sparse-views-in-aliased-and-2026",
+      "board_key": "localization",
+      "concept_key": "camera-pose-estimation"
+    },
+    {
+      "source_id": "emergentmind-2607-22446-deformable-triangle-splatting-flexible-primitives-for-real-time-2026",
+      "board_key": "neural-rendering",
+      "concept_key": "novel-view-synthesis"
+    },
+    {
+      "source_id": "emergentmind-2607-22530-vitacworld-scaling-visuo-tactile-world-models-for-contact-2026",
+      "board_key": "embodied-perception",
+      "concept_key": "tactile-and-visual-fusion"
+    },
+    {
+      "source_id": "emergentmind-2607-20368-self-gradient-forcing-native-long-video-extrapolation-2026",
+      "board_key": "temporal-perception",
+      "concept_key": "motion-and-event-streams"
+    },
+    {
+      "source_id": "emergentmind-2607-22534-sm4rt-learning-structured-motion-geometry-for-4d-reconstruction-2026",
+      "board_key": "temporal-perception",
+      "concept_key": "motion-and-event-streams"
+    },
+    {
+      "source_id": "emergentmind-2607-25895-hifi-umi-learning-deployable-manipulation-policies-from-high-2026",
+      "board_key": "temporal-perception",
+      "concept_key": "egocentric-context"
+    },
+    {
+      "source_id": "emergentmind-2607-27194-vidmap-exploiting-temporal-structure-for-video-based-structure-2026",
+      "board_key": "global-geometry",
+      "concept_key": "global-consistency"
+    },
+    {
+      "source_id": "emergentmind-2607-23784-a-few-words-go-a-long-way-language-2026",
+      "board_key": "embodied-perception",
+      "concept_key": "active-perception"
+    },
+    {
+      "source_id": "emergentmind-2607-27205-turbovla-real-time-vision-language-action-model-at-2026",
+      "board_key": "embodied-perception",
+      "concept_key": "perception-for-control"
+    },
+    {
+      "source_id": "emergentmind-2607-23473-prism-polynomial-representations-for-interaction-structured-motor-control-2026",
+      "board_key": "embodied-perception",
+      "concept_key": "perception-for-control"
+    },
+    {
+      "source_id": "emergentmind-2607-27180-humanclaw-can-vision-language-models-act-through-a-2026",
+      "board_key": "embodied-perception",
+      "concept_key": "perception-for-control"
+    },
+    {
+      "source_id": "emergentmind-2607-28257-operationally-guided-placement-aware-learning-for-industrial-online-2026",
+      "board_key": "embodied-perception",
+      "concept_key": "perception-for-control"
+    },
+    {
+      "source_id": "emergentmind-2608-00337-action-chunk-scheduling-for-batched-robot-policy-serving-2026",
+      "board_key": "embodied-perception",
+      "concept_key": "perception-for-control"
+    },
+    {
+      "source_id": "emergentmind-2608-02580-ego2robot-scalable-robot-data-synthesis-from-egocentric-human-2026",
+      "board_key": "temporal-perception",
+      "concept_key": "egocentric-context"
+    },
+    {
+      "source_id": "emergentmind-2608-03872-evohil-self-evolving-reward-and-flow-matched-policy-2026",
+      "board_key": "embodied-perception",
+      "concept_key": "active-perception"
+    },
+    {
+      "source_id": "emergentmind-2608-05000-towards-physics-of-multimodal-pretraining-knowledge-flow-modality-2026",
+      "board_key": "localization",
+      "concept_key": "sensor-and-view-fusion"
+    },
+    {
+      "source_id": "emergentmind-2608-02711-hunyuan3d-buffalo-1-0-a-unified-multimodal-model-2026",
+      "board_key": "neural-rendering",
+      "concept_key": "scene-representation"
+    },
+    {
+      "source_id": "emergentmind-2608-03972-reflectrl-learning-from-golden-negative-trajectories-via-reflective-2026",
+      "board_key": "global-geometry",
+      "concept_key": "correspondence-and-optimization"
+    },
+    {
+      "source_id": "emergentmind-2608-01186-querysplat-decoupling-geometry-and-appearance-representations-in-3dgs-2026",
+      "board_key": "global-geometry",
+      "concept_key": "geometric-priors"
+    },
+    {
+      "source_id": "emergentmind-2608-00931-stipple-real-time-incremental-gaussian-splatting-with-visual-2026",
+      "board_key": "localization",
+      "concept_key": "sensor-and-view-fusion"
+    },
+    {
+      "source_id": "emergentmind-2608-01588-d-2-4dgs-dual-depth-guided-sparse-camera-2026",
+      "board_key": "neural-rendering",
+      "concept_key": "novel-view-synthesis"
+    },
+    {
+      "source_id": "emergentmind-2608-01706-unisim-slam-feed-forward-slam-with-unified-sim-2026",
+      "board_key": "global-geometry",
+      "concept_key": "global-consistency"
+    },
+    {
+      "source_id": "emergentmind-2608-04373-public-trader-identity-adverse-selection-and-return-predictability-2026",
+      "board_key": "temporal-perception",
+      "concept_key": "temporal-correspondence"
+    },
+    {
+      "source_id": "emergentmind-2608-01509-rolling-shutter-camera-self-calibration-2026",
+      "board_key": "localization",
+      "concept_key": "camera-pose-estimation"
+    },
+    {
+      "source_id": "emergentmind-2608-01659-streamsplat-streaming-feed-forward-3d-gaussian-splatting-2026",
+      "board_key": "neural-rendering",
+      "concept_key": "scalable-reconstruction"
+    },
+    {
+      "source_id": "emergentmind-2608-00799-cadena-stepwise-cad-reverse-engineering-2026",
+      "board_key": "neural-rendering",
+      "concept_key": "scene-representation"
+    },
+    {
+      "source_id": "emergentmind-2608-06375-0-a-latent-predictive-world-action-model-for-2026",
+      "board_key": "embodied-perception",
+      "concept_key": "perception-for-control"
+    }
+  ]
+}
