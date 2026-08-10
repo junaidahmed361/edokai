@@ -11,3 +11,10 @@ release/*.dmg
 release/*.dmg.blockmap
 release/latest-mac.yml
 release/builder-debug.yml
+
+# Local curriculum generation scratch/rejected candidates
+scripts/__pycache__/
+knowledge/curriculum/.*-schema.json
+knowledge/curriculum/.*-prompt.txt
+knowledge/curriculum/.*-candidate.json
+knowledge/curriculum/*.rejected.json

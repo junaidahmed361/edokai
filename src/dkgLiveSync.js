@@ -308,32 +308,20 @@ function quizToQuestion(quiz) {
   if (!quiz || !Array.isArray(quiz.choices) || !quiz.choices.length) return null;
   const normalized = normalizeOptions(quiz.choices, Number.isInteger(quiz.answer_index) ? quiz.answer_index : 0, quiz.question || quiz.choices.join("|"));
   return {
+    id: quiz.id || null,
     q: cleanRepeatedWords(quiz.question || "Which source-grounded fact matters most here?"),
     options: normalized.options,
     a: normalized.a,
     why: quiz.explanation || quiz.why || "Source-grounded from the ingested DKG entry.",
+    conceptId: quiz.concept_id || null,
+    sourceIds: Array.isArray(quiz.source_ids) ? quiz.source_ids : [],
+    kind: quiz.kind || "critical",
   };
 }
 
-// Synthesize an honest recall question for a node using sibling summaries as distractors.
-function nodeRecallQuestion(node, siblingSummaries) {
-  const label = nodeLabel(node);
-  const correct = compactSentence(node.summary || node.description || node.lore || label);
-  const distractors = siblingSummaries
-    .filter((s) => s && s !== (node.summary || node.description || node.lore))
-    .map((s) => compactSentence(s))
-    .filter((s, i, arr) => s !== correct && arr.indexOf(s) === i);
-  const normalized = normalizeOptions([correct, ...distractors], 0, node.id || label);
-  return {
-    q: cleanRepeatedWords(`Which source-backed mechanism advances mastery of "${label}"?`),
-    options: normalized.options,
-    a: normalized.a,
-    why: compactSentence(node.summary || node.description || `Source-grounded summary for ${label}.`, `Source-grounded summary for ${label}`),
-  };
-}
+const sourceCentricQuestion = (q) => /\b(?:in|from|according to) (?:the )?(?:source|paper|study)\b|learner-facing|edokai (?:learners|should preserve)|shared technical mechanism|what role does|role .{0,60} play|primarily contribute|belong on (?:the )?same|paper[- ]specific|paper[- ]title|source-grounded fact matters most/i.test(String(q || ""));
 
-
-function nodeToConcept(node, regionSlug, siblingSummaries, assignedQuiz, usedNames, regionName) {
+function nodeToConcept(node, regionSlug, assignedQuizzes, usedNames, regionName) {
   const baseLabel = nodeLabel(node);
   let label = baseLabel;
   let suffix = 2;
@@ -342,9 +330,8 @@ function nodeToConcept(node, regionSlug, siblingSummaries, assignedQuiz, usedNam
     suffix += 1;
   }
   usedNames.add(label.toLowerCase());
-  const questions = [];
-  if (assignedQuiz) questions.push(assignedQuiz);
-  questions.push(nodeRecallQuestion(node, siblingSummaries));
+  const questions = (assignedQuizzes || []).filter((q) => !sourceCentricQuestion(q.q));
+  if (!questions.length) return null;
   const sourceNote = Array.isArray(node.source_ids) && node.source_ids.length
     ? ` Sources: ${node.source_ids.join(", ")}.`
     : "";
@@ -352,7 +339,9 @@ function nodeToConcept(node, regionSlug, siblingSummaries, assignedQuiz, usedNam
     id: `${regionSlug}-${slug(node.id || label)}`,
     name: label,
     sprite: node.sprite || node.emoji || "🧠",
-    lore: `In this Edokai region, ${label} is the encounter that turns source evidence into usable judgment: ${compactSentence(node.summary || node.description || node.lore || `Imported from the live Edokai DKG.`, "the source-backed mechanism")}. Capture it by explaining what problem it solves, how the mechanism moves information, and what evidence would show it worked.${sourceNote}`,
+    lore: node.type === "curriculum-concept"
+      ? compactSentence(node.summary || node.description || node.lore, label)
+      : `${compactSentence(node.summary || node.description || node.lore || `Imported from the live Edokai DKG.`, "the source-backed mechanism")}${sourceNote}`,
     questions,
   };
 }
@@ -365,6 +354,7 @@ function duelToSide(duel, idx, regionSlug, conceptIds, fallbackQuestions) {
   const desc = [duel.left ? `A: ${duel.left}` : null, duel.right ? `B: ${duel.right}` : null]
     .filter(Boolean)
     .join("  •  ");
+  const authored = (Array.isArray(duel.questions) ? duel.questions : []).map(quizToQuestion).filter(Boolean).filter((q) => !sourceCentricQuestion(q.q));
   return {
     id: `${regionSlug}-duel-${slug(duel.id || String(idx))}`,
     name: duel.name || `Recall Trial ${idx + 1}`,
@@ -373,8 +363,15 @@ function duelToSide(duel, idx, regionSlug, conceptIds, fallbackQuestions) {
     recLevel: 2,
     prereqs: conceptIds.slice(0, 2),
     desc: `Healing retention duel: answer these side questions to recover HP while reinforcing the prerequisite path. ${prompt}${desc ? `  —  ${desc}` : ""}${duel.answer ? `  →  ${duel.answer}` : ""}`,
-    questions: fallbackQuestions.length ? fallbackQuestions.slice(0, 2) : [],
+    questions: authored.length ? authored : (fallbackQuestions.length ? fallbackQuestions.slice(0, 2) : []),
   };
+}
+
+function regionContextText(region, resolved) {
+  return [
+    region.label, region.name, region.title, region.summary, region.description,
+    ...(resolved || []).flatMap((n) => [n.label, n.name, n.title, n.summary, n.description, n.lore]),
+  ].filter(Boolean).join(" ");
 }
 
 function buildRegion(region, idx, nodesById, worldLabel) {
@@ -390,41 +387,48 @@ function buildRegion(region, idx, nodesById, worldLabel) {
     .filter(Boolean);
   if (!resolved.length) return null;
 
-  const siblingSummaries = resolved.map((n) => n.summary || n.description || nodeLabel(n));
   const realQuizzes = (Array.isArray(region.quiz_questions) ? region.quiz_questions : [])
     .map(quizToQuestion)
-    .filter(Boolean);
+    .filter(Boolean)
+    .filter((q) => !sourceCentricQuestion(q.q));
+  const quizzesByConcept = new Map();
+  for (const quiz of realQuizzes) {
+    if (!quiz.conceptId) continue;
+    if (!quizzesByConcept.has(quiz.conceptId)) quizzesByConcept.set(quiz.conceptId, []);
+    quizzesByConcept.get(quiz.conceptId).push(quiz);
+  }
 
-  // Distribute real quizzes across concepts (first-come), the rest get synthesized recall Qs.
   const usedNames = new Set();
   const concepts = resolved.map((node, i) =>
-    nodeToConcept(node, regionSlug, siblingSummaries, realQuizzes[i] || null, usedNames, name)
-  );
+    nodeToConcept(node, regionSlug, quizzesByConcept.get(node.id) || (quizzesByConcept.size ? [] : (realQuizzes[i] ? [realQuizzes[i]] : [])), usedNames, name)
+  ).filter(Boolean);
+  if (!concepts.length) return null;
   const conceptIdsResolved = concepts.map((c) => c.id);
 
   const sides = (Array.isArray(region.side_retention_duels) ? region.side_retention_duels : [])
     .map((duel, i) => duelToSide(duel, i, regionSlug, conceptIdsResolved, realQuizzes))
     .filter((s) => s.questions.length);
 
-  const gymQuestions = (realQuizzes.length ? realQuizzes : concepts.flatMap((c) => c.questions)).slice(0, 4);
+  const authoredGym = (Array.isArray(region.gym?.questions) ? region.gym.questions : []).map(quizToQuestion).filter(Boolean).filter((q) => !sourceCentricQuestion(q.q));
+  const gymQuestions = authoredGym.length ? authoredGym : (realQuizzes.length ? realQuizzes : concepts.flatMap((c) => c.questions)).slice(0, 4);
 
   return {
     id: regionSlug,
     name,
     emoji: region.emoji || "🛰️",
-    arc: region.arc || (lore && lore.arc) || inferArc(plainName),
+    arc: region.arc || (lore && lore.arc) || inferArc(regionContextText(region, resolved)),
     intro: region.summary || region.description || `${plainName} — live DKG region synced into ${worldLabel}.`,
-    npc: {
+    npc: region.npc || {
       name: "Graph Curator",
       text: region.summary || region.description || "These concepts came from the live Edokai dynamic knowledge graph.",
     },
     concepts,
     sides,
     gym: {
-      leader: "Graph Curator",
-      badge: `${name} Badge`,
+      leader: region.gym?.leader || "Graph Curator",
+      badge: region.gym?.badge || `${name} Badge`,
       sprite: "🏛️",
-      taunt: "Show that you understand the source-grounded mechanism.",
+      taunt: region.gym?.taunt || "Show that you can apply the mechanism under pressure.",
       questions: gymQuestions,
     },
   };
@@ -508,6 +512,8 @@ const DKG_ARC_RULES = [
   [/serving|deployment|throughput|latency/i, "The Way of Throughput"],
   [/memory|cache|benchmark|evaluation|efficiency/i, "The Craft of Memory"],
   [/retrieval|rag|graph|index|sensemaking/i, "The Craft of Retrieval"],
+  [/3d|structure.?from.?motion|slam|pose|camera|geometry|splat|visual|vision|image|video|perception|pixel/i, "The Way of Seeing"],
+  [/robot|tactile|embod|control|manipulat|sim/i, "The Embodied Forge"],
   [/token|loss|attention|emergence|sparse|depth|embedding/i, "The Deep Mechanics"],
 ];
 const inferArc = (name) => {

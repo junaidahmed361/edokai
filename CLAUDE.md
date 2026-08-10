@@ -23,6 +23,13 @@ rules are embedded in the runtime generation prompts (`NAMING_RULES` and
 - Lore and question stems are written for humans: short paragraphs, `- ` bullet
   lists where structure helps, `**bold**` for the key term, appropriate length
   (lore ~90–150 words; stems complete scenarios, not fragments).
+- **The Agentic RL Frontier is the pedagogical reference for every builtin,
+  imported, and live-DKG board.** A critical directly tests a causal technical
+  mechanism; a side duel applies it in a concrete engineering scenario; a gym
+  question integrates concepts or exposes a trade-off. Papers provide evidence
+  and provenance but are never the quiz subject. Never ask what role a paper
+  plays, where it fits, why concepts share a board, what Edokai should preserve,
+  or which source/title stated a claim.
 - The UI renders this via `src/RichText.jsx` (paragraphs / bullets / bold /
   inline code). Any new surface that displays lore or stems must render through
   `RichText`, not raw text.

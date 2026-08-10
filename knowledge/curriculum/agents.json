@@ -1,0 +1,1472 @@
+{
+  "boards": [
+    {
+      "board_key": "agent-foundations",
+      "summary": "Agency begins when observations become manipulable state, state supports planning, and tools are governed by explicit policies rather than raw impulse.",
+      "npc_name": "Foreman Sera",
+      "npc_text": "The Agentworks opens with a simple warning: an agent that only reacts to surface text or pixels cannot hold a world steady. It must track state, predict how actions change that state, and choose tools under constraints. The first halls show how world models, program-state access, graph workflows, and hardened execution policies turn scattered interaction into controllable work.",
+      "concepts": [
+        {
+          "concept_key": "state-action-loop",
+          "name": "State-Action Loop",
+          "lore": "A wandering agent fails when every turn is treated as a fresh prompt: the screen, file tree, telemetry, memory, and user goal blur into one fragile context. The mechanism is to separate observed state from action choice, then update state only from evidence the environment can support. Language and video world models predict next observations from current observations and actions; code-first computer-use harnesses inspect program state directly when pixels hide causes; long-horizon managers keep task state outside the growing dialogue. This changes information flow from recall-by-context to controlled state transition. The evidence points to next-state prediction, frozen latent readouts, direct program-state manipulation, and externally verified task-state updates. The boundary is clear: a state tracker is only as reliable as its observations, update rules, and access permissions.",
+          "source_ids": [
+            "emergentmind-2606-24597-qwen-agentworld-2026",
+            "emergentmind-2606-30534-orca-world-foundation-model-2026",
+            "emergentmind-2607-22798-stateact-program-state-before-pixels-for-long-horizon-2026",
+            "emergentmind-2608-01964-longhorizon-harness-advancing-long-horizon-agents-for-real-2026"
+          ],
+          "questions": [
+            {
+              "q": "Why can a screenshot-only computer-use agent choose the wrong next action even when the pixels look familiar?",
+              "options": [
+                "The same rendered pixels can hide different program states, so action choice may target the wrong underlying files, DOM, or backend data.",
+                "Pixel encoders always discard all spatial information, so any GUI action becomes random after the first click.",
+                "Screenshots prevent the agent from using language reasoning, so planning must be replaced by fixed scripts.",
+                "The agent can only improve by increasing model parameters, because state access cannot change action selection."
+              ],
+              "a": 0,
+              "why": "Pixels are a lossy observation channel. Direct access to program state can reveal causal variables that identical-looking screens conceal.",
+              "source_ids": [
+                "emergentmind-2607-22798-stateact-program-state-before-pixels-for-long-horizon-2026"
+              ]
+            },
+            {
+              "q": "What changes when long-horizon execution stores task state outside the agent's running context?",
+              "options": [
+                "The agent no longer needs tools, because external state replaces environmental interaction.",
+                "All intermediate facts become trusted automatically, so verification can be removed from the loop.",
+                "Completion assessment is easier because the state can be updated from independently checked facts instead of self-assessed dialogue history.",
+                "The policy becomes stateless, because the task state is no longer visible during later decisions."
+              ],
+              "a": 2,
+              "why": "External task state limits drift from accumulated context and makes later decisions depend on checked facts. The mechanism is state management, not elimination of planning.",
+              "source_ids": [
+                "emergentmind-2608-01964-longhorizon-harness-advancing-long-horizon-agents-for-real-2026"
+              ]
+            }
+          ]
+        },
+        {
+          "concept_key": "planning-and-control",
+          "name": "Planning and Control",
+          "lore": "Long tasks punish agents that only extend a chain of thought until something works. The mechanism is to make planning controllable: represent dependencies, choose horizons that are worth supervising, and expose intermediate progress instead of waiting for a final verdict. Knowledge-action graphs, turn-aware distillation, off-context guidance, and dense terminal grading all attack the same bottleneck: sparse feedback over many dependent steps. This changes control from blind rollout to staged correction, where partial success can steer later behavior. The evidence includes long-horizon trajectories, turn-level pruning of weak supervision, privileged training prompts for hard problems, and dense reward grading across terminal tasks. The failure boundary is that extra horizon alone can waste compute or amplify wrong branches if the verifier, reward, or state representation is weak.",
+          "source_ids": [
+            "emergentmind-2606-30616-agents-a1-horizon-scaling-2026",
+            "emergentmind-2607-05804-turnopd-making-on-policy-distillation-turn-aware-2026",
+            "emergentmind-2607-19313-off-context-grpo-learning-to-reason-on-hard-2026",
+            "emergentmind-2607-08964-long-horizon-terminal-bench-testing-the-limits-of-2026"
+          ],
+          "questions": [
+            {
+              "q": "Why does outcome-only reward become weak supervision for a many-turn tool agent?",
+              "options": [
+                "It gives every failed trajectory the same signal, even if some early actions moved the state closer to success.",
+                "It overweights short answers because final rewards cannot be computed for long tool traces.",
+                "It prevents the agent from executing tools, so all rewards must be estimated from text alone.",
+                "It removes exploration because every intermediate action receives a positive advantage."
+              ],
+              "a": 0,
+              "why": "A final reward cannot identify which step created progress or caused failure. Long horizons need denser or turn-aware signals to reduce variance and miscredit.",
+              "source_ids": [
+                "emergentmind-2607-08964-long-horizon-terminal-bench-testing-the-limits-of-2026",
+                "emergentmind-2607-05804-turnopd-making-on-policy-distillation-turn-aware-2026"
+              ]
+            },
+            {
+              "q": "Why can privileged guidance during training help on hard verifiable-reward problems?",
+              "options": [
+                "It changes the target objective so the final model is rewarded for using hidden hints at deployment.",
+                "It steers rollouts into regions with non-zero reward, creating learning signal when unguided attempts would all fail.",
+                "It removes the need for a verifier because the guidance already contains the answer.",
+                "It guarantees shorter reasoning traces, which is the main cause of better problem solving."
+              ],
+              "a": 1,
+              "why": "When no correct samples appear, verifiable rewards provide no gradient. Off-context guidance can reach correct states during training while the objective remains the original prompt.",
+              "source_ids": [
+                "emergentmind-2607-19313-off-context-grpo-learning-to-reason-on-hard-2026"
+              ]
+            }
+          ]
+        },
+        {
+          "concept_key": "tool-use-policy",
+          "name": "Tool-Use Policy",
+          "lore": "Tools make agents useful, but ungoverned tool use turns capability into attack surface and cost. The mechanism is policy-aware orchestration: typed state, conditional routing, deterministic tools, scoped credentials, retries, interrupts, and traces constrain what actions can happen and how failures recover. Production guides and graph workflows describe the full stack; hardened evaluations show that real organizations impose read-only filesystems, restricted egress, non-root execution, and scoped credentials. Skill libraries and API-world simulators widen operational knowledge, but policies decide when that knowledge may act. Information flow changes from a model directly emitting operations to a routed program mediating permissions, evidence, and recovery. The boundary is that hardening reduces freedom and can lower success or raise cost; policy must be measured as part of performance.",
+          "source_ids": [
+            "emergentmind-2606-24937-hitchhikers-guide-agentic-ai-2026",
+            "emergentmind-2607-19297-graph-based-agentic-ai-with-langgraph-workflow-pathways-2026",
+            "emergentmind-2608-02670-permission-denied-policy-graded-evaluation-of-coding-agents-2026",
+            "emergentmind-2607-07676-skillcenter-a-large-scale-source-grounded-skill-library-2026"
+          ],
+          "questions": [
+            {
+              "q": "What is the main engineering effect of putting an agent workflow into a typed graph with checkpoints and conditional routes?",
+              "options": [
+                "It makes each model call independent, so no persistent state is needed across the workflow.",
+                "It replaces environmental evidence with prompt templates that are easier to optimize.",
+                "It turns multi-step execution into explicit control flow where retries, interrupts, and recovery can be handled predictably.",
+                "It guarantees that every branch will be explored before any final answer is produced."
+              ],
+              "a": 2,
+              "why": "Graph orchestration externalizes control flow and state transitions. That makes long-running work recoverable and inspectable instead of hidden in a single prompt context.",
+              "source_ids": [
+                "emergentmind-2607-19297-graph-based-agentic-ai-with-langgraph-workflow-pathways-2026"
+              ]
+            },
+            {
+              "q": "Why should agent benchmarks include read-only filesystems, restricted egress, and scoped credentials?",
+              "options": [
+                "Security controls remove stochasticity from model sampling, making all agents deterministic.",
+                "Enterprise restrictions change the feasible action set, so capability measured in permissive sandboxes can overstate deployed performance.",
+                "Restricted environments make tool calls impossible, allowing pure reasoning to be measured in isolation.",
+                "Policy controls improve success by preventing every expensive or incorrect action."
+              ],
+              "a": 1,
+              "why": "A tool policy changes which plans can be executed and what recovery costs. Measuring only permissive runs misses losses and cost shifts under real constraints.",
+              "source_ids": [
+                "emergentmind-2608-02670-permission-denied-policy-graded-evaluation-of-coding-agents-2026"
+              ]
+            }
+          ]
+        }
+      ],
+      "side": {
+        "name": "The Dispatch Yard",
+        "description": "Applied drills for turning state, plans, and policy into working agents.",
+        "questions": [
+          {
+            "q": "A browser agent keeps clicking the right-looking button but corrupts the wrong account record when two tabs render similar pages. What change best targets the failure?",
+            "options": [
+              "Increase the sampling temperature so the agent explores a wider set of visual actions.",
+              "Route account-changing steps through program-state checks that bind the visible page to backend identifiers before acting.",
+              "Store more screenshots in context so the agent can compare visual history across turns.",
+              "Replace all tool calls with natural-language explanations of intended actions."
+            ],
+            "a": 1,
+            "why": "The failure is hidden state aliasing: similar pixels correspond to different backend records. Checking program state before action fixes the causal variable.",
+            "source_ids": [
+              "emergentmind-2607-22798-stateact-program-state-before-pixels-for-long-horizon-2026"
+            ]
+          },
+          {
+            "q": "A company wants a coding agent to work inside production-like repositories with no network egress and read-only dependency directories. What evaluation result matters most before deployment?",
+            "options": [
+              "Whether the agent can still complete tasks and control cost under the enforced policy levels.",
+              "Whether the agent produces longer plans when denied shell write access.",
+              "Whether the agent prefers GUI tools over terminal tools in a permissive sandbox.",
+              "Whether the model can name every credential restriction in its final answer."
+            ],
+            "a": 0,
+            "why": "Policy changes the action set and can reduce success or inflate cost. Deployment readiness depends on measured behavior under the same restrictions.",
+            "source_ids": [
+              "emergentmind-2608-02670-permission-denied-policy-graded-evaluation-of-coding-agents-2026"
+            ]
+          }
+        ]
+      },
+      "gym": {
+        "leader": "Director Voss",
+        "badge": "The Control Badge",
+        "taunt": "A longer plan is not control unless the state, reward, and permissions all agree.",
+        "questions": [
+          {
+            "q": "An agent doing a 70-step terminal task often makes early progress, then ruins the result near the end. Which combined fix best addresses the mechanism?",
+            "options": [
+              "Use dense progress checks for intermediate state and turn-aware training so late noisy turns do not dominate supervision.",
+              "Remove all intermediate verification and reward only the final output to keep the objective simple.",
+              "Increase context length while keeping task state and completion judgments inside the same dialogue.",
+              "Disable tools after the first successful command so the agent cannot create later errors."
+            ],
+            "a": 0,
+            "why": "The problem mixes long-horizon state drift with sparse credit. Dense checks and turn-aware supervision expose where progress is made and where tail actions become noise.",
+            "source_ids": [
+              "emergentmind-2607-08964-long-horizon-terminal-bench-testing-the-limits-of-2026",
+              "emergentmind-2607-05804-turnopd-making-on-policy-distillation-turn-aware-2026",
+              "emergentmind-2608-01964-longhorizon-harness-advancing-long-horizon-agents-for-real-2026"
+            ]
+          },
+          {
+            "q": "A GUI agent needs to operate across mobile, web, and CLI workflows. Which architecture best matches the control problem?",
+            "options": [
+              "A single screenshot-to-click policy that treats every platform as the same visual prediction task.",
+              "A routed system that combines sandboxed environments, tool constraints, state tracking, and platform-specific interaction paths.",
+              "A memory-only agent that retrieves past actions but cannot inspect live state or execute tools.",
+              "A verifier-only process that grades final outputs without influencing intermediate actions."
+            ],
+            "a": 1,
+            "why": "Cross-platform work needs both state and action routing under policy. A monolithic visual policy misses CLI paths, environment constraints, and recoverable control flow.",
+            "source_ids": [
+              "emergentmind-2607-28227-qwen-ui-agent-technical-report-toward-next-generation-2026",
+              "emergentmind-2607-19297-graph-based-agentic-ai-with-langgraph-workflow-pathways-2026",
+              "emergentmind-2608-02670-permission-denied-policy-graded-evaluation-of-coding-agents-2026"
+            ]
+          },
+          {
+            "q": "A hard reasoning task gives zero correct samples under normal RL. Which trade-off is most accurate?",
+            "options": [
+              "Privileged training guidance can create reward signal, but deployment evaluation must still use the original unguided prompt.",
+              "Privileged guidance should remain in deployment prompts because it is the only way to preserve correctness.",
+              "The verifier should be removed because any external check prevents exploration.",
+              "The model should be trained only on failed unguided rollouts to avoid distribution shift."
+            ],
+            "a": 0,
+            "why": "Guidance can cross the zero-reward cliff during training. Keeping the target objective unguided preserves the intended deployment condition.",
+            "source_ids": [
+              "emergentmind-2607-19313-off-context-grpo-learning-to-reason-on-hard-2026"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "board_key": "coordination",
+      "summary": "Collective agency depends on communication structure, exploration across partners and strategies, and credit signals that explain which interactions improved the outcome.",
+      "npc_name": "Councilor Imani",
+      "npc_text": "The Council watches agents meet other agents and humans. Coordination is not just more voices in a room: partners influence each other, norms stabilize expectations, populations can converge too early, and rewards can blame the wrong turn. These halls teach how communication networks, diverse exploration, and turn-level accountability make collective behavior legible enough to improve.",
+      "concepts": [
+        {
+          "concept_key": "multi-agent-communication",
+          "name": "Multi-Agent Communication",
+          "lore": "A group of agents can fail even when each member is capable, because interaction changes the problem. Messages reshape attention, memory, norms, and partner expectations; in large populations, each agent may be controlled through aggregate effects rather than pairwise details. The mechanism is communication as a dynamic network: agents exchange information, influence one another asymmetrically, and sometimes coordinate through tacit norms. Mean-field formulations reduce large populations to representative-agent learning; hybrid-group models ask how human and AI differences scale to group dynamics; social-norm learning targets compatibility with humans. This changes information flow from isolated inference to coupled belief updates. The evidence includes population stochastic control, network accounts of collective cognition, norm-learning for dynamic coordination, and self-play attractors. The boundary is that communication can also polarize, transfer unwanted styles, or stabilize brittle conventions.",
+          "source_ids": [
+            "emergentmind-2607-01525-mean-field-reinforcement-learning-2026",
+            "emergentmind-2607-05593-collective-cognition-in-hybrid-groups-a-network-2026",
+            "emergentmind-2607-07021-learning-social-norms-enhances-compatibility-in-dynamic-2026",
+            "emergentmind-2606-30571-llm-attractor-states-2026"
+          ],
+          "questions": [
+            {
+              "q": "Why can an agent that performs well alone fail when placed in a human-AI team?",
+              "options": [
+                "Team settings always require smaller models because larger models cannot represent other agents.",
+                "Interaction changes the information environment, so attention, memory, norms, and partner influence affect which actions coordinate.",
+                "Human messages remove the need for policies, making every action equally acceptable.",
+                "Group performance depends only on the strongest member's standalone accuracy."
+              ],
+              "a": 1,
+              "why": "Coordination is coupled decision making. Partner behavior changes expectations and available information, so solo competence is insufficient.",
+              "source_ids": [
+                "emergentmind-2607-05593-collective-cognition-in-hybrid-groups-a-network-2026",
+                "emergentmind-2607-07021-learning-social-norms-enhances-compatibility-in-dynamic-2026"
+              ]
+            },
+            {
+              "q": "What does a mean-field view buy for very large multi-agent systems?",
+              "options": [
+                "It eliminates stochasticity by forcing every agent to take the same action.",
+                "It turns communication into a supervised classification problem over message strings.",
+                "It replaces finite-population interaction analysis with a representative-agent problem coupled to aggregate population behavior.",
+                "It proves that common noise cannot affect coordination once the population is large."
+              ],
+              "a": 2,
+              "why": "Mean-field methods approximate large-population dynamics through aggregate effects. This can make analysis and learning tractable without tracking every pairwise interaction.",
+              "source_ids": [
+                "emergentmind-2607-01525-mean-field-reinforcement-learning-2026"
+              ]
+            }
+          ]
+        },
+        {
+          "concept_key": "exploration-and-diversity",
+          "name": "Exploration and Diversity",
+          "lore": "Coordination collapses when agents only exploit familiar partners, familiar arguments, or familiar tasks. The mechanism is structured diversity: probe peers to infer capabilities, maintain heterogeneous reasoning paths, adversarially search for failures, and distinguish learnable novelty from noise. Multi-agent exploration frames partner probing as a partially observable stochastic game; cognitive-heterogeneous reasoning ensembles separate adversarial refinement, planning, search, and direct chains; self-play red teaming trains attackers against changing defenders; learnable novelty avoids both the noisy-television trap and the dark-room trap. Information flow changes from one dominant trajectory to a portfolio of probes whose outcomes reveal which uncertainty can become knowledge. The evidence also warns that self-play can settle into attractor states. The boundary is cost: diversity helps only when selection or verification can identify the useful branch.",
+          "source_ids": [
+            "emergentmind-2607-11250-multi-agent-llms-fail-to-explore-each-other-2026",
+            "emergentmind-2607-20268-potre-test-time-reasoning-inspired-by-cognitive-heterogeneity-2026",
+            "emergentmind-2607-26115-gpt-red-automated-red-teaming-via-self-play-2026",
+            "emergentmind-2607-18433-intelligence-from-learnable-novelty-2026"
+          ],
+          "questions": [
+            {
+              "q": "Why does exploration fail when agents only repeat myopic interaction patterns with peers?",
+              "options": [
+                "They gather too much private information, making coordination overly deterministic.",
+                "They stop probing partner capabilities, so they cannot infer which interaction strategies would reduce regret.",
+                "They maximize long-term reward too strongly, preventing short conversations from ending.",
+                "They use multiple messages, which makes partial observability disappear."
+              ],
+              "a": 1,
+              "why": "In partially observable interaction, agents must test peers to learn capabilities and compatible strategies. Myopic patterns leave uncertainty unresolved.",
+              "source_ids": [
+                "emergentmind-2607-11250-multi-agent-llms-fail-to-explore-each-other-2026"
+              ]
+            },
+            {
+              "q": "Why is repeated diversity useful only when paired with selection or verification?",
+              "options": [
+                "Diversity always lowers compute cost by shortening every generated trajectory.",
+                "Multiple branches create alternatives, but the system still needs a way to identify which branch solves the task or exposes a real failure.",
+                "Heterogeneous agents guarantee independent errors, so no final aggregation is necessary.",
+                "Exploration removes the need for rewards because novelty itself is always beneficial."
+              ],
+              "a": 1,
+              "why": "Diversity produces candidates and probes; it does not by itself say which are correct. Verification or aggregation converts exploration into learning.",
+              "source_ids": [
+                "emergentmind-2607-20268-potre-test-time-reasoning-inspired-by-cognitive-heterogeneity-2026",
+                "emergentmind-2607-26115-gpt-red-automated-red-teaming-via-self-play-2026",
+                "emergentmind-2607-18433-intelligence-from-learnable-novelty-2026"
+              ]
+            }
+          ]
+        },
+        {
+          "concept_key": "credit-and-accountability",
+          "name": "Credit and Accountability",
+          "lore": "Collective and long-horizon agents often know whether a run succeeded but not which turn deserved credit. The mechanism is to decompose accountability below the final outcome: estimate turn-level contributions, shape rewards from privileged or self-distilled signals, and recover implicit objectives from demonstrations. TRACE targets useful actions hidden inside failed rollouts; AgentOPSD aggregates teacher-student gaps into turn-level evidence; self-distilled reward shaping calibrates privileged skill scores across interaction steps; inverse-reward alignment estimates an inspectable reward from demonstrations. This changes feedback from a single trajectory label to localized signals that can update policy choices and audit why an action was reinforced. The boundary is calibration: dense credit can mislead if teacher confidence, realized returns, or demonstration-derived rewards do not track actual task progress.",
+          "source_ids": [
+            "emergentmind-2607-13988-trace-turn-level-reward-assignment-via-credit-estimation-2026",
+            "emergentmind-2608-05987-agentopsd-recursive-self-distillation-for-agentic-reinforcement-learning-2026",
+            "emergentmind-2608-03223-agentic-reinforcement-learning-with-self-distilled-reward-shaping-2026",
+            "emergentmind-2607-24900-inverse-rl-helps-align-ai-by-imitating-humans-2026"
+          ],
+          "questions": [
+            {
+              "q": "Why can a failed rollout still contain positive training signal for a tool agent?",
+              "options": [
+                "Any failed rollout proves that every early action should be repeated with higher probability.",
+                "A final failure can follow useful intermediate actions, so turn-level credit can separate progress from the later mistake.",
+                "Failure indicates the verifier is unreliable, so the run should be treated as successful during training.",
+                "Tool calls are independent, so the outcome cannot depend on earlier actions."
+              ],
+              "a": 1,
+              "why": "Outcome-only training assigns the same negative signal to all actions in a failed trace. Turn-level credit can reward steps that moved the environment closer to the goal.",
+              "source_ids": [
+                "emergentmind-2607-13988-trace-turn-level-reward-assignment-via-credit-estimation-2026"
+              ]
+            },
+            {
+              "q": "What is the risk of using dense reward shaping from privileged skills?",
+              "options": [
+                "It cannot be used with frozen policy snapshots, so it prevents comparison across trajectories.",
+                "It may reinforce misleading steps if teacher scores are not calibrated against realized returns and step position.",
+                "It removes all information about local decisions because rewards become trajectory-level again.",
+                "It makes demonstrations impossible to inspect because every reward must come from hidden logits."
+              ],
+              "a": 1,
+              "why": "Dense signals are useful only when they track true progress. Calibration across steps and outcomes prevents local teacher confidence from becoming false credit.",
+              "source_ids": [
+                "emergentmind-2608-03223-agentic-reinforcement-learning-with-self-distilled-reward-shaping-2026"
+              ]
+            }
+          ]
+        }
+      ],
+      "side": {
+        "name": "The Roundtable Simulator",
+        "description": "Applied drills for designing groups that communicate, explore, and assign credit.",
+        "questions": [
+          {
+            "q": "A customer-support agent is paired with a human specialist. It answers quickly but repeatedly ignores the specialist's implied escalation norms. Which intervention best matches the failure?",
+            "options": [
+              "Train only on single-agent task success so the agent's standalone accuracy improves.",
+              "Model coordination norms from dynamic human-AI interaction so the agent learns tacit expectations for when to defer or adapt.",
+              "Remove persistent memory so prior turns cannot influence the current response.",
+              "Force both human and AI to use identical wording for every decision."
+            ],
+            "a": 1,
+            "why": "The problem is not raw answer generation; it is coordination with tacit human expectations. Norm learning targets compatibility in dynamic interaction.",
+            "source_ids": [
+              "emergentmind-2607-07021-learning-social-norms-enhances-compatibility-in-dynamic-2026"
+            ]
+          },
+          {
+            "q": "A multi-agent solver generates five similar analyses and still misses corner cases. What change most directly increases useful exploration?",
+            "options": [
+              "Assign heterogeneous reasoning functions and aggregate based on task-adaptive evidence instead of duplicating the same reasoning path.",
+              "Shorten every message so the agents converge before disagreement appears.",
+              "Use only the most confident initial answer because multiple agents increase regret.",
+              "Remove adversarial critique so all agents remain aligned on the first plan."
+            ],
+            "a": 0,
+            "why": "Diversity must cover different search modes, not just repeated samples of the same path. Aggregation then selects among complementary evidence.",
+            "source_ids": [
+              "emergentmind-2607-20268-potre-test-time-reasoning-inspired-by-cognitive-heterogeneity-2026"
+            ]
+          }
+        ]
+      },
+      "gym": {
+        "leader": "Marshal Kenzo",
+        "badge": "The Concord Badge",
+        "taunt": "Consensus is cheap. Useful disagreement has to be designed, measured, and paid for.",
+        "questions": [
+          {
+            "q": "A team of agents debates a deployment plan and gradually adopts one model's flattering style while losing technical disagreement. Which diagnosis is strongest?",
+            "options": [
+              "The group has too much verification, so style transfer proves the checks are overconstraining outputs.",
+              "The interaction has entered an attractor where partner influence changes communication patterns without guaranteeing better decisions.",
+              "The agents are exploring effectively because any shared style indicates convergence to the best policy.",
+              "The team needs only a larger context window, since social influence is a memory-capacity failure."
+            ],
+            "a": 1,
+            "why": "Multi-turn interaction can produce attractor states and asymmetric influence. Convergence of style is not evidence that the group found the best technical answer.",
+            "source_ids": [
+              "emergentmind-2606-30571-llm-attractor-states-2026"
+            ]
+          },
+          {
+            "q": "A self-play safety system finds novel attacks but also produces many unrealistic failures. What trade-off should the designer manage?",
+            "options": [
+              "Attack diversity must be balanced with realistic defender environments and verification so training does not chase spurious rewards.",
+              "The attacker should be trained against a single fixed defender to eliminate distribution shift.",
+              "All novel attacks should be accepted because novelty is the same as learnability.",
+              "The defender should never change during training because co-evolution destroys feedback."
+            ],
+            "a": 0,
+            "why": "Self-play can expand coverage, but novelty alone is not a target. Realistic environments and verified failures keep the search tied to useful robustness gains.",
+            "source_ids": [
+              "emergentmind-2607-26115-gpt-red-automated-red-teaming-via-self-play-2026",
+              "emergentmind-2607-18433-intelligence-from-learnable-novelty-2026"
+            ]
+          },
+          {
+            "q": "A long-horizon agent succeeds only when one particular early tool call is correct, but final rewards arrive after dozens of later steps. Which training signal is most appropriate?",
+            "options": [
+              "A single binary outcome assigned equally to every token in the trajectory.",
+              "A turn-level credit estimate that identifies pivotal decisions and separates them from later routine actions.",
+              "A partner-probing objective that ignores task outcome and rewards only communication length.",
+              "A mean-field approximation that replaces the trajectory with population averages."
+            ],
+            "a": 1,
+            "why": "The bottleneck is temporal credit assignment. Turn-level estimates can reinforce pivotal early decisions despite delayed final outcomes.",
+            "source_ids": [
+              "emergentmind-2607-13988-trace-turn-level-reward-assignment-via-credit-estimation-2026",
+              "emergentmind-2608-05987-agentopsd-recursive-self-distillation-for-agentic-reinforcement-learning-2026"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "board_key": "reliability",
+      "summary": "Reliable agents must survive context shift, route authority through verification, and combine human and AI judgment when their errors are complementary rather than correlated.",
+      "npc_name": "Advocate Mirel",
+      "npc_text": "The Tribunal distrusts smooth averages. It asks which examples flip under irrelevant context, which authority labels bypass review, when users are being nudged by hidden values, and whether humans can actually extract complementary signal from AI. Reliability here is not confidence; it is a system property built from stress tests, provenance checks, calibrated authority, and human-AI error structure.",
+      "concepts": [
+        {
+          "concept_key": "robustness-under-shift",
+          "name": "Robustness Under Shift",
+          "lore": "An agent can look stable in aggregate while failing particular users, contexts, or future updates. The mechanism is shift-sensitive testing: vary irrelevant context, user identity, temporal facts, domains, and conversation dynamics, then inspect per-example behavior rather than only average accuracy. Evidence shows task-irrelevant strings can flip individual predictions despite stable aggregate scores; implied user identity can shift moral ratings; evolving intent can derail collaborative agents; value leakage can shape practical answers without disclosure. Continual learning adds another shift: the world changes across domains and time, while model plasticity may decay. Information flow changes from a single benchmark score to a map of where inputs perturb decisions. The boundary is that detecting shift does not by itself repair it; mitigation needs memory, retraining, calibration, or policy changes matched to the failure.",
+          "source_ids": [
+            "emergentmind-2607-12963-the-illusion-of-robustness-aggregate-accuracy-hides-prediction-2026",
+            "emergentmind-2607-07605-user-identity-conditions-moral-wrongness-ratings-in-2026",
+            "emergentmind-2607-20734-llms-get-lost-in-evolving-user-intent-2026",
+            "emergentmind-2607-14345-value-leakage-an-llm-s-answers-are-silently-2026"
+          ],
+          "questions": [
+            {
+              "q": "Why can aggregate accuracy hide a robustness failure?",
+              "options": [
+                "Average scores always increase when irrelevant context is added, masking weaker reasoning.",
+                "Stable totals can coexist with prediction flips on individual examples, so opposite changes cancel in the aggregate.",
+                "Aggregate metrics cannot be computed for language models with long prompts.",
+                "Per-example analysis removes task difficulty, making every flip harmless."
+              ],
+              "a": 1,
+              "why": "If some answers flip from correct to wrong and others flip back, the average can stay nearly unchanged. Reliability needs per-example stability checks.",
+              "source_ids": [
+                "emergentmind-2607-12963-the-illusion-of-robustness-aggregate-accuracy-hides-prediction-2026"
+              ]
+            },
+            {
+              "q": "What makes evolving user intent different from a static instruction-following task?",
+              "options": [
+                "The objective is disclosed, revised, and reshaped over turns, so the agent must update its task model instead of optimizing the first specification.",
+                "The user can no longer provide feedback once the first answer is generated.",
+                "All later turns are irrelevant context and should be ignored to preserve robustness.",
+                "The agent should infer a hidden fixed goal and reject any user revision as noise."
+              ],
+              "a": 0,
+              "why": "Dynamic collaboration changes the target as the conversation unfolds. Reliability requires tracking intent updates, not just following a fully specified initial prompt.",
+              "source_ids": [
+                "emergentmind-2607-20734-llms-get-lost-in-evolving-user-intent-2026"
+              ]
+            }
+          ]
+        },
+        {
+          "concept_key": "verification-and-authority",
+          "name": "Verification and Authority",
+          "lore": "Authority is dangerous when a label can silence verification. The mechanism is to separate claimed permission from checked evidence: formal proofs, parity tests, security scans, telemetry-backed diagnosis, and adversarial probes should bind decisions to verifiable artifacts. CI/CD experiments show a laundered authority frame can make downstream agents approve malicious code even when earlier checks exist. Agentic legacy migration uses paired runtimes and branch-penetrating witness search to validate behavior. Lean-based quantum formalization and reusable libraries turn reasoning into machine-checkable infrastructure. Reconnaissance-driven pentesting probes black-box agents for exploitable knowledge assets. Information flow changes from trust in a message to trust in independently inspectable state. The boundary is social and operational: agents may verify yet fail to act, and attackers can target the gaps between review, approval, and deployment.",
+          "source_ids": [
+            "emergentmind-2607-19267-they-ll-verify-they-just-won-t-act-2026",
+            "emergentmind-2607-28271-agentic-method-for-deterministic-validation-of-legacy-code-2026",
+            "emergentmind-2607-05492-lean-quantum-toward-ai-assisted-formalization-of-2026",
+            "emergentmind-2607-19837-know-your-agent-reconnaissance-driven-pentesting-of-ai-2026"
+          ],
+          "questions": [
+            {
+              "q": "Why is an authority-framed instruction such as pre-approved, do not re-review especially risky in an agent pipeline?",
+              "options": [
+                "It increases token count, which makes reviewers unable to parse the proposed code.",
+                "It can shift later agents from evidence checking to deference, allowing malicious behavior to pass through staged approval.",
+                "It disables all model reasoning, so the entry agent must leak its system prompt first.",
+                "It is risky only when no security scanner exists anywhere in the pipeline."
+              ],
+              "a": 1,
+              "why": "The attack exploits the authority channel between agents. A scanner or reviewer helps only if its findings actually influence approval and deployment.",
+              "source_ids": [
+                "emergentmind-2607-19267-they-ll-verify-they-just-won-t-act-2026"
+              ]
+            },
+            {
+              "q": "What is the strongest validation strategy for migrating legacy code when corner cases are unknown?",
+              "options": [
+                "Compare outputs on a few hand-written examples and accept any generated Java that compiles.",
+                "Run both old and new implementations with mocked environments, search for branch-penetrating witnesses, and mutate tests while preserving parity.",
+                "Ask the agent to summarize the COBOL control flow and use the summary as the oracle.",
+                "Disable mocks so the generated target cannot observe environmental differences."
+              ],
+              "a": 1,
+              "why": "Paired execution creates a behavioral oracle, and witness search explores branches that ordinary examples miss. Parity-preserving mutation broadens coverage without changing expected behavior.",
+              "source_ids": [
+                "emergentmind-2607-28271-agentic-method-for-deterministic-validation-of-legacy-code-2026"
+              ]
+            }
+          ]
+        },
+        {
+          "concept_key": "human-ai-complementarity",
+          "name": "Human-AI Complementarity",
+          "lore": "Human-AI systems improve only when the AI adds information the human can use and the combined errors do not simply overlap. The mechanism is complementarity under uncertainty: decision makers need to know when AI signals are independent, when they are correlated with human mistakes, and when speech, rationale, or expert review contributes a different channel. Robust complementarity work identifies error correlation as central; speech signals can add conditional value beyond transcripts; chess alignment compares human expert, engine-assisted, and agent rationales; deep technical critique pipelines combine independent expert personas with adversarial synthesis. Information flow changes from replacing judgment to routing distinct evidence streams into a joint decision. The boundary is that complementarity is conditional, not universal: extra model output can mislead when users cannot assess quality or when the AI's errors track their own.",
+          "source_ids": [
+            "emergentmind-2607-06656-robust-human-ai-complementarity-under-uncertainty-2026",
+            "emergentmind-2607-23037-speech-signals-complement-llms-for-predicting-interpersonal-attraction-2026",
+            "emergentmind-2607-21993-three-body-alignment-aligning-chess-agent-with-human-2026",
+            "emergentmind-2607-11859-can-llms-perform-deep-technical-comprehension-of-computer-2026"
+          ],
+          "questions": [
+            {
+              "q": "When is an AI prediction most likely to add value to a human decision maker?",
+              "options": [
+                "When the AI's errors are perfectly correlated with the human's errors, because agreement proves correctness.",
+                "When the AI provides a complementary signal whose errors differ from the human's and the human can use that quality information.",
+                "When the AI is always more confident than the human, regardless of calibration or task context.",
+                "When the human never sees uncertainty, preventing disagreement from slowing the decision."
+              ],
+              "a": 1,
+              "why": "Complementarity depends on error structure, not just AI accuracy. Independent or differently structured errors can improve joint decisions if the human can interpret the signal.",
+              "source_ids": [
+                "emergentmind-2607-06656-robust-human-ai-complementarity-under-uncertainty-2026"
+              ]
+            },
+            {
+              "q": "Why might speech features improve prediction beyond a transcript-only language model in some conversations but not all?",
+              "options": [
+                "Speech always contains the ground truth label, so transcript information becomes irrelevant.",
+                "The acoustic channel can carry complementary cues, but its value depends on whether those cues add information not already captured in text.",
+                "Transcript-only models cannot process dialogue order, so any sequential audio model will dominate universally.",
+                "Speech features remove cultural and individual variation from interpersonal judgments."
+              ],
+              "a": 1,
+              "why": "A second modality helps when it contributes nonredundant signal. If speech cues overlap with transcript cues or add noise, complementarity may disappear.",
+              "source_ids": [
+                "emergentmind-2607-23037-speech-signals-complement-llms-for-predicting-interpersonal-attraction-2026"
+              ]
+            }
+          ]
+        }
+      ],
+      "side": {
+        "name": "The Evidence Dock",
+        "description": "Applied drills for stress testing context, authority, and joint judgment.",
+        "questions": [
+          {
+            "q": "A legal assistant keeps the same overall benchmark score after random irrelevant paragraphs are prepended, but different individual answers change. What should the reliability report emphasize?",
+            "options": [
+              "The model is robust because the aggregate score did not move.",
+              "Per-example flips matter because users experience individual decisions, not canceled-out averages.",
+              "The irrelevant paragraphs improved calibration by forcing the model to reconsider each answer.",
+              "The benchmark should be discarded because any context change invalidates all results."
+            ],
+            "a": 1,
+            "why": "Aggregate stability can hide localized instability. The operational risk is the particular answer that flips for a user.",
+            "source_ids": [
+              "emergentmind-2607-12963-the-illusion-of-robustness-aggregate-accuracy-hides-prediction-2026"
+            ]
+          },
+          {
+            "q": "A human analyst and an AI both miss the same kind of fraud pattern. What is the best complementarity response?",
+            "options": [
+              "Use the AI more often because duplicate errors show consistent reasoning.",
+              "Look for an additional signal or workflow change that decorrelates errors before relying on the pair.",
+              "Hide AI confidence so the analyst cannot be biased by the model.",
+              "Average their outputs because two aligned mistakes become less severe when combined."
+            ],
+            "a": 1,
+            "why": "Complementarity fails when errors overlap. The system needs a different information channel or process that catches what both currently miss.",
+            "source_ids": [
+              "emergentmind-2607-06656-robust-human-ai-complementarity-under-uncertainty-2026"
+            ]
+          }
+        ]
+      },
+      "gym": {
+        "leader": "Judge Halden",
+        "badge": "The Audit Badge",
+        "taunt": "A stamp of approval is not evidence. Show me what changed in the world.",
+        "questions": [
+          {
+            "q": "An AI investment assistant gives different risk estimates depending on which AI company is named, without disclosing that influence. Which reliability failure is present?",
+            "options": [
+              "Context-window overflow, because company names are always too long for accurate reasoning.",
+              "Covert value leakage, because the answer is shaped by internal preferences while presented as neutral information.",
+              "Human-AI complementarity, because the model adds independent evidence to the user's judgment.",
+              "Formal verification failure, because all financial estimates require theorem proving."
+            ],
+            "a": 1,
+            "why": "The problem is hidden value influence in information supplied for a hard-to-verify decision. Disclosure and calibration matter because the user cannot easily audit the bias.",
+            "source_ids": [
+              "emergentmind-2607-14345-value-leakage-an-llm-s-answers-are-silently-2026"
+            ]
+          },
+          {
+            "q": "A CI/CD pipeline detects suspicious exfiltration code but still deploys it after a later message claims authority. Which redesign targets the failure?",
+            "options": [
+              "Make the entry agent refuse to reveal its system prompt, then leave downstream approval unchanged.",
+              "Require deployment gates to bind approval to scanner findings and independently verified policy checks, not authority text.",
+              "Remove all review agents so there are fewer opportunities for conflicting judgments.",
+              "Use a larger model for approval while keeping the same authority hierarchy."
+            ],
+            "a": 1,
+            "why": "The failure is not lack of a warning; it is a broken action link from verification to deployment. Gates must depend on checked artifacts rather than claimed authority.",
+            "source_ids": [
+              "emergentmind-2607-19267-they-ll-verify-they-just-won-t-act-2026"
+            ]
+          },
+          {
+            "q": "A medical triage team wants AI support but knows clinicians and the model may share blind spots on rare symptoms. What evaluation best tests whether deployment helps?",
+            "options": [
+              "Measure whether the AI alone beats clinicians on average and ignore joint decisions.",
+              "Estimate where clinician and AI errors correlate, then test whether the combined workflow catches cases each misses alone.",
+              "Ask clinicians whether AI explanations sound persuasive after the fact.",
+              "Force the AI to always defer, because rare symptoms make automation impossible."
+            ],
+            "a": 1,
+            "why": "Joint benefit depends on complementary errors and usable quality information. Average standalone accuracy cannot show whether the pair improves decisions.",
+            "source_ids": [
+              "emergentmind-2607-06656-robust-human-ai-complementarity-under-uncertainty-2026"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "board_key": "discovery",
+      "summary": "Discovery agents need long research loops, auditable memory, and evaluations that distinguish prediction, compression, and true explanatory progress.",
+      "npc_name": "Archivist Rao",
+      "npc_text": "The Foundry treats discovery as a long-running system, not a single brilliant answer. Experiments branch, memories age, datasets evolve, benchmarks compress many signals, and explanations must outgrow prediction. These halls teach agents to keep versioned research state, update memory without losing evidence, and evaluate scientific progress with mechanisms rather than flattering end products.",
+      "concepts": [
+        {
+          "concept_key": "long-horizon-research",
+          "name": "Long-Horizon Research",
+          "lore": "Research agents fail when discovery is framed as one final manuscript instead of a branching process of hypotheses, experiments, repairs, and handoffs. The mechanism is recursive, auditable search: maintain ideas, run experiments, review failures, improve strategies, and carry verified artifacts across cycles. XScientist organizes research like versioned operations with quality gates and reproducibility artifacts; AREX alternates evidence gathering with constraint-wise verification and refinement; Frontis-MA1 aligns training and inference around program-evolution operators; RSIBench-Data isolates data-centric strategy revision in a fixed post-training stack. Information flow changes from one-shot generation to a loop where partial verification guides the next search move. The boundary is benchmark realism: a system may optimize its internal loop while still missing external scientific value, hidden assumptions, or poisoned data.",
+          "source_ids": [
+            "emergentmind-2607-12301-xscientist-a-git-like-research-protocol-for-long-2026",
+            "emergentmind-2607-21461-arex-towards-a-recursively-self-improving-agent-for-2026",
+            "emergentmind-2607-28568-frontis-ma1-training-an-ai4ai-model-towards-recursive-2026",
+            "emergentmind-2607-25886-rsibench-data-benchmarking-data-centric-research-for-recursive-2026"
+          ],
+          "questions": [
+            {
+              "q": "Why is a one-shot manuscript generator a weak model for autonomous research?",
+              "options": [
+                "Research requires only longer prose, so manuscripts should be generated after every tool call.",
+                "Research is branching and failure-prone, so progress depends on auditable experiments, review, repair, and handoff state over time.",
+                "A manuscript cannot contain experimental claims, so it cannot represent any scientific output.",
+                "One-shot generation prevents the model from using a larger parameter count."
+              ],
+              "a": 1,
+              "why": "Long-running discovery is an operational loop, not just text production. Versioned state and quality gates make failures and handoffs inspectable.",
+              "source_ids": [
+                "emergentmind-2607-12301-xscientist-a-git-like-research-protocol-for-long-2026"
+              ]
+            },
+            {
+              "q": "What makes discovery-verification asymmetry useful for recursive research agents?",
+              "options": [
+                "Finding a valid answer can be expensive, while checking constraints can be decomposed and used to guide refinement.",
+                "Verification is always harder than discovery, so agents should avoid checking intermediate claims.",
+                "The agent can replace search with a single verifier call that creates new evidence.",
+                "Partial verification is harmful because it locks the agent into the first candidate answer."
+              ],
+              "a": 0,
+              "why": "If candidate checking is cheaper or decomposable, verified partial state can steer subsequent search. That turns verification into control signal.",
+              "source_ids": [
+                "emergentmind-2607-21461-arex-towards-a-recursively-self-improving-agent-for-2026"
+              ]
+            }
+          ]
+        },
+        {
+          "concept_key": "memory-and-versioning",
+          "name": "Memory and Versioning",
+          "lore": "A deployed agent that forgets every episode repeats yesterday's mistakes; an agent that writes uncontrolled memories corrupts tomorrow's decisions. The mechanism is governed memory: persistent storage, retrieval, update, consolidation, lifecycle rules, and provenance back to raw interaction traces. Agent-native memory work argues that end-to-end task scores hide which memory component failed. Frozen-weight agents can distill deployment feedback into retrievable natural-language rules. Zero-token memory keeps original traces as the record while avoiding generative memory operations. Activity frames deterministically compile screen activity into auditable episodes. Memory foundation models explore persistent internal memory states. Information flow changes from transient context to durable, inspectable experience. The boundary is version control: memories must be updated, retired, and evaluated as systems, or they become stale, lossy, or overtrusted.",
+          "source_ids": [
+            "emergentmind-2606-24775-agent-native-memory-2026",
+            "emergentmind-2607-22157-learning-on-the-job-continual-learning-from-deployment-2026",
+            "emergentmind-2607-29377-zero-mem-zero-token-memory-operations-for-llm-2026",
+            "emergentmind-2608-05784-activity-frames-deterministic-screen-activity-compilation-for-agent-2026"
+          ],
+          "questions": [
+            {
+              "q": "Why are end-to-end task scores insufficient for evaluating agent memory?",
+              "options": [
+                "They treat memory as a black box, so storage, retrieval, update, consolidation, and lifecycle failures are hard to isolate.",
+                "They require too many memory writes, causing every agent to exceed the context window.",
+                "They measure only token cost and never measure task completion.",
+                "They prove that retrieval-augmented memory cannot support persistent behavior."
+              ],
+              "a": 0,
+              "why": "A single success metric cannot reveal which memory subsystem caused an error. Component-level evaluation is needed to debug and govern memory.",
+              "source_ids": [
+                "emergentmind-2606-24775-agent-native-memory-2026"
+              ]
+            },
+            {
+              "q": "What is the benefit of preserving original interaction traces as the memory record?",
+              "options": [
+                "It lets the system retrieve evidence without relying on generated summaries that may omit or merge important details.",
+                "It prevents the agent from using embeddings, because exact traces make retrieval unnecessary.",
+                "It guarantees that old information remains correct after the user's goals change.",
+                "It makes every memory operation consume more model tokens but improves stylistic consistency."
+              ],
+              "a": 0,
+              "why": "Generated memories can lose evidence. Keeping raw traces as the record improves auditability and supports later retrieval without rewriting the event.",
+              "source_ids": [
+                "emergentmind-2607-29377-zero-mem-zero-token-memory-operations-for-llm-2026",
+                "emergentmind-2608-05784-activity-frames-deterministic-screen-activity-compilation-for-agent-2026"
+              ]
+            }
+          ]
+        },
+        {
+          "concept_key": "scientific-evaluation",
+          "name": "Scientific Evaluation",
+          "lore": "Prediction is useful, but discovery needs tests that reveal mechanisms, limits, and measurement artifacts. The mechanism is evaluation design: choose signals that match the claim, account for benchmark redundancy, protect data integrity, and distinguish explanatory structure from surface performance. BenchPress finds many benchmark scores may be governed by a low-dimensional structure, warning against redundant eval runs. Mechanistic world models argue that scientific understanding requires reusable explanatory mechanisms, not only predictive mappings. Indirect data poisoning shows automated science can amplify corrupted public datasets. Surprisal critiques warn that a metric can hide representational commitments. Scientific evaluation therefore changes information flow from leaderboard accumulation to claim-specific evidence and adversarial checks. The boundary is humility: measurements can compress, obscure, or be attacked, so no single metric can certify open-ended discovery.",
+          "source_ids": [
+            "emergentmind-2606-24020-benchpress-2026",
+            "emergentmind-2607-12474-from-observation-to-insight-mechanistic-world-models-and-2026",
+            "emergentmind-2607-10712-distributed-denial-of-science-how-indirect-data-poisoning-2026",
+            "emergentmind-2607-20208-surprisal-is-not-a-theory-2026"
+          ],
+          "questions": [
+            {
+              "q": "Why might running dozens of benchmarks add less information than expected?",
+              "options": [
+                "Benchmark scores can be highly redundant, so a small number of latent factors may explain much of the score matrix.",
+                "Every benchmark measures the same task with identical prompts and identical grading rubrics.",
+                "More benchmarks always reduce variance to zero, making individual failures irrelevant.",
+                "Frontier models cannot be evaluated on public benchmarks once any cells are missing."
+              ],
+              "a": 0,
+              "why": "If scores lie near a low-rank structure, many evaluations repeat similar information. Evaluation should target distinct uncertainties, not just count benchmarks.",
+              "source_ids": [
+                "emergentmind-2606-24020-benchpress-2026"
+              ]
+            },
+            {
+              "q": "Why is accurate next-step prediction not enough for scientific discovery?",
+              "options": [
+                "Prediction can map inputs to outputs without exposing reusable explanatory mechanisms that generate the observations.",
+                "Scientific discovery rejects all predictive models because only symbolic proofs are valid.",
+                "High predictive accuracy proves causal understanding, so no additional evaluation is needed.",
+                "Mechanisms matter only when the model is too small to memorize observations."
+              ],
+              "a": 0,
+              "why": "A predictive mapping can work without organizing knowledge around causes. Discovery requires structures that explain and transfer beyond observed cases.",
+              "source_ids": [
+                "emergentmind-2607-12474-from-observation-to-insight-mechanistic-world-models-and-2026"
+              ]
+            }
+          ]
+        }
+      ],
+      "side": {
+        "name": "The Experiment Ledger",
+        "description": "Applied drills for long research loops, memory governance, and evaluation design.",
+        "questions": [
+          {
+            "q": "A research agent improves its training-data strategy after each failed checkpoint, but logs only the latest idea. What is the most important systems change?",
+            "options": [
+              "Keep auditable versions of ideas, experiments, failures, repairs, and artifacts so later improvements can be traced.",
+              "Delete failed attempts to reduce memory pressure and simplify final reporting.",
+              "Treat each checkpoint as a fresh task so old strategy information cannot bias the agent.",
+              "Replace experiment execution with longer self-review before any data is generated."
+            ],
+            "a": 0,
+            "why": "Recursive improvement needs a record of what changed and why. Without versions, failures cannot become reliable evidence for later strategy updates.",
+            "source_ids": [
+              "emergentmind-2607-12301-xscientist-a-git-like-research-protocol-for-long-2026",
+              "emergentmind-2607-25886-rsibench-data-benchmarking-data-centric-research-for-recursive-2026"
+            ]
+          },
+          {
+            "q": "An agent evaluates a new science model using public datasets that anyone can upload to. What risk should the evaluation pipeline explicitly address?",
+            "options": [
+              "Indirect poisoning can corrupt the data the agent honestly uses, making fraudulent patterns appear as evidence.",
+              "Public datasets are always too small, so poisoning is impossible to detect statistically.",
+              "Dataset access prevents agents from producing hypotheses, so evaluation should use only internal memory.",
+              "The main risk is duplicate benchmark names, not adversarial manipulation of data."
+            ],
+            "a": 0,
+            "why": "Automated research can amplify corrupted external data even when the agent follows normal procedures. Evaluation needs provenance and adversarial data checks.",
+            "source_ids": [
+              "emergentmind-2607-10712-distributed-denial-of-science-how-indirect-data-poisoning-2026"
+            ]
+          }
+        ]
+      },
+      "gym": {
+        "leader": "Founder Elian",
+        "badge": "The Discovery Badge",
+        "taunt": "A beautiful result without a trail is just a rumor with formatting.",
+        "questions": [
+          {
+            "q": "A research agent generates plausible mechanisms, but the benchmark only grades final written answers. What evaluation upgrade best tests discovery?",
+            "options": [
+              "Add checks for reusable explanatory structure, experiment artifacts, and whether verified intermediate claims guide later search.",
+              "Use more stylistic rubrics so polished explanations receive higher scores.",
+              "Score only the number of generated hypotheses because diversity is the same as understanding.",
+              "Remove data provenance checks to avoid penalizing creative speculation."
+            ],
+            "a": 0,
+            "why": "Discovery needs evidence that mechanisms organize observations and steer future work. Final prose alone cannot show that the loop produced understanding.",
+            "source_ids": [
+              "emergentmind-2607-12474-from-observation-to-insight-mechanistic-world-models-and-2026",
+              "emergentmind-2607-12301-xscientist-a-git-like-research-protocol-for-long-2026"
+            ]
+          },
+          {
+            "q": "A personal assistant uses deployment feedback to create rules, but some old rules conflict with recent corrections. What memory policy is needed?",
+            "options": [
+              "Lifecycle governance that updates, consolidates, and retires memories while keeping evidence links to the original episodes.",
+              "A larger context window that appends every rule forever in chronological order.",
+              "A ban on external memory because frozen weights cannot benefit from feedback.",
+              "Random retrieval among conflicting memories so no old rule dominates."
+            ],
+            "a": 0,
+            "why": "Persistent experience must be versioned and governed. Evidence links let the system audit conflicts instead of trusting stale summaries.",
+            "source_ids": [
+              "emergentmind-2606-24775-agent-native-memory-2026",
+              "emergentmind-2607-22157-learning-on-the-job-continual-learning-from-deployment-2026",
+              "emergentmind-2607-29377-zero-mem-zero-token-memory-operations-for-llm-2026"
+            ]
+          },
+          {
+            "q": "A lab wants to reduce evaluation cost for model releases without losing important signal. What should it do first?",
+            "options": [
+              "Run every available benchmark twice so missing score cells cannot affect conclusions.",
+              "Analyze redundancy among benchmark scores, then choose evaluations that probe distinct capabilities and risks.",
+              "Keep only the easiest benchmark because it is cheapest and most stable.",
+              "Replace all quantitative evaluations with narrative reviews."
+            ],
+            "a": 1,
+            "why": "If benchmarks are redundant, fewer targeted evaluations can preserve signal. The decision should be based on measured structure in the score matrix and remaining risks.",
+            "source_ids": [
+              "emergentmind-2606-24020-benchpress-2026"
+            ]
+          }
+        ]
+      }
+    }
+  ],
+  "source_assignments": [
+    {
+      "source_id": "emergentmind-2606-24597-qwen-agentworld-2026",
+      "board_key": "agent-foundations",
+      "concept_key": "state-action-loop"
+    },
+    {
+      "source_id": "emergentmind-2606-25996-autodata-2026",
+      "board_key": "discovery",
+      "concept_key": "scientific-evaluation"
+    },
+    {
+      "source_id": "emergentmind-2606-24855-openthoughts-agent-2026",
+      "board_key": "discovery",
+      "concept_key": "scientific-evaluation"
+    },
+    {
+      "source_id": "emergentmind-2606-24020-benchpress-2026",
+      "board_key": "discovery",
+      "concept_key": "scientific-evaluation"
+    },
+    {
+      "source_id": "emergentmind-2606-23670-tapered-language-models-2026",
+      "board_key": "discovery",
+      "concept_key": "scientific-evaluation"
+    },
+    {
+      "source_id": "emergentmind-2606-26294-red-queen-godel-machine-2026",
+      "board_key": "discovery",
+      "concept_key": "long-horizon-research"
+    },
+    {
+      "source_id": "emergentmind-2606-24937-hitchhikers-guide-agentic-ai-2026",
+      "board_key": "agent-foundations",
+      "concept_key": "tool-use-policy"
+    },
+    {
+      "source_id": "emergentmind-2606-24775-agent-native-memory-2026",
+      "board_key": "discovery",
+      "concept_key": "memory-and-versioning"
+    },
+    {
+      "source_id": "emergentmind-2606-24752-plasticity-loss-llms-2026",
+      "board_key": "reliability",
+      "concept_key": "robustness-under-shift"
+    },
+    {
+      "source_id": "emergentmind-2606-30616-agents-a1-horizon-scaling-2026",
+      "board_key": "agent-foundations",
+      "concept_key": "planning-and-control"
+    },
+    {
+      "source_id": "emergentmind-2607-01232-single-layer-rl-adaptation-2026",
+      "board_key": "agent-foundations",
+      "concept_key": "planning-and-control"
+    },
+    {
+      "source_id": "emergentmind-2607-00397-neurocogmap-2026",
+      "board_key": "reliability",
+      "concept_key": "robustness-under-shift"
+    },
+    {
+      "source_id": "emergentmind-2606-30534-orca-world-foundation-model-2026",
+      "board_key": "agent-foundations",
+      "concept_key": "state-action-loop"
+    },
+    {
+      "source_id": "emergentmind-2606-29957-swe-together-2026",
+      "board_key": "reliability",
+      "concept_key": "human-ai-complementarity"
+    },
+    {
+      "source_id": "emergentmind-2606-30571-llm-attractor-states-2026",
+      "board_key": "coordination",
+      "concept_key": "multi-agent-communication"
+    },
+    {
+      "source_id": "emergentmind-2607-01120-self-evolving-agentic-rl-systems-2026",
+      "board_key": "discovery",
+      "concept_key": "long-horizon-research"
+    },
+    {
+      "source_id": "emergentmind-2607-01525-mean-field-reinforcement-learning-2026",
+      "board_key": "coordination",
+      "concept_key": "multi-agent-communication"
+    },
+    {
+      "source_id": "emergentmind-2607-01047-conversable-complexity-agentic-llm-collect-2026",
+      "board_key": "coordination",
+      "concept_key": "multi-agent-communication"
+    },
+    {
+      "source_id": "emergentmind-2607-02375-representation-distribution-matching-for-o-2026",
+      "board_key": "coordination",
+      "concept_key": "exploration-and-diversity"
+    },
+    {
+      "source_id": "emergentmind-2607-05369-gap-a-graph-as-policy-multi-agent-self-2026",
+      "board_key": "agent-foundations",
+      "concept_key": "planning-and-control"
+    },
+    {
+      "source_id": "emergentmind-2607-05593-collective-cognition-in-hybrid-groups-a-network-2026",
+      "board_key": "coordination",
+      "concept_key": "multi-agent-communication"
+    },
+    {
+      "source_id": "emergentmind-2607-05471-kat-coder-v2-5-technical-report-2026",
+      "board_key": "agent-foundations",
+      "concept_key": "tool-use-policy"
+    },
+    {
+      "source_id": "emergentmind-2607-07021-learning-social-norms-enhances-compatibility-in-dynamic-2026",
+      "board_key": "coordination",
+      "concept_key": "multi-agent-communication"
+    },
+    {
+      "source_id": "emergentmind-2607-05804-turnopd-making-on-policy-distillation-turn-aware-2026",
+      "board_key": "agent-foundations",
+      "concept_key": "planning-and-control"
+    },
+    {
+      "source_id": "emergentmind-2607-07508-single-rollout-asynchronous-optimization-for-agentic-reinforcement-2026",
+      "board_key": "coordination",
+      "concept_key": "credit-and-accountability"
+    },
+    {
+      "source_id": "emergentmind-2607-07857-multi-agent-autoformalization-of-tensor-network-theory-2026",
+      "board_key": "reliability",
+      "concept_key": "verification-and-authority"
+    },
+    {
+      "source_id": "emergentmind-2607-07605-user-identity-conditions-moral-wrongness-ratings-in-2026",
+      "board_key": "reliability",
+      "concept_key": "robustness-under-shift"
+    },
+    {
+      "source_id": "emergentmind-2607-05492-lean-quantum-toward-ai-assisted-formalization-of-2026",
+      "board_key": "reliability",
+      "concept_key": "verification-and-authority"
+    },
+    {
+      "source_id": "emergentmind-2607-04525-language-models-represent-and-transform-concepts-with-2026",
+      "board_key": "reliability",
+      "concept_key": "robustness-under-shift"
+    },
+    {
+      "source_id": "emergentmind-2607-08168-muscriptor-an-open-model-for-multi-instrument-2026",
+      "board_key": "reliability",
+      "concept_key": "robustness-under-shift"
+    },
+    {
+      "source_id": "emergentmind-2607-07534-infinite-worlds-with-versatile-interactions-2026",
+      "board_key": "agent-foundations",
+      "concept_key": "state-action-loop"
+    },
+    {
+      "source_id": "emergentmind-2607-07162-the-technological-turn-in-mathematics-2026",
+      "board_key": "reliability",
+      "concept_key": "human-ai-complementarity"
+    },
+    {
+      "source_id": "emergentmind-2607-07267-billions-of-sketches-reveal-hidden-cultural-variation-in-2026",
+      "board_key": "reliability",
+      "concept_key": "robustness-under-shift"
+    },
+    {
+      "source_id": "emergentmind-2607-06377-automation-without-understanding-2026",
+      "board_key": "reliability",
+      "concept_key": "human-ai-complementarity"
+    },
+    {
+      "source_id": "emergentmind-2607-07847-when-does-continual-learning-require-learning-2026",
+      "board_key": "discovery",
+      "concept_key": "memory-and-versioning"
+    },
+    {
+      "source_id": "emergentmind-2607-09657-scalable-visual-pretraining-for-language-intelligence-2026",
+      "board_key": "agent-foundations",
+      "concept_key": "state-action-loop"
+    },
+    {
+      "source_id": "emergentmind-2607-08964-long-horizon-terminal-bench-testing-the-limits-of-2026",
+      "board_key": "agent-foundations",
+      "concept_key": "planning-and-control"
+    },
+    {
+      "source_id": "emergentmind-2607-07676-skillcenter-a-large-scale-source-grounded-skill-library-2026",
+      "board_key": "agent-foundations",
+      "concept_key": "tool-use-policy"
+    },
+    {
+      "source_id": "emergentmind-2607-06656-robust-human-ai-complementarity-under-uncertainty-2026",
+      "board_key": "reliability",
+      "concept_key": "human-ai-complementarity"
+    },
+    {
+      "source_id": "emergentmind-2607-10712-distributed-denial-of-science-how-indirect-data-poisoning-2026",
+      "board_key": "discovery",
+      "concept_key": "scientific-evaluation"
+    },
+    {
+      "source_id": "emergentmind-2607-11250-multi-agent-llms-fail-to-explore-each-other-2026",
+      "board_key": "coordination",
+      "concept_key": "exploration-and-diversity"
+    },
+    {
+      "source_id": "emergentmind-2607-10011-religion-and-artificial-intelligence-as-distributed-meaning-systems-2026",
+      "board_key": "coordination",
+      "concept_key": "multi-agent-communication"
+    },
+    {
+      "source_id": "emergentmind-2607-12963-the-illusion-of-robustness-aggregate-accuracy-hides-prediction-2026",
+      "board_key": "reliability",
+      "concept_key": "robustness-under-shift"
+    },
+    {
+      "source_id": "emergentmind-2607-11859-can-llms-perform-deep-technical-comprehension-of-computer-2026",
+      "board_key": "reliability",
+      "concept_key": "human-ai-complementarity"
+    },
+    {
+      "source_id": "emergentmind-2607-11883-requential-coding-pushing-the-limits-of-model-compression-2026",
+      "board_key": "discovery",
+      "concept_key": "scientific-evaluation"
+    },
+    {
+      "source_id": "emergentmind-2607-12474-from-observation-to-insight-mechanistic-world-models-and-2026",
+      "board_key": "discovery",
+      "concept_key": "scientific-evaluation"
+    },
+    {
+      "source_id": "emergentmind-2607-12395-ring-zero-scaling-zero-rl-to-a-trillion-2026",
+      "board_key": "agent-foundations",
+      "concept_key": "planning-and-control"
+    },
+    {
+      "source_id": "emergentmind-2607-14345-value-leakage-an-llm-s-answers-are-silently-2026",
+      "board_key": "reliability",
+      "concept_key": "robustness-under-shift"
+    },
+    {
+      "source_id": "emergentmind-2607-11020-can-a-language-model-learn-facts-continually-in-2026",
+      "board_key": "discovery",
+      "concept_key": "memory-and-versioning"
+    },
+    {
+      "source_id": "emergentmind-2607-14250-the-severance-problem-llms-are-unaware-of-the-2026",
+      "board_key": "reliability",
+      "concept_key": "human-ai-complementarity"
+    },
+    {
+      "source_id": "emergentmind-2607-12301-xscientist-a-git-like-research-protocol-for-long-2026",
+      "board_key": "discovery",
+      "concept_key": "long-horizon-research"
+    },
+    {
+      "source_id": "emergentmind-2607-12999-spin-chain-quantum-communication-on-a-trapped-ion-2026",
+      "board_key": "coordination",
+      "concept_key": "multi-agent-communication"
+    },
+    {
+      "source_id": "emergentmind-2607-13988-trace-turn-level-reward-assignment-via-credit-estimation-2026",
+      "board_key": "coordination",
+      "concept_key": "credit-and-accountability"
+    },
+    {
+      "source_id": "emergentmind-2607-16097-understanding-reasoning-from-pretraining-to-post-training-2026",
+      "board_key": "agent-foundations",
+      "concept_key": "planning-and-control"
+    },
+    {
+      "source_id": "emergentmind-2607-15626-understanding-fortunetelling-with-large-language-models-in-china-2026",
+      "board_key": "reliability",
+      "concept_key": "human-ai-complementarity"
+    },
+    {
+      "source_id": "emergentmind-2607-14275-ai-agents-do-not-fail-alone-the-context-2026",
+      "board_key": "reliability",
+      "concept_key": "robustness-under-shift"
+    },
+    {
+      "source_id": "emergentmind-2607-13491-deeploop-depth-scaling-for-looped-transformers-2026",
+      "board_key": "agent-foundations",
+      "concept_key": "planning-and-control"
+    },
+    {
+      "source_id": "emergentmind-2607-16900-environment-free-synthetic-data-generation-for-api-calling-2026",
+      "board_key": "agent-foundations",
+      "concept_key": "state-action-loop"
+    },
+    {
+      "source_id": "emergentmind-2607-14165-towards-reliable-ai-assisted-analog-design-template-constrained-2026",
+      "board_key": "reliability",
+      "concept_key": "verification-and-authority"
+    },
+    {
+      "source_id": "emergentmind-2607-17560-reinforcement-learning-from-algorithms-to-foundation-models-2026",
+      "board_key": "coordination",
+      "concept_key": "credit-and-accountability"
+    },
+    {
+      "source_id": "emergentmind-2607-20268-potre-test-time-reasoning-inspired-by-cognitive-heterogeneity-2026",
+      "board_key": "coordination",
+      "concept_key": "exploration-and-diversity"
+    },
+    {
+      "source_id": "emergentmind-2607-21461-arex-towards-a-recursively-self-improving-agent-for-2026",
+      "board_key": "discovery",
+      "concept_key": "long-horizon-research"
+    },
+    {
+      "source_id": "emergentmind-2607-18433-intelligence-from-learnable-novelty-2026",
+      "board_key": "coordination",
+      "concept_key": "exploration-and-diversity"
+    },
+    {
+      "source_id": "emergentmind-2607-19837-know-your-agent-reconnaissance-driven-pentesting-of-ai-2026",
+      "board_key": "reliability",
+      "concept_key": "verification-and-authority"
+    },
+    {
+      "source_id": "emergentmind-2607-19267-they-ll-verify-they-just-won-t-act-2026",
+      "board_key": "reliability",
+      "concept_key": "verification-and-authority"
+    },
+    {
+      "source_id": "emergentmind-2607-20208-surprisal-is-not-a-theory-2026",
+      "board_key": "discovery",
+      "concept_key": "scientific-evaluation"
+    },
+    {
+      "source_id": "emergentmind-2607-19313-off-context-grpo-learning-to-reason-on-hard-2026",
+      "board_key": "agent-foundations",
+      "concept_key": "planning-and-control"
+    },
+    {
+      "source_id": "emergentmind-2607-19297-graph-based-agentic-ai-with-langgraph-workflow-pathways-2026",
+      "board_key": "agent-foundations",
+      "concept_key": "tool-use-policy"
+    },
+    {
+      "source_id": "emergentmind-2607-21366-hilbert-operator-for-progressive-encoding-hope-a-mathematical-2026",
+      "board_key": "discovery",
+      "concept_key": "scientific-evaluation"
+    },
+    {
+      "source_id": "emergentmind-2607-18506-ai-value-alignment-for-evolving-social-norms-2026",
+      "board_key": "coordination",
+      "concept_key": "multi-agent-communication"
+    },
+    {
+      "source_id": "emergentmind-2607-21554-strategic-plan-for-neutral-atom-quantum-computation-2026",
+      "board_key": "reliability",
+      "concept_key": "verification-and-authority"
+    },
+    {
+      "source_id": "emergentmind-2607-20386-improved-monitoring-of-honey-bee-colony-strength-via-2026",
+      "board_key": "reliability",
+      "concept_key": "robustness-under-shift"
+    },
+    {
+      "source_id": "emergentmind-2607-21993-three-body-alignment-aligning-chess-agent-with-human-2026",
+      "board_key": "reliability",
+      "concept_key": "human-ai-complementarity"
+    },
+    {
+      "source_id": "emergentmind-2607-20734-llms-get-lost-in-evolving-user-intent-2026",
+      "board_key": "reliability",
+      "concept_key": "robustness-under-shift"
+    },
+    {
+      "source_id": "emergentmind-2607-21653-molt-a-scalable-pytorch-native-training-framework-for-2026",
+      "board_key": "coordination",
+      "concept_key": "credit-and-accountability"
+    },
+    {
+      "source_id": "emergentmind-2607-24280-from-proprietary-to-open-source-bridging-the-distribution-2026",
+      "board_key": "coordination",
+      "concept_key": "credit-and-accountability"
+    },
+    {
+      "source_id": "emergentmind-2607-25886-rsibench-data-benchmarking-data-centric-research-for-recursive-2026",
+      "board_key": "discovery",
+      "concept_key": "long-horizon-research"
+    },
+    {
+      "source_id": "emergentmind-2607-24653-kimi-k3-open-frontier-intelligence-2026",
+      "board_key": "agent-foundations",
+      "concept_key": "state-action-loop"
+    },
+    {
+      "source_id": "emergentmind-2607-22529-skill-self-play-pushing-the-frontier-of-llm-2026",
+      "board_key": "coordination",
+      "concept_key": "exploration-and-diversity"
+    },
+    {
+      "source_id": "emergentmind-2607-23037-speech-signals-complement-llms-for-predicting-interpersonal-attraction-2026",
+      "board_key": "reliability",
+      "concept_key": "human-ai-complementarity"
+    },
+    {
+      "source_id": "emergentmind-2607-22798-stateact-program-state-before-pixels-for-long-horizon-2026",
+      "board_key": "agent-foundations",
+      "concept_key": "state-action-loop"
+    },
+    {
+      "source_id": "emergentmind-2607-22157-learning-on-the-job-continual-learning-from-deployment-2026",
+      "board_key": "discovery",
+      "concept_key": "memory-and-versioning"
+    },
+    {
+      "source_id": "emergentmind-2607-23787-bitcoin-mempool-linearization-2026",
+      "board_key": "agent-foundations",
+      "concept_key": "planning-and-control"
+    },
+    {
+      "source_id": "emergentmind-2607-24223-a-new-role-for-relevance-guiding-corpus-interaction-2026",
+      "board_key": "agent-foundations",
+      "concept_key": "tool-use-policy"
+    },
+    {
+      "source_id": "emergentmind-2607-26123-quantum-information-decoupling-beyond-finite-dimensions-2026",
+      "board_key": "reliability",
+      "concept_key": "verification-and-authority"
+    },
+    {
+      "source_id": "emergentmind-2607-26179-cognitive-convergence-deep-similarities-between-large-language-models-2026",
+      "board_key": "reliability",
+      "concept_key": "human-ai-complementarity"
+    },
+    {
+      "source_id": "emergentmind-2607-28568-frontis-ma1-training-an-ai4ai-model-towards-recursive-2026",
+      "board_key": "discovery",
+      "concept_key": "long-horizon-research"
+    },
+    {
+      "source_id": "emergentmind-2607-26115-gpt-red-automated-red-teaming-via-self-play-2026",
+      "board_key": "coordination",
+      "concept_key": "exploration-and-diversity"
+    },
+    {
+      "source_id": "emergentmind-2607-24900-inverse-rl-helps-align-ai-by-imitating-humans-2026",
+      "board_key": "coordination",
+      "concept_key": "credit-and-accountability"
+    },
+    {
+      "source_id": "emergentmind-2607-28227-qwen-ui-agent-technical-report-toward-next-generation-2026",
+      "board_key": "agent-foundations",
+      "concept_key": "tool-use-policy"
+    },
+    {
+      "source_id": "emergentmind-2607-28229-embl-ai-librarian-life-sciences-knowledge-layer-for-2026",
+      "board_key": "agent-foundations",
+      "concept_key": "tool-use-policy"
+    },
+    {
+      "source_id": "emergentmind-2607-28545-orca-bench-how-ready-are-language-model-agents-2026",
+      "board_key": "reliability",
+      "concept_key": "verification-and-authority"
+    },
+    {
+      "source_id": "emergentmind-2607-28250-causal-architecture-dynamics-prior-to-arrival-of-self-2026",
+      "board_key": "coordination",
+      "concept_key": "multi-agent-communication"
+    },
+    {
+      "source_id": "emergentmind-2607-28109-beyond-rephrasing-book-level-organization-improves-synthetic-textbook-2026",
+      "board_key": "discovery",
+      "concept_key": "scientific-evaluation"
+    },
+    {
+      "source_id": "emergentmind-2607-27790-semantic-aligned-structural-abstraction-for-multimodal-sentiment-analysis-2026",
+      "board_key": "reliability",
+      "concept_key": "human-ai-complementarity"
+    },
+    {
+      "source_id": "emergentmind-2607-26760-metis-memory-foundation-model-2026",
+      "board_key": "discovery",
+      "concept_key": "memory-and-versioning"
+    },
+    {
+      "source_id": "emergentmind-2607-28033-dataclaweval-a-benchmark-for-data-engineering-agents-in-2026",
+      "board_key": "discovery",
+      "concept_key": "scientific-evaluation"
+    },
+    {
+      "source_id": "emergentmind-2607-26853-from-representations-to-behaviors-exploring-the-person-situation-2026",
+      "board_key": "reliability",
+      "concept_key": "robustness-under-shift"
+    },
+    {
+      "source_id": "emergentmind-2607-27578-what-makes-prompts-a-graph-necessary-and-sufficient-2026",
+      "board_key": "agent-foundations",
+      "concept_key": "tool-use-policy"
+    },
+    {
+      "source_id": "emergentmind-2607-28607-inducing-language-models-to-assert-their-own-consciousness-2026",
+      "board_key": "reliability",
+      "concept_key": "robustness-under-shift"
+    },
+    {
+      "source_id": "emergentmind-2607-28271-agentic-method-for-deterministic-validation-of-legacy-code-2026",
+      "board_key": "reliability",
+      "concept_key": "verification-and-authority"
+    },
+    {
+      "source_id": "emergentmind-2607-29378-ptp-previous-token-prediction-based-llm-inversion-for-2026",
+      "board_key": "reliability",
+      "concept_key": "verification-and-authority"
+    },
+    {
+      "source_id": "emergentmind-2608-01964-longhorizon-harness-advancing-long-horizon-agents-for-real-2026",
+      "board_key": "agent-foundations",
+      "concept_key": "state-action-loop"
+    },
+    {
+      "source_id": "emergentmind-2608-02412-why-large-language-models-fail-at-tabular-prediction-2026",
+      "board_key": "reliability",
+      "concept_key": "robustness-under-shift"
+    },
+    {
+      "source_id": "emergentmind-2607-29377-zero-mem-zero-token-memory-operations-for-llm-2026",
+      "board_key": "discovery",
+      "concept_key": "memory-and-versioning"
+    },
+    {
+      "source_id": "emergentmind-2607-28887-to-add-is-machine-to-delete-is-human-2026",
+      "board_key": "reliability",
+      "concept_key": "robustness-under-shift"
+    },
+    {
+      "source_id": "emergentmind-2608-02670-permission-denied-policy-graded-evaluation-of-coding-agents-2026",
+      "board_key": "agent-foundations",
+      "concept_key": "tool-use-policy"
+    },
+    {
+      "source_id": "emergentmind-2607-28576-sample-more-reflect-less-self-refine-and-reflexion-2026",
+      "board_key": "discovery",
+      "concept_key": "scientific-evaluation"
+    },
+    {
+      "source_id": "emergentmind-2608-01604-post-training-on-office-work-improves-software-engineering-2026",
+      "board_key": "agent-foundations",
+      "concept_key": "planning-and-control"
+    },
+    {
+      "source_id": "emergentmind-2608-05466-recursive-synthesis-for-long-horizon-terminal-tasks-2026",
+      "board_key": "discovery",
+      "concept_key": "scientific-evaluation"
+    },
+    {
+      "source_id": "emergentmind-2608-04205-matraix-simulating-the-world-with-8-3-billion-2026",
+      "board_key": "coordination",
+      "concept_key": "multi-agent-communication"
+    },
+    {
+      "source_id": "emergentmind-2608-05141-octolong-mid-training-on-cross-repository-code-contexts-2026",
+      "board_key": "agent-foundations",
+      "concept_key": "state-action-loop"
+    },
+    {
+      "source_id": "emergentmind-2608-05139-toward-skill-native-llms-skill-entropy-for-benchmarking-2026",
+      "board_key": "agent-foundations",
+      "concept_key": "planning-and-control"
+    },
+    {
+      "source_id": "emergentmind-2608-05784-activity-frames-deterministic-screen-activity-compilation-for-agent-2026",
+      "board_key": "discovery",
+      "concept_key": "memory-and-versioning"
+    },
+    {
+      "source_id": "emergentmind-2608-05987-agentopsd-recursive-self-distillation-for-agentic-reinforcement-learning-2026",
+      "board_key": "coordination",
+      "concept_key": "credit-and-accountability"
+    },
+    {
+      "source_id": "emergentmind-2608-03392-self-evolving-coding-agents-2026",
+      "board_key": "discovery",
+      "concept_key": "long-horizon-research"
+    },
+    {
+      "source_id": "emergentmind-2608-03223-agentic-reinforcement-learning-with-self-distilled-reward-shaping-2026",
+      "board_key": "coordination",
+      "concept_key": "credit-and-accountability"
+    },
+    {
+      "source_id": "emergentmind-2608-04003-past-bench-benchmarking-the-foundations-of-recursive-self-2026",
+      "board_key": "discovery",
+      "concept_key": "memory-and-versioning"
+    },
+    {
+      "source_id": "emergentmind-2608-05004-delusioneval-measuring-delusion-linked-behaviors-in-ai-chatbots-2026",
+      "board_key": "reliability",
+      "concept_key": "robustness-under-shift"
+    }
+  ]
+}

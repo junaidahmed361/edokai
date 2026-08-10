@@ -1,0 +1,992 @@
+{
+  "boards": [
+    {
+      "board_key": "memory",
+      "summary": "Memory pressure turns inference into a contest over cache shape, bandwidth, and numerical representation.",
+      "npc_name": "Archivist Iori",
+      "npc_text": "The holds do not reward the largest vault. They reward the steward who knows what must move, what can stay compressed, and what can be forgotten without breaking the next token.",
+      "concepts": [
+        {
+          "concept_key": "kv-and-state-caching",
+          "name": "Cache Lines of Oath",
+          "lore": "Long-context systems fail when every new token must drag a growing history through attention. The remedy is to make state smaller, more reusable, or bounded: hybrid Mamba-Transformer designs keep cache growth near constant, sliding-window attention enforces O(W) KV storage, and prefix cache trees reuse overlapping prompts. In RL post-training, million-token trajectories strain memory differently because activations for learning cannot all remain resident; evaluating the shared prompt without autograd and retaining only needed model-specific state changes the storage curve. The changed flow is from full-history materialization to compact state and selective retention. The boundary is sharp: these gains depend on architecture, window assumptions, and cache-hit structure, so a workload with poor prefix reuse or full-attention requirements can lose the advantage.",
+          "source_ids": [
+            "emergentmind-2607-09424-a-sovereign-open-source-foundation-model-for-german-2026",
+            "emergentmind-2607-13095-full-pipeline-inference-optimization-for-mimo-v2-5-2026",
+            "emergentmind-2607-14952-longstraw-long-context-rl-beyond-2m-tokens-under-2026"
+          ],
+          "questions": [
+            {
+              "q": "Why can sliding-window attention reduce KV-cache storage for long contexts?",
+              "options": [
+                "It bounds attention state to a fixed recent window instead of retaining every prior token's KV entries.",
+                "It increases parameter sparsity so fewer model weights are loaded during each decoding step.",
+                "It replaces autoregressive decoding with simultaneous denoising across all output positions.",
+                "It routes each request to a separate accelerator so cache entries never contend in memory."
+              ],
+              "a": 0,
+              "why": "A fixed window makes stored attention state scale with window size W rather than total context length. The benefit appears only where the model and serving stack respect that windowed dependency.",
+              "source_ids": [
+                "emergentmind-2607-13095-full-pipeline-inference-optimization-for-mimo-v2-5-2026"
+              ]
+            },
+            {
+              "q": "What changes when long-context RL evaluates the shared prompt without autograd?",
+              "options": [
+                "The prompt tokens are removed from the context before policy optimization begins.",
+                "The target distribution changes because gradients are sampled from a smaller vocabulary.",
+                "Activation storage drops because shared prompt computation need not retain full backward-pass state.",
+                "All KV-cache entries become reusable across unrelated trajectories without validation."
+              ],
+              "a": 2,
+              "why": "Skipping autograd for shared prompt evaluation avoids storing training activations for that portion. It helps fit million-token RL under a fixed GPU budget while keeping model-specific learning state where needed.",
+              "source_ids": [
+                "emergentmind-2607-14952-longstraw-long-context-rl-beyond-2m-tokens-under-2026"
+              ]
+            }
+          ]
+        },
+        {
+          "concept_key": "data-movement",
+          "name": "The Moving Floor",
+          "lore": "Once models are large enough, speed is often set less by arithmetic than by where bytes travel. Near-memory dequantization moves weight expansion into the memory subsystem, cutting CUDA instruction overhead, on-chip traffic, and stalls. Sparsity-aware fused attention on laptop NPUs treats explicit movement programming as central, because energy efficiency depends on mapping attention to the accelerator's local rules. Coherent multi-GPU systems and low-latency collectives attack the same path from another side: communication overhead sits on the token critical path. Fiber-backed memory pushes the idea further by rethinking off-chip storage under DRAM pressure. The changed state is a pipeline where data arrives in the right form closer to use. The boundary is hardware specificity: gains depend on memory subsystem, interconnect, accelerator dialect, and workload shape.",
+          "source_ids": [
+            "emergentmind-2607-08993-streamdq-near-memory-weight-dequantization-in-custom-hbm-2026",
+            "emergentmind-2607-09385-steel-sparsity-aware-fused-attention-for-energy-efficient-2026",
+            "emergentmind-2607-07862-cta-pipelining-a-latency-oriented-spatial-scaling-2026",
+            "emergentmind-2607-16100-every-microsecond-matters-achieving-near-speed-of-light-2026"
+          ],
+          "questions": [
+            {
+              "q": "Why can near-memory dequantization improve high-throughput inference?",
+              "options": [
+                "It changes the trained weights so the model needs fewer attention heads at runtime.",
+                "It expands quantized weights as they stream from memory, reducing CUDA-core dequantization overhead and traffic.",
+                "It batches unrelated prompts into a single sequence so the scheduler sees fewer requests.",
+                "It forces all tokens to use greedy decoding, eliminating sampling variance in the output."
+              ],
+              "a": 1,
+              "why": "Weight-only quantization saves capacity, but GPU-side dequantization can become its own bottleneck. Moving that work into the memory path reduces extra instructions and stalls during large-batch serving.",
+              "source_ids": [
+                "emergentmind-2607-08993-streamdq-near-memory-weight-dequantization-in-custom-hbm-2026"
+              ]
+            },
+            {
+              "q": "Why do microsecond-scale collectives matter in long-context decode?",
+              "options": [
+                "Decode-heavy serving often places many small multi-GPU communications directly on the per-token critical path.",
+                "Long contexts eliminate the need for synchronization because all attention is local to one device.",
+                "Collective latency matters only during training, since inference never exchanges intermediate tensors.",
+                "Small collectives are hidden completely by batching whenever the batch size is greater than one."
+              ],
+              "a": 0,
+              "why": "If every generated token waits on multi-GPU communication, even tiny overheads accumulate into latency and cost. Barrier-free synchronization and hardware-near paths target that critical path.",
+              "source_ids": [
+                "emergentmind-2607-16100-every-microsecond-matters-achieving-near-speed-of-light-2026"
+              ]
+            }
+          ]
+        },
+        {
+          "concept_key": "capacity-and-precision",
+          "name": "The Measured Grain",
+          "lore": "Capacity is not just how many bytes exist; it is how much useful model state each byte can carry at the required accuracy. Weight-only quantization shrinks model storage, but the serving win appears only if dequantization does not create stalls. Industry-scale memory scarcity makes bandwidth and DRAM/HBM pricing first-order economics for decode, where dollars per delivered petabyte can dominate raw FLOPs. Some architectures also reduce active capacity demand by activating only a fraction of parameters per token or keeping cache growth near constant. The changed flow is from storing everything in full precision to carrying compressed, sparse, or bounded state through a bandwidth-limited system. The failure boundary is accuracy, overhead, and supply: compression that harms quality or shifts work into a slower path may only move the bottleneck.",
+          "source_ids": [
+            "emergentmind-2607-07207-memory-scarcity-open-models-and-the-restructuring-2026",
+            "emergentmind-2607-08993-streamdq-near-memory-weight-dequantization-in-custom-hbm-2026",
+            "emergentmind-2607-09424-a-sovereign-open-source-foundation-model-for-german-2026"
+          ],
+          "questions": [
+            {
+              "q": "When can weight-only quantization fail to improve serving throughput?",
+              "options": [
+                "When the compressed weights require runtime dequantization that adds instruction overhead, traffic, or pipeline stalls.",
+                "When the model uses a vocabulary larger than the number of active parameters per token.",
+                "When batching is disabled because quantized weights cannot be reused across requests.",
+                "When the decoder uses finite automata constraints instead of unconstrained sampling."
+              ],
+              "a": 0,
+              "why": "Quantization reduces model size, but serving speed also depends on how cheaply the compressed values become usable compute operands. A slow dequantization path can offset capacity savings.",
+              "source_ids": [
+                "emergentmind-2607-08993-streamdq-near-memory-weight-dequantization-in-custom-hbm-2026"
+              ]
+            },
+            {
+              "q": "Why is bandwidth cost a useful lens for decode-heavy inference economics?",
+              "options": [
+                "Decode is often bandwidth-bound, so delivered memory bandwidth can determine cost more directly than peak arithmetic throughput.",
+                "Bandwidth cost measures benchmark accuracy after quantization better than task-specific evaluation suites.",
+                "Memory bandwidth becomes irrelevant when a model activates only part of its parameters per token.",
+                "DRAM pricing affects training only, because inference caches are always stored in registers."
+              ],
+              "a": 0,
+              "why": "During decode, moving weights and cache state can dominate token generation. Pricing infrastructure by delivered bandwidth captures a bottleneck that peak FLOPs can hide.",
+              "source_ids": [
+                "emergentmind-2607-07207-memory-scarcity-open-models-and-the-restructuring-2026"
+              ]
+            }
+          ]
+        }
+      ],
+      "side": {
+        "name": "The Cache Yard",
+        "description": "A practical trial in fitting long-context service into fixed memory and bandwidth limits.",
+        "questions": [
+          {
+            "q": "A long-context chat service has high prefix reuse across sessions but KV memory keeps growing with conversation length. What change most directly attacks the memory growth?",
+            "options": [
+              "Introduce SWA-aware prefix cache trees and bounded KV placement for layers that use sliding windows.",
+              "Switch every response to beam search so fewer requests are served concurrently.",
+              "Increase the GPU clock rate so the same cache occupies less address space.",
+              "Disable batching so each request has private cache ownership."
+            ],
+            "a": 0,
+            "why": "Prefix trees exploit repeated prompt structure, while SWA-aware placement keeps windowed layers from storing unnecessary full-history state.",
+            "source_ids": [
+              "emergentmind-2607-13095-full-pipeline-inference-optimization-for-mimo-v2-5-2026"
+            ]
+          },
+          {
+            "q": "A cloud model is quantized, but profiling shows dequant kernels blocking throughput at large batch sizes. Which intervention matches the bottleneck?",
+            "options": [
+              "Move dequantization into the memory subsystem so weights are expanded on the streaming path.",
+              "Lengthen the context window so attention compute hides all memory stalls.",
+              "Replace all routing logic with random dispatch across accelerators.",
+              "Use a stricter JSON schema so fewer tokens are valid at each step."
+            ],
+            "a": 0,
+            "why": "The observed bottleneck is not capacity alone; it is the work required to turn compressed weights into usable values. Near-memory dequantization targets that extra path.",
+            "source_ids": [
+              "emergentmind-2607-08993-streamdq-near-memory-weight-dequantization-in-custom-hbm-2026"
+            ]
+          }
+        ]
+      },
+      "gym": {
+        "leader": "Daimyo Hoshin",
+        "badge": "The Bounded Cache Badge",
+        "taunt": "Show me which bytes must live, which may travel, and which can be compressed without breaking the next token.",
+        "questions": [
+          {
+            "q": "You must serve million-token agents under a fixed GPU budget. Which combination best reduces memory pressure without assuming shorter tasks?",
+            "options": [
+              "Selective autograd retention for RL, bounded cache where the architecture permits it, and prefix reuse where prompts overlap.",
+              "Full attention in every layer, no prefix sharing, and larger batches to amortize all memory growth.",
+              "Greedy decoding, random request routing, and higher DRAM clock speeds only.",
+              "Finite automata constraints, top-k sampling, and removal of all KV caches."
+            ],
+            "a": 0,
+            "why": "The viable path changes storage requirements rather than redefining the task. Each technique reduces retained state only under the dependency structure it can legally exploit.",
+            "source_ids": [
+              "emergentmind-2607-14952-longstraw-long-context-rl-beyond-2m-tokens-under-2026",
+              "emergentmind-2607-13095-full-pipeline-inference-optimization-for-mimo-v2-5-2026"
+            ]
+          },
+          {
+            "q": "A team buys more GPUs but token latency barely improves because each token waits on memory movement and collectives. What conclusion follows?",
+            "options": [
+              "The bottleneck is on the byte and communication path, so locality, near-memory work, and lower-latency collectives matter more than raw device count.",
+              "The scheduler must remove all batching because batching is always the cause of communication overhead.",
+              "The model should be retrained from scratch because decode latency cannot be affected by systems design.",
+              "The benchmark is invalid unless it reports only peak FLOPs."
+            ],
+            "a": 0,
+            "why": "More compute does not help when the critical path is moving data and synchronizing devices. The abstracts emphasize memory-path and collective-latency optimizations for this regime.",
+            "source_ids": [
+              "emergentmind-2607-08993-streamdq-near-memory-weight-dequantization-in-custom-hbm-2026",
+              "emergentmind-2607-16100-every-microsecond-matters-achieving-near-speed-of-light-2026"
+            ]
+          },
+          {
+            "q": "A quantized long-context MoE model has good accuracy but unstable throughput across requests. Which risk should be examined first?",
+            "options": [
+              "Whether active-parameter sparsity, cache growth, dequantization overhead, and prefix hit rates align for the actual request mix.",
+              "Whether the model title includes both dense and sparse terminology.",
+              "Whether every request can be converted into the same fixed-length prompt.",
+              "Whether all answers can be forced into a single JSON grammar."
+            ],
+            "a": 0,
+            "why": "Throughput depends on how sparsity, cache behavior, and compressed-weight handling interact with workload structure. Good aggregate quality does not guarantee a stable serving path.",
+            "source_ids": [
+              "emergentmind-2607-09424-a-sovereign-open-source-foundation-model-for-german-2026",
+              "emergentmind-2607-08993-streamdq-near-memory-weight-dequantization-in-custom-hbm-2026",
+              "emergentmind-2607-13095-full-pipeline-inference-optimization-for-mimo-v2-5-2026"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "board_key": "inference",
+      "summary": "Inference becomes scalable when decoding, batching, and latency targets are designed as one loop.",
+      "npc_name": "Engineer Sadao",
+      "npc_text": "A token is never alone. It brings drafts, constraints, streams, queues, and deadlines. The engine master wins by deciding which uncertainty to spend compute on and which delay must be killed outright.",
+      "concepts": [
+        {
+          "concept_key": "decoding-strategies",
+          "name": "The Forking Trace",
+          "lore": "Decoding strategy determines where inference compute is spent. Sequential reasoning improves within one trace, but test-time scaffolds can also spend compute on parallel samples and aggregation. Speculative decoding trades extra draft computation for multiple candidate tokens per target-model pass, but acceptance falls when factorized future-token marginals ignore dependencies; proposal trees or workload-specific drafting repair part of that mismatch. Diffusion language models break left-to-right masking, so constrained generation must sample from a finite-automata-compatible mean-field posterior across positions. Spherical priors in panoramic generation show another decoding lesson: injecting structural constraints can reduce training or optimization work, but only when the pretrained model already carries usable priors. The boundary is distribution match: more samples, longer drafts, or stricter constraints help only when proposals remain valid and cheap.",
+          "source_ids": [
+            "emergentmind-2606-23595-spiral-2026",
+            "emergentmind-2607-06763-trees-from-marginals-autoregressive-drafting-with-factorized-2026",
+            "emergentmind-2607-07026-constrained-decoding-for-diffusion-language-models-via-efficient-2026",
+            "emergentmind-2607-25852-angelspec-towards-real-world-high-performance-inference-with-2026"
+          ],
+          "questions": [
+            {
+              "q": "Why can factorized speculative drafts lose acceptance as the speculative budget grows?",
+              "options": [
+                "Independent future-token marginals fail to model dependencies among candidate tokens, so longer proposals drift from what the target accepts.",
+                "The target model stops computing logits after the first accepted token in every speculative block.",
+                "The KV cache is deleted after each draft, forcing the verifier to recompute all prompt tokens.",
+                "Finite automata constraints make every future token equally likely under the posterior."
+              ],
+              "a": 0,
+              "why": "A longer candidate sequence contains more dependency structure. If the draft treats future positions independently, the proposal increasingly mismatches the target distribution.",
+              "source_ids": [
+                "emergentmind-2607-06763-trees-from-marginals-autoregressive-drafting-with-factorized-2026"
+              ]
+            },
+            {
+              "q": "Why do diffusion language models need different constrained decoding machinery than autoregressive models?",
+              "options": [
+                "They use smaller vocabularies, so invalid tokens cannot be represented with a next-token mask.",
+                "They sample multiple positions from a factorized distribution during denoising instead of choosing one next token left to right.",
+                "They cannot express JSON-like constraints as finite automata.",
+                "They always require gradient descent during inference to enforce output format."
+              ],
+              "a": 1,
+              "why": "Autoregressive constraints can mask the next token because generation has a single frontier. Diffusion decoding updates multiple positions, so constraints must condition the whole mean-field posterior.",
+              "source_ids": [
+                "emergentmind-2607-07026-constrained-decoding-for-diffusion-language-models-via-efficient-2026"
+              ]
+            }
+          ]
+        },
+        {
+          "concept_key": "batching-and-scheduling",
+          "name": "The Queue That Breathes",
+          "lore": "Batching is not merely putting requests together; it is deciding which work can share time without violating dependency order or deadlines. Native-streaming audio-visual interaction keeps roughly 200 ms model-side signal-to-signal latency while increasing resolution, so scheduling must protect a real-time stream rather than maximize offline throughput. MLIR compilation exposes the autoregressive loop and limited on-chip memory to scheduling decisions across dialects. CTA-pipelining treats multi-GPU coherent interconnects as shared-memory structures, changing spatial scaling from network-style message passing toward latency-oriented pipeline placement. GPU tile simulation reflects why these choices are hard: optimized kernels rely on fine-grained dependency scheduling and compute-memory overlap. The boundary is coupling: a schedule that helps one kernel, stream, or accelerator may fail when deadlines, memory hierarchy, or dependency granularity changes.",
+          "source_ids": [
+            "emergentmind-2607-04443-wan-streamer-v0-2-higher-resolution-same-2026",
+            "emergentmind-2607-15865-an-mlir-based-compilation-method-for-large-language-2026",
+            "emergentmind-2607-07862-cta-pipelining-a-latency-oriented-spatial-scaling-2026",
+            "emergentmind-2607-11262-gpu-tile-sim-a-tile-centric-gpu-simulation-2026"
+          ],
+          "questions": [
+            {
+              "q": "What makes real-time audio-visual generation different from ordinary offline batching?",
+              "options": [
+                "It can ignore model-side latency because frames are judged only after the whole clip is generated.",
+                "It must preserve signal-to-signal deadlines, so scheduling cannot simply wait for large throughput-friendly batches.",
+                "It always uses full attention, making cache management irrelevant to scheduling.",
+                "It avoids multimodal encoders, so video resolution has no effect on serving load."
+              ],
+              "a": 1,
+              "why": "Interactive streams have tight end-to-end timing. Larger or delayed batches may improve utilization but break the real-time latency target.",
+              "source_ids": [
+                "emergentmind-2607-04443-wan-streamer-v0-2-higher-resolution-same-2026"
+              ]
+            },
+            {
+              "q": "Why does a compiler IR help schedule an autoregressive inference loop on specialized hardware?",
+              "options": [
+                "It imports the trained model into hardware-aware operator dialects where loop structure and on-chip memory limits can be optimized.",
+                "It removes all dependencies between generated tokens, converting decoding into a single matrix multiply.",
+                "It guarantees the same schedule is optimal across every accelerator family.",
+                "It replaces runtime memory limits with benchmark annotations."
+              ],
+              "a": 0,
+              "why": "An intermediate representation can separate high-level graph structure from target-specific operations. That gives the compiler a place to schedule the loop under hardware memory constraints.",
+              "source_ids": [
+                "emergentmind-2607-15865-an-mlir-based-compilation-method-for-large-language-2026"
+              ]
+            }
+          ]
+        },
+        {
+          "concept_key": "latency-throughput-tradeoff",
+          "name": "The Narrow Gate",
+          "lore": "Latency and throughput are not opposites; they are coupled by where the system waits. Speculative decoding improves interactivity by letting one target pass validate multiple draft tokens, but the gain depends on acceptance and draft cost. Real-time streaming raises output resolution while holding about 200 ms latency, showing that throughput improvements must sometimes be spent on richer signals instead of more requests. Multi-GPU collectives and CTA-pipelining target latency directly because long-context decode has small communications on the token path. Warp-divergence measurements add a lower-level boundary: divergent paths serialize roughly linearly, so branch structure can quietly cap effective throughput. The changed flow is from maximizing average tokens per second to shaping the critical path. The failure boundary is workload variance: one drafting method or schedule may not dominate across distributions.",
+          "source_ids": [
+            "emergentmind-2607-25852-angelspec-towards-real-world-high-performance-inference-with-2026",
+            "emergentmind-2607-04443-wan-streamer-v0-2-higher-resolution-same-2026",
+            "emergentmind-2607-16100-every-microsecond-matters-achieving-near-speed-of-light-2026",
+            "emergentmind-2607-23402-characterizing-warp-divergence-from-pascal-to-blackwell-2026"
+          ],
+          "questions": [
+            {
+              "q": "Why can no single speculative drafting structure dominate all real-world workloads?",
+              "options": [
+                "Different output distributions change the trade-off between draft latency, candidate length, and acceptance probability.",
+                "Speculative decoding changes the target distribution, so each domain needs a separate verifier.",
+                "All drafting methods become equivalent once the batch size is greater than one.",
+                "Autoregressive and diffusion drafts both require identical dependency assumptions."
+              ],
+              "a": 0,
+              "why": "A useful draft must be cheap and likely to be accepted. Workloads differ in predictability and sequence structure, so the best drafting mechanism varies.",
+              "source_ids": [
+                "emergentmind-2607-25852-angelspec-towards-real-world-high-performance-inference-with-2026"
+              ]
+            },
+            {
+              "q": "What does roughly linear serialization of divergent GPU paths imply for inference kernels?",
+              "options": [
+                "Branch divergence can reduce effective throughput in proportion to the number of paths even without a super-linear reconvergence penalty.",
+                "Independent Thread Scheduling makes all branch-heavy kernels execute at full warp efficiency.",
+                "Divergence affects only graphics workloads, not attention or decoding kernels.",
+                "Reconvergence overhead grows exponentially with the number of paths on all tested generations."
+              ],
+              "a": 0,
+              "why": "The reported behavior means each divergent path still costs time. Kernel designs with unnecessary branch splits can lose throughput even if there is no extra super-linear penalty.",
+              "source_ids": [
+                "emergentmind-2607-23402-characterizing-warp-divergence-from-pascal-to-blackwell-2026"
+              ]
+            }
+          ]
+        }
+      ],
+      "side": {
+        "name": "The Drafting Yard",
+        "description": "A trial in choosing decoding and scheduling tactics under strict response deadlines.",
+        "questions": [
+          {
+            "q": "A code assistant has predictable completions for boilerplate but erratic completions for open-ended design prompts. How should speculative decoding be selected?",
+            "options": [
+              "Use a workload-aware drafting approach, because acceptance and draft efficiency depend on output distribution.",
+              "Use the longest possible factorized draft for every request, because longer budgets always increase acceptance.",
+              "Disable verification so draft tokens can never be rejected.",
+              "Apply finite automata constraints to every prompt, even when no output format is required."
+            ],
+            "a": 0,
+            "why": "Predictable regions can support cheaper longer drafts, while open-ended prompts may reject them. The mechanism must adapt to distribution shape.",
+            "source_ids": [
+              "emergentmind-2607-25852-angelspec-towards-real-world-high-performance-inference-with-2026"
+            ]
+          },
+          {
+            "q": "A video conversation model must improve visual legibility without increasing perceived delay. Which constraint should dominate scheduling?",
+            "options": [
+              "Preserve the signal-to-signal latency budget while allocating extra work to higher-resolution frames.",
+              "Maximize batch size first, then display frames whenever the batch completes.",
+              "Prefer offline rendering because interactive deadlines are incompatible with multimodal output.",
+              "Move all requests to one GPU so inter-device communication disappears."
+            ],
+            "a": 0,
+            "why": "The target is richer real-time output at the same latency. Scheduling must protect the stream deadline while absorbing the added resolution cost.",
+            "source_ids": [
+              "emergentmind-2607-04443-wan-streamer-v0-2-higher-resolution-same-2026"
+            ]
+          }
+        ]
+      },
+      "gym": {
+        "leader": "Shogun Kaito",
+        "badge": "The Critical Path Badge",
+        "taunt": "Spend compute where it shortens the wait, not where it merely looks busy.",
+        "questions": [
+          {
+            "q": "A service combines JSON-constrained tool calls, free-form reasoning, and short autocomplete. Which inference policy is most defensible?",
+            "options": [
+              "Use constraint-aware decoding for formatted calls, scaffolded or sampled reasoning where aggregation helps, and speculative drafting where acceptance is high.",
+              "Use one universal greedy decoder because all three tasks emit text tokens.",
+              "Use diffusion constraints for every task, since finite automata always increase creativity.",
+              "Use only parallel traces, because aggregation removes all latency concerns."
+            ],
+            "a": 0,
+            "why": "Different tasks expose different dependencies and validity rules. Matching decoding machinery to the constraint and distribution avoids wasted compute.",
+            "source_ids": [
+              "emergentmind-2607-07026-constrained-decoding-for-diffusion-language-models-via-efficient-2026",
+              "emergentmind-2606-23595-spiral-2026",
+              "emergentmind-2607-25852-angelspec-towards-real-world-high-performance-inference-with-2026"
+            ]
+          },
+          {
+            "q": "A multi-GPU LLM has high average tokens per second but poor interactive latency. What should be examined before adding larger batches?",
+            "options": [
+              "Per-token collectives, pipeline placement, draft acceptance, and stream deadlines on the critical path.",
+              "Only the total number of parameters, because latency always tracks model size.",
+              "Only benchmark accuracy, because latency cannot be improved without lowering quality.",
+              "Whether every kernel uses the same branch structure as graphics shaders."
+            ],
+            "a": 0,
+            "why": "Average throughput can hide waits that every token must pay. Collectives, scheduling, and draft validation directly affect interactive latency.",
+            "source_ids": [
+              "emergentmind-2607-16100-every-microsecond-matters-achieving-near-speed-of-light-2026",
+              "emergentmind-2607-07862-cta-pipelining-a-latency-oriented-spatial-scaling-2026",
+              "emergentmind-2607-25852-angelspec-towards-real-world-high-performance-inference-with-2026"
+            ]
+          },
+          {
+            "q": "A factorized draft model is fast but loses benefit on long candidate blocks. What repair best follows from the mechanism?",
+            "options": [
+              "Introduce dependency-aware proposal structure, such as autoregressive adapters or trees, instead of only increasing block length.",
+              "Raise the temperature so rejected candidates become more diverse.",
+              "Remove target-model verification so all draft tokens count as accepted.",
+              "Shorten the prompt cache because acceptance depends only on memory footprint."
+            ],
+            "a": 0,
+            "why": "The failure comes from independent marginal proposals drifting from target dependencies. Adding structure to the proposal can improve acceptance without abandoning speculation.",
+            "source_ids": [
+              "emergentmind-2607-06763-trees-from-marginals-autoregressive-drafting-with-factorized-2026"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "board_key": "serving",
+      "summary": "Serving is the discipline of sending each request to the right path, allocating scarce devices, and protecting the tail.",
+      "npc_name": "Broker Mina",
+      "npc_text": "The exchange hears every petition at once. Some need memory, some need deadline, some need locality, and the ruinous ones arrive quietly at the tail of the queue.",
+      "concepts": [
+        {
+          "concept_key": "request-routing",
+          "name": "The Forked Dispatch",
+          "lore": "Routing decides which execution path receives a request before the expensive work begins. Heterogeneous speculative decoding makes this explicit: autoregressive multi-token prediction is stable and lightweight, while block-parallel diffusion amortizes draft latency over longer candidates, and the right choice depends on the output distribution. Multimodal systems add another dimension because understanding, generation, editing, and fast variants may have different latency and quality envelopes. Sovereign bilingual models show routing pressure at the language and deployment boundary: German, English, code, long context, and high concurrency can stress different capabilities. The changed information flow is classification of the request into an execution route with matching compute, cache, and decoder. The failure boundary is misclassification: a route optimized for one distribution can increase latency, lower acceptance, or waste scarce capacity on another.",
+          "source_ids": [
+            "emergentmind-2607-25852-angelspec-towards-real-world-high-performance-inference-with-2026",
+            "emergentmind-2607-13125-boogu-image-0-1-boosting-open-source-unified-2026",
+            "emergentmind-2607-09424-a-sovereign-open-source-foundation-model-for-german-2026"
+          ],
+          "questions": [
+            {
+              "q": "Why should a serving layer route speculative decoding by request type?",
+              "options": [
+                "Because draft cost and acceptance depend on the output distribution, so different requests may favor different proposal mechanisms.",
+                "Because routing removes the need for target-model verification in speculative decoding.",
+                "Because every request with the same prompt length has the same output distribution.",
+                "Because block-parallel diffusion is always lower latency than autoregressive multi-token prediction."
+              ],
+              "a": 0,
+              "why": "Speculation helps only when drafts are cheap enough and accepted often enough. Request type can reveal which distribution the decoder is likely to face.",
+              "source_ids": [
+                "emergentmind-2607-25852-angelspec-towards-real-world-high-performance-inference-with-2026"
+              ]
+            },
+            {
+              "q": "What routing risk appears in a unified multimodal model family with base, turbo, edit, and edit-turbo variants?",
+              "options": [
+                "A fast path may meet latency goals but miss the quality or editing capability required by the request.",
+                "All variants must share identical throughput, so routing cannot affect service behavior.",
+                "Editing requests can be routed to text-only decoding because images are generated after service completion.",
+                "Variant choice is irrelevant once bilingual rendering is supported."
+              ],
+              "a": 0,
+              "why": "Different variants imply different speed and capability trade-offs. Routing must respect the requested operation, not just choose the fastest path.",
+              "source_ids": [
+                "emergentmind-2607-13125-boogu-image-0-1-boosting-open-source-unified-2026"
+              ]
+            }
+          ]
+        },
+        {
+          "concept_key": "resource-allocation",
+          "name": "The Scarce Fleet",
+          "lore": "Resource allocation is the art of assigning memory, bandwidth, and accelerators under changing scarcity. DRAM and HBM repricing can restructure inference economics, especially when entrants own fleets bought before the price shift or resell compute into a bandwidth-bound market. Fiber Memory reimagines off-chip storage under DRAM pressure, while long-context RL execution stacks show how a fixed GPU budget forces selective activation retention and execution planning. Full-pipeline optimization for hybrid attention and MoE models adds placement strategies, prefetch, and cache structures so memory is used where it produces hits. The changed state is a fleet treated as bandwidth and cache capacity, not just devices. The boundary is economic and physical: allocation policies fail when supply, memory hierarchy, or workload concurrency differs from the assumed regime.",
+          "source_ids": [
+            "emergentmind-2607-07207-memory-scarcity-open-models-and-the-restructuring-2026",
+            "emergentmind-2607-08407-who-needs-dram-we-have-fiber-2026",
+            "emergentmind-2607-14952-longstraw-long-context-rl-beyond-2m-tokens-under-2026",
+            "emergentmind-2607-13095-full-pipeline-inference-optimization-for-mimo-v2-5-2026"
+          ],
+          "questions": [
+            {
+              "q": "Why can a fixed GPU budget force architectural execution changes for long-context RL?",
+              "options": [
+                "Because million-token trajectories can exceed feasible activation storage unless shared and model-specific state are retained selectively.",
+                "Because RL objectives require every token to be decoded with beam search.",
+                "Because GPU count determines reward quality independently of memory use.",
+                "Because long-context agents do not need observations once training begins."
+              ],
+              "a": 0,
+              "why": "The budget constraint is memory as much as compute. Long trajectories require execution plans that avoid retaining unnecessary backward-pass state.",
+              "source_ids": [
+                "emergentmind-2607-14952-longstraw-long-context-rl-beyond-2m-tokens-under-2026"
+              ]
+            },
+            {
+              "q": "Why does memory repricing affect inference fleet allocation?",
+              "options": [
+                "Decode can be bandwidth-bound, so the cost and availability of DRAM/HBM change which fleets can serve tokens cheaply.",
+                "Memory prices affect only offline dataset storage and never accelerator economics.",
+                "Higher HBM prices automatically make all open-weight models slower at the same parameter count.",
+                "Compute resale removes the need to measure bandwidth delivered."
+              ],
+              "a": 0,
+              "why": "If delivered bandwidth is the limiting resource, its price becomes central to token economics. Fleets purchased under different memory costs can have different cost positions.",
+              "source_ids": [
+                "emergentmind-2607-07207-memory-scarcity-open-models-and-the-restructuring-2026"
+              ]
+            }
+          ]
+        },
+        {
+          "concept_key": "tail-latency-and-reliability",
+          "name": "The Last Petition",
+          "lore": "A serving system is judged by the requests that wait too long or fail in the wrong place. Laptop-class agent inference shows why cloud offload can be unreliable or privacy-sensitive, motivating energy-efficient local NPU attention despite difficult data-movement programming. Real-time audio-visual interaction protects around 200 ms model-side latency because conversation breaks when the tail exceeds human timing. Multi-GPU collectives add another tail risk: many tiny synchronization costs sit on token generation's critical path. CTA-pipelining attacks latency-oriented spatial scaling when software treats coherent interconnects too much like ordinary networks. The changed flow is from best-effort central service to deadline-aware placement across local, scale-up, and streaming paths. The boundary is heterogeneity: reliability gains on one device class or interconnect can disappear when the deployment environment changes.",
+          "source_ids": [
+            "emergentmind-2607-09385-steel-sparsity-aware-fused-attention-for-energy-efficient-2026",
+            "emergentmind-2607-04443-wan-streamer-v0-2-higher-resolution-same-2026",
+            "emergentmind-2607-16100-every-microsecond-matters-achieving-near-speed-of-light-2026",
+            "emergentmind-2607-07862-cta-pipelining-a-latency-oriented-spatial-scaling-2026"
+          ],
+          "questions": [
+            {
+              "q": "Why can local NPU inference improve reliability for operating-system agents?",
+              "options": [
+                "It reduces dependence on cloud offload, which can introduce reliability and privacy concerns for agentic workflows.",
+                "It makes attention independent of data movement across all laptop SoCs.",
+                "It guarantees higher throughput than every cloud GPU for long sequences.",
+                "It removes the need to map fused attention to accelerator-specific execution."
+              ],
+              "a": 0,
+              "why": "Keeping inference local avoids some network and privacy failure modes. The trade-off is that attention must be mapped efficiently onto diverse NPUs.",
+              "source_ids": [
+                "emergentmind-2607-09385-steel-sparsity-aware-fused-attention-for-energy-efficient-2026"
+              ]
+            },
+            {
+              "q": "Why do small collective delays threaten tail latency in multi-GPU decode?",
+              "options": [
+                "They can sit on every token's critical path, so rare or repeated microsecond delays accumulate into visible response lag.",
+                "They occur only after the final token, so they cannot affect interactive response timing.",
+                "They are always hidden by CUDA-core dequantization work.",
+                "They disappear whenever the model uses sparse experts."
+              ],
+              "a": 0,
+              "why": "Critical-path communication is paid before token generation can proceed. Repeated small delays can shape the slow end of the latency distribution.",
+              "source_ids": [
+                "emergentmind-2607-16100-every-microsecond-matters-achieving-near-speed-of-light-2026"
+              ]
+            }
+          ]
+        }
+      ],
+      "side": {
+        "name": "The Exchange Desk",
+        "description": "A practical trial in dispatching mixed traffic across scarce and unreliable serving paths.",
+        "questions": [
+          {
+            "q": "A desktop agent must keep working during network instability and handle private screen context. Which serving change best matches the risk?",
+            "options": [
+              "Move suitable attention kernels onto the local NPU, accepting hardware-specific data-movement work.",
+              "Route all requests to the cloud and increase retry count.",
+              "Disable agent memory so privacy-sensitive context never enters the model.",
+              "Use larger speculative blocks for every local request."
+            ],
+            "a": 0,
+            "why": "The risk is dependence on remote service for sensitive interactive work. Local NPU inference addresses that risk but requires careful accelerator mapping.",
+            "source_ids": [
+              "emergentmind-2607-09385-steel-sparsity-aware-fused-attention-for-energy-efficient-2026"
+            ]
+          },
+          {
+            "q": "A provider has one low-latency fleet with scarce HBM and one slower overflow fleet. Which request should receive the scarce path first?",
+            "options": [
+              "Interactive streams and decode-heavy requests with tight per-token deadlines.",
+              "Offline batch jobs whose completion time is measured in hours.",
+              "Requests with the shortest prompts regardless of output length or deadline.",
+              "All image edits, even when users accept delayed completion."
+            ],
+            "a": 0,
+            "why": "Scarce low-latency resources should protect requests whose quality depends on timing. Deadline and decode critical path matter more than prompt length alone.",
+            "source_ids": [
+              "emergentmind-2607-04443-wan-streamer-v0-2-higher-resolution-same-2026",
+              "emergentmind-2607-16100-every-microsecond-matters-achieving-near-speed-of-light-2026"
+            ]
+          }
+        ]
+      },
+      "gym": {
+        "leader": "Magistrate Ren",
+        "badge": "The Tail Guard Badge",
+        "taunt": "The mean may flatter you; the last request tells the truth.",
+        "questions": [
+          {
+            "q": "A platform serves tool calls, image edits, bilingual chat, and long-context agents. What routing policy best handles heterogeneity?",
+            "options": [
+              "Classify by operation, language/context demands, deadline, and decoder distribution before choosing model variant and execution path.",
+              "Route by arrival order only, because FIFO preserves fairness and maximizes quality.",
+              "Send every request to the largest model, then recover latency with retries.",
+              "Choose the cheapest fleet for every request and measure only aggregate throughput."
+            ],
+            "a": 0,
+            "why": "Different traffic stresses different capabilities and bottlenecks. Routing must connect request properties to decoder, model variant, cache, and deadline needs.",
+            "source_ids": [
+              "emergentmind-2607-13125-boogu-image-0-1-boosting-open-source-unified-2026",
+              "emergentmind-2607-09424-a-sovereign-open-source-foundation-model-for-german-2026",
+              "emergentmind-2607-25852-angelspec-towards-real-world-high-performance-inference-with-2026"
+            ]
+          },
+          {
+            "q": "A service has good p50 latency but bad p99 during long-context multi-GPU requests. Which combined diagnosis is strongest?",
+            "options": [
+              "Token-critical collectives, cache placement misses, and memory bandwidth contention may be amplifying slow requests.",
+              "The model has too many benchmark tasks, so p99 latency is a scoring artifact.",
+              "All p99 problems imply the decoder is sampling from an invalid grammar.",
+              "Long-context requests cannot be improved without removing all attention layers."
+            ],
+            "a": 0,
+            "why": "Tail latency often emerges from stacked waits on the critical path. Multi-GPU communication, cache locality, and bandwidth pressure can hit only certain requests hard.",
+            "source_ids": [
+              "emergentmind-2607-16100-every-microsecond-matters-achieving-near-speed-of-light-2026",
+              "emergentmind-2607-13095-full-pipeline-inference-optimization-for-mimo-v2-5-2026",
+              "emergentmind-2607-07207-memory-scarcity-open-models-and-the-restructuring-2026"
+            ]
+          },
+          {
+            "q": "Memory prices rise while demand for real-time multimodal interaction grows. Which trade-off becomes central?",
+            "options": [
+              "Allocating scarce bandwidth and low-latency devices to requests where delay visibly harms interaction, while sending tolerant work elsewhere.",
+              "Increasing resolution for every stream first, because higher quality always improves latency economics.",
+              "Using only local NPUs, because they eliminate all memory scarcity.",
+              "Disabling routing so each fleet receives an equal number of requests."
+            ],
+            "a": 0,
+            "why": "The scarce resource should be spent where timing changes user-visible behavior. Memory economics and real-time deadlines must be handled together.",
+            "source_ids": [
+              "emergentmind-2607-07207-memory-scarcity-open-models-and-the-restructuring-2026",
+              "emergentmind-2607-04443-wan-streamer-v0-2-higher-resolution-same-2026"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "board_key": "evaluation",
+      "summary": "Measurement must reveal whether a system keeps quality while changing compute, memory, and workload assumptions.",
+      "npc_name": "Auditor Keiko",
+      "npc_text": "A fast engine can still deceive its master. The gauntlet asks what was measured, under which load, and where the apparent gain stops being true.",
+      "concepts": [
+        {
+          "concept_key": "benchmark-design",
+          "name": "The Instrumented Mirror",
+          "lore": "Benchmark design must expose the mechanism being claimed. GPU tile simulation argues that modern kernel performance is governed by tile dependencies and compute-memory overlap, not only instruction streams or coarse analytical estimates. Warp-divergence characterization uses cycle-accurate microbenchmarks, hardware counters, and static analysis to separate stable behavior from architectural change across GPU generations. WARP measures a different hidden property: global training mixture weights recovered from released model weights, beyond sample-level membership inference. Differentiable simulation validates automatic derivatives against hand-derived and finite-difference checks before using them for inverse modeling and stability analysis. The changed information flow is from black-box scores to instrumented evidence about state, dependency, and hidden composition. The boundary is scope: each instrument answers its own question and may not predict end-to-end serving behavior alone.",
+          "source_ids": [
+            "emergentmind-2607-11262-gpu-tile-sim-a-tile-centric-gpu-simulation-2026",
+            "emergentmind-2607-23402-characterizing-warp-divergence-from-pascal-to-blackwell-2026",
+            "emergentmind-2607-01686-warp-weight-space-analysis-for-recovering-2026",
+            "emergentmind-2607-18176-per-astronomix-ad-astra-high-order-differentiable-magneto-2026"
+          ],
+          "questions": [
+            {
+              "q": "Why can a tile-centric simulator be more informative for optimized LLM kernels than a coarse analytical model?",
+              "options": [
+                "It can represent fine-grained dependency scheduling and compute-memory overlap that coarse models may smooth away.",
+                "It ignores memory behavior so arithmetic throughput becomes easier to compare.",
+                "It replaces hardware counters with task accuracy scores.",
+                "It assumes every kernel has identical tile dependencies across architectures."
+              ],
+              "a": 0,
+              "why": "Optimized kernels often gain speed from how tiles depend on each other and overlap movement with compute. A coarse model can miss those scheduling effects.",
+              "source_ids": [
+                "emergentmind-2607-11262-gpu-tile-sim-a-tile-centric-gpu-simulation-2026"
+              ]
+            },
+            {
+              "q": "What does combining microbenchmarks, counters, and static SASS analysis help determine in warp-divergence testing?",
+              "options": [
+                "Whether observed timing comes from stable divergence behavior or generation-specific architectural changes.",
+                "Whether a model's training data mixture can be recovered from its weights.",
+                "Whether JSON-constrained decoding changes the target distribution.",
+                "Whether local NPUs outperform cloud GPUs on every workload."
+              ],
+              "a": 0,
+              "why": "Multiple instruments cross-check timing, hardware behavior, and compiled code structure. That makes it easier to distinguish architectural change from measurement artifacts.",
+              "source_ids": [
+                "emergentmind-2607-23402-characterizing-warp-divergence-from-pascal-to-blackwell-2026"
+              ]
+            }
+          ]
+        },
+        {
+          "concept_key": "quality-efficiency-frontier",
+          "name": "The Double Edge",
+          "lore": "The quality-efficiency frontier asks what is gained or lost when speed, memory, or openness changes. A hybrid MoE Mamba-Transformer activates 3B of 30B parameters per token and keeps cache near constant while matching larger dense baselines on German and English aggregates. Multimodal model families trade high-quality generation, fast inference, editing, and bilingual rendering across variants. Feed-forward 3D Gaussian decoding avoids multi-view capture and per-scene optimization, but pixel-aligned approaches struggle on large viewpoint shifts, motivating surface-coupled implicit decoding. Identity-preserving video restylization targets style edits while retaining facial likeness, expression, gaze, and lip sync despite scarce paired data. The changed evidence is not a single score but a frontier of capability against latency, optimization cost, and deployment openness. The boundary is task fidelity: efficiency that drops identity, geometry, language, or edit control is not a win.",
+          "source_ids": [
+            "emergentmind-2607-09424-a-sovereign-open-source-foundation-model-for-german-2026",
+            "emergentmind-2607-13125-boogu-image-0-1-boosting-open-source-unified-2026",
+            "emergentmind-2608-02437-infinisplat-implicit-gaussian-decoding-for-large-baseline-monocular-2026",
+            "emergentmind-2607-22830-id-v2v-identity-preserving-video-restylization-2026"
+          ],
+          "questions": [
+            {
+              "q": "Why is activating only part of a sparse model per token an efficiency frontier claim rather than just a size claim?",
+              "options": [
+                "Because serving cost depends on active computation and cache behavior, while quality must still match relevant dense baselines.",
+                "Because inactive parameters are deleted from the released checkpoint during inference.",
+                "Because sparse models cannot be evaluated on language or code tasks.",
+                "Because cache size always grows linearly even when active parameters are sparse."
+              ],
+              "a": 0,
+              "why": "The useful comparison is capability per active compute and memory behavior, not raw checkpoint size. The abstract ties sparse activation and near-constant cache to benchmark performance.",
+              "source_ids": [
+                "emergentmind-2607-09424-a-sovereign-open-source-foundation-model-for-german-2026"
+              ]
+            },
+            {
+              "q": "Why is large-baseline view synthesis a stronger test than nearby-view rendering for single-image 3D generation?",
+              "options": [
+                "It exposes whether generated primitives are coupled to coherent scene surfaces rather than merely aligned to input pixels.",
+                "It removes the need to render a 3D representation at all.",
+                "It guarantees that per-scene optimization is cheaper than feed-forward decoding.",
+                "It evaluates only texture sharpness, not geometry consistency."
+              ],
+              "a": 0,
+              "why": "Nearby views can look plausible with pixel-aligned primitives. Large viewpoint shifts reveal whether the representation encodes stable 3D structure.",
+              "source_ids": [
+                "emergentmind-2608-02437-infinisplat-implicit-gaussian-decoding-for-large-baseline-monocular-2026"
+              ]
+            }
+          ]
+        },
+        {
+          "concept_key": "workload-aware-evaluation",
+          "name": "The Many Roads Trial",
+          "lore": "A system that wins one workload can fail another. Speculative decoding varies by output distribution, so evaluation must include heterogeneous traffic rather than one average sequence type. Long-context inference and RL diverge because deployment may approach million-token contexts while post-training often stays far shorter; evaluating only short contexts hides memory and execution failures. Real-time audio-visual models must be judged by latency and legibility together, not just frame quality. Panoramic generation needs topological consistency under equirectangular constraints, while constrained diffusion language decoding must respect formal output grammars despite non-left-to-right sampling. The changed measurement flow is from generic leaderboards to workloads that preserve the actual dependency, timing, and validity constraints. The boundary is coverage: missing a deployment mode can make a system look robust while failing in production.",
+          "source_ids": [
+            "emergentmind-2607-25852-angelspec-towards-real-world-high-performance-inference-with-2026",
+            "emergentmind-2607-14952-longstraw-long-context-rl-beyond-2m-tokens-under-2026",
+            "emergentmind-2607-04443-wan-streamer-v0-2-higher-resolution-same-2026",
+            "emergentmind-2606-32033-spherope-zero-shot-optimization-free-360-p-2026"
+          ],
+          "questions": [
+            {
+              "q": "Why can evaluating speculative decoding on one average workload be misleading?",
+              "options": [
+                "Draft acceptance and latency depend on output distribution, so heterogeneous traffic can reverse which method is best.",
+                "Speculative decoding has no verifier, so workload differences cannot affect correctness.",
+                "All workloads share the same candidate length once the target model is fixed.",
+                "Average workloads always include formal grammar constraints and video deadlines."
+              ],
+              "a": 0,
+              "why": "The speedup depends on how well drafts match likely outputs. A single average can hide domains where a different draft structure wins or fails.",
+              "source_ids": [
+                "emergentmind-2607-25852-angelspec-towards-real-world-high-performance-inference-with-2026"
+              ]
+            },
+            {
+              "q": "Why is a short-context post-training evaluation insufficient for long-context agents?",
+              "options": [
+                "Agent observations, tool outputs, documents, and prior decisions can accumulate far beyond the training context regime.",
+                "Short contexts cannot compute rewards for any RL algorithm.",
+                "Long contexts remove the need for cache management because all tokens are equally recent.",
+                "Tool outputs are unrelated to memory pressure during deployment."
+              ],
+              "a": 0,
+              "why": "Deployment trajectories may reach million-token scale while post-training stays much shorter. That gap can hide memory, execution, and generalization failures.",
+              "source_ids": [
+                "emergentmind-2607-14952-longstraw-long-context-rl-beyond-2m-tokens-under-2026"
+              ]
+            }
+          ]
+        }
+      ],
+      "side": {
+        "name": "The Trial Ledger",
+        "description": "A practical trial in choosing measurements that reveal real serving and generation failures.",
+        "questions": [
+          {
+            "q": "A 3D model looks strong on nearby camera moves but breaks on wide viewpoint changes. What evaluation was missing?",
+            "options": [
+              "Large-baseline view synthesis that tests whether primitives remain tied to coherent scene surfaces.",
+              "A faster single-image encoder benchmark with no rendering step.",
+              "A text-only language benchmark to measure prompt following.",
+              "A per-scene optimization budget that the feed-forward system never uses."
+            ],
+            "a": 0,
+            "why": "Nearby views can mask weak geometry. Large-baseline tests reveal whether the representation survives meaningful camera displacement.",
+            "source_ids": [
+              "emergentmind-2608-02437-infinisplat-implicit-gaussian-decoding-for-large-baseline-monocular-2026"
+            ]
+          },
+          {
+            "q": "A video restyling system changes lighting well but alters mouth motion and gaze. Which quality axis failed?",
+            "options": [
+              "Identity and performance consistency across facial likeness, expression, eye gaze, and lip synchronization.",
+              "Throughput under large-batch language decoding.",
+              "Finite-automata validity of generated JSON fields.",
+              "Training mixture recovery from released weights."
+            ],
+            "a": 0,
+            "why": "The task is not just style transfer; it must keep human performance signals intact. Mouth motion and gaze are part of the stated fidelity target.",
+            "source_ids": [
+              "emergentmind-2607-22830-id-v2v-identity-preserving-video-restylization-2026"
+            ]
+          }
+        ]
+      },
+      "gym": {
+        "leader": "Councilor Aya",
+        "badge": "The Frontier Badge",
+        "taunt": "Bring me a measurement that survives contact with the workload.",
+        "questions": [
+          {
+            "q": "A team claims a new serving stack is better because it improves average throughput on short prompts. What must be tested before trusting deployment?",
+            "options": [
+              "Long contexts, heterogeneous decoder distributions, tail latency, and quality constraints tied to each request class.",
+              "Only whether the model has more parameters than the previous release.",
+              "Only the fastest batch size, because deployment can be forced to use it.",
+              "Only unconstrained generation, because formatted outputs are a separate product concern."
+            ],
+            "a": 0,
+            "why": "Average short-prompt throughput can hide memory growth, routing mismatch, tail delays, and validity failures. Deployment traffic supplies the real constraints.",
+            "source_ids": [
+              "emergentmind-2607-14952-longstraw-long-context-rl-beyond-2m-tokens-under-2026",
+              "emergentmind-2607-25852-angelspec-towards-real-world-high-performance-inference-with-2026",
+              "emergentmind-2607-07026-constrained-decoding-for-diffusion-language-models-via-efficient-2026"
+            ]
+          },
+          {
+            "q": "A multimodal model family offers fast and high-quality variants. Which evaluation best maps the frontier?",
+            "options": [
+              "Measure generation quality, edit control, bilingual rendering, and latency for each variant under the operations it is meant to handle.",
+              "Rank every variant by one image aesthetic score and deploy the fastest one.",
+              "Evaluate only text understanding because image generation quality is subjective.",
+              "Use one latency number from an offline batch to represent all interactive and editing tasks."
+            ],
+            "a": 0,
+            "why": "A model family exposes different capability and speed points. The frontier is visible only when each operation is evaluated against its own quality and latency needs.",
+            "source_ids": [
+              "emergentmind-2607-13125-boogu-image-0-1-boosting-open-source-unified-2026"
+            ]
+          },
+          {
+            "q": "A hardware optimization improves a kernel microbenchmark but not end-to-end serving. Which explanation best integrates the gauntlet?",
+            "options": [
+              "The benchmark may isolate a real low-level gain while missing routing, cache, communication, or workload effects that dominate the full path.",
+              "The microbenchmark must be false because low-level measurements never predict anything.",
+              "End-to-end serving ignores kernels, so kernel changes cannot affect latency.",
+              "The optimization should be accepted if it improves any one metric, regardless of deployment behavior."
+            ],
+            "a": 0,
+            "why": "Focused measurements can be valid yet incomplete. End-to-end behavior depends on how kernel gains interact with scheduling, memory, communication, and request mix.",
+            "source_ids": [
+              "emergentmind-2607-11262-gpu-tile-sim-a-tile-centric-gpu-simulation-2026",
+              "emergentmind-2607-23402-characterizing-warp-divergence-from-pascal-to-blackwell-2026",
+              "emergentmind-2607-16100-every-microsecond-matters-achieving-near-speed-of-light-2026"
+            ]
+          }
+        ]
+      }
+    }
+  ],
+  "source_assignments": [
+    {
+      "source_id": "emergentmind-2606-23595-spiral-2026",
+      "board_key": "inference",
+      "concept_key": "decoding-strategies"
+    },
+    {
+      "source_id": "emergentmind-2607-01686-warp-weight-space-analysis-for-recovering-2026",
+      "board_key": "evaluation",
+      "concept_key": "benchmark-design"
+    },
+    {
+      "source_id": "emergentmind-2606-32033-spherope-zero-shot-optimization-free-360-p-2026",
+      "board_key": "evaluation",
+      "concept_key": "workload-aware-evaluation"
+    },
+    {
+      "source_id": "emergentmind-2607-07207-memory-scarcity-open-models-and-the-restructuring-2026",
+      "board_key": "serving",
+      "concept_key": "resource-allocation"
+    },
+    {
+      "source_id": "emergentmind-2607-04443-wan-streamer-v0-2-higher-resolution-same-2026",
+      "board_key": "serving",
+      "concept_key": "tail-latency-and-reliability"
+    },
+    {
+      "source_id": "emergentmind-2607-06763-trees-from-marginals-autoregressive-drafting-with-factorized-2026",
+      "board_key": "inference",
+      "concept_key": "decoding-strategies"
+    },
+    {
+      "source_id": "emergentmind-2607-07862-cta-pipelining-a-latency-oriented-spatial-scaling-2026",
+      "board_key": "inference",
+      "concept_key": "batching-and-scheduling"
+    },
+    {
+      "source_id": "emergentmind-2607-08407-who-needs-dram-we-have-fiber-2026",
+      "board_key": "serving",
+      "concept_key": "resource-allocation"
+    },
+    {
+      "source_id": "emergentmind-2607-08993-streamdq-near-memory-weight-dequantization-in-custom-hbm-2026",
+      "board_key": "memory",
+      "concept_key": "capacity-and-precision"
+    },
+    {
+      "source_id": "emergentmind-2607-09385-steel-sparsity-aware-fused-attention-for-energy-efficient-2026",
+      "board_key": "memory",
+      "concept_key": "data-movement"
+    },
+    {
+      "source_id": "emergentmind-2607-11262-gpu-tile-sim-a-tile-centric-gpu-simulation-2026",
+      "board_key": "evaluation",
+      "concept_key": "benchmark-design"
+    },
+    {
+      "source_id": "emergentmind-2607-07026-constrained-decoding-for-diffusion-language-models-via-efficient-2026",
+      "board_key": "inference",
+      "concept_key": "decoding-strategies"
+    },
+    {
+      "source_id": "emergentmind-2607-09424-a-sovereign-open-source-foundation-model-for-german-2026",
+      "board_key": "memory",
+      "concept_key": "kv-and-state-caching"
+    },
+    {
+      "source_id": "emergentmind-2607-13095-full-pipeline-inference-optimization-for-mimo-v2-5-2026",
+      "board_key": "memory",
+      "concept_key": "kv-and-state-caching"
+    },
+    {
+      "source_id": "emergentmind-2607-13125-boogu-image-0-1-boosting-open-source-unified-2026",
+      "board_key": "serving",
+      "concept_key": "request-routing"
+    },
+    {
+      "source_id": "emergentmind-2607-14952-longstraw-long-context-rl-beyond-2m-tokens-under-2026",
+      "board_key": "memory",
+      "concept_key": "kv-and-state-caching"
+    },
+    {
+      "source_id": "emergentmind-2607-16100-every-microsecond-matters-achieving-near-speed-of-light-2026",
+      "board_key": "serving",
+      "concept_key": "tail-latency-and-reliability"
+    },
+    {
+      "source_id": "emergentmind-2607-15865-an-mlir-based-compilation-method-for-large-language-2026",
+      "board_key": "inference",
+      "concept_key": "batching-and-scheduling"
+    },
+    {
+      "source_id": "emergentmind-2607-18176-per-astronomix-ad-astra-high-order-differentiable-magneto-2026",
+      "board_key": "evaluation",
+      "concept_key": "benchmark-design"
+    },
+    {
+      "source_id": "emergentmind-2607-23402-characterizing-warp-divergence-from-pascal-to-blackwell-2026",
+      "board_key": "inference",
+      "concept_key": "latency-throughput-tradeoff"
+    },
+    {
+      "source_id": "emergentmind-2607-25852-angelspec-towards-real-world-high-performance-inference-with-2026",
+      "board_key": "serving",
+      "concept_key": "request-routing"
+    },
+    {
+      "source_id": "emergentmind-2607-22830-id-v2v-identity-preserving-video-restylization-2026",
+      "board_key": "evaluation",
+      "concept_key": "quality-efficiency-frontier"
+    },
+    {
+      "source_id": "emergentmind-2608-02437-infinisplat-implicit-gaussian-decoding-for-large-baseline-monocular-2026",
+      "board_key": "evaluation",
+      "concept_key": "quality-efficiency-frontier"
+    }
+  ]
+}

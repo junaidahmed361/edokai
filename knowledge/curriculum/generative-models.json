@@ -1,0 +1,989 @@
+{
+  "boards": [
+    {
+      "board_key": "objectives",
+      "summary": "Generation begins by deciding what signal makes an output more probable, more organized, or more controllable.",
+      "npc_name": "Wellkeeper Sela",
+      "npc_text": "The wells do not reward pretty dreams by themselves. They reward the signal that tells a generator what density, structure, and condition it should obey.",
+      "concepts": [
+        {
+          "concept_key": "likelihood-and-score",
+          "name": "Likelihood and Score",
+          "lore": "A generator needs a local direction for moving noisy or incomplete samples toward high-probability data. In diffusion, that direction can be expressed as a score: the gradient of log density. Langevin dynamics, reverse-time stochastic equations, and probability-flow ordinary equations all turn score estimates into generative motion. The changed information flow is important: training learns local denoising or score information, then sampling integrates many small updates to recover structure. Tweedie's identity helps connect noisy observations to conditional clean estimates. The boundary is numerical and statistical: discretization error and score-estimation error compound, so a correct continuous formulation can still fail when the learned score or solver steps are inaccurate.",
+          "source_ids": [
+            "emergentmind-2607-01693-mathematical-diffusion-intro-2026"
+          ],
+          "questions": [
+            {
+              "q": "Why does a score field help turn noise into samples from a target distribution?",
+              "options": [
+                "It gives a local gradient of log density, so each update can move samples toward regions the data distribution makes more likely.",
+                "It stores a global ordering of all samples, so generation only needs to sort candidates by final image quality.",
+                "It replaces the need for a sampler because the highest-density point can be computed in one closed-form step.",
+                "It encodes labels directly, so conditional generation works without any separate conditioning signal."
+              ],
+              "a": 0,
+              "why": "The score is local density-gradient information. Sampling works by repeatedly integrating that local direction, not by jumping directly to a finished sample.",
+              "source_ids": [
+                "emergentmind-2607-01693-mathematical-diffusion-intro-2026"
+              ]
+            },
+            {
+              "q": "What is the practical risk when a reverse diffusion process is discretized coarsely?",
+              "options": [
+                "The training objective becomes supervised classification even when no class labels are present.",
+                "The model loses all ability to represent probability because ODEs cannot define densities.",
+                "Small solver and score errors can accumulate across steps and pull samples away from the intended reverse process.",
+                "The conditioning signal becomes irrelevant because every step uses the same random seed."
+              ],
+              "a": 2,
+              "why": "The reverse process is implemented through finite updates. If each update is approximate, discretization and score errors can compound over the whole trajectory.",
+              "source_ids": [
+                "emergentmind-2607-01693-mathematical-diffusion-intro-2026"
+              ]
+            }
+          ]
+        },
+        {
+          "concept_key": "latent-structure",
+          "name": "Latent Structure",
+          "lore": "High-dimensional data often hides lower-dimensional organization: directions, clusters, neighborhoods, and compressed coordinates that explain variation without storing every raw detail. Tools such as singular value decomposition, principal components, nonlinear dimension reduction, diffusion maps, random projections, graph Laplacians, and concentration results describe when structure can be recovered or preserved. The mechanism is compression with controlled distortion: data moves from raw coordinates into latent variables that keep task-relevant geometry. That changes the information flow from direct pixel or token comparison to comparison through shared factors. The evidence here is foundational rather than a single benchmark. The failure boundary is equally foundational: some projections erase useful variables, and high-dimensional concentration can make naive distance or clustering intuitions unreliable.",
+          "source_ids": [
+            "emergentmind-2607-11938-mathematics-of-data-science-2026"
+          ],
+          "questions": [
+            {
+              "q": "Why can a latent representation improve generation from high-dimensional observations?",
+              "options": [
+                "It guarantees that every raw coordinate is reconstructed exactly before any sampling begins.",
+                "It concentrates task-relevant variation into fewer variables, making structure easier to model than raw coordinates alone.",
+                "It removes the need for optimization because latent variables are always linearly separable.",
+                "It prevents overfitting by discarding all rare events and keeping only average samples."
+              ],
+              "a": 1,
+              "why": "Latent variables can preserve meaningful geometry while reducing dimensional burden. Generation then models organized factors rather than every raw coordinate independently.",
+              "source_ids": [
+                "emergentmind-2607-11938-mathematics-of-data-science-2026"
+              ]
+            },
+            {
+              "q": "When can dimensionality reduction damage a generative system?",
+              "options": [
+                "When it is followed by a nonlinear model rather than a linear decoder.",
+                "When the original data contains more examples than coordinates.",
+                "When the compressed coordinates remove variables needed to predict or control the output.",
+                "When the representation is evaluated with graph-based neighborhood methods."
+              ],
+              "a": 2,
+              "why": "Compression is useful only if it preserves the variables needed downstream. Removing controllable or predictive factors can make later generation plausible but wrong.",
+              "source_ids": [
+                "emergentmind-2607-11938-mathematics-of-data-science-2026"
+              ]
+            }
+          ]
+        },
+        {
+          "concept_key": "conditioning-and-control",
+          "name": "Conditioning and Control",
+          "lore": "A generator becomes useful when prompts, actions, or structured context reliably alter what it produces. Text-conditioned visual generation shows that structured language can change diffusion training behavior: converged loss decreases with measured prompt structure, using both white-box likelihood-style and black-box attribute measures. The mechanism is not just longer text; it is condition information that aligns with attributes the model can use. In interactive media, runtime generation must be constitutive of the loop to truly change play; replaceable decoration does not create controlled interaction. The changed state is a tighter channel from intent to generated output. The boundary is mismatch: if the condition is vague, weakly grounded, or removable without changing behavior, control becomes cosmetic.",
+          "source_ids": [
+            "emergentmind-2607-29679-scaling-properties-of-text-conditioning-in-visual-generation-2026",
+            "emergentmind-2607-00527-ai-native-games-a-survey-and-roadmap-2026"
+          ],
+          "questions": [
+            {
+              "q": "Why does structured conditioning matter more than simply adding more prompt tokens?",
+              "options": [
+                "Structured conditions reduce model size because the tokenizer can be discarded after training.",
+                "Structured conditions provide attributes the generator can align with, while extra unstructured words may add little usable signal.",
+                "Structured conditions make diffusion sampling deterministic, eliminating all stochastic variation.",
+                "Structured conditions always improve every visual attribute equally regardless of training data."
+              ],
+              "a": 1,
+              "why": "Conditioning helps when it carries organized, learnable information about desired attributes. Mere length does not ensure that the generator receives a usable control signal.",
+              "source_ids": [
+                "emergentmind-2607-29679-scaling-properties-of-text-conditioning-in-visual-generation-2026"
+              ]
+            },
+            {
+              "q": "What distinguishes deep runtime control from decorative generation in an interactive system?",
+              "options": [
+                "The generated asset is expensive enough that it dominates the compute budget.",
+                "The generator produces dialogue or images, regardless of whether the loop depends on them.",
+                "Removing the generative component would fundamentally change or collapse the central interaction.",
+                "The system uses natural language prompts instead of fixed procedural rules."
+              ],
+              "a": 2,
+              "why": "Control is central when generated behavior is part of the causal loop. If it can be trivially replaced, it is augmentation rather than constitutive interaction.",
+              "source_ids": [
+                "emergentmind-2607-00527-ai-native-games-a-survey-and-roadmap-2026"
+              ]
+            }
+          ]
+        }
+      ],
+      "side": {
+        "name": "The Control Gate",
+        "description": "A narrow gate where prompts, latents, and scores must carry usable intent rather than decorative noise.",
+        "questions": [
+          {
+            "q": "A team adds longer prompts to an image generator, but object attributes still drift. What should they inspect first?",
+            "options": [
+              "Whether the prompt contains structured, learnable attribute information rather than extra wording with weak alignment.",
+              "Whether the sampler has been replaced by a classifier trained on final images only.",
+              "Whether every generated sample has identical noise initialization across batches.",
+              "Whether the latent space has more dimensions than the tokenizer vocabulary."
+            ],
+            "a": 0,
+            "why": "The control channel improves when conditions encode attributes the model can use. Extra wording alone may not change the learned mapping.",
+            "source_ids": [
+              "emergentmind-2607-29679-scaling-properties-of-text-conditioning-in-visual-generation-2026"
+            ]
+          },
+          {
+            "q": "A diffusion prototype looks correct in continuous equations but produces artifacts with few solver steps. What is the likely mechanism?",
+            "options": [
+              "The score model has become an autoregressive decoder at inference time.",
+              "The latent variables are too interpretable, so they no longer represent density.",
+              "Discretization and score-estimation errors are being amplified through the reverse trajectory.",
+              "The prompt structure is too strong and prevents probability-flow integration."
+            ],
+            "a": 2,
+            "why": "Sampling implements the reverse process through approximate finite updates. Too few or inaccurate updates can compound local errors into visible failures.",
+            "source_ids": [
+              "emergentmind-2607-01693-mathematical-diffusion-intro-2026"
+            ]
+          }
+        ]
+      },
+      "gym": {
+        "leader": "Sela of the Objective Wells",
+        "badge": "Wellform Badge",
+        "taunt": "If the signal is vague, the dream obeys nothing.",
+        "questions": [
+          {
+            "q": "A conditional video model follows prompts but loses physical consistency. Which diagnosis best combines objective and representation issues?",
+            "options": [
+              "The score objective may guide visual likelihood while the conditioning and latent variables omit state needed for consistent dynamics.",
+              "The model is overtrained because all prompt-conditioned systems become deterministic after enough updates.",
+              "The tokenizer is too small because physical consistency requires every state variable to be written in text.",
+              "The sampler is unnecessary because conditioning alone should select the final video directly."
+            ],
+            "a": 0,
+            "why": "Likelihood guidance can make samples plausible without preserving hidden causal variables. Control requires conditions and representations that include the state needed for dynamics.",
+            "source_ids": [
+              "emergentmind-2607-01693-mathematical-diffusion-intro-2026",
+              "emergentmind-2607-11938-mathematics-of-data-science-2026",
+              "emergentmind-2607-29679-scaling-properties-of-text-conditioning-in-visual-generation-2026"
+            ]
+          },
+          {
+            "q": "A game uses generated scenery, but the core loop is unchanged if fixed assets replace it. What is the technical implication?",
+            "options": [
+              "The system has strong latent structure but weak density estimation.",
+              "The generated component is not carrying essential control over the interaction loop.",
+              "The reverse sampler is under-discretized and needs smaller steps.",
+              "The prompt contains too much structured language for stable training."
+            ],
+            "a": 1,
+            "why": "Runtime generation is technically central only when removing it changes the loop itself. Replaceable assets indicate weak causal control over play.",
+            "source_ids": [
+              "emergentmind-2607-00527-ai-native-games-a-survey-and-roadmap-2026"
+            ]
+          },
+          {
+            "q": "Which design most directly improves controllable generation without claiming impossible guarantees?",
+            "options": [
+              "Use a compressed representation that keeps task variables, train a score-based generator, and measure whether structured conditions reduce relevant errors.",
+              "Replace all conditions with random projections, since compression alone guarantees controllability.",
+              "Increase prompt length and reduce sampling steps until the model becomes both faster and more faithful.",
+              "Train only on final outputs, because intermediate denoising states make control less measurable."
+            ],
+            "a": 0,
+            "why": "The components address complementary mechanisms: representation keeps useful variables, score training gives local generative direction, and structured conditioning supplies intent. None removes the need for validation.",
+            "source_ids": [
+              "emergentmind-2607-01693-mathematical-diffusion-intro-2026",
+              "emergentmind-2607-11938-mathematics-of-data-science-2026",
+              "emergentmind-2607-29679-scaling-properties-of-text-conditioning-in-visual-generation-2026"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "board_key": "dynamics",
+      "summary": "Generation unfolds through trajectories: flows, refinements, rollouts, and accelerated samplers trade speed against correction.",
+      "npc_name": "Current-Mender Ivo",
+      "npc_text": "A dream is not only chosen. It is traveled. Watch the path, the correction rule, and the cost of skipping steps.",
+      "concepts": [
+        {
+          "concept_key": "diffusion-and-flow",
+          "name": "Diffusion and Flow",
+          "lore": "Diffusion and flow models generate by transporting samples through a learned trajectory rather than decoding only from left to right. This enables parallel refinement, but ordinary iterative sampling can be expensive. Video systems expose the trade-off sharply: bidirectional diffusion can preserve global coherence and fidelity yet infer slowly, while autoregressive generation streams efficiently but risks long-range inconsistency and exposure bias. Flow and diffusion policies in robotics face another boundary: likelihoods can be intractable, making direct reinforcement updates weak unless matching is reweighted by action value. The changed state is a trajectory-level view of generation, where quality depends on both the learned vector field and the inference schedule used to traverse it.",
+          "source_ids": [
+            "emergentmind-2607-03509-flex-forcing-towards-a-unified-autoregressive-and-2026",
+            "emergentmind-2607-28560-x-navdp-generalizing-navigation-diffusion-policy-to-novel-2026"
+          ],
+          "questions": [
+            {
+              "q": "Why can diffusion-style generation be slower than autoregressive streaming even when it improves global coherence?",
+              "options": [
+                "It usually refines many variables through repeated trajectory updates instead of emitting each next token or frame once.",
+                "It must compute exact likelihood for every sample before any denoising step can occur.",
+                "It always trains from scratch, while autoregressive models can reuse pretrained weights.",
+                "It cannot represent motion, so extra passes are needed to add dynamics after decoding."
+              ],
+              "a": 0,
+              "why": "Iterative trajectory updates can coordinate global structure, but repeated refinement costs time. Streaming decoders gain latency by committing sequentially.",
+              "source_ids": [
+                "emergentmind-2607-03509-flex-forcing-towards-a-unified-autoregressive-and-2026"
+              ]
+            },
+            {
+              "q": "Why can reinforcement learning be hard to apply directly to diffusion policies?",
+              "options": [
+                "Diffusion policies cannot use expert demonstrations during pretraining.",
+                "The likelihood needed for standard policy-gradient updates may be intractable or poorly behaved.",
+                "Reinforcement learning requires global observations rather than local onboard observations.",
+                "Diffusion policies always collapse to a single action after the first update."
+              ],
+              "a": 1,
+              "why": "Many RL objectives depend on tractable action likelihoods. When diffusion likelihood is hard to compute, alternatives such as value-reweighted matching become attractive.",
+              "source_ids": [
+                "emergentmind-2607-28560-x-navdp-generalizing-navigation-diffusion-policy-to-novel-2026"
+              ]
+            }
+          ]
+        },
+        {
+          "concept_key": "iterative-refinement",
+          "name": "Iterative Refinement",
+          "lore": "Iterative refinement treats generation as repair over time. Discrete diffusion can refine blocks of text in parallel, avoiding the strict sequential bottleneck of autoregressive decoding. Masked multimodal systems can go further: if text and image decisions update together and can be remasked, contradictions between modalities can be detected and corrected within the same step rather than frozen into later states. Video self-distillation uses real long-video context to supervise the same few-step rollout used at inference, reducing long-horizon degradation without changing the path. The mechanism is repeated correction under the actual trajectory. The boundary is that refinement needs a way to notice errors; if a system cannot revise bad intermediate commitments, mistakes can accumulate.",
+          "source_ids": [
+            "emergentmind-2608-00146-diffusiongemma-technical-report-2026",
+            "emergentmind-2607-13188-concurrent-image-understanding-and-generation-self-correcting-coupled-2026",
+            "emergentmind-2607-08766-opsd-v-on-policy-self-distillation-for-post-2026"
+          ],
+          "questions": [
+            {
+              "q": "What changes when a text generator refines blocks in parallel instead of decoding one token at a time?",
+              "options": [
+                "It removes the need for training data because all tokens are inferred from syntax rules.",
+                "It can reduce the sequential bottleneck by updating many token positions across refinement steps.",
+                "It guarantees longer reasoning traces because every position receives privileged answers.",
+                "It makes conditioning impossible because all positions must be sampled independently."
+              ],
+              "a": 1,
+              "why": "Parallel block refinement updates many positions within an iterative process. The gain is reduced sequential dependence, not freedom from training or conditioning.",
+              "source_ids": [
+                "emergentmind-2608-00146-diffusiongemma-technical-report-2026"
+              ]
+            },
+            {
+              "q": "Why does remasking help a coupled text-image generator repair contradictions?",
+              "options": [
+                "It forces the image branch to ignore the text branch until decoding ends.",
+                "It replaces multimodal generation with two independent final classifiers.",
+                "It lets the system reconsider inconsistent intermediate choices instead of locking them permanently.",
+                "It eliminates the stochastic process and converts generation into exact retrieval."
+              ],
+              "a": 2,
+              "why": "Contradictions can only be repaired if bad choices remain editable. Remasking gives the process a mechanism for revision after cross-modal conflict is detected.",
+              "source_ids": [
+                "emergentmind-2607-13188-concurrent-image-understanding-and-generation-self-correcting-coupled-2026"
+              ]
+            }
+          ]
+        },
+        {
+          "concept_key": "sampling-dynamics",
+          "name": "Sampling Dynamics",
+          "lore": "Sampling dynamics are the rules that decide how a trained generator is used at inference time. Acceleration is tempting because diffusion and flow sampling is costly, but changing the trajectory can damage diversity, motion, or long-horizon consistency. Parallel decoding distillation tries to replace difficult adversarial or variational losses with trajectory-based supervision for fast image and video generation, specifically because unstable losses can cause mode collapse and weak motion. Human-in-the-loop robot adaptation uses action inversion: expert interventions are mapped into a latent action space so a frozen generative policy can be corrected without large hardware-scale data collection. The boundary is distribution shift: fast or adapted samplers must still preserve the behavior the original trajectory was meant to express.",
+          "source_ids": [
+            "emergentmind-2607-26004-parallel-decoding-distillation-for-fast-image-and-video-2026",
+            "emergentmind-2607-08877-flowdagger-human-in-the-loop-adaptation-of-generative-2026"
+          ],
+          "questions": [
+            {
+              "q": "Why can few-step acceleration harm a diffusion or flow generator?",
+              "options": [
+                "The generator must become autoregressive before it can produce any sample.",
+                "Shortened trajectories may fail to preserve diversity, motion, or the behavior learned by the longer sampler.",
+                "Fast inference prevents the model from using latent variables of any kind.",
+                "Acceleration removes all supervision because only adversarial losses can train samplers."
+              ],
+              "a": 1,
+              "why": "Acceleration changes how the generative trajectory is traversed. If the compressed path is poorly trained, it can collapse modes or weaken temporal behavior.",
+              "source_ids": [
+                "emergentmind-2607-26004-parallel-decoding-distillation-for-fast-image-and-video-2026"
+              ]
+            },
+            {
+              "q": "What is the purpose of mapping human interventions into a latent action space for robot policy adaptation?",
+              "options": [
+                "It converts all robot control into text prompts that can be edited offline.",
+                "It lets corrections update a frozen generative policy using compact expert action information from deployment failures.",
+                "It removes the need for onboard observations by replaying a fully informed planner.",
+                "It guarantees zero distribution shift because human actions are always optimal."
+              ],
+              "a": 1,
+              "why": "Latent action inversion makes scarce interventions usable for adaptation. It targets real failure modes without requiring large new robot datasets or unsafe online RL.",
+              "source_ids": [
+                "emergentmind-2607-08877-flowdagger-human-in-the-loop-adaptation-of-generative-2026"
+              ]
+            }
+          ]
+        }
+      ],
+      "side": {
+        "name": "The Stepgate",
+        "description": "A channel where every shortcut must prove it still carries the trajectory's behavior.",
+        "questions": [
+          {
+            "q": "A video generator is made faster, but scenes become less diverse and motion weakens. What training change is most aligned with the described failure?",
+            "options": [
+              "Use trajectory-based distillation that supervises the fast path instead of relying only on brittle losses prone to collapse.",
+              "Increase prompt token count until the model can infer all missing motion from text.",
+              "Remove iterative updates entirely and classify each frame independently.",
+              "Freeze the sampler schedule and adapt only the tokenizer vocabulary."
+            ],
+            "a": 0,
+            "why": "The failure points to an accelerated path that no longer matches the full trajectory. Trajectory-level supervision directly trains the shortened sampler to preserve behavior.",
+            "source_ids": [
+              "emergentmind-2607-26004-parallel-decoding-distillation-for-fast-image-and-video-2026"
+            ]
+          },
+          {
+            "q": "A robot diffusion policy fails in a rare deployment state, but collecting thousands of new trials is unsafe. What is the most appropriate adaptation signal?",
+            "options": [
+              "Final task success labels only, because intermediate actions would overconstrain the policy.",
+              "Human corrective actions inverted into the policy's latent action representation.",
+              "Random action noise added during inference until the robot escapes the state.",
+              "A fully informed oracle planner used unchanged for every new embodiment."
+            ],
+            "a": 1,
+            "why": "Human interventions provide targeted information about real failures. Mapping them into latent action space lets the existing generative policy adapt efficiently.",
+            "source_ids": [
+              "emergentmind-2607-08877-flowdagger-human-in-the-loop-adaptation-of-generative-2026"
+            ]
+          }
+        ]
+      },
+      "gym": {
+        "leader": "Ivo of the Generative Currents",
+        "badge": "Currentform Badge",
+        "taunt": "Skip a step if you must. Then show me what broke.",
+        "questions": [
+          {
+            "q": "A system needs low-latency video while keeping long-range consistency. Which trade-off is central?",
+            "options": [
+              "Autoregressive streaming is efficient but can accumulate exposure errors, while bidirectional diffusion improves coherence at higher sampling cost.",
+              "Latent action inversion is required because all video generation is robotic control.",
+              "Mode collapse is impossible once a sampler uses fewer than four steps.",
+              "Text conditioning removes the need to model temporal dependencies."
+            ],
+            "a": 0,
+            "why": "The core tension is speed versus consistency across the generative trajectory. Hybrid or unified inference tries to keep both properties.",
+            "source_ids": [
+              "emergentmind-2607-03509-flex-forcing-towards-a-unified-autoregressive-and-2026"
+            ]
+          },
+          {
+            "q": "Why should a few-step video distillation method train on the same rollout path used at inference?",
+            "options": [
+              "Because inference-time rollout defines the errors the student will actually compound over long horizons.",
+              "Because all real long videos contain privileged answers that should be hidden at inference.",
+              "Because using the same path prevents the model from generating new motion.",
+              "Because teacher forcing is always more stable than on-policy generation."
+            ],
+            "a": 0,
+            "why": "Training on the deployed trajectory exposes the student to its own intermediate states. That reduces mismatch and targets the long-horizon errors it will actually face.",
+            "source_ids": [
+              "emergentmind-2607-08766-opsd-v-on-policy-self-distillation-for-post-2026"
+            ]
+          },
+          {
+            "q": "A navigation diffusion policy trained from oracle demonstrations struggles with dead ends for new robots. What mechanism best addresses this?",
+            "options": [
+              "Replace local observations with global maps at inference for every robot.",
+              "Use value-reweighted matching to favor diverse reactive behaviors despite difficult diffusion likelihoods.",
+              "Shorten the diffusion chain until the policy cannot represent alternative routes.",
+              "Distill only the most common demonstration action to reduce variance."
+            ],
+            "a": 1,
+            "why": "Oracle demonstrations from one embodiment can underrepresent needed reactive behaviors. Value-reweighted matching can bias the diffusion policy toward actions that help under new scenarios.",
+            "source_ids": [
+              "emergentmind-2607-28560-x-navdp-generalizing-navigation-diffusion-policy-to-novel-2026"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "board_key": "world-models",
+      "summary": "A world model predicts how hidden state, action, and interaction change future observations.",
+      "npc_name": "Archivist Nara",
+      "npc_text": "A simulator that only paints the next frame is a mirror. A simulator that tracks state, action, and consequence becomes a place to test decisions.",
+      "concepts": [
+        {
+          "concept_key": "predictive-state",
+          "name": "Predictive State",
+          "lore": "World models become reliable when they preserve state variables that determine what can happen next. Deformable objects make this difficult because their state spaces are high-dimensional and their material behavior is complex; pixel-space and 3D geometric approaches each expose different strengths and limits. Games add another version of the same problem: visual realism is insufficient if hidden health, timers, meters, and termination rules are not modeled. Open-schema literary simulation extends the idea to characters and worlds that co-evolve over long horizons, with persistent updates rather than static persona imitation. The changed state is explicit memory of dynamics-relevant variables. The boundary is hallucinated plausibility: future frames may look believable while violating material, mechanical, or narrative state.",
+          "source_ids": [
+            "emergentmind-2607-05390-deform360-a-massive-multi-view-visuotactile-dataset-for-2026",
+            "emergentmind-2607-26754-stateplay-state-aware-game-world-models-for-mechanics-2026",
+            "emergentmind-2607-17250-evolvingworld-an-open-schema-framework-for-co-evolving-2026"
+          ],
+          "questions": [
+            {
+              "q": "Why is visual realism alone insufficient for a game world model?",
+              "options": [
+                "The model must also predict internal mechanics such as health, timers, and termination states that govern valid future play.",
+                "The model should ignore visual observations and simulate only symbolic state tables.",
+                "The model needs higher image resolution because mechanics emerge automatically from sharper pixels.",
+                "The model must be trained only on text descriptions of rules, not on action-conditioned rollouts."
+              ],
+              "a": 0,
+              "why": "Mechanics depend on internal state variables coupled to observations. Plausible pixels can still violate the rules that determine legal evolution.",
+              "source_ids": [
+                "emergentmind-2607-26754-stateplay-state-aware-game-world-models-for-mechanics-2026"
+              ]
+            },
+            {
+              "q": "Why are deformable objects difficult for predictive world modeling?",
+              "options": [
+                "They cannot be represented by video because cameras only observe rigid bodies.",
+                "Their high-dimensional states and complex material properties make future dynamics hard to encode and compare.",
+                "They have no action-conditioned dynamics because deformation is independent of contact.",
+                "Their behavior is simple in 3D geometry but impossible in pixel space."
+              ],
+              "a": 1,
+              "why": "Deformation involves many coupled variables and material responses. This makes both representation choice and dynamics prediction challenging.",
+              "source_ids": [
+                "emergentmind-2607-05390-deform360-a-massive-multi-view-visuotactile-dataset-for-2026"
+              ]
+            }
+          ]
+        },
+        {
+          "concept_key": "counterfactual-rollouts",
+          "name": "Counterfactual Rollouts",
+          "lore": "A world model earns its keep when it can ask what would happen under a different action. Adaptive latent planning executes a chunk of actions, observes the next transition, updates the model from that self-supervised signal, and replans. Visual action interfaces give pretrained video models a way to receive physically grounded control: a partially revealed trajectory in pixels can make the model predict how the scene responds to a robot or arbitrary entity. Robot world models can also render numerical actions into visual form to improve controllability across unseen scenarios. The information flow changes from passive prediction to action-conditioned consequence. The boundary is grounding: counterfactual rollouts fail when the action representation is not aligned with the visual dynamics the model learned.",
+          "source_ids": [
+            "emergentmind-2606-32026-adajepa-2026",
+            "emergentmind-2607-19343-masked-visual-actions-for-unified-world-modeling-2026",
+            "emergentmind-2608-06332-geniworld-a-generalizable-interactive-world-model-for-robotic-2026"
+          ],
+          "questions": [
+            {
+              "q": "Why does replanning after observing a transition improve latent model control?",
+              "options": [
+                "The new transition is a self-supervised correction signal that updates the model before choosing the next action chunk.",
+                "It proves the original plan was optimal, so later computation can be skipped.",
+                "It converts model-based control into pure behavior cloning from the first action.",
+                "It removes uncertainty because one observed transition reveals the entire environment."
+              ],
+              "a": 0,
+              "why": "Observed consequences expose model error under the chosen action. Updating before replanning lets control react to newly learned dynamics.",
+              "source_ids": [
+                "emergentmind-2606-32026-adajepa-2026"
+              ]
+            },
+            {
+              "q": "Why express robot actions as visual trajectories for a pretrained video model?",
+              "options": [
+                "The visual action format aligns control with the pixel-space dynamics priors already learned by the video model.",
+                "It hides the robot motion so the model predicts only static backgrounds.",
+                "It forces the model to ignore contact and use language descriptions for physics.",
+                "It prevents arbitrary entities from being controlled because only joint angles are valid."
+              ],
+              "a": 0,
+              "why": "Video models learn interaction priors in visual space. A visual action channel can make numerical or physical action information legible to those priors.",
+              "source_ids": [
+                "emergentmind-2607-19343-masked-visual-actions-for-unified-world-modeling-2026",
+                "emergentmind-2608-06332-geniworld-a-generalizable-interactive-world-model-for-robotic-2026"
+              ]
+            }
+          ]
+        },
+        {
+          "concept_key": "model-based-evaluation",
+          "name": "Model-Based Evaluation",
+          "lore": "Evaluation must ask whether a generative system changes the target process, not only whether outputs look fluent. In education, the substitution hypothesis predicts that generative AI would raise grades disproportionately in courses with take-home or essay-style assessments compared with exam-heavy courses, and could also affect reported understanding and interest. In scientific work, productivity and democratization benefits sit beside unresolved governance risks across funding, research tasks, publication, peer review, and uptake. These are model-based evaluation problems because claims require a causal frame over behavior, incentives, and downstream decisions. The changed information flow is from output inspection to counterfactual comparison. The boundary is attribution: without careful comparisons, gains, harm, substitution, and augmentation can be confounded.",
+          "source_ids": [
+            "emergentmind-2607-21534-generative-ai-availability-grades-and-student-satisfaction-at-2026",
+            "emergentmind-2607-24879-generative-artificial-intelligence-in-scientific-research-individual-benefits-2026"
+          ],
+          "questions": [
+            {
+              "q": "Why compare assessment types when testing whether generative AI substitutes for student effort?",
+              "options": [
+                "Different assessment formats vary in AI susceptibility, so disproportionate grade changes can reveal substitution better than overall averages.",
+                "Exam-heavy courses always use larger models, so they provide a cleaner compute baseline.",
+                "Student satisfaction is unrelated to assessment format and should be ignored.",
+                "Take-home assignments remove all confounding because every student uses the same prompts."
+              ],
+              "a": 0,
+              "why": "The hypothesis predicts stronger effects where AI can more easily replace effort. Comparing susceptible and less-susceptible formats targets that causal contrast.",
+              "source_ids": [
+                "emergentmind-2607-21534-generative-ai-availability-grades-and-student-satisfaction-at-2026"
+              ]
+            },
+            {
+              "q": "Why are productivity gains from generative AI insufficient as the only evaluation criterion for scientific work?",
+              "options": [
+                "Productivity is impossible to measure when AI is involved.",
+                "Governance risks can arise across funding, tasks, publication, peer review, and uptake even when individual efficiency improves.",
+                "Scientific work should reject all augmentation because democratization effects are always harmful.",
+                "Peer review becomes unnecessary once researchers generate more drafts."
+              ],
+              "a": 1,
+              "why": "A system can improve individual throughput while changing incentives and collective reliability. Evaluation must include downstream institutional effects.",
+              "source_ids": [
+                "emergentmind-2607-24879-generative-artificial-intelligence-in-scientific-research-individual-benefits-2026"
+              ]
+            }
+          ]
+        }
+      ],
+      "side": {
+        "name": "The Consequence Chamber",
+        "description": "A simulator room where every action must carry hidden state forward, not merely repaint the surface.",
+        "questions": [
+          {
+            "q": "A robotic cloth model predicts sharp video frames but fails after contact. What should be checked first?",
+            "options": [
+              "Whether the representation captures deformable state and material response rather than only image appearance.",
+              "Whether the prompt uses enough synonyms for cloth and contact.",
+              "Whether the sampler is autoregressive instead of bidirectional.",
+              "Whether the evaluation ignores all future frames after the first."
+            ],
+            "a": 0,
+            "why": "Deformable prediction depends on hidden high-dimensional state and material dynamics. Crisp frames alone do not prove those variables are modeled.",
+            "source_ids": [
+              "emergentmind-2607-05390-deform360-a-massive-multi-view-visuotactile-dataset-for-2026"
+            ]
+          },
+          {
+            "q": "A generated game rollout looks plausible, but a defeated character keeps using abilities. What mechanism is missing?",
+            "options": [
+              "The model lacks explicit state dynamics for mechanics such as health, skill activation, and termination.",
+              "The generator needs fewer frames so errors have less time to appear.",
+              "The visual texture model is too low resolution to render ability icons.",
+              "The prompt should avoid mentioning rules because rules reduce creativity."
+            ],
+            "a": 0,
+            "why": "The failure is not visual; it is state inconsistency. Mechanics require internal variables that constrain later events.",
+            "source_ids": [
+              "emergentmind-2607-26754-stateplay-state-aware-game-world-models-for-mechanics-2026"
+            ]
+          }
+        ]
+      },
+      "gym": {
+        "leader": "Nara of the Dreaming Simulator",
+        "badge": "Statewake Badge",
+        "taunt": "Show me the next world, then show me why it had to happen.",
+        "questions": [
+          {
+            "q": "A robot planner uses a video model for imagined futures but ignores the action representation mismatch. What is the likely failure?",
+            "options": [
+              "The rollout may look realistic while responding incorrectly to robot actions because control is not grounded in the model's learned visual dynamics.",
+              "The planner will always outperform real-world testing because video priors contain all physics.",
+              "The model will become a classifier and stop generating future observations.",
+              "The simulator will only fail in text-heavy environments, not manipulation tasks."
+            ],
+            "a": 0,
+            "why": "Counterfactual prediction depends on action-conditioned dynamics. If actions are not encoded in a form the model can use, imagined consequences become unreliable.",
+            "source_ids": [
+              "emergentmind-2607-19343-masked-visual-actions-for-unified-world-modeling-2026",
+              "emergentmind-2608-06332-geniworld-a-generalizable-interactive-world-model-for-robotic-2026"
+            ]
+          },
+          {
+            "q": "Which evaluation best tests whether an AI tool changes learning rather than only grades?",
+            "options": [
+              "Compare overall grade averages before and after release without separating course design.",
+              "Compare AI-susceptible and less-susceptible assessments, then inspect understanding and interest measures for aligned changes.",
+              "Count how many essays mention AI and assume every mention indicates substitution.",
+              "Evaluate only in-class exams because take-home work is impossible to analyze."
+            ],
+            "a": 1,
+            "why": "The substitution claim predicts differential effects by assessment susceptibility. Adding understanding and interest helps separate grade movement from learning-related outcomes.",
+            "source_ids": [
+              "emergentmind-2607-21534-generative-ai-availability-grades-and-student-satisfaction-at-2026"
+            ]
+          },
+          {
+            "q": "A literary simulation keeps characters static while scenes change. What would make it a stronger world model?",
+            "options": [
+              "Persistent character and world state updates across long-horizon interactions with a schema flexible enough for diverse settings.",
+              "More isolated scene generation without carrying prior state forward.",
+              "Replacing all characters with fixed personas to improve consistency.",
+              "Scoring each scene only by surface fluency and visual vividness."
+            ],
+            "a": 0,
+            "why": "Long-horizon simulation needs state that evolves with interaction. Static imitation cannot capture co-evolution of characters and world conditions.",
+            "source_ids": [
+              "emergentmind-2607-17250-evolvingworld-an-open-schema-framework-for-co-evolving-2026"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "board_key": "compression",
+      "summary": "Distillation compresses behavior into smaller or faster agents while fighting exposure bias, privilege mismatch, and memorization.",
+      "npc_name": "Forgewright Mael",
+      "npc_text": "A student can inherit strength from a teacher, from itself, or from repeated data. Each inheritance can also smuggle in the wrong dependency.",
+      "concepts": [
+        {
+          "concept_key": "teacher-student-transfer",
+          "name": "Teacher-Student Transfer",
+          "lore": "Teacher-student transfer turns stronger or specialized policies into training signal for a deployed student. Multi-teacher on-policy distillation uses specialized reinforcement-trained teachers, then trains the student on its own rollouts to reduce exposure bias and provide dense optimization signal. Trust-region policy distillation stabilizes high-variance on-policy distillation by constructing a proximal teacher, with formal claims about variance control, convergence, and monotonic improvement. Evolving-context distillation treats context as preference signal in open-ended domains, but must stabilize targets and downweight conflicts when the context changes with student performance. The mechanism is behavioral compression under the student's encountered states. The boundary is instability: if teacher targets are too distant, conflicting, or off-distribution, transfer can amplify variance instead of capability.",
+          "source_ids": [
+            "emergentmind-2606-30406-mopd-2026",
+            "emergentmind-2607-04751-trust-region-policy-distillation-2026",
+            "emergentmind-2607-28022-flux-opd-on-policy-distillation-with-evolving-contexts-2026"
+          ],
+          "questions": [
+            {
+              "q": "Why train a student on its own rollouts during teacher-student distillation?",
+              "options": [
+                "It exposes the student to states it will actually visit, reducing the mismatch caused by training only on teacher trajectories.",
+                "It prevents the teachers from producing dense signals, forcing sparse rewards to dominate.",
+                "It guarantees that all specialized teacher skills remain independent at inference.",
+                "It removes the need to stabilize targets because on-policy data has no variance."
+              ],
+              "a": 0,
+              "why": "On-policy distillation aligns training states with deployment states. That reduces exposure bias while still using teacher behavior as supervision.",
+              "source_ids": [
+                "emergentmind-2606-30406-mopd-2026"
+              ]
+            },
+            {
+              "q": "What problem does a proximal or trust-region teacher address in policy distillation?",
+              "options": [
+                "It makes every teacher identical to the student before training begins.",
+                "It converts open-ended preferences into exact verifiable rewards.",
+                "It stabilizes updates by keeping teacher targets close enough to control variance and avoid destructive jumps.",
+                "It removes all conflicting contexts by discarding the student rollout distribution."
+              ],
+              "a": 2,
+              "why": "A nearby teacher limits how extreme the distillation target becomes. This can reduce gradient variance and support more stable improvement.",
+              "source_ids": [
+                "emergentmind-2607-04751-trust-region-policy-distillation-2026"
+              ]
+            }
+          ]
+        },
+        {
+          "concept_key": "self-distillation",
+          "name": "Self-Distillation",
+          "lore": "Self-distillation uses the model, or a strengthened version of it, as the teacher. The attraction is that no external teacher is required, and on-policy rollouts can match inference. But asymmetry is delicate. Privileged information can create a stronger signal, yet it may degrade long reasoning traces or produce a privilege illusion: the student learns behavior that depends on information absent at inference. Rubric-based reinforcement learning shows another angle: external guidance can improve exploration of unmet criteria, but if that guidance disappears at inference, autoregressive errors accumulate. Visual contrastive self-distillation asks whether input conditioning alone can create useful asymmetry by removing image content. The boundary is reproducibility: the student must be able to perform from its actual context.",
+          "source_ids": [
+            "emergentmind-2607-05184-rethinking-on-policy-self-distillation-for-thinking-models-2026",
+            "emergentmind-2607-18082-enhancing-rubric-based-rl-via-self-distillation-2026",
+            "emergentmind-2607-21556-visual-contrastive-self-distillation-2026",
+            "emergentmind-2608-01735-dapd-dual-anchored-policy-distillation-2026"
+          ],
+          "questions": [
+            {
+              "q": "Why can privileged self-distillation harm a reasoning model at inference?",
+              "options": [
+                "The student may imitate behavior that relies on information it will not have, so long traces degrade when that support disappears.",
+                "Privileged information always lowers the teacher below the student and removes all learning signal.",
+                "Reasoning traces fail because self-distillation prevents test-time computation.",
+                "The student is trained off-policy only, so no generated states are ever observed."
+              ],
+              "a": 0,
+              "why": "The failure is information asymmetry. A student can learn a dependency on privileged context and then behave incorrectly without it.",
+              "source_ids": [
+                "emergentmind-2607-05184-rethinking-on-policy-self-distillation-for-thinking-models-2026",
+                "emergentmind-2608-01735-dapd-dual-anchored-policy-distillation-2026"
+              ]
+            },
+            {
+              "q": "Why can external rollout guidance create error accumulation in rubric-based reinforcement learning?",
+              "options": [
+                "The policy is optimized under guided contexts that are absent at inference, creating a train-inference mismatch.",
+                "Rubrics cannot produce optimization criteria for open-ended tasks under any condition.",
+                "Self-distillation requires a human teacher for every generated token.",
+                "Autoregressive decoding prevents any criterion from being explored during training."
+              ],
+              "a": 0,
+              "why": "Guidance can help exploration during training, but the deployed policy must generate without it. That mismatch can compound through autoregressive rollout.",
+              "source_ids": [
+                "emergentmind-2607-18082-enhancing-rubric-based-rl-via-self-distillation-2026"
+              ]
+            }
+          ]
+        },
+        {
+          "concept_key": "memorization-and-generalization",
+          "name": "Memorization and Generalization",
+          "lore": "Compression also happens through repeated data exposure. Multi-epoch training can improve performance and sample efficiency when high-quality data are limited, but excessive repetition creates overfitting risk and diminishing returns. Memorization-guided reuse frames the problem as timing: loss-retention signals reveal a memorization window that can guide when examples are still useful and when repetition becomes harmful. The mechanism is selective reuse rather than blind repetition. The changed information flow is from uniform passes over a corpus to data scheduling based on whether the model is retaining, forgetting, or overfitting examples. The evidence is a training-control claim, not a guarantee that all memorized data are bad. The boundary is balance: useful reuse and harmful memorization can look similar without explicit signals.",
+          "source_ids": [
+            "emergentmind-2607-04969-train-smarter-not-longer-memorization-guided-data-2026"
+          ],
+          "questions": [
+            {
+              "q": "Why can reusing high-quality data improve training before it becomes harmful?",
+              "options": [
+                "Repeated exposure can increase sample efficiency, but excessive repetition eventually risks overfitting and diminishing returns.",
+                "Every repeated example becomes synthetic data, so overfitting is impossible.",
+                "Data reuse matters only for image models and has no effect on language models.",
+                "The model forgets all previous examples after each epoch, so repetition cannot accumulate."
+              ],
+              "a": 0,
+              "why": "Limited high-quality data can be worth revisiting. The risk appears when repetition pushes the model toward memorization rather than generalizable behavior.",
+              "source_ids": [
+                "emergentmind-2607-04969-train-smarter-not-longer-memorization-guided-data-2026"
+              ]
+            },
+            {
+              "q": "What does a memorization window help decide?",
+              "options": [
+                "Which optimizer can remove the need for validation entirely.",
+                "Whether repeated examples are still useful or are moving toward overfitting and low returns.",
+                "Which prompt tokens should be removed from a diffusion condition.",
+                "Whether a teacher policy should be proximal or multi-domain."
+              ],
+              "a": 1,
+              "why": "Loss-retention style signals can guide data scheduling. The point is to reuse examples while they help and reduce repetition when memorization dominates.",
+              "source_ids": [
+                "emergentmind-2607-04969-train-smarter-not-longer-memorization-guided-data-2026"
+              ]
+            }
+          ]
+        }
+      ],
+      "side": {
+        "name": "The Transfer Anvil",
+        "description": "A forge where compressed behavior must survive the student's own context.",
+        "questions": [
+          {
+            "q": "A distilled assistant performs well during guided training but fails when the hints are removed. What is the likely flaw?",
+            "options": [
+              "A privilege or guidance dependency was learned that the student cannot reproduce from its inference-time context.",
+              "The model saw too many on-policy rollouts and therefore forgot every teacher signal.",
+              "The teacher was too proximal, which always prevents any capability transfer.",
+              "The dataset contained no repeated examples, so memorization could not occur."
+            ],
+            "a": 0,
+            "why": "The student can inherit behavior tied to unavailable information. At inference, that hidden dependency becomes a failure mode.",
+            "source_ids": [
+              "emergentmind-2608-01735-dapd-dual-anchored-policy-distillation-2026",
+              "emergentmind-2607-18082-enhancing-rubric-based-rl-via-self-distillation-2026"
+            ]
+          },
+          {
+            "q": "A team has limited excellent data and wants to train longer. What policy best manages the trade-off?",
+            "options": [
+              "Reuse examples blindly for many epochs because quality removes overfitting risk.",
+              "Stop after one pass because repeated exposure can never improve sample efficiency.",
+              "Track retention or memorization signals and reuse data selectively while returns remain positive.",
+              "Replace data scheduling with a trust-region teacher because memorization is only a distillation problem."
+            ],
+            "a": 2,
+            "why": "The useful boundary is not one-pass versus infinite reuse. Signals from retention can decide when repetition still improves training and when it becomes harmful.",
+            "source_ids": [
+              "emergentmind-2607-04969-train-smarter-not-longer-memorization-guided-data-2026"
+            ]
+          }
+        ]
+      },
+      "gym": {
+        "leader": "Mael of the Distillation Forge",
+        "badge": "Forgekeep Badge",
+        "taunt": "A copied strength that vanishes at test time was never yours.",
+        "questions": [
+          {
+            "q": "A student must combine domain teachers but avoid brittle off-distribution behavior. Which mechanism is most appropriate?",
+            "options": [
+              "Train only on teacher trajectories so the student never sees its own mistakes.",
+              "Use on-policy student rollouts with dense teacher signals, plus stabilization when targets are distant or conflicting.",
+              "Use privileged answers at training and assume the student will infer them later.",
+              "Repeat the smallest domain dataset until every example is memorized."
+            ],
+            "a": 1,
+            "why": "On-policy rollouts reduce exposure bias, while stable teacher targets reduce variance and conflicts. Both are needed when transferring multiple capabilities.",
+            "source_ids": [
+              "emergentmind-2606-30406-mopd-2026",
+              "emergentmind-2607-04751-trust-region-policy-distillation-2026",
+              "emergentmind-2607-28022-flux-opd-on-policy-distillation-with-evolving-contexts-2026"
+            ]
+          },
+          {
+            "q": "A self-distilled reasoning model gets shorter and worse on long traces after training with privileged solutions. What should be suspected?",
+            "options": [
+              "The student learned a privilege-dependent shortcut that does not exist in its deployed context.",
+              "The memorization window was too short because image content was removed.",
+              "The rollout was too on-policy, which prevents degradation by definition.",
+              "The teacher target was not diverse enough because it used every domain specialist."
+            ],
+            "a": 0,
+            "why": "Privileged context can make the self-teacher stronger while giving the student an unrealizable dependency. Long traces then expose the mismatch.",
+            "source_ids": [
+              "emergentmind-2607-05184-rethinking-on-policy-self-distillation-for-thinking-models-2026",
+              "emergentmind-2608-01735-dapd-dual-anchored-policy-distillation-2026"
+            ]
+          },
+          {
+            "q": "How should a training run balance data reuse and distillation stability?",
+            "options": [
+              "Repeat all examples heavily and use the farthest possible teacher to maximize signal magnitude.",
+              "Use retention signals to schedule repeated data, and keep teacher targets close or conflict-weighted when distilling on-policy.",
+              "Avoid on-policy data and reuse only final outputs from the first epoch.",
+              "Discard high-quality repeated data because any memorization signal proves it has no value."
+            ],
+            "a": 1,
+            "why": "Selective reuse controls overfitting pressure, while stabilized distillation controls variance and target conflict. Both preserve generalization under compression.",
+            "source_ids": [
+              "emergentmind-2607-04969-train-smarter-not-longer-memorization-guided-data-2026",
+              "emergentmind-2607-04751-trust-region-policy-distillation-2026",
+              "emergentmind-2607-28022-flux-opd-on-policy-distillation-with-evolving-contexts-2026"
+            ]
+          }
+        ]
+      }
+    }
+  ],
+  "source_assignments": [
+    {
+      "source_id": "emergentmind-2606-32026-adajepa-2026",
+      "board_key": "world-models",
+      "concept_key": "counterfactual-rollouts"
+    },
+    {
+      "source_id": "emergentmind-2607-01693-mathematical-diffusion-intro-2026",
+      "board_key": "objectives",
+      "concept_key": "likelihood-and-score"
+    },
+    {
+      "source_id": "emergentmind-2606-30406-mopd-2026",
+      "board_key": "compression",
+      "concept_key": "teacher-student-transfer"
+    },
+    {
+      "source_id": "emergentmind-2607-00527-ai-native-games-a-survey-and-roadmap-2026",
+      "board_key": "objectives",
+      "concept_key": "conditioning-and-control"
+    },
+    {
+      "source_id": "emergentmind-2607-05390-deform360-a-massive-multi-view-visuotactile-dataset-for-2026",
+      "board_key": "world-models",
+      "concept_key": "predictive-state"
+    },
+    {
+      "source_id": "emergentmind-2607-04751-trust-region-policy-distillation-2026",
+      "board_key": "compression",
+      "concept_key": "teacher-student-transfer"
+    },
+    {
+      "source_id": "emergentmind-2607-05184-rethinking-on-policy-self-distillation-for-thinking-models-2026",
+      "board_key": "compression",
+      "concept_key": "self-distillation"
+    },
+    {
+      "source_id": "emergentmind-2607-03509-flex-forcing-towards-a-unified-autoregressive-and-2026",
+      "board_key": "dynamics",
+      "concept_key": "diffusion-and-flow"
+    },
+    {
+      "source_id": "emergentmind-2607-04969-train-smarter-not-longer-memorization-guided-data-2026",
+      "board_key": "compression",
+      "concept_key": "memorization-and-generalization"
+    },
+    {
+      "source_id": "emergentmind-2607-08877-flowdagger-human-in-the-loop-adaptation-of-generative-2026",
+      "board_key": "dynamics",
+      "concept_key": "sampling-dynamics"
+    },
+    {
+      "source_id": "emergentmind-2607-08766-opsd-v-on-policy-self-distillation-for-post-2026",
+      "board_key": "dynamics",
+      "concept_key": "iterative-refinement"
+    },
+    {
+      "source_id": "emergentmind-2607-11938-mathematics-of-data-science-2026",
+      "board_key": "objectives",
+      "concept_key": "latent-structure"
+    },
+    {
+      "source_id": "emergentmind-2607-13188-concurrent-image-understanding-and-generation-self-correcting-coupled-2026",
+      "board_key": "dynamics",
+      "concept_key": "iterative-refinement"
+    },
+    {
+      "source_id": "emergentmind-2607-17250-evolvingworld-an-open-schema-framework-for-co-evolving-2026",
+      "board_key": "world-models",
+      "concept_key": "predictive-state"
+    },
+    {
+      "source_id": "emergentmind-2607-18082-enhancing-rubric-based-rl-via-self-distillation-2026",
+      "board_key": "compression",
+      "concept_key": "self-distillation"
+    },
+    {
+      "source_id": "emergentmind-2607-19343-masked-visual-actions-for-unified-world-modeling-2026",
+      "board_key": "world-models",
+      "concept_key": "counterfactual-rollouts"
+    },
+    {
+      "source_id": "emergentmind-2607-21534-generative-ai-availability-grades-and-student-satisfaction-at-2026",
+      "board_key": "world-models",
+      "concept_key": "model-based-evaluation"
+    },
+    {
+      "source_id": "emergentmind-2607-21556-visual-contrastive-self-distillation-2026",
+      "board_key": "compression",
+      "concept_key": "self-distillation"
+    },
+    {
+      "source_id": "emergentmind-2607-26004-parallel-decoding-distillation-for-fast-image-and-video-2026",
+      "board_key": "dynamics",
+      "concept_key": "sampling-dynamics"
+    },
+    {
+      "source_id": "emergentmind-2607-24879-generative-artificial-intelligence-in-scientific-research-individual-benefits-2026",
+      "board_key": "world-models",
+      "concept_key": "model-based-evaluation"
+    },
+    {
+      "source_id": "emergentmind-2607-26754-stateplay-state-aware-game-world-models-for-mechanics-2026",
+      "board_key": "world-models",
+      "concept_key": "predictive-state"
+    },
+    {
+      "source_id": "emergentmind-2607-28022-flux-opd-on-policy-distillation-with-evolving-contexts-2026",
+      "board_key": "compression",
+      "concept_key": "teacher-student-transfer"
+    },
+    {
+      "source_id": "emergentmind-2607-29679-scaling-properties-of-text-conditioning-in-visual-generation-2026",
+      "board_key": "objectives",
+      "concept_key": "conditioning-and-control"
+    },
+    {
+      "source_id": "emergentmind-2607-28560-x-navdp-generalizing-navigation-diffusion-policy-to-novel-2026",
+      "board_key": "dynamics",
+      "concept_key": "diffusion-and-flow"
+    },
+    {
+      "source_id": "emergentmind-2608-00146-diffusiongemma-technical-report-2026",
+      "board_key": "dynamics",
+      "concept_key": "iterative-refinement"
+    },
+    {
+      "source_id": "emergentmind-2608-06332-geniworld-a-generalizable-interactive-world-model-for-robotic-2026",
+      "board_key": "world-models",
+      "concept_key": "counterfactual-rollouts"
+    },
+    {
+      "source_id": "emergentmind-2608-01735-dapd-dual-anchored-policy-distillation-2026",
+      "board_key": "compression",
+      "concept_key": "self-distillation"
+    }
+  ]
+}

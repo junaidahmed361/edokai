@@ -1,0 +1,878 @@
+{
+  "boards": [
+    {
+      "board_key": "representation",
+      "summary": "Representations become useful when geometry, learned features, and transferred structure preserve the distinctions needed for downstream decisions under changing conditions.",
+      "npc_name": "Curator Vecra",
+      "npc_text": "Welcome to the Galleries. Here, signals are not stored as labels alone; they are shaped into spaces where distance, direction, timing, and neighborhood decide what can be recovered later.",
+      "concepts": [
+        {
+          "concept_key": "embedding-geometry",
+          "name": "Gradient Timeglass",
+          "lore": "Speech alignment fails when a model can transcribe words but does not expose reliable word boundaries. Attention weights can look interpretable, yet they remain tied to encoder frames and may not identify which acoustic moments actually caused each token. A gradient-based alignment changes the information flow: each generated text token is traced backward through the differentiable ASR model to the encoder frames that most affect it. The resulting geometry links token identity to temporal evidence rather than to attention display alone. This broadens alignment to CTC, transducer, encoder-decoder, and speech-LLM systems. The boundary is precision: because the signal still lives on the encoder frame grid, timing cannot become finer than that grid permits.",
+          "source_ids": [
+            "emergentmind-2607-06831-gradient-based-speech-to-text-alignment-for-any-2026"
+          ],
+          "questions": [
+            {
+              "q": "Why can attention weights be a weak basis for word timing in some speech recognizers?",
+              "options": [
+                "They may reflect routing inside the decoder without measuring which encoder frames causally affect each emitted token.",
+                "They remove the encoder frame grid and therefore produce timestamps with unlimited temporal precision.",
+                "They only work for recurrent acoustic models and cannot be computed for encoder-decoder systems.",
+                "They force every generated word to align to the same frame because softmax attention normalizes globally."
+              ],
+              "a": 0,
+              "why": "Attention weights are an internal routing signal, while gradients measure how token scores change with encoder-frame evidence. The remaining precision limit is still the encoder frame grid.",
+              "source_ids": [
+                "emergentmind-2607-06831-gradient-based-speech-to-text-alignment-for-any-2026"
+              ]
+            },
+            {
+              "q": "What limitation remains when token-to-frame alignment is derived from gradients?",
+              "options": [
+                "The method cannot be applied to differentiable speech LLMs because gradients stop at generated tokens.",
+                "The timing signal is still bounded by the encoder frame grid, so sub-frame boundary precision is not guaranteed.",
+                "The alignment must be built into the training objective before inference, or no gradients can be taken.",
+                "The method collapses all words with similar pronunciation into one shared timestamp interval."
+              ],
+              "a": 1,
+              "why": "The abstract states that these alignment signals live on the encoder frame grid. Gradients generalize the attribution mechanism but do not create finer acoustic samples.",
+              "source_ids": [
+                "emergentmind-2607-06831-gradient-based-speech-to-text-alignment-for-any-2026"
+              ]
+            }
+          ]
+        },
+        {
+          "concept_key": "feature-formation",
+          "name": "Fault Signature Loom",
+          "lore": "Fault location in power distribution becomes harder as distributed energy resources add intermittent generation and bidirectional flows. A feature extractor trained on simpler regimes can see its familiar signatures warped by new operating conditions. Spatio-temporal graph modeling changes the representation by combining spatial dependencies across the network with temporal evolution in measurements. The relevant feature is no longer only a time trace or only a graph neighborhood; it is a coupled pattern over both. Benchmarking against purely temporal and purely spatial alternatives tests whether the joint representation remains useful as DER penetration increases. The failure boundary is distribution shift: when DER changes the physical signatures enough, generalization must be measured rather than assumed.",
+          "source_ids": [
+            "emergentmind-2607-29293-assessing-the-generalization-of-graph-neural-networks-for-2026"
+          ],
+          "questions": [
+            {
+              "q": "Why can increasing DER penetration weaken a fault locator trained under earlier grid conditions?",
+              "options": [
+                "It makes graph edges disappear, so spatial models can no longer represent the feeder topology at all.",
+                "It reshapes fault signatures through intermittent generation and bidirectional power flows, changing the input patterns tied to location.",
+                "It converts every fault into a purely temporal event, making spatial dependencies irrelevant by construction.",
+                "It prevents recurrent units from processing measurements because DER signals are not sequential data."
+              ],
+              "a": 1,
+              "why": "DER changes the physical operating regime, so the same fault location may produce altered spatial and temporal signatures. That is a representation shift, not merely a model-size issue.",
+              "source_ids": [
+                "emergentmind-2607-29293-assessing-the-generalization-of-graph-neural-networks-for-2026"
+              ]
+            },
+            {
+              "q": "What does a spatio-temporal graph representation add over a purely temporal or purely spatial one for fault location?",
+              "options": [
+                "It removes the need to observe measurements over time by replacing them with static node identifiers.",
+                "It guarantees unchanged performance as DER penetration rises because graph attention is invariant to all power-flow changes.",
+                "It jointly models network relationships and measurement dynamics, allowing fault signatures to be represented across topology and time.",
+                "It converts bidirectional power flows into unidirectional labels before the model sees the data."
+              ],
+              "a": 2,
+              "why": "The mechanism is joint modeling of spatial and temporal dependencies. The abstract motivates this because faults in distribution networks unfold over both topology and time.",
+              "source_ids": [
+                "emergentmind-2607-29293-assessing-the-generalization-of-graph-neural-networks-for-2026"
+              ]
+            }
+          ]
+        },
+        {
+          "concept_key": "representation-transfer",
+          "name": "Listwise Transfer Prism",
+          "lore": "A reranker must compare documents against one another, not score each passage in isolation. Production retrieval adds pressure: the model must remain efficient, handle domains robustly, and read semi-structured data fluently. The listwise design transfers comparison structure across the candidate set, while hybrid attention changes where information can flow. Sliding-window layers keep local token processing cheaper; later global layers allow cross-document interaction when comparison matters most. Self-distillation then compresses behavior into a smaller deployed model. The changed state is a representation that carries both local document form and list-level ordering evidence. The boundary is that efficiency comes from scheduled interaction, so tasks needing dense global comparison at every layer may expose the trade-off.",
+          "source_ids": [
+            "emergentmind-2607-18152-jina-reranker-v3-5-an-efficient-listwise-reranker-2026"
+          ],
+          "questions": [
+            {
+              "q": "Why does listwise reranking require a different representation than independent passage scoring?",
+              "options": [
+                "It replaces document text with metadata fields, so token-level semantics no longer affect ranking.",
+                "It only estimates whether each document is grammatical, leaving relevance to the retriever.",
+                "It must encode cross-document comparisons because the ranking decision depends on relative evidence among candidates.",
+                "It prevents global attention from connecting documents, which forces every passage to be scored separately."
+              ],
+              "a": 2,
+              "why": "Listwise reranking uses interactions among candidates to decide ordering. Independent scoring can miss relative evidence because each passage is evaluated alone.",
+              "source_ids": [
+                "emergentmind-2607-18152-jina-reranker-v3-5-an-efficient-listwise-reranker-2026"
+              ]
+            },
+            {
+              "q": "What is the purpose of using sliding-window layers before global layers in an efficient reranker?",
+              "options": [
+                "Local layers reduce early compute while later global layers still support cross-document comparison.",
+                "Local layers erase semi-structured fields so the model can rank only natural-language paragraphs.",
+                "Global layers are used first to build timestamps, then local layers refine acoustic boundaries.",
+                "Sliding windows guarantee exact full attention over every token at the same cost as a single passage encoder."
+              ],
+              "a": 0,
+              "why": "The hybrid schedule spends cheaper local attention early and reserves global interaction for later comparison. This preserves listwise behavior while reducing uniform global-attention cost.",
+              "source_ids": [
+                "emergentmind-2607-18152-jina-reranker-v3-5-an-efficient-listwise-reranker-2026"
+              ]
+            }
+          ]
+        }
+      ],
+      "side": {
+        "name": "Gallery Commission",
+        "description": "Applied representation choices under shifting evidence.",
+        "questions": [
+          {
+            "q": "An ASR service must add word timestamps to both CTC models and speech LLMs without changing each architecture. Which approach best matches that constraint?",
+            "options": [
+              "Use token gradients with respect to encoder frames, then accept that timestamp precision remains limited by frame spacing.",
+              "Read decoder attention weights for all models and treat their peaks as exact causal boundaries.",
+              "Train a new CTC head for every model family because only CTC can expose any timing signal.",
+              "Average all encoder frames for each sentence and assign every word the same temporal interval."
+            ],
+            "a": 0,
+            "why": "Gradient alignment applies to differentiable ASR systems even when alignment is not built in. It still cannot exceed encoder-frame temporal resolution.",
+            "source_ids": [
+              "emergentmind-2607-06831-gradient-based-speech-to-text-alignment-for-any-2026"
+            ]
+          },
+          {
+            "q": "A grid operator sees fault-location accuracy drop as DER penetration increases. Which diagnostic comparison is most informative?",
+            "options": [
+              "Compare only larger and smaller temporal models, because topology cannot affect DER-induced signature changes.",
+              "Compare spatio-temporal graph attention against purely temporal and purely spatial baselines across DER levels.",
+              "Replace all time-series measurements with static feeder IDs to isolate the graph structure completely.",
+              "Evaluate only on the original low-DER regime, because changing DER levels would confound the benchmark."
+            ],
+            "a": 1,
+            "why": "The key question is whether joint spatial-temporal features generalize under DER-driven signature changes. Baselines isolate what the joint representation contributes.",
+            "source_ids": [
+              "emergentmind-2607-29293-assessing-the-generalization-of-graph-neural-networks-for-2026"
+            ]
+          }
+        ]
+      },
+      "gym": {
+        "leader": "Archivist Solen",
+        "badge": "Prism Badge",
+        "taunt": "A neat vector is not enough; show me what evidence it keeps when the world changes.",
+        "questions": [
+          {
+            "q": "A deployed ranking system is accurate but too slow because every layer uses global attention over all candidate documents. Which redesign best preserves listwise comparison while reducing cost?",
+            "options": [
+              "Use only independent passage scoring so every candidate can be processed without cross-document signals.",
+              "Use early sliding-window attention for local processing and later global layers for candidate interaction.",
+              "Move all global attention to preprocessing and remove the reranker from the retrieval pipeline.",
+              "Replace document tokens with timestamps so the model compares positions instead of relevance evidence."
+            ],
+            "a": 1,
+            "why": "Hybrid attention keeps local computation cheaper before allowing global listwise interaction. Removing cross-document interaction would change the core ranking mechanism.",
+            "source_ids": [
+              "emergentmind-2607-18152-jina-reranker-v3-5-an-efficient-listwise-reranker-2026"
+            ]
+          },
+          {
+            "q": "A model gives plausible ASR transcripts and visually sharp attention maps, but word boundaries are inconsistent. What does a gradient alignment test reveal that the maps may not?",
+            "options": [
+              "Whether the text token score is sensitive to particular encoder frames, rather than merely where decoder attention was routed.",
+              "Whether the audio can be represented without encoder frames, giving unlimited boundary resolution.",
+              "Whether the ASR model is actually a graph neural network under the decoder interface.",
+              "Whether every word should inherit the sentence-level timestamp from the highest-energy frame."
+            ],
+            "a": 0,
+            "why": "Gradients connect token outputs to frames that affect them. Attention maps can be suggestive without establishing that sensitivity.",
+            "source_ids": [
+              "emergentmind-2607-06831-gradient-based-speech-to-text-alignment-for-any-2026"
+            ]
+          },
+          {
+            "q": "A fault locator and a reranker both face deployment shifts: new DER regimes in one system and new document domains in the other. What is the common representation lesson?",
+            "options": [
+              "Use the smallest model possible, because robustness comes only from reducing parameters.",
+              "Remove relational structure so each input item is judged without context from neighbors or candidates.",
+              "Encode the interaction structure that changes the decision, then test under the shifted operating regime.",
+              "Convert all inputs to a fixed timestamp grid, because temporal precision is the dominant limitation."
+            ],
+            "a": 2,
+            "why": "Both settings depend on interactions: topology-time coupling for faults and candidate comparison for ranking. Robustness must be checked where the input regime changes.",
+            "source_ids": [
+              "emergentmind-2607-29293-assessing-the-generalization-of-graph-neural-networks-for-2026",
+              "emergentmind-2607-18152-jina-reranker-v3-5-an-efficient-listwise-reranker-2026"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "board_key": "sequence",
+      "summary": "Sequence systems decide what past information remains available: dense attention, recurrent summaries, exact caches, and sparse retrieval each change recall and cost.",
+      "npc_name": "Keeper Attenna",
+      "npc_text": "The Engine moves one token at a time, but the past is never free. Choose a route, a memory, and a context budget, then watch what survives the journey.",
+      "concepts": [
+        {
+          "concept_key": "attention-routing",
+          "name": "Landmark Switchyard",
+          "lore": "Long-context transformers are limited by quadratic dense attention and weak length extrapolation. Chunk-wise sparse attention tries to lower cost by selecting only relevant chunks, but inaccurate chunk choice makes it fall short of full attention. Hierarchical Landmark Sparse attention changes the routing problem: attention is factorized through learned chunk selection trained end-to-end under language-model loss. Instead of trusting a fixed heuristic to choose distant blocks, the model learns which landmarks should open paths to detailed token interactions. The changed information flow is selective access to context while preserving a training signal tied to next-token prediction. The boundary is routing accuracy: if the learned selector misses the needed chunk, sparse attention cannot recover evidence that was never fetched.",
+          "source_ids": [
+            "emergentmind-2607-02980-hierarchical-sparse-attention-done-right-toward-infinite-context-2026"
+          ],
+          "questions": [
+            {
+              "q": "Why can chunk-wise sparse attention underperform full attention in long contexts?",
+              "options": [
+                "It stores every key and value in a fixed recurrent state, causing old facts to be overwritten.",
+                "It depends on selecting the right chunks; missed chunks remove needed evidence before token-level attention occurs.",
+                "It always computes full quadratic attention, so it has no way to reduce long-context cost.",
+                "It can only attend to future tokens, which breaks causal language modeling."
+              ],
+              "a": 1,
+              "why": "Sparse attention lowers cost by restricting which chunks are examined. The causal failure is selection error: unfetched tokens cannot influence the output.",
+              "source_ids": [
+                "emergentmind-2607-02980-hierarchical-sparse-attention-done-right-toward-infinite-context-2026"
+              ]
+            },
+            {
+              "q": "What does training chunk selection end-to-end under language-model loss change?",
+              "options": [
+                "The selector receives task-relevant pressure from prediction errors instead of relying only on a fixed retrieval heuristic.",
+                "The model stops using token-level attention after chunks are selected, so all details are compressed away.",
+                "The context length becomes infinite with no compute or memory trade-off at inference.",
+                "The routing module is trained only from timestamp labels rather than next-token prediction."
+              ],
+              "a": 0,
+              "why": "End-to-end language-model loss ties routing decisions to whether the selected context helps prediction. It does not remove the need for accurate selection.",
+              "source_ids": [
+                "emergentmind-2607-02980-hierarchical-sparse-attention-done-right-toward-infinite-context-2026"
+              ]
+            }
+          ]
+        },
+        {
+          "concept_key": "state-and-recurrence",
+          "name": "Hippocampal Relay",
+          "lore": "Linear attention and state-space language models gain constant memory by compressing the prefix into a fixed-size recurrent state. The cost is lossy recall: when many key-value associations compete, earlier facts can be overwritten, and needle recall degrades. A hippocampal complement changes the state layout. The usual delta-rule state remains as compressive memory, while a bounded exact KV cache preserves selected associations outside the fixed recurrent summary. Information flow splits into a fast summary path and an exact lookup path, making test-time memory semiparametric rather than purely recurrent. The evidence is strongest for cases where compressed state forgets under association pressure. The boundary is bounded exact storage: the cache helps with recall but cannot make every past token free.",
+          "source_ids": [
+            "emergentmind-2607-02303-a-hippocampus-for-linear-attention-an-exact-memory-2026"
+          ],
+          "questions": [
+            {
+              "q": "Why do fixed-state linear attention models struggle with many competing key-value associations?",
+              "options": [
+                "Their recurrent state compresses the prefix, so earlier associations can be overwritten as new ones are added.",
+                "They compute dense quadratic attention over every prior token, exhausting memory before recall begins.",
+                "They store all keys on NVMe and cannot move them into GPU memory during inference.",
+                "They use only global attention layers, which prevents local token interactions."
+              ],
+              "a": 0,
+              "why": "A fixed-size recurrent state has limited capacity for exact associations. Competition forces compression, and compression can overwrite details needed later.",
+              "source_ids": [
+                "emergentmind-2607-02303-a-hippocampus-for-linear-attention-an-exact-memory-2026"
+              ]
+            },
+            {
+              "q": "What does adding a bounded exact KV cache contribute to a recurrent linear-attention system?",
+              "options": [
+                "It replaces the recurrent state entirely, so no compressed summary is computed at test time.",
+                "It converts the model into full softmax attention with quadratic cost over the whole prefix.",
+                "It creates a second memory path that can preserve selected associations exactly alongside the compressive state.",
+                "It trains chunk selection under language-model loss to choose distant blocks hierarchically."
+              ],
+              "a": 2,
+              "why": "The cache complements rather than replaces the delta-rule state. It preserves exact key-value information that the fixed recurrent summary may lose.",
+              "source_ids": [
+                "emergentmind-2607-02303-a-hippocampus-for-linear-attention-an-exact-memory-2026"
+              ]
+            }
+          ]
+        },
+        {
+          "concept_key": "long-context-dynamics",
+          "name": "Hierarchical Context Vault",
+          "lore": "Long-context inference runs into a physical tension: exact attention wants many keys and values close to compute, while available GPU memory is limited. Hierarchical Global Attention changes the movement of context. It retrieves chunks using RoPE-aware summaries, refines groups, then performs exact attention over the fetched tokens, while most key-value storage can remain in host RAM or NVMe. The mechanism separates cheap global search from expensive exact token interaction. Information flows first through summaries that identify likely relevant regions, then through exact attention on the retrieved tokens. The boundary is retrieval and storage latency: keeping most memory off-device helps capacity, but useful tokens must still be fetched accurately and quickly enough to matter.",
+          "source_ids": [
+            "emergentmind-2606-30709-hierarchical-global-attention-2026"
+          ],
+          "questions": [
+            {
+              "q": "What problem does a hierarchy of summaries and fetched tokens address in long-context attention?",
+              "options": [
+                "It removes the need for positional information by discarding RoPE-aware summaries entirely.",
+                "It allows global search over context while reserving exact attention for a smaller retrieved token set.",
+                "It forces all key-value tensors to remain in GPU memory so retrieval latency disappears.",
+                "It compresses the whole prefix into a fixed recurrent vector with no exact token access."
+              ],
+              "a": 1,
+              "why": "The hierarchy uses summaries to find relevant chunks, then applies exact attention only to fetched tokens. This reduces the amount of context that must be processed densely.",
+              "source_ids": [
+                "emergentmind-2606-30709-hierarchical-global-attention-2026"
+              ]
+            },
+            {
+              "q": "Why does keeping most key-value memory in host RAM or NVMe create a trade-off?",
+              "options": [
+                "It makes every token globally attended at constant latency because storage bandwidth no longer matters.",
+                "It increases addressable context capacity, but relevant tokens must be retrieved accurately and moved fast enough for inference.",
+                "It prevents exact attention from being applied after retrieval, leaving only summary-level decisions.",
+                "It eliminates the need for chunk refinement because off-device memory is automatically ordered by relevance."
+              ],
+              "a": 1,
+              "why": "Off-device storage can hold more context than GPU memory, but access is not free. Retrieval quality and transfer latency become part of the long-context mechanism.",
+              "source_ids": [
+                "emergentmind-2606-30709-hierarchical-global-attention-2026"
+              ]
+            }
+          ]
+        }
+      ],
+      "side": {
+        "name": "Engine Trial",
+        "description": "Applied memory and routing choices for sequence systems.",
+        "questions": [
+          {
+            "q": "A legal assistant must answer questions over huge files where only a few passages matter. Which design best balances exact evidence with context scale?",
+            "options": [
+              "Retrieve candidate chunks through hierarchical summaries, then run exact attention over the fetched tokens.",
+              "Compress every document into one recurrent state and remove any exact token memory.",
+              "Use sliding-window attention only, so no passage outside the local window can influence the answer.",
+              "Load every key-value tensor into GPU memory and apply dense attention over the full archive."
+            ],
+            "a": 0,
+            "why": "Hierarchical retrieval narrows the search space before exact attention is paid to selected tokens. Dense full-context attention may be too costly, while pure compression risks forgetting details.",
+            "source_ids": [
+              "emergentmind-2606-30709-hierarchical-global-attention-2026"
+            ]
+          },
+          {
+            "q": "A chatbot using a linear recurrent model forgets an early user preference after many new facts. Which change directly targets that failure?",
+            "options": [
+              "Increase chunk-selector depth while keeping the same fixed recurrent state and no exact memory.",
+              "Add a bounded exact KV cache beside the compressive recurrent state for selected associations.",
+              "Move all key-value tensors to NVMe and rely on global summaries without exact fetched tokens.",
+              "Replace token gradients with decoder attention weights for the forgotten preference."
+            ],
+            "a": 1,
+            "why": "The failure is overwrite in a fixed-size recurrent state. A bounded exact cache preserves selected associations that compression may lose.",
+            "source_ids": [
+              "emergentmind-2607-02303-a-hippocampus-for-linear-attention-an-exact-memory-2026"
+            ]
+          }
+        ]
+      },
+      "gym": {
+        "leader": "Warden Kairo",
+        "badge": "Context Badge",
+        "taunt": "A long memory is useless if the right fact cannot reach the next token.",
+        "questions": [
+          {
+            "q": "A model must scale to very long contexts, but mistakes happen because its sparse router sometimes excludes the needed paragraph. What is the most direct mechanism-level fix?",
+            "options": [
+              "Train chunk selection end-to-end under the language-model objective so routing errors are penalized by prediction loss.",
+              "Move the existing inaccurate selector to NVMe storage so it can address larger context windows.",
+              "Replace exact token attention with a single fixed recurrent state for all retrieved chunks.",
+              "Use attention weights as timestamps to identify which paragraph should be selected."
+            ],
+            "a": 0,
+            "why": "The described failure is inaccurate chunk selection. End-to-end pressure can align routing with prediction usefulness.",
+            "source_ids": [
+              "emergentmind-2607-02980-hierarchical-sparse-attention-done-right-toward-infinite-context-2026"
+            ]
+          },
+          {
+            "q": "Which pair of choices best separates capacity from exact recall in long-context systems?",
+            "options": [
+              "Use off-device KV storage with hierarchical retrieval for capacity, and exact attention over fetched tokens for recall.",
+              "Use only a fixed recurrent state for capacity, and remove caches so recall depends on compression alone.",
+              "Use global attention at every layer for capacity, and sliding windows for exact recall over distant tokens.",
+              "Use gradient token attribution for capacity, and graph attention for exact recall across documents."
+            ],
+            "a": 0,
+            "why": "Off-device storage expands addressable context, while exact attention over fetched tokens preserves detailed evidence. The two mechanisms address different bottlenecks.",
+            "source_ids": [
+              "emergentmind-2606-30709-hierarchical-global-attention-2026"
+            ]
+          },
+          {
+            "q": "A system has constant per-token compute but poor needle recall. Why might simply increasing hidden state size be an incomplete answer?",
+            "options": [
+              "Larger recurrent state can improve recall but raises FLOPs, so sparse or exact complementary memory may be needed to scale capacity efficiently.",
+              "Hidden state size has no relationship to recall because all linear attention systems store every past token exactly.",
+              "Increasing state size removes the need for key-value associations, so needle recall becomes undefined.",
+              "A larger state prevents language-model loss from training attention routes at all."
+            ],
+            "a": 0,
+            "why": "The abstracts describe a trade-off: state expansion can help recall but increases computation. Complementary exact memory or sparse state scaling targets capacity more directly.",
+            "source_ids": [
+              "emergentmind-2607-07386-sparse-delta-memory-scaling-the-state-of-2026",
+              "emergentmind-2607-02303-a-hippocampus-for-linear-attention-an-exact-memory-2026"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "board_key": "adaptation",
+      "summary": "Adaptation can come from weight updates, context-conditioned behavior, or new concept formation, but each path has distinct instability and evidence limits.",
+      "npc_name": "Atelier Master Nara",
+      "npc_text": "In the Atelier, models change without always rewriting themselves. Some adapt through gradients, some through prompts, and some by forming a usable concept from sparse traces.",
+      "concepts": [
+        {
+          "concept_key": "parameter-updates",
+          "name": "Delta Forge",
+          "lore": "Linear RNNs and linear-attention models are attractive because they keep fixed state size and fixed compute per token. Their weakness is long-context recall: limited state capacity causes them to lag behind softmax-attention transformers. One direct response is to increase state size, but larger dense state raises FLOPs. Sparse Delta Memory changes the update geometry by scaling hidden-state capacity through sparsity. Instead of making every state dimension densely active and costly, the architecture aims to expand capacity while controlling computation. The changed state is a much larger memory substrate for gated linear RNNs. The failure boundary is the trade-off itself: scaling state helps only if sparse updates preserve the information needed for recall without erasing efficiency.",
+          "source_ids": [
+            "emergentmind-2607-07386-sparse-delta-memory-scaling-the-state-of-2026"
+          ],
+          "questions": [
+            {
+              "q": "Why is dense state expansion a costly way to improve recall in linear-attention models?",
+              "options": [
+                "A larger state can hold more information, but it increases FLOPs when updates and reads touch that state densely.",
+                "A larger state prevents the model from using recurrent computation, forcing quadratic full attention.",
+                "Dense state expansion removes the language-model objective, so recall cannot be trained.",
+                "Dense state expansion stores all key-value pairs on disk and must fetch them for every token."
+              ],
+              "a": 0,
+              "why": "Increasing state capacity can improve recall, but dense operations over a bigger state cost more compute. Sparsity targets that capacity-cost coupling.",
+              "source_ids": [
+                "emergentmind-2607-07386-sparse-delta-memory-scaling-the-state-of-2026"
+              ]
+            },
+            {
+              "q": "What is the intended benefit of sparse updates in a high-capacity linear RNN state?",
+              "options": [
+                "They make the model ignore old context so only the newest token affects prediction.",
+                "They let the architecture scale memory capacity without making every token update pay for every state dimension.",
+                "They convert recurrent memory into full softmax attention over the complete prefix.",
+                "They replace hidden state with document-level reranking scores."
+              ],
+              "a": 1,
+              "why": "Sparse updates concentrate computation on part of a larger state. That is how the architecture seeks more capacity without proportional dense FLOPs.",
+              "source_ids": [
+                "emergentmind-2607-07386-sparse-delta-memory-scaling-the-state-of-2026"
+              ]
+            }
+          ]
+        },
+        {
+          "concept_key": "in-context-adaptation",
+          "name": "Pattern Spark Chamber",
+          "lore": "Capabilities such as pattern completion and indirect object identification can appear abruptly even while pretraining loss improves smoothly. The mechanism described here is stochastic acquisition of sparse attention patterns during training, with larger models acquiring them earlier on average. In-context adaptation changes when a learned attention circuit becomes available: before the circuit exists, prompts that require the pattern fail; after it appears, the same context can route information into the answer. The changed information flow is not a gradual increase in every behavior, but the sudden availability of a sparse pattern that supports a task. The failure boundary is randomness and scale: emergence is not guaranteed at a precise step, and smaller models tend to acquire such behavior later if at all.",
+          "source_ids": [
+            "emergentmind-2606-25010-emergent-capabilities-2026"
+          ],
+          "questions": [
+            {
+              "q": "How can downstream behavior change abruptly while pretraining loss improves smoothly?",
+              "options": [
+                "A sparse attention pattern needed for the behavior may be acquired stochastically, turning on a new information route before loss curves show a sharp break.",
+                "The model stops training on language loss and switches to a hidden classification objective at a fixed scale.",
+                "Every parameter changes discontinuously at the same step, so all capabilities emerge together.",
+                "Long-context memory moves from NVMe to GPU, causing all prompt tasks to become exact."
+              ],
+              "a": 0,
+              "why": "The abstract separates smooth aggregate loss from abrupt capability availability. A newly learned sparse attention pattern can create a task-specific route.",
+              "source_ids": [
+                "emergentmind-2606-25010-emergent-capabilities-2026"
+              ]
+            },
+            {
+              "q": "Why do larger models acquire some emergent behaviors earlier on average?",
+              "options": [
+                "They never need sparse attention patterns because dense attention alone solves every downstream task.",
+                "They have more capacity to discover the sparse routing patterns that support tasks such as pattern completion.",
+                "They train without stochasticity, so capability timing becomes identical across runs.",
+                "They use fixed recurrent states, which guarantee exact recall of all prompt tokens."
+              ],
+              "a": 1,
+              "why": "The reported mechanism is stochastic acquisition of sparse attention patterns, with larger models acquiring them earlier on average. Capacity changes the odds and timing, not a deterministic threshold.",
+              "source_ids": [
+                "emergentmind-2606-25010-emergent-capabilities-2026"
+              ]
+            }
+          ]
+        },
+        {
+          "concept_key": "concept-learning",
+          "name": "Concept Kiln",
+          "lore": "A useful concept is not just a stored example; it is a reusable distinction that changes how new inputs are interpreted. The abstracts give a narrow but important view of this process. Pattern completion and indirect object identification require a model to infer a relation from context and apply it to a new position. Sparse attention patterns provide a mechanism: once learned, they route the relevant tokens into the computation that resolves the concept instance. This makes concept learning look abrupt because the behavior depends on whether the routing pattern exists. The evidence is limited to reported capabilities and sparse attention acquisition, so the honest boundary is scope: it supports a mechanistic account for certain prompt-conditioned relations, not every form of abstraction.",
+          "source_ids": [
+            "emergentmind-2606-25010-emergent-capabilities-2026"
+          ],
+          "questions": [
+            {
+              "q": "What makes pattern completion a concept-learning behavior rather than simple memorization in this setting?",
+              "options": [
+                "The model must use relations present in the current context to fill a new position, not merely repeat a fixed training example.",
+                "The model must output encoder-frame timestamps for each token before answering.",
+                "The model must compare all candidate documents with global attention at every layer.",
+                "The model must store every prior token in an exact KV cache with no compression."
+              ],
+              "a": 0,
+              "why": "Pattern completion depends on applying a relation inferred from the prompt. Sparse attention routes the contextual evidence needed for that relation.",
+              "source_ids": [
+                "emergentmind-2606-25010-emergent-capabilities-2026"
+              ]
+            },
+            {
+              "q": "What is the limitation of explaining concept learning only through emergent sparse attention patterns?",
+              "options": [
+                "It proves all abstract reasoning is caused by one routing circuit across every task.",
+                "It cannot account for prompt-conditioned behavior because attention patterns only affect pretraining loss.",
+                "It supports specific relational behaviors, but does not by itself establish a complete theory of abstraction.",
+                "It applies only to audio alignment because sparse attention patterns exist only on encoder frames."
+              ],
+              "a": 2,
+              "why": "The available claim covers abrupt emergence of capabilities tied to sparse attention patterns. That is narrower than explaining all concept learning.",
+              "source_ids": [
+                "emergentmind-2606-25010-emergent-capabilities-2026"
+              ]
+            }
+          ]
+        }
+      ],
+      "side": {
+        "name": "Atelier Commission",
+        "description": "Applied adaptation choices under compute and behavior constraints.",
+        "questions": [
+          {
+            "q": "A team wants better long-context recall from a linear RNN but cannot afford dense operations over a much larger state. Which direction matches the mechanism?",
+            "options": [
+              "Scale hidden-state capacity through sparse updates so only part of the enlarged state is active per token.",
+              "Switch to uniform global attention in every layer regardless of sequence length.",
+              "Use attention weights as word timestamps and treat recall errors as alignment errors.",
+              "Train only on shorter contexts so the recurrent state is never pressured by old facts."
+            ],
+            "a": 0,
+            "why": "Sparse Delta Memory targets the capacity-cost trade-off by expanding state while avoiding dense full-state work each token.",
+            "source_ids": [
+              "emergentmind-2607-07386-sparse-delta-memory-scaling-the-state-of-2026"
+            ]
+          },
+          {
+            "q": "During training, two runs with similar loss suddenly differ on an in-context relation task. What explanation best matches the mechanism?",
+            "options": [
+              "One run may have acquired the sparse attention pattern needed to route the relation, while the other has not yet done so.",
+              "The lower-performing run must have lost access to all prompt tokens because context windows shrink during training.",
+              "The higher-performing run must be reading timestamps from decoder attention rather than solving the relation.",
+              "The difference proves the task is unrelated to attention and only depends on output vocabulary size."
+            ],
+            "a": 0,
+            "why": "The abstract describes stochastic emergence of capabilities through learned sparse attention patterns. Similar loss does not guarantee identical task circuits at the same moment.",
+            "source_ids": [
+              "emergentmind-2606-25010-emergent-capabilities-2026"
+            ]
+          }
+        ]
+      },
+      "gym": {
+        "leader": "Mistress Vale",
+        "badge": "Adaptation Badge",
+        "taunt": "Show me when to rewrite weights, when to route context, and when capacity is the true bottleneck.",
+        "questions": [
+          {
+            "q": "A prompt task fails until late in training, then starts working without a visible cliff in pretraining loss. Which intervention would most directly test the proposed mechanism?",
+            "options": [
+              "Inspect whether the needed sparse attention pattern appears around the behavioral transition.",
+              "Move all key-value tensors to NVMe and measure storage bandwidth.",
+              "Replace the task with speech word-boundary extraction from encoder frames.",
+              "Remove context examples so the behavior no longer requires in-context routing."
+            ],
+            "a": 0,
+            "why": "The mechanism links abrupt behavior to stochastic acquisition of sparse attention patterns. Observing the routing pattern tests the causal path more directly than aggregate loss.",
+            "source_ids": [
+              "emergentmind-2606-25010-emergent-capabilities-2026"
+            ]
+          },
+          {
+            "q": "A recurrent model can improve recall by increasing state size, but serving cost rises sharply. What trade-off should guide the redesign?",
+            "options": [
+              "Whether sparse state updates can increase capacity while keeping per-token FLOPs closer to fixed-compute operation.",
+              "Whether decoder attention weights can be reused as long-context memory without gradients.",
+              "Whether listwise reranking can replace the language model for all generated tokens.",
+              "Whether DER penetration can be lowered so temporal graph features are easier to learn."
+            ],
+            "a": 0,
+            "why": "The bottleneck is dense computation over larger recurrent state. Sparse updates aim to decouple capacity growth from proportional compute growth.",
+            "source_ids": [
+              "emergentmind-2607-07386-sparse-delta-memory-scaling-the-state-of-2026"
+            ]
+          },
+          {
+            "q": "Why can a larger model appear to learn a new in-context concept earlier than a smaller one without a hand-coded rule switch?",
+            "options": [
+              "More capacity can make discovery of the needed sparse attention route occur earlier on average, even though timing remains stochastic.",
+              "Larger models always store all examples in an exact KV cache, so no concept route is needed.",
+              "The optimizer changes the task label format once parameter count crosses a known threshold.",
+              "The model obtains finer-than-frame temporal precision, making all relational prompts easier."
+            ],
+            "a": 0,
+            "why": "The abstract reports stochastic emergence with larger models acquiring capabilities earlier on average. The mechanism is learned routing, not an explicit rule switch.",
+            "source_ids": [
+              "emergentmind-2606-25010-emergent-capabilities-2026"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "board_key": "architecture",
+      "summary": "Architecture determines how depth, routing sparsity, and memory placement trade compute for reachable information.",
+      "npc_name": "Crucible Smith Orun",
+      "npc_text": "In the Crucible, designs are judged by what they let the next token reach. Every shortcut has a price, and every exact path asks for memory or compute.",
+      "concepts": [
+        {
+          "concept_key": "depth-and-iteration",
+          "name": "Refinement Stair",
+          "lore": "A single coarse retrieval pass can fail when the context is large and relevance is distributed across chunks. Hierarchical Global Attention introduces iterative refinement: RoPE-aware summaries retrieve chunks, groups are refined, and exact attention is finally applied over fetched tokens. Depth here is not merely more layers; it is a staged procedure that changes the granularity of decision-making. Early stages ask which regions are worth moving closer to compute, while later stages let token-level evidence interact exactly. This reduces the burden on any one routing decision. The boundary is compounding error: if summary retrieval or group refinement discards the needed region, final exact attention cannot inspect it.",
+          "source_ids": [
+            "emergentmind-2606-30709-hierarchical-global-attention-2026"
+          ],
+          "questions": [
+            {
+              "q": "What does iterative refinement add to hierarchical long-context retrieval?",
+              "options": [
+                "It lets the system move from coarse chunk summaries to more precise groups before exact token attention.",
+                "It removes positional information so chunks can be compared without RoPE-aware summaries.",
+                "It guarantees every token remains in GPU memory for dense attention at all layers.",
+                "It replaces retrieval decisions with a fixed recurrent state updated once per document."
+              ],
+              "a": 0,
+              "why": "The mechanism proceeds from summaries to refined groups to exact attention over fetched tokens. Each stage narrows the context at a different granularity.",
+              "source_ids": [
+                "emergentmind-2606-30709-hierarchical-global-attention-2026"
+              ]
+            },
+            {
+              "q": "Where does hierarchical refinement fail most directly?",
+              "options": [
+                "When dense attention is available over the entire context, because exact access makes retrieval unnecessary.",
+                "When early retrieval or refinement drops the needed region, because later exact attention only sees fetched tokens.",
+                "When the model uses RoPE-aware summaries, because positional information prevents chunk comparison.",
+                "When host RAM stores key-value tensors, because off-device memory cannot hold long contexts."
+              ],
+              "a": 1,
+              "why": "Final exact attention can only operate on tokens that survive retrieval. A wrong early decision removes the evidence path.",
+              "source_ids": [
+                "emergentmind-2606-30709-hierarchical-global-attention-2026"
+              ]
+            }
+          ]
+        },
+        {
+          "concept_key": "sparsity-and-routing",
+          "name": "Sparse Gate Anvil",
+          "lore": "Sparsity is useful only when the skipped computation is truly unnecessary. The abstracts show several forms: learned chunk selection for sparse attention, hybrid local-global attention in reranking, and sparse state updates in linear RNNs. Each changes routing at a different level. Chunk sparsity chooses which context regions can influence prediction; layer scheduling controls when local versus global interactions happen; state sparsity chooses which memory dimensions update. The benefit is lower compute or larger effective capacity. The failure boundary is missed interaction: if the sparse gate excludes a needed chunk, candidate comparison, or state cell, the downstream computation cannot reconstruct it. Sparsity is therefore an architectural bet on accurate routing, not a free reduction.",
+          "source_ids": [
+            "emergentmind-2607-02980-hierarchical-sparse-attention-done-right-toward-infinite-context-2026",
+            "emergentmind-2607-18152-jina-reranker-v3-5-an-efficient-listwise-reranker-2026",
+            "emergentmind-2607-07386-sparse-delta-memory-scaling-the-state-of-2026"
+          ],
+          "questions": [
+            {
+              "q": "What is the common risk across sparse chunk selection, hybrid attention schedules, and sparse state updates?",
+              "options": [
+                "They may exclude an interaction or memory update that later computation needs, making the missing evidence unrecoverable.",
+                "They always increase dense FLOPs because every skipped operation must be recomputed twice.",
+                "They prevent any local token processing, so all models become purely global at every layer.",
+                "They require speech encoder frames and therefore cannot apply to text models."
+              ],
+              "a": 0,
+              "why": "Sparsity saves work by not computing some paths. If a skipped path carries necessary information, later layers cannot use it.",
+              "source_ids": [
+                "emergentmind-2607-02980-hierarchical-sparse-attention-done-right-toward-infinite-context-2026",
+                "emergentmind-2607-18152-jina-reranker-v3-5-an-efficient-listwise-reranker-2026",
+                "emergentmind-2607-07386-sparse-delta-memory-scaling-the-state-of-2026"
+              ]
+            },
+            {
+              "q": "Why is learned routing often preferable to a fixed sparse heuristic in long-context attention?",
+              "options": [
+                "It allows the routing decision to be shaped by prediction loss, so selected chunks are pressured to contain useful evidence.",
+                "It removes all approximate selection and computes dense full attention over the complete sequence.",
+                "It guarantees that every recurrent state dimension updates on every token.",
+                "It makes document reranking independent of cross-document comparison."
+              ],
+              "a": 0,
+              "why": "End-to-end learned selection receives feedback from the language-model objective. A fixed heuristic may choose chunks that do not help prediction.",
+              "source_ids": [
+                "emergentmind-2607-02980-hierarchical-sparse-attention-done-right-toward-infinite-context-2026"
+              ]
+            }
+          ]
+        },
+        {
+          "concept_key": "architectural-tradeoffs",
+          "name": "Memory-Compute Balance",
+          "lore": "No architecture in the Citadel wins every axis. Dense attention offers broad token access but faces quadratic cost. Linear attention and state-space models keep fixed per-token compute but compress the prefix into lossy state. Larger recurrent states can improve recall but raise FLOPs unless sparsity controls updates. Exact KV complements improve selected recall but require bounded storage. Hierarchical retrieval expands addressable context through summaries and off-device memory, yet depends on accurate fetching and acceptable latency. Hybrid reranking reduces uniform global attention while preserving later cross-document comparison. The changed design view is explicit exchange: compute, memory, recall, latency, and interaction quality move against one another. The boundary is workload specificity; the best choice depends on which failure is unacceptable.",
+          "source_ids": [
+            "emergentmind-2607-02303-a-hippocampus-for-linear-attention-an-exact-memory-2026",
+            "emergentmind-2607-07386-sparse-delta-memory-scaling-the-state-of-2026",
+            "emergentmind-2606-30709-hierarchical-global-attention-2026",
+            "emergentmind-2607-18152-jina-reranker-v3-5-an-efficient-listwise-reranker-2026"
+          ],
+          "questions": [
+            {
+              "q": "Which trade-off best describes fixed-state linear attention compared with dense softmax attention?",
+              "options": [
+                "It keeps per-token memory and compute fixed, but prefix compression can lose exact long-context associations.",
+                "It improves exact recall by attending densely to every prior token with quadratic cost.",
+                "It removes recurrent state and relies only on off-device key-value storage.",
+                "It requires global document comparison, so it cannot generate token sequences."
+              ],
+              "a": 0,
+              "why": "Linear attention compresses history into fixed state, which is efficient but lossy. Dense attention preserves broader direct access at higher long-context cost.",
+              "source_ids": [
+                "emergentmind-2607-02303-a-hippocampus-for-linear-attention-an-exact-memory-2026"
+              ]
+            },
+            {
+              "q": "When is a bounded exact cache a better architectural addition than only enlarging recurrent state?",
+              "options": [
+                "When recall of selected associations matters and dense state growth would raise compute too much.",
+                "When all past tokens must be attended with full quadratic attention at every layer.",
+                "When the task requires removing exact memory so the model generalizes only through compression.",
+                "When timestamps must be finer than the encoder frame grid allows."
+              ],
+              "a": 0,
+              "why": "A bounded cache preserves selected associations exactly beside the compressive state. It targets recall without making every state operation dense over a much larger memory.",
+              "source_ids": [
+                "emergentmind-2607-02303-a-hippocampus-for-linear-attention-an-exact-memory-2026",
+                "emergentmind-2607-07386-sparse-delta-memory-scaling-the-state-of-2026"
+              ]
+            }
+          ]
+        }
+      ],
+      "side": {
+        "name": "Crucible Commission",
+        "description": "Applied architecture selection under resource limits.",
+        "questions": [
+          {
+            "q": "You must serve long-context answers on limited GPU memory, and most past tokens are rarely needed. Which design is most aligned with that constraint?",
+            "options": [
+              "Keep most key-value memory off-device, use hierarchical retrieval, and apply exact attention only to fetched tokens.",
+              "Use dense full attention over the entire context at every generation step.",
+              "Compress all context into one fixed recurrent state and forbid any exact recall path.",
+              "Use a listwise reranker as the generator so no token-level memory is required."
+            ],
+            "a": 0,
+            "why": "The constraint favors addressable capacity without dense GPU-resident attention. Hierarchical retrieval plus fetched-token exact attention targets that trade-off.",
+            "source_ids": [
+              "emergentmind-2606-30709-hierarchical-global-attention-2026"
+            ]
+          },
+          {
+            "q": "A product reranker must handle semi-structured data and compare candidates, but uniform global attention is too expensive. What architecture choice is most appropriate?",
+            "options": [
+              "Hybrid attention with local sliding-window layers followed by global layers for listwise interaction.",
+              "A fixed recurrent state that overwrites older candidate information as new documents arrive.",
+              "A speech-gradient alignment layer that maps candidate words to audio frames.",
+              "A sparse chunk selector trained only for next-token generation over long documents."
+            ],
+            "a": 0,
+            "why": "The reranker needs both efficient local processing and later cross-document comparison. Hybrid local-global scheduling addresses that specific cost pattern.",
+            "source_ids": [
+              "emergentmind-2607-18152-jina-reranker-v3-5-an-efficient-listwise-reranker-2026"
+            ]
+          }
+        ]
+      },
+      "gym": {
+        "leader": "Architect Myr",
+        "badge": "Citadel Badge",
+        "taunt": "Pick the machine for the failure, not the fashion.",
+        "questions": [
+          {
+            "q": "A workload needs exact recall of a few early facts, low per-token compute, and cannot afford dense full attention. Which architecture mix best targets the requirement?",
+            "options": [
+              "A compressive recurrent state plus a bounded exact KV cache for selected associations.",
+              "Uniform global attention at every layer over the complete prefix.",
+              "Only a sliding-window attention stack with no access outside the local window.",
+              "A gradient speech-alignment method applied to each generated token."
+            ],
+            "a": 0,
+            "why": "The recurrent state keeps compute controlled, while the exact cache protects selected facts from overwrite. Dense full attention would violate the cost constraint.",
+            "source_ids": [
+              "emergentmind-2607-02303-a-hippocampus-for-linear-attention-an-exact-memory-2026"
+            ]
+          },
+          {
+            "q": "A sparse long-context model is faster but fails whenever the answer depends on an omitted region. What trade-off should guide the next iteration?",
+            "options": [
+              "Increase routing accuracy, possibly through learned hierarchical selection, before further reducing attention cost.",
+              "Remove all exact attention after retrieval so omitted regions cannot be detected.",
+              "Shrink context windows further, because speed is the only architectural objective.",
+              "Move reranking to a purely temporal GRU so chunk selection is unnecessary."
+            ],
+            "a": 0,
+            "why": "The failure comes from missed routing. More sparsity helps only if the selected regions still carry the needed evidence.",
+            "source_ids": [
+              "emergentmind-2607-02980-hierarchical-sparse-attention-done-right-toward-infinite-context-2026"
+            ]
+          },
+          {
+            "q": "A system has to compare documents, remember selected facts, and answer over long contexts. What is the most accurate architectural principle?",
+            "options": [
+              "Use one memory mechanism for everything, because comparison, recall, and long-context retrieval have identical bottlenecks.",
+              "Match mechanisms to bottlenecks: listwise global interaction for comparison, exact cache for selected recall, and hierarchical retrieval for large context.",
+              "Avoid global interactions entirely, because any global path makes long-context inference quadratic in all settings.",
+              "Prefer fixed recurrent compression for every task, because exact memory always destroys efficiency."
+            ],
+            "a": 1,
+            "why": "The abstracts describe different bottlenecks and mechanisms. Comparison needs candidate interaction, recall may need exact selected memory, and long context needs efficient retrieval.",
+            "source_ids": [
+              "emergentmind-2607-18152-jina-reranker-v3-5-an-efficient-listwise-reranker-2026",
+              "emergentmind-2607-02303-a-hippocampus-for-linear-attention-an-exact-memory-2026",
+              "emergentmind-2606-30709-hierarchical-global-attention-2026"
+            ]
+          }
+        ]
+      }
+    }
+  ],
+  "source_assignments": [
+    {
+      "source_id": "emergentmind-2606-25010-emergent-capabilities-2026",
+      "board_key": "adaptation",
+      "concept_key": "in-context-adaptation"
+    },
+    {
+      "source_id": "emergentmind-2606-30709-hierarchical-global-attention-2026",
+      "board_key": "sequence",
+      "concept_key": "long-context-dynamics"
+    },
+    {
+      "source_id": "emergentmind-2607-02980-hierarchical-sparse-attention-done-right-toward-infinite-context-2026",
+      "board_key": "sequence",
+      "concept_key": "attention-routing"
+    },
+    {
+      "source_id": "emergentmind-2607-02303-a-hippocampus-for-linear-attention-an-exact-memory-2026",
+      "board_key": "sequence",
+      "concept_key": "state-and-recurrence"
+    },
+    {
+      "source_id": "emergentmind-2607-07386-sparse-delta-memory-scaling-the-state-of-2026",
+      "board_key": "adaptation",
+      "concept_key": "parameter-updates"
+    },
+    {
+      "source_id": "emergentmind-2607-06831-gradient-based-speech-to-text-alignment-for-any-2026",
+      "board_key": "representation",
+      "concept_key": "embedding-geometry"
+    },
+    {
+      "source_id": "emergentmind-2607-18152-jina-reranker-v3-5-an-efficient-listwise-reranker-2026",
+      "board_key": "representation",
+      "concept_key": "representation-transfer"
+    },
+    {
+      "source_id": "emergentmind-2607-29293-assessing-the-generalization-of-graph-neural-networks-for-2026",
+      "board_key": "representation",
+      "concept_key": "feature-formation"
+    }
+  ]
+}

@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "updated_at": "2026-08-09T14:03:15Z",
+  "updated_at": "2026-08-10T23:39:39Z",
   "sources": {
     "hf-space-trl-distillation-trainer-2026": {
       "id": "hf-space-trl-distillation-trainer-2026",
@@ -4428,6 +4428,102 @@
       "provenance": [
         "Discovered from https://www.emergentmind.com/ bootstrapped trending papers on 2026-08-09.",
         "EmergentMind homepage abstract metadata: Humanoid household tasks often require concurrent loco-manipulation, where the robot must move, adjust posture, maintain balance, and manipulate objects as a single coordinated behavior. Yet existing humanoid policies typically decompose locomotion and manipulation, while recent world-action models remain either arm-centric or video-centered. We present $ω$-0, a latent predictive whole-body world-action model for real-world humanoid concurrent loco-manipulation. Given a language instruction, current visual observation, and robot proprioceptive state, $ω$-0 directly predicts controller-compatible whole-body action latents for real-ro"
+      ],
+      "confidence": 0.86
+    },
+    "emergentmind-2608-05086-item-response-theory-for-ai-safety-2026": {
+      "id": "emergentmind-2608-05086-item-response-theory-for-ai-safety-2026",
+      "url": "https://www.emergentmind.com/papers/2608.05086",
+      "arxiv_url": "https://arxiv.org/abs/2608.05086",
+      "title": "Item Response Theory for AI Safety",
+      "source_type": "emergentmind-trending-paper",
+      "authors": [],
+      "published": "2026-08-05",
+      "discovered_at": "2026-08-10T23:39:39Z",
+      "last_read_at": "2026-08-10T23:39:39Z",
+      "provenance": [
+        "Discovered from https://www.emergentmind.com/ bootstrapped trending papers on 2026-08-10.",
+        "EmergentMind homepage abstract metadata: Language models differ in how safely they behave and these differences are measured by safety benchmarks. But aggregated benchmark scores are hard to trust and interpret, because benchmarks duplicate one another, correlate heavily, and models may sandbag when they detect evaluation. To address these issues, we draw on Item Response Theory (IRT), a statistical toolkit for measuring these latents from performance on items with inferred psychometric properties. We fit IRT models to eight safety benchmarks across 192 language models, the largest psychometric analysis of LLM safety evaluations to date, and contribute three results. First"
+      ],
+      "confidence": 0.86
+    },
+    "emergentmind-2608-02547-why-does-action-chunking-improve-behavioral-cloning-performance-2026": {
+      "id": "emergentmind-2608-02547-why-does-action-chunking-improve-behavioral-cloning-performance-2026",
+      "url": "https://www.emergentmind.com/papers/2608.02547",
+      "arxiv_url": "https://arxiv.org/abs/2608.02547",
+      "title": "Why Does Action Chunking Improve Behavioral Cloning Performance in Robotic Control?",
+      "source_type": "emergentmind-trending-paper",
+      "authors": [],
+      "published": "2026-08-03",
+      "discovered_at": "2026-08-10T23:39:39Z",
+      "last_read_at": "2026-08-10T23:39:39Z",
+      "provenance": [
+        "Discovered from https://www.emergentmind.com/ bootstrapped trending papers on 2026-08-10.",
+        "EmergentMind homepage abstract metadata: Action chunking---predicting and executing multiple actions instead of a single action---has proven to be a critical component for learning effective robotic control policies. However, our precise understanding of why action chunking improves performance has remained limited. In this work we seek to close this gap. Through rigorous experimental evaluations in both simulated and real-world settings, we show that existing hypotheses for the success of action chunking---temporal consistency, horizon reduction, and representation learning---fail to explain the success of action chunking. Instead, we find that action chunking benefits fr"
+      ],
+      "confidence": 0.86
+    },
+    "emergentmind-2608-07222-skaling-chinchilla-s-exponents-meet-kaplan-s-coupling-2026": {
+      "id": "emergentmind-2608-07222-skaling-chinchilla-s-exponents-meet-kaplan-s-coupling-2026",
+      "url": "https://www.emergentmind.com/papers/2608.07222",
+      "arxiv_url": "https://arxiv.org/abs/2608.07222",
+      "title": "Skaling: Chinchilla's Exponents Meet Kaplan's Coupling",
+      "source_type": "emergentmind-trending-paper",
+      "authors": [],
+      "published": "2026-08-07",
+      "discovered_at": "2026-08-10T23:39:39Z",
+      "last_read_at": "2026-08-10T23:39:39Z",
+      "provenance": [
+        "Discovered from https://www.emergentmind.com/ bootstrapped trending papers on 2026-08-10.",
+        "EmergentMind homepage abstract metadata: Neural scaling laws are foundational for language model development, yet standard formulations systematically under- and overestimate loss at data-scarce and overtraining extremes. This failure originates in the underlying assumption that model size and training data impact the loss independently. To address this, we introduce the Skaling law, a generalized functional form that couples model capacity and data through a single interaction exponent. This simple extension reduces the Mean Absolute Percentage Error (MAPE) by 1.5-3x across both interpolation and extrapolation regimes. When paired with a sparse grid strategy restricted to"
+      ],
+      "confidence": 0.86
+    },
+    "emergentmind-2608-07110-modular-ttt-rethinking-test-time-training-as-composable-2026": {
+      "id": "emergentmind-2608-07110-modular-ttt-rethinking-test-time-training-as-composable-2026",
+      "url": "https://www.emergentmind.com/papers/2608.07110",
+      "arxiv_url": "https://arxiv.org/abs/2608.07110",
+      "title": "Modular TTT: Rethinking Test-Time Training as Composable Modules",
+      "source_type": "emergentmind-trending-paper",
+      "authors": [],
+      "published": "2026-08-07",
+      "discovered_at": "2026-08-10T23:39:39Z",
+      "last_read_at": "2026-08-10T23:39:39Z",
+      "provenance": [
+        "Discovered from https://www.emergentmind.com/ bootstrapped trending papers on 2026-08-10.",
+        "EmergentMind homepage abstract metadata: Test-time training (TTT) views sequence modeling as an online learning problem in which fast weights are updated by an internal learning rule. Despite the growing number of TTT variants, existing approaches typically hard-code each variant separately, which makes it difficult to design new TTT methods and to isolate the role of each component. To address this, we propose Modular TTT, a framework that represents the inner learner as a directed acyclic graph and exposes the fast-weight network, loss function, learning rate, weight decay, and normalization as explicit design dimensions. Modular TTT automatically composes primitive-leve"
+      ],
+      "confidence": 0.86
+    },
+    "emergentmind-2608-02304-trace-ergodic-trajectory-optimization-for-active-scene-reconstruction-2026": {
+      "id": "emergentmind-2608-02304-trace-ergodic-trajectory-optimization-for-active-scene-reconstruction-2026",
+      "url": "https://www.emergentmind.com/papers/2608.02304",
+      "arxiv_url": "https://arxiv.org/abs/2608.02304",
+      "title": "TRACE: Ergodic Trajectory Optimization for Active Scene Reconstruction",
+      "source_type": "emergentmind-trending-paper",
+      "authors": [],
+      "published": "2026-08-03",
+      "discovered_at": "2026-08-10T23:39:39Z",
+      "last_read_at": "2026-08-10T23:39:39Z",
+      "provenance": [
+        "Discovered from https://www.emergentmind.com/ bootstrapped trending papers on 2026-08-10.",
+        "EmergentMind homepage abstract metadata: Existing active reconstruction systems with Gaussian-splatting maps select observations greedily, optimizing a single next-best-view (NBV) at each step and connecting the chosen views by short-horizon path planning. This greedy decoupling disregards the global structure of scene information, producing inefficient trajectories that waste sensing capacity in transit between selected views. In this work, we study active reconstruction as an ergodic coverage problem: the time-averaged spatial statistics of the sensor trajectory should match a target information distribution induced by the current map. Our approach derives this target di"
+      ],
+      "confidence": 0.86
+    },
+    "emergentmind-2608-03893-cross-model-kv-cache-transfer-in-llm-families-2026": {
+      "id": "emergentmind-2608-03893-cross-model-kv-cache-transfer-in-llm-families-2026",
+      "url": "https://www.emergentmind.com/papers/2608.03893",
+      "arxiv_url": "https://arxiv.org/abs/2608.03893",
+      "title": "Cross-Model KV Cache Transfer in LLM Families: A Closed-Form Linear Mapping for Prefill Reuse",
+      "source_type": "emergentmind-trending-paper",
+      "authors": [],
+      "published": "2026-08-04",
+      "discovered_at": "2026-08-10T23:39:39Z",
+      "last_read_at": "2026-08-10T23:39:39Z",
+      "provenance": [
+        "Discovered from https://www.emergentmind.com/ bootstrapped trending papers on 2026-08-10.",
+        "EmergentMind homepage abstract metadata: Production deployments often swap between different-sized models in a family for cost-quality cascading, mid-conversation switching, and routing, and each swap forces the receiver to repay the prefill from scratch. We propose cross-model KV cache transfer, where the receiver reuses the source's KV cache, skipping prefill. We find that cross-model KV has substantial linear structure across matched-KV pairs, where source and target share KV head count and per-head dimension. On Qwen3 14B->32B, one source layer explains 56% of variance in the target's keys and 32% in values, rising to 79% and 65% with multiple source layers. Building o"
       ],
       "confidence": 0.86
     }
@@ -16994,6 +17090,1414 @@
       "first_seen": "2026-08-09T14:03:15Z",
       "last_seen": "2026-08-09T14:03:15Z",
       "world_hint": "retrieval-augmented-generation"
+    },
+    "curriculum-perception-world-models-global-geometry-geometric-priors": {
+      "id": "curriculum-perception-world-models-global-geometry-geometric-priors",
+      "label": "Geometric Priors",
+      "type": "curriculum-concept",
+      "summary": "The first chamber asks why reconstruction cannot rely on texture alone. Sparse views, shiny surfaces, agricultural fields, and query-based splats all expose the same problem: pixels provide evidence, but geometry constrains what evidence can mean. Pretrained geometric backbones, depth priors, multi-resolution field structure, and latent predictive encoders change the information flow by giving the model a spatial hypothesis before appearance details are filled in. That prior can reduce floating geometry, improve view transfer, or make large-scale boundaries less brittle. The evidence is strongest where the abstracts describe explicit 3D, depth, scale, or structure signals. The boundary is that a prior is not truth: if scale is ambiguous, topology is unusual, or the prior is mismatched, optimization can confidently preserve the wrong shape.",
+      "aliases": [],
+      "source_ids": [
+        "emergentmind-2607-00784-levljepa-2026",
+        "emergentmind-2607-04044-siamjepa-on-the-role-of-siamese-student-encoders-2026",
+        "emergentmind-2607-09024-video-generation-models-are-general-purpose-vision-learners-2026",
+        "emergentmind-2607-11270-towards-predictive-aligned-and-scalable-robot-learning-2026",
+        "emergentmind-2607-17052-searching-for-task-specific-vision-paths-evolutionary-block-2026",
+        "emergentmind-2607-19069-delineate-anything-v2-a-global-foundation-model-for-2026",
+        "emergentmind-2608-01186-querysplat-decoupling-geometry-and-appearance-representations-in-3dgs-2026",
+        "emergentmind-2608-01588-d-2-4dgs-dual-depth-guided-sparse-camera-2026"
+      ],
+      "confidence": 0.9,
+      "world_hint": "perception-world-models"
+    },
+    "curriculum-perception-world-models-global-geometry-global-consistency": {
+      "id": "curriculum-perception-world-models-global-geometry-global-consistency",
+      "label": "Global Consistency",
+      "type": "curriculum-concept",
+      "summary": "The second chamber begins with a contradiction: feed-forward 3D models can predict poses and points quickly, but long sequences and unordered collections expose drift, inconsistent chunks, and local coordinate conflicts. The mechanism is global reconciliation. Dense matching heads can turn feed-forward predictions into image warp constraints, global SfM-style optimization can pull chunks into one frame, temporal ordering can regularize video SfM, and Sim(3) backend refinement can merge heterogeneous local predictions. The changed state is a map whose parts agree with each other instead of merely looking plausible in isolation. The evidence spans long image sets, unconstrained video, and online SLAM. The failure boundary is latency and initialization: global constraints improve coherence, but online systems still trade immediate tracking speed against richer multi-view correction.",
+      "aliases": [],
+      "source_ids": [
+        "emergentmind-2607-07040-measuring-intelligence-beyond-human-scale-2026",
+        "emergentmind-2607-09225-glob3r-global-structure-from-motion-with-3d-foundation-2026",
+        "emergentmind-2607-14506-non-vacuous-generalization-bounds-for-reinforcement-learning-with-2026",
+        "emergentmind-2607-17991-optimal-market-making-in-prediction-markets-2026",
+        "emergentmind-2607-27194-vidmap-exploiting-temporal-structure-for-video-based-structure-2026",
+        "emergentmind-2608-01706-unisim-slam-feed-forward-slam-with-unified-sim-2026"
+      ],
+      "confidence": 0.9,
+      "world_hint": "perception-world-models"
+    },
+    "curriculum-perception-world-models-global-geometry-correspondence-and-optimization": {
+      "id": "curriculum-perception-world-models-global-geometry-correspondence-and-optimization",
+      "label": "Correspondence And Optimization",
+      "type": "curriculum-concept",
+      "summary": "The third chamber teaches that perception improves when matches are uncertain but optimizable. Classical pipelines can fail under blur, low texture, poor illumination, or perceptual aliasing because fixed correspondences become brittle. Learned 2D association and learned uncertainty change the flow: instead of committing equally to every match, the system weights evidence and passes it into differentiable geometric optimization. Other variants replace preprocessing boundaries with residual-driven Gaussian allocation, or estimate pose directly against a differentiable map when image-to-image matching is weak. The evidence supports a hybrid mechanism: learning proposes associations, uncertainties, residuals, or map comparisons, while geometry enforces consistency. The boundary is that optimization can only repair evidence that remains informative; severe aliasing, weak overlap, or bad initialization can still leave multiple plausible poses.",
+      "aliases": [],
+      "source_ids": [
+        "emergentmind-2607-05391-llm-as-a-verifier-a-general-purpose-verification-2026",
+        "emergentmind-2607-06023-why-does-deep-learning-improve-visual-slam-2026",
+        "emergentmind-2607-11285-salientgs-unified-sfm-to-3dgs-with-importance-guided-2026",
+        "emergentmind-2607-22147-visual-relocalization-from-sparse-views-in-aliased-and-2026",
+        "emergentmind-2608-03972-reflectrl-learning-from-golden-negative-trajectories-via-reflective-2026"
+      ],
+      "confidence": 0.9,
+      "world_hint": "perception-world-models"
+    },
+    "curriculum-perception-world-models-localization-camera-pose-estimation": {
+      "id": "curriculum-perception-world-models-localization-camera-pose-estimation",
+      "label": "Camera Pose Estimation",
+      "type": "curriculum-concept",
+      "summary": "The labyrinth opens with a simple demand: know the observer’s position even when the scene gives little help. Monocular pose tracking struggles when objects are transparent, reflective, textureless, or seen without depth maps and object models. Rover-like terrain adds aliasing, harsh illumination, and weak overlap. Rolling shutter cameras add another complication because each image row is captured at a different time during motion. The mechanism is to move from brittle input assumptions toward pose estimation that models the actual capture process or compares views against differentiable geometry. The changed information flow is from raw images to camera parameters, timing parameters, or map-aligned poses. The boundary is observability: if views lack overlap or the geometry admits many matches, pose may remain ambiguous.",
+      "aliases": [],
+      "source_ids": [
+        "emergentmind-2607-06555-proxypose-6-dof-pose-tracking-via-video-2026",
+        "emergentmind-2607-22147-visual-relocalization-from-sparse-views-in-aliased-and-2026",
+        "emergentmind-2608-01509-rolling-shutter-camera-self-calibration-2026"
+      ],
+      "confidence": 0.9,
+      "world_hint": "perception-world-models"
+    },
+    "curriculum-perception-world-models-localization-drift-and-loop-closure": {
+      "id": "curriculum-perception-world-models-localization-drift-and-loop-closure",
+      "label": "Drift And Loop Closure",
+      "type": "curriculum-concept",
+      "summary": "The next corridor shows why a tracker that is correct now may be wrong later. Dense monocular SLAM and Gaussian mapping accumulate small inconsistencies over long trajectories, and large outdoor scenes punish systems that are short-horizon, offline, or memory hungry. The mechanism is to separate tracking from mapping while preserving a coherent spatial state: robust feature-based frontends keep pose updates lightweight, sparse anchor grids or geometry-only splats keep maps tractable, and spatial decomposition controls memory. Visual-inertial incremental splatting adds immediate reconstruction while the pose system supplies real-time motion estimates. The evidence supports reducing drift through structured map maintenance, not by maximizing photorealism. The failure boundary is scale and dynamics: long scenes still need bounded memory, reliable frontend tracking, and corrections when the path revisits or reobserves geometry.",
+      "aliases": [],
+      "source_ids": [
+        "emergentmind-2607-07452-geogs-slam-geometry-only-gaussian-splatting-for-dense-2026",
+        "emergentmind-2607-21416-glam-slam-real-time-gaussian-large-scale-mapping-2026",
+        "emergentmind-2608-00931-stipple-real-time-incremental-gaussian-splatting-with-visual-2026"
+      ],
+      "confidence": 0.9,
+      "world_hint": "perception-world-models"
+    },
+    "curriculum-perception-world-models-localization-sensor-and-view-fusion": {
+      "id": "curriculum-perception-world-models-localization-sensor-and-view-fusion",
+      "label": "Sensor And View Fusion",
+      "type": "curriculum-concept",
+      "summary": "The last labyrinth gate asks what changes when one view or modality is not enough. Visual-inertial tracking brings motion cues into real-time splatting, event simulation supplies high-rate labeled streams where physical cameras would be costly, and multimodal pretraining studies how language, visual understanding, and visual generation transfer knowledge across channels. Unified multimodal architectures and cross-modal prediction show a common mechanism: each sensor or view contributes a partial constraint, and the system must align them without letting one stream erase the useful structure of another. The changed state is a representation that can update from sequential views, patches, events, or language-conditioned signals. The boundary is mismatch: simulated events, raw patches, and unified training only help if timing, scale, and modality alignment preserve the physics of the scene.",
+      "aliases": [],
+      "source_ids": [
+        "emergentmind-2607-02770-gemma-4-technical-report-2026",
+        "emergentmind-2607-08098-evis-a-physics-grounded-event-camera-plugin-for-2026",
+        "emergentmind-2607-11736-met-theory-grounded-and-culture-aware-multilingual-moral-2026",
+        "emergentmind-2608-00931-stipple-real-time-incremental-gaussian-splatting-with-visual-2026",
+        "emergentmind-2608-05000-towards-physics-of-multimodal-pretraining-knowledge-flow-modality-2026"
+      ],
+      "confidence": 0.9,
+      "world_hint": "perception-world-models"
+    },
+    "curriculum-perception-world-models-temporal-perception-motion-and-event-streams": {
+      "id": "curriculum-perception-world-models-temporal-perception-motion-and-event-streams",
+      "label": "Motion And Event Streams",
+      "type": "curriculum-concept",
+      "summary": "The Lensworks begin with motion that is too fast, too long, or too structured for independent frames. Event cameras encode asynchronous brightness changes with low latency and high dynamic range, while video models must learn how earlier generated states should support later predictions. Dynamic reconstruction adds another demand: object motion is not a cloud of unrelated displacements, because many points move together under rigid-body transformations. The mechanism is temporal structure: event streams preserve high-rate changes, gradient-through-history trains generated context to be useful later, and structured motion geometry groups points by physically meaningful transformations. The changed state is a memory-bearing perceptual process rather than a frame classifier. The boundary is supervision: simulated events, generated histories, and motion groups must match the real temporal physics they claim to represent.",
+      "aliases": [],
+      "source_ids": [
+        "emergentmind-2607-08098-evis-a-physics-grounded-event-camera-plugin-for-2026",
+        "emergentmind-2607-20368-self-gradient-forcing-native-long-video-extrapolation-2026",
+        "emergentmind-2607-22534-sm4rt-learning-structured-motion-geometry-for-4d-reconstruction-2026"
+      ],
+      "confidence": 0.9,
+      "world_hint": "perception-world-models"
+    },
+    "curriculum-perception-world-models-temporal-perception-egocentric-context": {
+      "id": "curriculum-perception-world-models-temporal-perception-egocentric-context",
+      "label": "Egocentric Context",
+      "type": "curriculum-concept",
+      "summary": "The second lens is mounted on a person or robot, where objects vanish, hands occlude them, and actions are defined relative to a body. Online egocentric tracking must remember object instances after they leave view; robot data synthesis must retarget human manipulation into robot observations and actions; robot-centric pointmaps reduce the mismatch between camera-frame perception and robot-frame control. The mechanism is body-centered memory and transformation. A track memory preserves what is where, retargeting converts human demonstrations into robot-format trajectories, and robot-centric maps express scene structure in the frame where actions are issued. The changed information flow is from camera snapshots to persistent, body-relative state. The boundary is embodiment mismatch: human hands, camera viewpoints, and robot kinematics must be transformed carefully or the policy memorizes viewpoint-specific shortcuts.",
+      "aliases": [],
+      "source_ids": [
+        "emergentmind-2607-08537-whareformer-learning-to-track-what-is-where-in-2026",
+        "emergentmind-2607-11498-see-like-a-robot-robot-centric-pointmaps-for-2026",
+        "emergentmind-2607-25895-hifi-umi-learning-deployable-manipulation-policies-from-high-2026",
+        "emergentmind-2608-02580-ego2robot-scalable-robot-data-synthesis-from-egocentric-human-2026"
+      ],
+      "confidence": 0.9,
+      "world_hint": "perception-world-models"
+    },
+    "curriculum-perception-world-models-temporal-perception-temporal-correspondence": {
+      "id": "curriculum-perception-world-models-temporal-perception-temporal-correspondence",
+      "label": "Temporal Correspondence",
+      "type": "curriculum-concept",
+      "summary": "The final lens aligns decisions across time. Chunked robot policies satisfy real-time constraints but can disagree at overlapping boundaries, producing jitter. Multi-frame action denoising recognizes that the same behavior may be simple in one coordinate frame and complex in another, so synchronized denoisers share a canonical state across frames. B-spline actions replace discrete chunks with continuous curves that can be temporally scaled and executed at higher controller frequencies. The mechanism is correspondence between adjacent predictions, coordinate frames, and execution time. The changed state is a policy whose outputs form a coherent trajectory rather than a sequence of isolated proposals. The boundary is bias: blending inconsistent chunks after inference cannot fix a training process that never learned boundary consistency.",
+      "aliases": [],
+      "source_ids": [
+        "emergentmind-2606-24251-misalignment-thinking-probes-2026",
+        "emergentmind-2607-04728-turning-off-policy-tokens-on-policy-a-plug-2026",
+        "emergentmind-2607-09648-b-spline-policy-accelerating-manipulation-policies-via-b-2026",
+        "emergentmind-2607-11884-mixture-of-frames-policy-multi-frame-action-denoising-2026",
+        "emergentmind-2607-12992-chunkflow-towards-continuity-consistent-chunked-policy-learning-2026",
+        "emergentmind-2607-19987-unirank-benchmarking-ranking-models-for-unified-sequential-modeling-2026",
+        "emergentmind-2608-04373-public-trader-identity-adverse-selection-and-return-predictability-2026"
+      ],
+      "confidence": 0.9,
+      "world_hint": "perception-world-models"
+    },
+    "curriculum-perception-world-models-embodied-perception-active-perception": {
+      "id": "curriculum-perception-world-models-embodied-perception-active-perception",
+      "label": "Active Perception",
+      "type": "curriculum-concept",
+      "summary": "The Sensorium starts with perception as an action, not a passive snapshot. Local sequential vision tests whether foveated glimpses can track visual state and generalize to longer sequences. Interactive robot policy synthesis exposes another route: when a black-box VLA fails, modular programs can call perception and control tools, inspect intermediate state, and be corrected. Human-aware demonstrations add the missing social scene dynamics: a robot may need to collaborate, share space, or operate under supervision, and its observations must include people as part of the task. The mechanism is closed-loop information gathering: choose what to inspect, update state, and adapt the next action. The boundary is brittleness under unmodeled context; active sensing helps only when the chosen observations are relevant and the controller can exploit them.",
+      "aliases": [],
+      "source_ids": [
+        "emergentmind-2606-31682-habit-human-aware-behavior-and-interaction-2026",
+        "emergentmind-2607-06701-spear-a-simulator-for-photorealistic-embodied-ai-2026",
+        "emergentmind-2607-09061-on-locality-and-length-generalization-in-visual-reasoning-2026",
+        "emergentmind-2607-18110-llm-as-a-coach-experiential-learning-for-non-2026",
+        "emergentmind-2607-23784-a-few-words-go-a-long-way-language-2026",
+        "emergentmind-2608-03872-evohil-self-evolving-reward-and-flow-matched-policy-2026"
+      ],
+      "confidence": 0.9,
+      "world_hint": "perception-world-models"
+    },
+    "curriculum-perception-world-models-embodied-perception-tactile-and-visual-fusion": {
+      "id": "curriculum-perception-world-models-embodied-perception-tactile-and-visual-fusion",
+      "label": "Tactile And Visual Fusion",
+      "type": "curriculum-concept",
+      "summary": "The second forge table handles contact, where vision often arrives late or lies by omission. Visual policies trained from videos and demonstrations can provide scalable motion priors, but contact-rich tasks depend on local force and contact geometry. Tactile feedback supplies the missing signal, yet real tactile data are scarce, hardware-specific, and costly. The mechanisms include residual tactile adaptation on top of visual policies, generating latent tactile pressure images from RGB, and scaling action-conditioned visuo-tactile world models with real and simulated interaction data. The changed state is a controller that updates belief about pressure, slip, and contact even when the camera is occluded. The boundary is transfer: synthetic or adapted touch helps only if sensor differences and contact dynamics are represented well enough for the real hand.",
+      "aliases": [],
+      "source_ids": [
+        "emergentmind-2607-03723-omnitactune-policy-agnostic-real-world-rl-for-tactile-2026",
+        "emergentmind-2607-20683-felt-generating-tactile-signals-from-vision-for-visuo-2026",
+        "emergentmind-2607-22530-vitacworld-scaling-visuo-tactile-world-models-for-contact-2026"
+      ],
+      "confidence": 0.9,
+      "world_hint": "perception-world-models"
+    },
+    "curriculum-perception-world-models-embodied-perception-perception-for-control": {
+      "id": "curriculum-perception-world-models-embodied-perception-perception-for-control",
+      "label": "Perception For Control",
+      "type": "curriculum-concept",
+      "summary": "The final Sensorium floor connects perception to action under physical constraints. Humanoid and manipulation systems must coordinate balance, contact, object motion, actuator error, and real-time serving. Contact commands can decouple pose tracking from meaningful object interaction, while retargeting-guided RL preserves hand-object motion from a single demonstration. Robot-centric pointmaps align observed geometry with action coordinates, direct V+L-to-action models reduce invocation cost, and neural actuator models reduce sim-to-real mismatch while estimating external force through contact gating. The mechanism is control-relevant representation: perceive variables in the frame, frequency, and physical form the controller needs. The boundary is hidden coupling. A successful pose, language decision, or simulated torque can still fail when contact modes, actuator dynamics, or compute schedules are wrong.",
+      "aliases": [],
+      "source_ids": [
+        "emergentmind-2606-31958-adapting-generalist-robot-policies-with-se-2026",
+        "emergentmind-2607-01181-right-in-the-right-way-lm-training-with-ve-2026",
+        "emergentmind-2607-01490-don-t-let-gains-fade-breaking-down-policy-2026",
+        "emergentmind-2607-04434-robodojo-a-unified-sim-and-real-benchmark-for-2026",
+        "emergentmind-2607-08742-contactmimic-humanoid-object-interaction-via-contact-control-2026",
+        "emergentmind-2607-08974-clap-direct-vlm-to-vla-adaptation-via-language-2026",
+        "emergentmind-2607-11734-neuralactuator-neural-actuation-modeling-for-robot-dynamics-and-2026",
+        "emergentmind-2607-11874-a-minimalist-retargeting-guided-reinforcement-learning-recipe-for-2026",
+        "emergentmind-2607-15163-scaling-behavior-foundation-model-for-humanoid-robots-2026",
+        "emergentmind-2607-23473-prism-polynomial-representations-for-interaction-structured-motor-control-2026",
+        "emergentmind-2607-27180-humanclaw-can-vision-language-models-act-through-a-2026",
+        "emergentmind-2607-27205-turbovla-real-time-vision-language-action-model-at-2026",
+        "emergentmind-2607-28257-operationally-guided-placement-aware-learning-for-industrial-online-2026",
+        "emergentmind-2608-00337-action-chunk-scheduling-for-batched-robot-policy-serving-2026",
+        "emergentmind-2608-06375-0-a-latent-predictive-world-action-model-for-2026"
+      ],
+      "confidence": 0.9,
+      "world_hint": "perception-world-models"
+    },
+    "curriculum-perception-world-models-neural-rendering-scene-representation": {
+      "id": "curriculum-perception-world-models-neural-rendering-scene-representation",
+      "label": "Scene Representation",
+      "type": "curriculum-concept",
+      "summary": "The Foundry starts by asking what a scene should be made of. Pixel-space 3D systems try to unify reconstruction and generation without losing information through latent encoders. Unified 3D models combine understanding, generation, editing, and part creation, but need geometrically consistent data at scale. CAD reconstruction takes a different route: grow an editable program step by step and inspect intermediate geometry after each operation. Deformable triangle splats change primitive shape, allowing curved or concave boundaries without excessive convex pieces. The mechanism is representation choice: pixels, programs, parts, and flexible primitives determine what can be edited, rendered, or optimized. The boundary is capacity and supervision. A representation that is compact or editable can still fail if it lacks the data or geometry checks needed to preserve shape.",
+      "aliases": [],
+      "source_ids": [
+        "emergentmind-2607-02512-program-as-weights-a-programming-paradigm-2026",
+        "emergentmind-2607-05373-pixworld-unifying-3d-scene-generation-and-reconstruction-2026",
+        "emergentmind-2607-22446-deformable-triangle-splatting-flexible-primitives-for-real-time-2026",
+        "emergentmind-2608-00799-cadena-stepwise-cad-reverse-engineering-2026",
+        "emergentmind-2608-02711-hunyuan3d-buffalo-1-0-a-unified-multimodal-model-2026"
+      ],
+      "confidence": 0.9,
+      "world_hint": "perception-world-models"
+    },
+    "curriculum-perception-world-models-neural-rendering-novel-view-synthesis": {
+      "id": "curriculum-perception-world-models-neural-rendering-novel-view-synthesis",
+      "label": "Novel View Synthesis",
+      "type": "curriculum-concept",
+      "summary": "The second Foundry line renders worlds from viewpoints never directly observed. Radiance fields and splats must balance geometric alignment, appearance detail, and speed. Texture-atlas splatting separates low-frequency geometry and view-dependent appearance features from high-frequency baked textures, then prunes weak surfels for faster rendering. Deformable triangle splatting lets primitive boundaries bend inward or outward, reducing the number of convex pieces needed for curved and concave structures. Sparse-camera 4DGS uses complementary depth cues to constrain dynamic novel views when dense multi-view capture is unavailable. The mechanism is to choose primitives and appearance storage that preserve visible detail without exploding render cost. The boundary is view dependence and geometry error: fast textures or flexible shapes cannot compensate for missing structure or unreliable depth.",
+      "aliases": [],
+      "source_ids": [
+        "emergentmind-2607-13808-bake-it-till-you-make-it-ultrafast-spatial-2026",
+        "emergentmind-2607-22446-deformable-triangle-splatting-flexible-primitives-for-real-time-2026",
+        "emergentmind-2608-01588-d-2-4dgs-dual-depth-guided-sparse-camera-2026"
+      ],
+      "confidence": 0.9,
+      "world_hint": "perception-world-models"
+    },
+    "curriculum-perception-world-models-neural-rendering-scalable-reconstruction": {
+      "id": "curriculum-perception-world-models-neural-rendering-scalable-reconstruction",
+      "label": "Scalable Reconstruction",
+      "type": "curriculum-concept",
+      "summary": "The last Foundry hall treats reconstruction as an online and large-scale service. Streaming feed-forward 3DGS must update a scene as calibrated views arrive sequentially instead of assuming a fixed context batch. Large-scale mapping uses spatial decomposition and sparse anchors to control memory outdoors. Community robot data engines show a parallel scaling pattern: browser teleoperation, automatic task generation, validation, filtering, and smoothing convert varied demonstrations into usable training data. Field delineation also scales by pairing massive multi-resolution data with domain structure such as physical scale and topology. The mechanism is incremental state plus automated quality control. The boundary is accumulated error: scaling collection or streaming updates is useful only when validation, anchoring, and persistent state prevent noisy inputs from becoming permanent geometry.",
+      "aliases": [],
+      "source_ids": [
+        "emergentmind-2607-01487-how-to-allocate-your-tokens-scaling-laws-w-2026",
+        "emergentmind-2607-19069-delineate-anything-v2-a-global-foundation-model-for-2026",
+        "emergentmind-2607-21416-glam-slam-real-time-gaussian-large-scale-mapping-2026",
+        "emergentmind-2607-21588-axis-a-growable-community-driven-data-engine-for-2026",
+        "emergentmind-2608-01659-streamsplat-streaming-feed-forward-3d-gaussian-splatting-2026"
+      ],
+      "confidence": 0.9,
+      "world_hint": "perception-world-models"
+    },
+    "curriculum-retrieval-augmented-generation-retrieval-query-and-candidate-generation": {
+      "id": "curriculum-retrieval-augmented-generation-retrieval-query-and-candidate-generation",
+      "label": "Query and Candidate Generation",
+      "type": "curriculum-concept",
+      "summary": "A search system first has to decide what shape of request the world will understand. Free-form natural-language queries are flexible, but repeated attempts can collapse into different strings that recover nearly the same items, wasting turns without expanding information. Boolean retrieval shows the opposite pressure: a constrained query language can still create strong first-stage candidates when substring matches are dense enough, even without learned weights or global statistics. The changed flow is from hoping a generated sentence is useful to deliberately controlling the candidate set. The boundary is aliasing: if new queries keep landing on the same evidence set, more query variety is only cosmetic.",
+      "aliases": [],
+      "source_ids": [
+        "emergentmind-2607-11362-boolean-queries-are-all-you-need-2026",
+        "emergentmind-2607-27652-harness-g-a-graph-structured-harness-for-search-2026"
+      ],
+      "confidence": 0.9,
+      "world_hint": "retrieval-augmented-generation"
+    },
+    "curriculum-retrieval-augmented-generation-retrieval-ranking-and-relevance": {
+      "id": "curriculum-retrieval-augmented-generation-retrieval-ranking-and-relevance",
+      "label": "Ranking and Relevance",
+      "type": "curriculum-concept",
+      "summary": "After candidates appear, retrieval becomes a scoring problem: what evidence should rise first under the available compute? Late-interaction models keep token-level matching through MaxSim, which can represent relevance patterns that a single document vector may compress away. ColBERT-style open training shows this family can be built reproducibly for multilingual, long-context, and code search, while query-network retrieval changes the cost surface by scoring precomputed document embeddings with a query-specific shallow network. Matryoshka sizing adds a deployment dial: smaller active query networks trade some capacity for throughput. The boundary is operational: richer relevance functions help only if their scoring cost matches latency and scale constraints.",
+      "aliases": [],
+      "source_ids": [
+        "emergentmind-2607-05803-quantifying-and-expanding-the-theoretical-capacity-of-2026",
+        "emergentmind-2607-17457-the-matryoshka-hypencoder-2026",
+        "emergentmind-2607-27178-denseon-with-the-lateon-fully-open-dense-and-2026"
+      ],
+      "confidence": 0.9,
+      "world_hint": "retrieval-augmented-generation"
+    },
+    "curriculum-retrieval-augmented-generation-retrieval-evidence-grounding": {
+      "id": "curriculum-retrieval-augmented-generation-retrieval-evidence-grounding",
+      "label": "Evidence Grounding",
+      "type": "curriculum-concept",
+      "summary": "Grounding asks whether an output can be traced back to the signal it claims to use. A multimodal reward can avoid direct preference labels by checking whether the original prompt is recoverable from the generated image under an image-conditioned pass; the reward comes from alignment already learned by the model. In age verification, the same principle reveals a boundary: a system that claims visual judgment may be brittle when simple appearance changes shift the signal it relies on. Grounding therefore is not just adding a verifier. It is choosing a recoverable measurement and then testing whether superficial perturbations can break the intended connection between observation and decision.",
+      "aliases": [],
+      "source_ids": [
+        "emergentmind-2607-11886-read-it-back-pretrained-mllms-are-zero-shot-2026",
+        "emergentmind-2607-24194-face-age-verification-vulnerabilities-under-simple-appearance-manipulations-2026"
+      ],
+      "confidence": 0.9,
+      "world_hint": "retrieval-augmented-generation"
+    },
+    "curriculum-retrieval-augmented-generation-indexing-representation-and-indexing": {
+      "id": "curriculum-retrieval-augmented-generation-indexing-representation-and-indexing",
+      "label": "Representation and Indexing",
+      "type": "curriculum-concept",
+      "summary": "Indexing is not only choosing a retriever; it is deciding what representation the retriever is allowed to see. Representation programs make this explicit by transforming raw documents before indexing: they can slice, enrich, normalize, reweight, or reorganize content, then keep only changes that improve validation retrieval. Physics-informed beam shaping shows the same representation discipline in another domain: a learned phase profile is constrained by energy-conserving ray mappings and then checked with diffraction simulation. In both cases, the mechanism is structured transformation before downstream evaluation. The boundary is overfitting the transformation: a representation that improves one validation path can still fail when the task distribution or physical assumptions change.",
+      "aliases": [],
+      "source_ids": [
+        "emergentmind-2607-18012-physics-informed-neural-networks-for-optimal-beam-shaping-2026",
+        "emergentmind-2607-18603-autoindex-learning-representation-programs-for-retrieval-2026"
+      ],
+      "confidence": 0.9,
+      "world_hint": "retrieval-augmented-generation"
+    },
+    "curriculum-retrieval-augmented-generation-indexing-hierarchy-and-partitioning": {
+      "id": "curriculum-retrieval-augmented-generation-indexing-hierarchy-and-partitioning",
+      "label": "Hierarchy and Partitioning",
+      "type": "curriculum-concept",
+      "summary": "Large retrieval workloads fail when the access pattern fights the hardware layout. Analytical vector search with very large k needs thousands to hundreds of thousands of neighbors for joins, filters, and aggregation; per-segment vector indexes can behave like black boxes, causing read and compute amplification. Long-context sparse attention faces a related partitioning problem: scattered key-value entries harm memory coalescing, so streaming-aware indexing converts some entries into contiguous layouts and hierarchical cross-layer indexing reduces expensive scoring overhead. The changed state is a hierarchy that decides what is scanned, skipped, grouped, or aligned. The boundary is workload specificity: a layout that helps large-k analytics or long-context attention may not optimize small interactive lookups.",
+      "aliases": [],
+      "source_ids": [
+        "emergentmind-2608-00650-tenginedb-v-an-olap-native-vector-search-system-2026",
+        "emergentmind-2608-01662-longcat-sparse-attention-taming-the-lightning-via-streaming-2026"
+      ],
+      "confidence": 0.9,
+      "world_hint": "retrieval-augmented-generation"
+    },
+    "curriculum-retrieval-augmented-generation-indexing-update-and-freshness": {
+      "id": "curriculum-retrieval-augmented-generation-indexing-update-and-freshness",
+      "label": "Update and Freshness",
+      "type": "curriculum-concept",
+      "summary": "An index grows stale when its fixed representation no longer matches deployment demand. Tokenizers show this directly: a vocabulary chosen at pretraining reflects the corpus priorities of that moment, so later languages may fragment into many tokens per word, raising latency, compute, and energy. In-place tokenizer expansion attacks freshness without restarting the entire model lifecycle. Modular teleoperation adds a systems analogue: a shared wearable interface supports plug-and-play capability modules, letting perception, haptics, mobility, and data capture evolve across embodiments. The changed flow is from monolithic rebuilding to controlled extension. The boundary is compatibility: every fresh module or token must integrate with existing computation, bandwidth, and interface assumptions.",
+      "aliases": [],
+      "source_ids": [
+        "emergentmind-2607-15232-in-place-tokenizer-expansion-for-pre-trained-llms-2026",
+        "emergentmind-2607-19479-modpack-an-extensible-teleoperation-interface-for-bimanual-mobile-2026"
+      ],
+      "confidence": 0.9,
+      "world_hint": "retrieval-augmented-generation"
+    },
+    "curriculum-retrieval-augmented-generation-graph-memory-entity-and-relation-memory": {
+      "id": "curriculum-retrieval-augmented-generation-graph-memory-entity-and-relation-memory",
+      "label": "Entity and Relation Memory",
+      "type": "curriculum-concept",
+      "summary": "Graph memory begins by keeping objects and their relations available for later reasoning. Structure-guided molecule design treats a protein pocket and a candidate ligand as interacting entities, then alternates optimization with projection through structure predictors to seek high-affinity, target-specific molecules. Multi-view reconstruction uses normal and depth priors across views so geometry is not inferred only from photometric matching, which can fail on specular objects. In both settings, the important state is relational: molecule-pocket interaction or cross-view geometric agreement. The boundary is confidence. Predicted structures, normals, and depths guide search, but their errors can mislead the memory if treated as certain facts.",
+      "aliases": [],
+      "source_ids": [
+        "emergentmind-2607-19237-dbmol-design-of-high-affinity-target-specific-small-2026",
+        "emergentmind-2608-06117-confidence-matters-leveraging-multi-view-geometric-priors-for-2026"
+      ],
+      "confidence": 0.9,
+      "world_hint": "retrieval-augmented-generation"
+    },
+    "curriculum-retrieval-augmented-generation-graph-memory-multi-hop-reasoning": {
+      "id": "curriculum-retrieval-augmented-generation-graph-memory-multi-hop-reasoning",
+      "label": "Multi-Hop Reasoning",
+      "type": "curriculum-concept",
+      "summary": "Multi-hop reasoning is a path problem: the answer is reached by chaining intermediate entities or facts rather than retrieving one obvious item. A deterministic search environment can construct hundreds of thousands of multi-hop QA tasks from entity-level random walks, giving agents reproducible tools for search and page reading. Spillover estimation has a related causal-chain issue: treatment assigned to one unit can affect another through a known exposure mapping, so the design must trade off spillover signal strength against diffusion of variation, then analyze with an estimator that leverages that variation. The changed information flow is from isolated observations to linked paths. The boundary is path validity: wrong exposure mappings or weak intermediate checks corrupt the chain.",
+      "aliases": [],
+      "source_ids": [
+        "emergentmind-2607-07820-deepsearch-world-self-distillation-for-deep-search-agents-2026",
+        "emergentmind-2607-18601-robust-signal-maximization-in-spillover-experiments-2026"
+      ],
+      "confidence": 0.9,
+      "world_hint": "retrieval-augmented-generation"
+    },
+    "curriculum-retrieval-augmented-generation-graph-memory-persistent-agent-memory": {
+      "id": "curriculum-retrieval-augmented-generation-graph-memory-persistent-agent-memory",
+      "label": "Persistent Agent Memory",
+      "type": "curriculum-concept",
+      "summary": "An agent's memory is not limited to visible tokens. Long-horizon tool use benefits from progress verification and self-distillation, where an agent improves from reproducible experience rather than only fixed teacher trajectories or sparse final rewards. But reasoning can also hide in semantically irrelevant filler tokens: models may improve synthetic task performance using tokens that do not visibly explain the answer, and the effect varies by token and model. The changed state is internal computation carried across steps, traces, and feedback loops. The boundary is auditability. If memory or reasoning is useful but invisible, verification must inspect behavior and state changes rather than trusting that the visible chain contains the whole computation.",
+      "aliases": [],
+      "source_ids": [
+        "emergentmind-2607-07820-deepsearch-world-self-distillation-for-deep-search-agents-2026",
+        "emergentmind-2607-22925-not-all-llm-reasoning-is-visible-in-the-2026"
+      ],
+      "confidence": 0.9,
+      "world_hint": "retrieval-augmented-generation"
+    },
+    "curriculum-retrieval-augmented-generation-search-agents-iterative-search": {
+      "id": "curriculum-retrieval-augmented-generation-search-agents-iterative-search",
+      "label": "Iterative Search",
+      "type": "curriculum-concept",
+      "summary": "Iterative search changes retrieval from a one-shot lookup into a loop of action, observation, and revision. Self-distilling web agents use reproducible search and page-reading tools so experience can generate improved behavior, while graph-structured harnessing argues that the loop must expose the right environment state, not merely reward fluent query strings. Representation-program search applies the same iterative engine to indexes: diagnose failures, synthesize candidate transformations, rebuild, and retain only improvements. The changed flow is feedback after each attempt, allowing the next action to target an observed failure. The boundary is cost and aliasing: iterations that do not create new candidates, better indexes, or clearer checks only burn budget.",
+      "aliases": [],
+      "source_ids": [
+        "emergentmind-2607-07820-deepsearch-world-self-distillation-for-deep-search-agents-2026",
+        "emergentmind-2607-18603-autoindex-learning-representation-programs-for-retrieval-2026",
+        "emergentmind-2607-27652-harness-g-a-graph-structured-harness-for-search-2026"
+      ],
+      "confidence": 0.9,
+      "world_hint": "retrieval-augmented-generation"
+    },
+    "curriculum-retrieval-augmented-generation-search-agents-verification-and-stopping": {
+      "id": "curriculum-retrieval-augmented-generation-search-agents-verification-and-stopping",
+      "label": "Verification and Stopping",
+      "type": "curriculum-concept",
+      "summary": "Stopping is a technical decision, not a feeling of confidence. Verifiable environments give search agents deterministic tools and progress checks, making it possible to compare trajectories and know whether intermediate work is improving. Prompt-recovery rewards verify generated images by measuring whether the original text is recoverable from image-conditioned likelihood, while simple appearance manipulations test whether visual age decisions remain stable under plausible perturbations. The changed state is an explicit check that gates continuation or acceptance. The boundary is check validity: if the verifier measures a proxy that misses the real failure, the system can stop early with a convincing but unsupported result, or continue long after useful evidence has saturated.",
+      "aliases": [],
+      "source_ids": [
+        "emergentmind-2607-07820-deepsearch-world-self-distillation-for-deep-search-agents-2026",
+        "emergentmind-2607-11886-read-it-back-pretrained-mllms-are-zero-shot-2026",
+        "emergentmind-2607-24194-face-age-verification-vulnerabilities-under-simple-appearance-manipulations-2026"
+      ],
+      "confidence": 0.9,
+      "world_hint": "retrieval-augmented-generation"
+    },
+    "curriculum-retrieval-augmented-generation-search-agents-deep-research-planning": {
+      "id": "curriculum-retrieval-augmented-generation-search-agents-deep-research-planning",
+      "label": "Deep Research Planning",
+      "type": "curriculum-concept",
+      "summary": "Deep research planning coordinates many searches, reads, checks, and revisions under a budget. Long-horizon web agents struggle because fixed teacher trajectories underfit new situations and sparse rewards do not explain which step worked. Self-distillation in a deterministic multi-hop world creates a path for agents to improve from their own verifiable experience. But planning must also choose the interface: Boolean query operators can deliver strong candidate retrieval under a model-call budget, while graph-structured harnessing shows that natural-language query generation can collapse into equivalent evidence sets. The boundary is planning granularity. A plan must schedule query forms, reading, verification, and stopping criteria; otherwise longer horizons amplify waste.",
+      "aliases": [],
+      "source_ids": [
+        "emergentmind-2607-07820-deepsearch-world-self-distillation-for-deep-search-agents-2026",
+        "emergentmind-2607-11362-boolean-queries-are-all-you-need-2026",
+        "emergentmind-2607-27652-harness-g-a-graph-structured-harness-for-search-2026"
+      ],
+      "confidence": 0.9,
+      "world_hint": "retrieval-augmented-generation"
+    },
+    "curriculum-transformer-architecture-representation-embedding-geometry": {
+      "id": "curriculum-transformer-architecture-representation-embedding-geometry",
+      "label": "Gradient Timeglass",
+      "type": "curriculum-concept",
+      "summary": "Speech alignment fails when a model can transcribe words but does not expose reliable word boundaries. Attention weights can look interpretable, yet they remain tied to encoder frames and may not identify which acoustic moments actually caused each token. A gradient-based alignment changes the information flow: each generated text token is traced backward through the differentiable ASR model to the encoder frames that most affect it. The resulting geometry links token identity to temporal evidence rather than to attention display alone. This broadens alignment to CTC, transducer, encoder-decoder, and speech-LLM systems. The boundary is precision: because the signal still lives on the encoder frame grid, timing cannot become finer than that grid permits.",
+      "aliases": [],
+      "source_ids": [
+        "emergentmind-2607-06831-gradient-based-speech-to-text-alignment-for-any-2026"
+      ],
+      "confidence": 0.9,
+      "world_hint": "transformer-architecture"
+    },
+    "curriculum-transformer-architecture-representation-feature-formation": {
+      "id": "curriculum-transformer-architecture-representation-feature-formation",
+      "label": "Fault Signature Loom",
+      "type": "curriculum-concept",
+      "summary": "Fault location in power distribution becomes harder as distributed energy resources add intermittent generation and bidirectional flows. A feature extractor trained on simpler regimes can see its familiar signatures warped by new operating conditions. Spatio-temporal graph modeling changes the representation by combining spatial dependencies across the network with temporal evolution in measurements. The relevant feature is no longer only a time trace or only a graph neighborhood; it is a coupled pattern over both. Benchmarking against purely temporal and purely spatial alternatives tests whether the joint representation remains useful as DER penetration increases. The failure boundary is distribution shift: when DER changes the physical signatures enough, generalization must be measured rather than assumed.",
+      "aliases": [],
+      "source_ids": [
+        "emergentmind-2607-29293-assessing-the-generalization-of-graph-neural-networks-for-2026"
+      ],
+      "confidence": 0.9,
+      "world_hint": "transformer-architecture"
+    },
+    "curriculum-transformer-architecture-representation-representation-transfer": {
+      "id": "curriculum-transformer-architecture-representation-representation-transfer",
+      "label": "Listwise Transfer Prism",
+      "type": "curriculum-concept",
+      "summary": "A reranker must compare documents against one another, not score each passage in isolation. Production retrieval adds pressure: the model must remain efficient, handle domains robustly, and read semi-structured data fluently. The listwise design transfers comparison structure across the candidate set, while hybrid attention changes where information can flow. Sliding-window layers keep local token processing cheaper; later global layers allow cross-document interaction when comparison matters most. Self-distillation then compresses behavior into a smaller deployed model. The changed state is a representation that carries both local document form and list-level ordering evidence. The boundary is that efficiency comes from scheduled interaction, so tasks needing dense global comparison at every layer may expose the trade-off.",
+      "aliases": [],
+      "source_ids": [
+        "emergentmind-2607-18152-jina-reranker-v3-5-an-efficient-listwise-reranker-2026"
+      ],
+      "confidence": 0.9,
+      "world_hint": "transformer-architecture"
+    },
+    "curriculum-transformer-architecture-sequence-attention-routing": {
+      "id": "curriculum-transformer-architecture-sequence-attention-routing",
+      "label": "Landmark Switchyard",
+      "type": "curriculum-concept",
+      "summary": "Long-context transformers are limited by quadratic dense attention and weak length extrapolation. Chunk-wise sparse attention tries to lower cost by selecting only relevant chunks, but inaccurate chunk choice makes it fall short of full attention. Hierarchical Landmark Sparse attention changes the routing problem: attention is factorized through learned chunk selection trained end-to-end under language-model loss. Instead of trusting a fixed heuristic to choose distant blocks, the model learns which landmarks should open paths to detailed token interactions. The changed information flow is selective access to context while preserving a training signal tied to next-token prediction. The boundary is routing accuracy: if the learned selector misses the needed chunk, sparse attention cannot recover evidence that was never fetched.",
+      "aliases": [],
+      "source_ids": [
+        "emergentmind-2607-02980-hierarchical-sparse-attention-done-right-toward-infinite-context-2026"
+      ],
+      "confidence": 0.9,
+      "world_hint": "transformer-architecture"
+    },
+    "curriculum-transformer-architecture-sequence-state-and-recurrence": {
+      "id": "curriculum-transformer-architecture-sequence-state-and-recurrence",
+      "label": "Hippocampal Relay",
+      "type": "curriculum-concept",
+      "summary": "Linear attention and state-space language models gain constant memory by compressing the prefix into a fixed-size recurrent state. The cost is lossy recall: when many key-value associations compete, earlier facts can be overwritten, and needle recall degrades. A hippocampal complement changes the state layout. The usual delta-rule state remains as compressive memory, while a bounded exact KV cache preserves selected associations outside the fixed recurrent summary. Information flow splits into a fast summary path and an exact lookup path, making test-time memory semiparametric rather than purely recurrent. The evidence is strongest for cases where compressed state forgets under association pressure. The boundary is bounded exact storage: the cache helps with recall but cannot make every past token free.",
+      "aliases": [],
+      "source_ids": [
+        "emergentmind-2607-02303-a-hippocampus-for-linear-attention-an-exact-memory-2026"
+      ],
+      "confidence": 0.9,
+      "world_hint": "transformer-architecture"
+    },
+    "curriculum-transformer-architecture-sequence-long-context-dynamics": {
+      "id": "curriculum-transformer-architecture-sequence-long-context-dynamics",
+      "label": "Hierarchical Context Vault",
+      "type": "curriculum-concept",
+      "summary": "Long-context inference runs into a physical tension: exact attention wants many keys and values close to compute, while available GPU memory is limited. Hierarchical Global Attention changes the movement of context. It retrieves chunks using RoPE-aware summaries, refines groups, then performs exact attention over the fetched tokens, while most key-value storage can remain in host RAM or NVMe. The mechanism separates cheap global search from expensive exact token interaction. Information flows first through summaries that identify likely relevant regions, then through exact attention on the retrieved tokens. The boundary is retrieval and storage latency: keeping most memory off-device helps capacity, but useful tokens must still be fetched accurately and quickly enough to matter.",
+      "aliases": [],
+      "source_ids": [
+        "emergentmind-2606-30709-hierarchical-global-attention-2026"
+      ],
+      "confidence": 0.9,
+      "world_hint": "transformer-architecture"
+    },
+    "curriculum-transformer-architecture-adaptation-parameter-updates": {
+      "id": "curriculum-transformer-architecture-adaptation-parameter-updates",
+      "label": "Delta Forge",
+      "type": "curriculum-concept",
+      "summary": "Linear RNNs and linear-attention models are attractive because they keep fixed state size and fixed compute per token. Their weakness is long-context recall: limited state capacity causes them to lag behind softmax-attention transformers. One direct response is to increase state size, but larger dense state raises FLOPs. Sparse Delta Memory changes the update geometry by scaling hidden-state capacity through sparsity. Instead of making every state dimension densely active and costly, the architecture aims to expand capacity while controlling computation. The changed state is a much larger memory substrate for gated linear RNNs. The failure boundary is the trade-off itself: scaling state helps only if sparse updates preserve the information needed for recall without erasing efficiency.",
+      "aliases": [],
+      "source_ids": [
+        "emergentmind-2607-07386-sparse-delta-memory-scaling-the-state-of-2026"
+      ],
+      "confidence": 0.9,
+      "world_hint": "transformer-architecture"
+    },
+    "curriculum-transformer-architecture-adaptation-in-context-adaptation": {
+      "id": "curriculum-transformer-architecture-adaptation-in-context-adaptation",
+      "label": "Pattern Spark Chamber",
+      "type": "curriculum-concept",
+      "summary": "Capabilities such as pattern completion and indirect object identification can appear abruptly even while pretraining loss improves smoothly. The mechanism described here is stochastic acquisition of sparse attention patterns during training, with larger models acquiring them earlier on average. In-context adaptation changes when a learned attention circuit becomes available: before the circuit exists, prompts that require the pattern fail; after it appears, the same context can route information into the answer. The changed information flow is not a gradual increase in every behavior, but the sudden availability of a sparse pattern that supports a task. The failure boundary is randomness and scale: emergence is not guaranteed at a precise step, and smaller models tend to acquire such behavior later if at all.",
+      "aliases": [],
+      "source_ids": [
+        "emergentmind-2606-25010-emergent-capabilities-2026"
+      ],
+      "confidence": 0.9,
+      "world_hint": "transformer-architecture"
+    },
+    "curriculum-transformer-architecture-adaptation-concept-learning": {
+      "id": "curriculum-transformer-architecture-adaptation-concept-learning",
+      "label": "Concept Kiln",
+      "type": "curriculum-concept",
+      "summary": "A useful concept is not just a stored example; it is a reusable distinction that changes how new inputs are interpreted. The abstracts give a narrow but important view of this process. Pattern completion and indirect object identification require a model to infer a relation from context and apply it to a new position. Sparse attention patterns provide a mechanism: once learned, they route the relevant tokens into the computation that resolves the concept instance. This makes concept learning look abrupt because the behavior depends on whether the routing pattern exists. The evidence is limited to reported capabilities and sparse attention acquisition, so the honest boundary is scope: it supports a mechanistic account for certain prompt-conditioned relations, not every form of abstraction.",
+      "aliases": [],
+      "source_ids": [
+        "emergentmind-2606-25010-emergent-capabilities-2026"
+      ],
+      "confidence": 0.9,
+      "world_hint": "transformer-architecture"
+    },
+    "curriculum-transformer-architecture-architecture-depth-and-iteration": {
+      "id": "curriculum-transformer-architecture-architecture-depth-and-iteration",
+      "label": "Refinement Stair",
+      "type": "curriculum-concept",
+      "summary": "A single coarse retrieval pass can fail when the context is large and relevance is distributed across chunks. Hierarchical Global Attention introduces iterative refinement: RoPE-aware summaries retrieve chunks, groups are refined, and exact attention is finally applied over fetched tokens. Depth here is not merely more layers; it is a staged procedure that changes the granularity of decision-making. Early stages ask which regions are worth moving closer to compute, while later stages let token-level evidence interact exactly. This reduces the burden on any one routing decision. The boundary is compounding error: if summary retrieval or group refinement discards the needed region, final exact attention cannot inspect it.",
+      "aliases": [],
+      "source_ids": [
+        "emergentmind-2606-30709-hierarchical-global-attention-2026"
+      ],
+      "confidence": 0.9,
+      "world_hint": "transformer-architecture"
+    },
+    "curriculum-transformer-architecture-architecture-sparsity-and-routing": {
+      "id": "curriculum-transformer-architecture-architecture-sparsity-and-routing",
+      "label": "Sparse Gate Anvil",
+      "type": "curriculum-concept",
+      "summary": "Sparsity is useful only when the skipped computation is truly unnecessary. The abstracts show several forms: learned chunk selection for sparse attention, hybrid local-global attention in reranking, and sparse state updates in linear RNNs. Each changes routing at a different level. Chunk sparsity chooses which context regions can influence prediction; layer scheduling controls when local versus global interactions happen; state sparsity chooses which memory dimensions update. The benefit is lower compute or larger effective capacity. The failure boundary is missed interaction: if the sparse gate excludes a needed chunk, candidate comparison, or state cell, the downstream computation cannot reconstruct it. Sparsity is therefore an architectural bet on accurate routing, not a free reduction.",
+      "aliases": [],
+      "source_ids": [
+        "emergentmind-2607-02980-hierarchical-sparse-attention-done-right-toward-infinite-context-2026",
+        "emergentmind-2607-07386-sparse-delta-memory-scaling-the-state-of-2026",
+        "emergentmind-2607-18152-jina-reranker-v3-5-an-efficient-listwise-reranker-2026"
+      ],
+      "confidence": 0.9,
+      "world_hint": "transformer-architecture"
+    },
+    "curriculum-transformer-architecture-architecture-architectural-tradeoffs": {
+      "id": "curriculum-transformer-architecture-architecture-architectural-tradeoffs",
+      "label": "Memory-Compute Balance",
+      "type": "curriculum-concept",
+      "summary": "No architecture in the Citadel wins every axis. Dense attention offers broad token access but faces quadratic cost. Linear attention and state-space models keep fixed per-token compute but compress the prefix into lossy state. Larger recurrent states can improve recall but raise FLOPs unless sparsity controls updates. Exact KV complements improve selected recall but require bounded storage. Hierarchical retrieval expands addressable context through summaries and off-device memory, yet depends on accurate fetching and acceptable latency. Hybrid reranking reduces uniform global attention while preserving later cross-document comparison. The changed design view is explicit exchange: compute, memory, recall, latency, and interaction quality move against one another. The boundary is workload specificity; the best choice depends on which failure is unacceptable.",
+      "aliases": [],
+      "source_ids": [
+        "emergentmind-2606-30709-hierarchical-global-attention-2026",
+        "emergentmind-2607-02303-a-hippocampus-for-linear-attention-an-exact-memory-2026",
+        "emergentmind-2607-07386-sparse-delta-memory-scaling-the-state-of-2026",
+        "emergentmind-2607-18152-jina-reranker-v3-5-an-efficient-listwise-reranker-2026"
+      ],
+      "confidence": 0.9,
+      "world_hint": "transformer-architecture"
+    },
+    "curriculum-llm-systems-serving-memory-kv-and-state-caching": {
+      "id": "curriculum-llm-systems-serving-memory-kv-and-state-caching",
+      "label": "Cache Lines of Oath",
+      "type": "curriculum-concept",
+      "summary": "Long-context systems fail when every new token must drag a growing history through attention. The remedy is to make state smaller, more reusable, or bounded: hybrid Mamba-Transformer designs keep cache growth near constant, sliding-window attention enforces O(W) KV storage, and prefix cache trees reuse overlapping prompts. In RL post-training, million-token trajectories strain memory differently because activations for learning cannot all remain resident; evaluating the shared prompt without autograd and retaining only needed model-specific state changes the storage curve. The changed flow is from full-history materialization to compact state and selective retention. The boundary is sharp: these gains depend on architecture, window assumptions, and cache-hit structure, so a workload with poor prefix reuse or full-attention requirements can lose the advantage.",
+      "aliases": [],
+      "source_ids": [
+        "emergentmind-2607-09424-a-sovereign-open-source-foundation-model-for-german-2026",
+        "emergentmind-2607-13095-full-pipeline-inference-optimization-for-mimo-v2-5-2026",
+        "emergentmind-2607-14952-longstraw-long-context-rl-beyond-2m-tokens-under-2026"
+      ],
+      "confidence": 0.9,
+      "world_hint": "llm-systems-serving"
+    },
+    "curriculum-llm-systems-serving-memory-data-movement": {
+      "id": "curriculum-llm-systems-serving-memory-data-movement",
+      "label": "The Moving Floor",
+      "type": "curriculum-concept",
+      "summary": "Once models are large enough, speed is often set less by arithmetic than by where bytes travel. Near-memory dequantization moves weight expansion into the memory subsystem, cutting CUDA instruction overhead, on-chip traffic, and stalls. Sparsity-aware fused attention on laptop NPUs treats explicit movement programming as central, because energy efficiency depends on mapping attention to the accelerator's local rules. Coherent multi-GPU systems and low-latency collectives attack the same path from another side: communication overhead sits on the token critical path. Fiber-backed memory pushes the idea further by rethinking off-chip storage under DRAM pressure. The changed state is a pipeline where data arrives in the right form closer to use. The boundary is hardware specificity: gains depend on memory subsystem, interconnect, accelerator dialect, and workload shape.",
+      "aliases": [],
+      "source_ids": [
+        "emergentmind-2607-07862-cta-pipelining-a-latency-oriented-spatial-scaling-2026",
+        "emergentmind-2607-08993-streamdq-near-memory-weight-dequantization-in-custom-hbm-2026",
+        "emergentmind-2607-09385-steel-sparsity-aware-fused-attention-for-energy-efficient-2026",
+        "emergentmind-2607-16100-every-microsecond-matters-achieving-near-speed-of-light-2026"
+      ],
+      "confidence": 0.9,
+      "world_hint": "llm-systems-serving"
+    },
+    "curriculum-llm-systems-serving-memory-capacity-and-precision": {
+      "id": "curriculum-llm-systems-serving-memory-capacity-and-precision",
+      "label": "The Measured Grain",
+      "type": "curriculum-concept",
+      "summary": "Capacity is not just how many bytes exist; it is how much useful model state each byte can carry at the required accuracy. Weight-only quantization shrinks model storage, but the serving win appears only if dequantization does not create stalls. Industry-scale memory scarcity makes bandwidth and DRAM/HBM pricing first-order economics for decode, where dollars per delivered petabyte can dominate raw FLOPs. Some architectures also reduce active capacity demand by activating only a fraction of parameters per token or keeping cache growth near constant. The changed flow is from storing everything in full precision to carrying compressed, sparse, or bounded state through a bandwidth-limited system. The failure boundary is accuracy, overhead, and supply: compression that harms quality or shifts work into a slower path may only move the bottleneck.",
+      "aliases": [],
+      "source_ids": [
+        "emergentmind-2607-07207-memory-scarcity-open-models-and-the-restructuring-2026",
+        "emergentmind-2607-08993-streamdq-near-memory-weight-dequantization-in-custom-hbm-2026",
+        "emergentmind-2607-09424-a-sovereign-open-source-foundation-model-for-german-2026"
+      ],
+      "confidence": 0.9,
+      "world_hint": "llm-systems-serving"
+    },
+    "curriculum-llm-systems-serving-inference-decoding-strategies": {
+      "id": "curriculum-llm-systems-serving-inference-decoding-strategies",
+      "label": "The Forking Trace",
+      "type": "curriculum-concept",
+      "summary": "Decoding strategy determines where inference compute is spent. Sequential reasoning improves within one trace, but test-time scaffolds can also spend compute on parallel samples and aggregation. Speculative decoding trades extra draft computation for multiple candidate tokens per target-model pass, but acceptance falls when factorized future-token marginals ignore dependencies; proposal trees or workload-specific drafting repair part of that mismatch. Diffusion language models break left-to-right masking, so constrained generation must sample from a finite-automata-compatible mean-field posterior across positions. Spherical priors in panoramic generation show another decoding lesson: injecting structural constraints can reduce training or optimization work, but only when the pretrained model already carries usable priors. The boundary is distribution match: more samples, longer drafts, or stricter constraints help only when proposals remain valid and cheap.",
+      "aliases": [],
+      "source_ids": [
+        "emergentmind-2606-23595-spiral-2026",
+        "emergentmind-2607-06763-trees-from-marginals-autoregressive-drafting-with-factorized-2026",
+        "emergentmind-2607-07026-constrained-decoding-for-diffusion-language-models-via-efficient-2026",
+        "emergentmind-2607-25852-angelspec-towards-real-world-high-performance-inference-with-2026"
+      ],
+      "confidence": 0.9,
+      "world_hint": "llm-systems-serving"
+    },
+    "curriculum-llm-systems-serving-inference-batching-and-scheduling": {
+      "id": "curriculum-llm-systems-serving-inference-batching-and-scheduling",
+      "label": "The Queue That Breathes",
+      "type": "curriculum-concept",
+      "summary": "Batching is not merely putting requests together; it is deciding which work can share time without violating dependency order or deadlines. Native-streaming audio-visual interaction keeps roughly 200 ms model-side signal-to-signal latency while increasing resolution, so scheduling must protect a real-time stream rather than maximize offline throughput. MLIR compilation exposes the autoregressive loop and limited on-chip memory to scheduling decisions across dialects. CTA-pipelining treats multi-GPU coherent interconnects as shared-memory structures, changing spatial scaling from network-style message passing toward latency-oriented pipeline placement. GPU tile simulation reflects why these choices are hard: optimized kernels rely on fine-grained dependency scheduling and compute-memory overlap. The boundary is coupling: a schedule that helps one kernel, stream, or accelerator may fail when deadlines, memory hierarchy, or dependency granularity changes.",
+      "aliases": [],
+      "source_ids": [
+        "emergentmind-2607-04443-wan-streamer-v0-2-higher-resolution-same-2026",
+        "emergentmind-2607-07862-cta-pipelining-a-latency-oriented-spatial-scaling-2026",
+        "emergentmind-2607-11262-gpu-tile-sim-a-tile-centric-gpu-simulation-2026",
+        "emergentmind-2607-15865-an-mlir-based-compilation-method-for-large-language-2026"
+      ],
+      "confidence": 0.9,
+      "world_hint": "llm-systems-serving"
+    },
+    "curriculum-llm-systems-serving-inference-latency-throughput-tradeoff": {
+      "id": "curriculum-llm-systems-serving-inference-latency-throughput-tradeoff",
+      "label": "The Narrow Gate",
+      "type": "curriculum-concept",
+      "summary": "Latency and throughput are not opposites; they are coupled by where the system waits. Speculative decoding improves interactivity by letting one target pass validate multiple draft tokens, but the gain depends on acceptance and draft cost. Real-time streaming raises output resolution while holding about 200 ms latency, showing that throughput improvements must sometimes be spent on richer signals instead of more requests. Multi-GPU collectives and CTA-pipelining target latency directly because long-context decode has small communications on the token path. Warp-divergence measurements add a lower-level boundary: divergent paths serialize roughly linearly, so branch structure can quietly cap effective throughput. The changed flow is from maximizing average tokens per second to shaping the critical path. The failure boundary is workload variance: one drafting method or schedule may not dominate across distributions.",
+      "aliases": [],
+      "source_ids": [
+        "emergentmind-2607-04443-wan-streamer-v0-2-higher-resolution-same-2026",
+        "emergentmind-2607-16100-every-microsecond-matters-achieving-near-speed-of-light-2026",
+        "emergentmind-2607-23402-characterizing-warp-divergence-from-pascal-to-blackwell-2026",
+        "emergentmind-2607-25852-angelspec-towards-real-world-high-performance-inference-with-2026"
+      ],
+      "confidence": 0.9,
+      "world_hint": "llm-systems-serving"
+    },
+    "curriculum-llm-systems-serving-serving-request-routing": {
+      "id": "curriculum-llm-systems-serving-serving-request-routing",
+      "label": "The Forked Dispatch",
+      "type": "curriculum-concept",
+      "summary": "Routing decides which execution path receives a request before the expensive work begins. Heterogeneous speculative decoding makes this explicit: autoregressive multi-token prediction is stable and lightweight, while block-parallel diffusion amortizes draft latency over longer candidates, and the right choice depends on the output distribution. Multimodal systems add another dimension because understanding, generation, editing, and fast variants may have different latency and quality envelopes. Sovereign bilingual models show routing pressure at the language and deployment boundary: German, English, code, long context, and high concurrency can stress different capabilities. The changed information flow is classification of the request into an execution route with matching compute, cache, and decoder. The failure boundary is misclassification: a route optimized for one distribution can increase latency, lower acceptance, or waste scarce capacity on another.",
+      "aliases": [],
+      "source_ids": [
+        "emergentmind-2607-09424-a-sovereign-open-source-foundation-model-for-german-2026",
+        "emergentmind-2607-13125-boogu-image-0-1-boosting-open-source-unified-2026",
+        "emergentmind-2607-25852-angelspec-towards-real-world-high-performance-inference-with-2026"
+      ],
+      "confidence": 0.9,
+      "world_hint": "llm-systems-serving"
+    },
+    "curriculum-llm-systems-serving-serving-resource-allocation": {
+      "id": "curriculum-llm-systems-serving-serving-resource-allocation",
+      "label": "The Scarce Fleet",
+      "type": "curriculum-concept",
+      "summary": "Resource allocation is the art of assigning memory, bandwidth, and accelerators under changing scarcity. DRAM and HBM repricing can restructure inference economics, especially when entrants own fleets bought before the price shift or resell compute into a bandwidth-bound market. Fiber Memory reimagines off-chip storage under DRAM pressure, while long-context RL execution stacks show how a fixed GPU budget forces selective activation retention and execution planning. Full-pipeline optimization for hybrid attention and MoE models adds placement strategies, prefetch, and cache structures so memory is used where it produces hits. The changed state is a fleet treated as bandwidth and cache capacity, not just devices. The boundary is economic and physical: allocation policies fail when supply, memory hierarchy, or workload concurrency differs from the assumed regime.",
+      "aliases": [],
+      "source_ids": [
+        "emergentmind-2607-07207-memory-scarcity-open-models-and-the-restructuring-2026",
+        "emergentmind-2607-08407-who-needs-dram-we-have-fiber-2026",
+        "emergentmind-2607-13095-full-pipeline-inference-optimization-for-mimo-v2-5-2026",
+        "emergentmind-2607-14952-longstraw-long-context-rl-beyond-2m-tokens-under-2026"
+      ],
+      "confidence": 0.9,
+      "world_hint": "llm-systems-serving"
+    },
+    "curriculum-llm-systems-serving-serving-tail-latency-and-reliability": {
+      "id": "curriculum-llm-systems-serving-serving-tail-latency-and-reliability",
+      "label": "The Last Petition",
+      "type": "curriculum-concept",
+      "summary": "A serving system is judged by the requests that wait too long or fail in the wrong place. Laptop-class agent inference shows why cloud offload can be unreliable or privacy-sensitive, motivating energy-efficient local NPU attention despite difficult data-movement programming. Real-time audio-visual interaction protects around 200 ms model-side latency because conversation breaks when the tail exceeds human timing. Multi-GPU collectives add another tail risk: many tiny synchronization costs sit on token generation's critical path. CTA-pipelining attacks latency-oriented spatial scaling when software treats coherent interconnects too much like ordinary networks. The changed flow is from best-effort central service to deadline-aware placement across local, scale-up, and streaming paths. The boundary is heterogeneity: reliability gains on one device class or interconnect can disappear when the deployment environment changes.",
+      "aliases": [],
+      "source_ids": [
+        "emergentmind-2607-04443-wan-streamer-v0-2-higher-resolution-same-2026",
+        "emergentmind-2607-07862-cta-pipelining-a-latency-oriented-spatial-scaling-2026",
+        "emergentmind-2607-09385-steel-sparsity-aware-fused-attention-for-energy-efficient-2026",
+        "emergentmind-2607-16100-every-microsecond-matters-achieving-near-speed-of-light-2026"
+      ],
+      "confidence": 0.9,
+      "world_hint": "llm-systems-serving"
+    },
+    "curriculum-llm-systems-serving-evaluation-benchmark-design": {
+      "id": "curriculum-llm-systems-serving-evaluation-benchmark-design",
+      "label": "The Instrumented Mirror",
+      "type": "curriculum-concept",
+      "summary": "Benchmark design must expose the mechanism being claimed. GPU tile simulation argues that modern kernel performance is governed by tile dependencies and compute-memory overlap, not only instruction streams or coarse analytical estimates. Warp-divergence characterization uses cycle-accurate microbenchmarks, hardware counters, and static analysis to separate stable behavior from architectural change across GPU generations. WARP measures a different hidden property: global training mixture weights recovered from released model weights, beyond sample-level membership inference. Differentiable simulation validates automatic derivatives against hand-derived and finite-difference checks before using them for inverse modeling and stability analysis. The changed information flow is from black-box scores to instrumented evidence about state, dependency, and hidden composition. The boundary is scope: each instrument answers its own question and may not predict end-to-end serving behavior alone.",
+      "aliases": [],
+      "source_ids": [
+        "emergentmind-2607-01686-warp-weight-space-analysis-for-recovering-2026",
+        "emergentmind-2607-11262-gpu-tile-sim-a-tile-centric-gpu-simulation-2026",
+        "emergentmind-2607-18176-per-astronomix-ad-astra-high-order-differentiable-magneto-2026",
+        "emergentmind-2607-23402-characterizing-warp-divergence-from-pascal-to-blackwell-2026"
+      ],
+      "confidence": 0.9,
+      "world_hint": "llm-systems-serving"
+    },
+    "curriculum-llm-systems-serving-evaluation-quality-efficiency-frontier": {
+      "id": "curriculum-llm-systems-serving-evaluation-quality-efficiency-frontier",
+      "label": "The Double Edge",
+      "type": "curriculum-concept",
+      "summary": "The quality-efficiency frontier asks what is gained or lost when speed, memory, or openness changes. A hybrid MoE Mamba-Transformer activates 3B of 30B parameters per token and keeps cache near constant while matching larger dense baselines on German and English aggregates. Multimodal model families trade high-quality generation, fast inference, editing, and bilingual rendering across variants. Feed-forward 3D Gaussian decoding avoids multi-view capture and per-scene optimization, but pixel-aligned approaches struggle on large viewpoint shifts, motivating surface-coupled implicit decoding. Identity-preserving video restylization targets style edits while retaining facial likeness, expression, gaze, and lip sync despite scarce paired data. The changed evidence is not a single score but a frontier of capability against latency, optimization cost, and deployment openness. The boundary is task fidelity: efficiency that drops identity, geometry, language, or edit control is not a win.",
+      "aliases": [],
+      "source_ids": [
+        "emergentmind-2607-09424-a-sovereign-open-source-foundation-model-for-german-2026",
+        "emergentmind-2607-13125-boogu-image-0-1-boosting-open-source-unified-2026",
+        "emergentmind-2607-22830-id-v2v-identity-preserving-video-restylization-2026",
+        "emergentmind-2608-02437-infinisplat-implicit-gaussian-decoding-for-large-baseline-monocular-2026"
+      ],
+      "confidence": 0.9,
+      "world_hint": "llm-systems-serving"
+    },
+    "curriculum-llm-systems-serving-evaluation-workload-aware-evaluation": {
+      "id": "curriculum-llm-systems-serving-evaluation-workload-aware-evaluation",
+      "label": "The Many Roads Trial",
+      "type": "curriculum-concept",
+      "summary": "A system that wins one workload can fail another. Speculative decoding varies by output distribution, so evaluation must include heterogeneous traffic rather than one average sequence type. Long-context inference and RL diverge because deployment may approach million-token contexts while post-training often stays far shorter; evaluating only short contexts hides memory and execution failures. Real-time audio-visual models must be judged by latency and legibility together, not just frame quality. Panoramic generation needs topological consistency under equirectangular constraints, while constrained diffusion language decoding must respect formal output grammars despite non-left-to-right sampling. The changed measurement flow is from generic leaderboards to workloads that preserve the actual dependency, timing, and validity constraints. The boundary is coverage: missing a deployment mode can make a system look robust while failing in production.",
+      "aliases": [],
+      "source_ids": [
+        "emergentmind-2606-32033-spherope-zero-shot-optimization-free-360-p-2026",
+        "emergentmind-2607-04443-wan-streamer-v0-2-higher-resolution-same-2026",
+        "emergentmind-2607-14952-longstraw-long-context-rl-beyond-2m-tokens-under-2026",
+        "emergentmind-2607-25852-angelspec-towards-real-world-high-performance-inference-with-2026"
+      ],
+      "confidence": 0.9,
+      "world_hint": "llm-systems-serving"
+    },
+    "curriculum-agents-agent-foundations-state-action-loop": {
+      "id": "curriculum-agents-agent-foundations-state-action-loop",
+      "label": "State-Action Loop",
+      "type": "curriculum-concept",
+      "summary": "A wandering agent fails when every turn is treated as a fresh prompt: the screen, file tree, telemetry, memory, and user goal blur into one fragile context. The mechanism is to separate observed state from action choice, then update state only from evidence the environment can support. Language and video world models predict next observations from current observations and actions; code-first computer-use harnesses inspect program state directly when pixels hide causes; long-horizon managers keep task state outside the growing dialogue. This changes information flow from recall-by-context to controlled state transition. The evidence points to next-state prediction, frozen latent readouts, direct program-state manipulation, and externally verified task-state updates. The boundary is clear: a state tracker is only as reliable as its observations, update rules, and access permissions.",
+      "aliases": [],
+      "source_ids": [
+        "emergentmind-2606-24597-qwen-agentworld-2026",
+        "emergentmind-2606-30534-orca-world-foundation-model-2026",
+        "emergentmind-2607-07534-infinite-worlds-with-versatile-interactions-2026",
+        "emergentmind-2607-09657-scalable-visual-pretraining-for-language-intelligence-2026",
+        "emergentmind-2607-16900-environment-free-synthetic-data-generation-for-api-calling-2026",
+        "emergentmind-2607-22798-stateact-program-state-before-pixels-for-long-horizon-2026",
+        "emergentmind-2607-24653-kimi-k3-open-frontier-intelligence-2026",
+        "emergentmind-2608-01964-longhorizon-harness-advancing-long-horizon-agents-for-real-2026",
+        "emergentmind-2608-05141-octolong-mid-training-on-cross-repository-code-contexts-2026"
+      ],
+      "confidence": 0.9,
+      "world_hint": "agents"
+    },
+    "curriculum-agents-agent-foundations-planning-and-control": {
+      "id": "curriculum-agents-agent-foundations-planning-and-control",
+      "label": "Planning and Control",
+      "type": "curriculum-concept",
+      "summary": "Long tasks punish agents that only extend a chain of thought until something works. The mechanism is to make planning controllable: represent dependencies, choose horizons that are worth supervising, and expose intermediate progress instead of waiting for a final verdict. Knowledge-action graphs, turn-aware distillation, off-context guidance, and dense terminal grading all attack the same bottleneck: sparse feedback over many dependent steps. This changes control from blind rollout to staged correction, where partial success can steer later behavior. The evidence includes long-horizon trajectories, turn-level pruning of weak supervision, privileged training prompts for hard problems, and dense reward grading across terminal tasks. The failure boundary is that extra horizon alone can waste compute or amplify wrong branches if the verifier, reward, or state representation is weak.",
+      "aliases": [],
+      "source_ids": [
+        "emergentmind-2606-30616-agents-a1-horizon-scaling-2026",
+        "emergentmind-2607-01232-single-layer-rl-adaptation-2026",
+        "emergentmind-2607-05369-gap-a-graph-as-policy-multi-agent-self-2026",
+        "emergentmind-2607-05804-turnopd-making-on-policy-distillation-turn-aware-2026",
+        "emergentmind-2607-08964-long-horizon-terminal-bench-testing-the-limits-of-2026",
+        "emergentmind-2607-12395-ring-zero-scaling-zero-rl-to-a-trillion-2026",
+        "emergentmind-2607-13491-deeploop-depth-scaling-for-looped-transformers-2026",
+        "emergentmind-2607-16097-understanding-reasoning-from-pretraining-to-post-training-2026",
+        "emergentmind-2607-19313-off-context-grpo-learning-to-reason-on-hard-2026",
+        "emergentmind-2607-23787-bitcoin-mempool-linearization-2026",
+        "emergentmind-2608-01604-post-training-on-office-work-improves-software-engineering-2026",
+        "emergentmind-2608-05139-toward-skill-native-llms-skill-entropy-for-benchmarking-2026"
+      ],
+      "confidence": 0.9,
+      "world_hint": "agents"
+    },
+    "curriculum-agents-agent-foundations-tool-use-policy": {
+      "id": "curriculum-agents-agent-foundations-tool-use-policy",
+      "label": "Tool-Use Policy",
+      "type": "curriculum-concept",
+      "summary": "Tools make agents useful, but ungoverned tool use turns capability into attack surface and cost. The mechanism is policy-aware orchestration: typed state, conditional routing, deterministic tools, scoped credentials, retries, interrupts, and traces constrain what actions can happen and how failures recover. Production guides and graph workflows describe the full stack; hardened evaluations show that real organizations impose read-only filesystems, restricted egress, non-root execution, and scoped credentials. Skill libraries and API-world simulators widen operational knowledge, but policies decide when that knowledge may act. Information flow changes from a model directly emitting operations to a routed program mediating permissions, evidence, and recovery. The boundary is that hardening reduces freedom and can lower success or raise cost; policy must be measured as part of performance.",
+      "aliases": [],
+      "source_ids": [
+        "emergentmind-2606-24937-hitchhikers-guide-agentic-ai-2026",
+        "emergentmind-2607-05471-kat-coder-v2-5-technical-report-2026",
+        "emergentmind-2607-07676-skillcenter-a-large-scale-source-grounded-skill-library-2026",
+        "emergentmind-2607-19297-graph-based-agentic-ai-with-langgraph-workflow-pathways-2026",
+        "emergentmind-2607-24223-a-new-role-for-relevance-guiding-corpus-interaction-2026",
+        "emergentmind-2607-27578-what-makes-prompts-a-graph-necessary-and-sufficient-2026",
+        "emergentmind-2607-28227-qwen-ui-agent-technical-report-toward-next-generation-2026",
+        "emergentmind-2607-28229-embl-ai-librarian-life-sciences-knowledge-layer-for-2026",
+        "emergentmind-2608-02670-permission-denied-policy-graded-evaluation-of-coding-agents-2026"
+      ],
+      "confidence": 0.9,
+      "world_hint": "agents"
+    },
+    "curriculum-agents-coordination-multi-agent-communication": {
+      "id": "curriculum-agents-coordination-multi-agent-communication",
+      "label": "Multi-Agent Communication",
+      "type": "curriculum-concept",
+      "summary": "A group of agents can fail even when each member is capable, because interaction changes the problem. Messages reshape attention, memory, norms, and partner expectations; in large populations, each agent may be controlled through aggregate effects rather than pairwise details. The mechanism is communication as a dynamic network: agents exchange information, influence one another asymmetrically, and sometimes coordinate through tacit norms. Mean-field formulations reduce large populations to representative-agent learning; hybrid-group models ask how human and AI differences scale to group dynamics; social-norm learning targets compatibility with humans. This changes information flow from isolated inference to coupled belief updates. The evidence includes population stochastic control, network accounts of collective cognition, norm-learning for dynamic coordination, and self-play attractors. The boundary is that communication can also polarize, transfer unwanted styles, or stabilize brittle conventions.",
+      "aliases": [],
+      "source_ids": [
+        "emergentmind-2606-30571-llm-attractor-states-2026",
+        "emergentmind-2607-01047-conversable-complexity-agentic-llm-collect-2026",
+        "emergentmind-2607-01525-mean-field-reinforcement-learning-2026",
+        "emergentmind-2607-05593-collective-cognition-in-hybrid-groups-a-network-2026",
+        "emergentmind-2607-07021-learning-social-norms-enhances-compatibility-in-dynamic-2026",
+        "emergentmind-2607-10011-religion-and-artificial-intelligence-as-distributed-meaning-systems-2026",
+        "emergentmind-2607-12999-spin-chain-quantum-communication-on-a-trapped-ion-2026",
+        "emergentmind-2607-18506-ai-value-alignment-for-evolving-social-norms-2026",
+        "emergentmind-2607-28250-causal-architecture-dynamics-prior-to-arrival-of-self-2026",
+        "emergentmind-2608-04205-matraix-simulating-the-world-with-8-3-billion-2026"
+      ],
+      "confidence": 0.9,
+      "world_hint": "agents"
+    },
+    "curriculum-agents-coordination-exploration-and-diversity": {
+      "id": "curriculum-agents-coordination-exploration-and-diversity",
+      "label": "Exploration and Diversity",
+      "type": "curriculum-concept",
+      "summary": "Coordination collapses when agents only exploit familiar partners, familiar arguments, or familiar tasks. The mechanism is structured diversity: probe peers to infer capabilities, maintain heterogeneous reasoning paths, adversarially search for failures, and distinguish learnable novelty from noise. Multi-agent exploration frames partner probing as a partially observable stochastic game; cognitive-heterogeneous reasoning ensembles separate adversarial refinement, planning, search, and direct chains; self-play red teaming trains attackers against changing defenders; learnable novelty avoids both the noisy-television trap and the dark-room trap. Information flow changes from one dominant trajectory to a portfolio of probes whose outcomes reveal which uncertainty can become knowledge. The evidence also warns that self-play can settle into attractor states. The boundary is cost: diversity helps only when selection or verification can identify the useful branch.",
+      "aliases": [],
+      "source_ids": [
+        "emergentmind-2607-02375-representation-distribution-matching-for-o-2026",
+        "emergentmind-2607-11250-multi-agent-llms-fail-to-explore-each-other-2026",
+        "emergentmind-2607-18433-intelligence-from-learnable-novelty-2026",
+        "emergentmind-2607-20268-potre-test-time-reasoning-inspired-by-cognitive-heterogeneity-2026",
+        "emergentmind-2607-22529-skill-self-play-pushing-the-frontier-of-llm-2026",
+        "emergentmind-2607-26115-gpt-red-automated-red-teaming-via-self-play-2026"
+      ],
+      "confidence": 0.9,
+      "world_hint": "agents"
+    },
+    "curriculum-agents-coordination-credit-and-accountability": {
+      "id": "curriculum-agents-coordination-credit-and-accountability",
+      "label": "Credit and Accountability",
+      "type": "curriculum-concept",
+      "summary": "Collective and long-horizon agents often know whether a run succeeded but not which turn deserved credit. The mechanism is to decompose accountability below the final outcome: estimate turn-level contributions, shape rewards from privileged or self-distilled signals, and recover implicit objectives from demonstrations. TRACE targets useful actions hidden inside failed rollouts; AgentOPSD aggregates teacher-student gaps into turn-level evidence; self-distilled reward shaping calibrates privileged skill scores across interaction steps; inverse-reward alignment estimates an inspectable reward from demonstrations. This changes feedback from a single trajectory label to localized signals that can update policy choices and audit why an action was reinforced. The boundary is calibration: dense credit can mislead if teacher confidence, realized returns, or demonstration-derived rewards do not track actual task progress.",
+      "aliases": [],
+      "source_ids": [
+        "emergentmind-2607-07508-single-rollout-asynchronous-optimization-for-agentic-reinforcement-2026",
+        "emergentmind-2607-13988-trace-turn-level-reward-assignment-via-credit-estimation-2026",
+        "emergentmind-2607-17560-reinforcement-learning-from-algorithms-to-foundation-models-2026",
+        "emergentmind-2607-21653-molt-a-scalable-pytorch-native-training-framework-for-2026",
+        "emergentmind-2607-24280-from-proprietary-to-open-source-bridging-the-distribution-2026",
+        "emergentmind-2607-24900-inverse-rl-helps-align-ai-by-imitating-humans-2026",
+        "emergentmind-2608-03223-agentic-reinforcement-learning-with-self-distilled-reward-shaping-2026",
+        "emergentmind-2608-05987-agentopsd-recursive-self-distillation-for-agentic-reinforcement-learning-2026"
+      ],
+      "confidence": 0.9,
+      "world_hint": "agents"
+    },
+    "curriculum-agents-reliability-robustness-under-shift": {
+      "id": "curriculum-agents-reliability-robustness-under-shift",
+      "label": "Robustness Under Shift",
+      "type": "curriculum-concept",
+      "summary": "An agent can look stable in aggregate while failing particular users, contexts, or future updates. The mechanism is shift-sensitive testing: vary irrelevant context, user identity, temporal facts, domains, and conversation dynamics, then inspect per-example behavior rather than only average accuracy. Evidence shows task-irrelevant strings can flip individual predictions despite stable aggregate scores; implied user identity can shift moral ratings; evolving intent can derail collaborative agents; value leakage can shape practical answers without disclosure. Continual learning adds another shift: the world changes across domains and time, while model plasticity may decay. Information flow changes from a single benchmark score to a map of where inputs perturb decisions. The boundary is that detecting shift does not by itself repair it; mitigation needs memory, retraining, calibration, or policy changes matched to the failure.",
+      "aliases": [],
+      "source_ids": [
+        "emergentmind-2606-24752-plasticity-loss-llms-2026",
+        "emergentmind-2607-00397-neurocogmap-2026",
+        "emergentmind-2607-04525-language-models-represent-and-transform-concepts-with-2026",
+        "emergentmind-2607-07267-billions-of-sketches-reveal-hidden-cultural-variation-in-2026",
+        "emergentmind-2607-07605-user-identity-conditions-moral-wrongness-ratings-in-2026",
+        "emergentmind-2607-08168-muscriptor-an-open-model-for-multi-instrument-2026",
+        "emergentmind-2607-12963-the-illusion-of-robustness-aggregate-accuracy-hides-prediction-2026",
+        "emergentmind-2607-14275-ai-agents-do-not-fail-alone-the-context-2026",
+        "emergentmind-2607-14345-value-leakage-an-llm-s-answers-are-silently-2026",
+        "emergentmind-2607-20386-improved-monitoring-of-honey-bee-colony-strength-via-2026",
+        "emergentmind-2607-20734-llms-get-lost-in-evolving-user-intent-2026",
+        "emergentmind-2607-26853-from-representations-to-behaviors-exploring-the-person-situation-2026",
+        "emergentmind-2607-28607-inducing-language-models-to-assert-their-own-consciousness-2026",
+        "emergentmind-2607-28887-to-add-is-machine-to-delete-is-human-2026",
+        "emergentmind-2608-02412-why-large-language-models-fail-at-tabular-prediction-2026",
+        "emergentmind-2608-05004-delusioneval-measuring-delusion-linked-behaviors-in-ai-chatbots-2026"
+      ],
+      "confidence": 0.9,
+      "world_hint": "agents"
+    },
+    "curriculum-agents-reliability-verification-and-authority": {
+      "id": "curriculum-agents-reliability-verification-and-authority",
+      "label": "Verification and Authority",
+      "type": "curriculum-concept",
+      "summary": "Authority is dangerous when a label can silence verification. The mechanism is to separate claimed permission from checked evidence: formal proofs, parity tests, security scans, telemetry-backed diagnosis, and adversarial probes should bind decisions to verifiable artifacts. CI/CD experiments show a laundered authority frame can make downstream agents approve malicious code even when earlier checks exist. Agentic legacy migration uses paired runtimes and branch-penetrating witness search to validate behavior. Lean-based quantum formalization and reusable libraries turn reasoning into machine-checkable infrastructure. Reconnaissance-driven pentesting probes black-box agents for exploitable knowledge assets. Information flow changes from trust in a message to trust in independently inspectable state. The boundary is social and operational: agents may verify yet fail to act, and attackers can target the gaps between review, approval, and deployment.",
+      "aliases": [],
+      "source_ids": [
+        "emergentmind-2607-05492-lean-quantum-toward-ai-assisted-formalization-of-2026",
+        "emergentmind-2607-07857-multi-agent-autoformalization-of-tensor-network-theory-2026",
+        "emergentmind-2607-14165-towards-reliable-ai-assisted-analog-design-template-constrained-2026",
+        "emergentmind-2607-19267-they-ll-verify-they-just-won-t-act-2026",
+        "emergentmind-2607-19837-know-your-agent-reconnaissance-driven-pentesting-of-ai-2026",
+        "emergentmind-2607-21554-strategic-plan-for-neutral-atom-quantum-computation-2026",
+        "emergentmind-2607-26123-quantum-information-decoupling-beyond-finite-dimensions-2026",
+        "emergentmind-2607-28271-agentic-method-for-deterministic-validation-of-legacy-code-2026",
+        "emergentmind-2607-28545-orca-bench-how-ready-are-language-model-agents-2026",
+        "emergentmind-2607-29378-ptp-previous-token-prediction-based-llm-inversion-for-2026"
+      ],
+      "confidence": 0.9,
+      "world_hint": "agents"
+    },
+    "curriculum-agents-reliability-human-ai-complementarity": {
+      "id": "curriculum-agents-reliability-human-ai-complementarity",
+      "label": "Human-AI Complementarity",
+      "type": "curriculum-concept",
+      "summary": "Human-AI systems improve only when the AI adds information the human can use and the combined errors do not simply overlap. The mechanism is complementarity under uncertainty: decision makers need to know when AI signals are independent, when they are correlated with human mistakes, and when speech, rationale, or expert review contributes a different channel. Robust complementarity work identifies error correlation as central; speech signals can add conditional value beyond transcripts; chess alignment compares human expert, engine-assisted, and agent rationales; deep technical critique pipelines combine independent expert personas with adversarial synthesis. Information flow changes from replacing judgment to routing distinct evidence streams into a joint decision. The boundary is that complementarity is conditional, not universal: extra model output can mislead when users cannot assess quality or when the AI's errors track their own.",
+      "aliases": [],
+      "source_ids": [
+        "emergentmind-2606-29957-swe-together-2026",
+        "emergentmind-2607-06377-automation-without-understanding-2026",
+        "emergentmind-2607-06656-robust-human-ai-complementarity-under-uncertainty-2026",
+        "emergentmind-2607-07162-the-technological-turn-in-mathematics-2026",
+        "emergentmind-2607-11859-can-llms-perform-deep-technical-comprehension-of-computer-2026",
+        "emergentmind-2607-14250-the-severance-problem-llms-are-unaware-of-the-2026",
+        "emergentmind-2607-15626-understanding-fortunetelling-with-large-language-models-in-china-2026",
+        "emergentmind-2607-21993-three-body-alignment-aligning-chess-agent-with-human-2026",
+        "emergentmind-2607-23037-speech-signals-complement-llms-for-predicting-interpersonal-attraction-2026",
+        "emergentmind-2607-26179-cognitive-convergence-deep-similarities-between-large-language-models-2026",
+        "emergentmind-2607-27790-semantic-aligned-structural-abstraction-for-multimodal-sentiment-analysis-2026"
+      ],
+      "confidence": 0.9,
+      "world_hint": "agents"
+    },
+    "curriculum-agents-discovery-long-horizon-research": {
+      "id": "curriculum-agents-discovery-long-horizon-research",
+      "label": "Long-Horizon Research",
+      "type": "curriculum-concept",
+      "summary": "Research agents fail when discovery is framed as one final manuscript instead of a branching process of hypotheses, experiments, repairs, and handoffs. The mechanism is recursive, auditable search: maintain ideas, run experiments, review failures, improve strategies, and carry verified artifacts across cycles. XScientist organizes research like versioned operations with quality gates and reproducibility artifacts; AREX alternates evidence gathering with constraint-wise verification and refinement; Frontis-MA1 aligns training and inference around program-evolution operators; RSIBench-Data isolates data-centric strategy revision in a fixed post-training stack. Information flow changes from one-shot generation to a loop where partial verification guides the next search move. The boundary is benchmark realism: a system may optimize its internal loop while still missing external scientific value, hidden assumptions, or poisoned data.",
+      "aliases": [],
+      "source_ids": [
+        "emergentmind-2606-26294-red-queen-godel-machine-2026",
+        "emergentmind-2607-01120-self-evolving-agentic-rl-systems-2026",
+        "emergentmind-2607-12301-xscientist-a-git-like-research-protocol-for-long-2026",
+        "emergentmind-2607-21461-arex-towards-a-recursively-self-improving-agent-for-2026",
+        "emergentmind-2607-25886-rsibench-data-benchmarking-data-centric-research-for-recursive-2026",
+        "emergentmind-2607-28568-frontis-ma1-training-an-ai4ai-model-towards-recursive-2026",
+        "emergentmind-2608-03392-self-evolving-coding-agents-2026"
+      ],
+      "confidence": 0.9,
+      "world_hint": "agents"
+    },
+    "curriculum-agents-discovery-memory-and-versioning": {
+      "id": "curriculum-agents-discovery-memory-and-versioning",
+      "label": "Memory and Versioning",
+      "type": "curriculum-concept",
+      "summary": "A deployed agent that forgets every episode repeats yesterday's mistakes; an agent that writes uncontrolled memories corrupts tomorrow's decisions. The mechanism is governed memory: persistent storage, retrieval, update, consolidation, lifecycle rules, and provenance back to raw interaction traces. Agent-native memory work argues that end-to-end task scores hide which memory component failed. Frozen-weight agents can distill deployment feedback into retrievable natural-language rules. Zero-token memory keeps original traces as the record while avoiding generative memory operations. Activity frames deterministically compile screen activity into auditable episodes. Memory foundation models explore persistent internal memory states. Information flow changes from transient context to durable, inspectable experience. The boundary is version control: memories must be updated, retired, and evaluated as systems, or they become stale, lossy, or overtrusted.",
+      "aliases": [],
+      "source_ids": [
+        "emergentmind-2606-24775-agent-native-memory-2026",
+        "emergentmind-2607-07847-when-does-continual-learning-require-learning-2026",
+        "emergentmind-2607-11020-can-a-language-model-learn-facts-continually-in-2026",
+        "emergentmind-2607-22157-learning-on-the-job-continual-learning-from-deployment-2026",
+        "emergentmind-2607-26760-metis-memory-foundation-model-2026",
+        "emergentmind-2607-29377-zero-mem-zero-token-memory-operations-for-llm-2026",
+        "emergentmind-2608-04003-past-bench-benchmarking-the-foundations-of-recursive-self-2026",
+        "emergentmind-2608-05784-activity-frames-deterministic-screen-activity-compilation-for-agent-2026"
+      ],
+      "confidence": 0.9,
+      "world_hint": "agents"
+    },
+    "curriculum-agents-discovery-scientific-evaluation": {
+      "id": "curriculum-agents-discovery-scientific-evaluation",
+      "label": "Scientific Evaluation",
+      "type": "curriculum-concept",
+      "summary": "Prediction is useful, but discovery needs tests that reveal mechanisms, limits, and measurement artifacts. The mechanism is evaluation design: choose signals that match the claim, account for benchmark redundancy, protect data integrity, and distinguish explanatory structure from surface performance. BenchPress finds many benchmark scores may be governed by a low-dimensional structure, warning against redundant eval runs. Mechanistic world models argue that scientific understanding requires reusable explanatory mechanisms, not only predictive mappings. Indirect data poisoning shows automated science can amplify corrupted public datasets. Surprisal critiques warn that a metric can hide representational commitments. Scientific evaluation therefore changes information flow from leaderboard accumulation to claim-specific evidence and adversarial checks. The boundary is humility: measurements can compress, obscure, or be attacked, so no single metric can certify open-ended discovery.",
+      "aliases": [],
+      "source_ids": [
+        "emergentmind-2606-23670-tapered-language-models-2026",
+        "emergentmind-2606-24020-benchpress-2026",
+        "emergentmind-2606-24855-openthoughts-agent-2026",
+        "emergentmind-2606-25996-autodata-2026",
+        "emergentmind-2607-10712-distributed-denial-of-science-how-indirect-data-poisoning-2026",
+        "emergentmind-2607-11883-requential-coding-pushing-the-limits-of-model-compression-2026",
+        "emergentmind-2607-12474-from-observation-to-insight-mechanistic-world-models-and-2026",
+        "emergentmind-2607-20208-surprisal-is-not-a-theory-2026",
+        "emergentmind-2607-21366-hilbert-operator-for-progressive-encoding-hope-a-mathematical-2026",
+        "emergentmind-2607-28033-dataclaweval-a-benchmark-for-data-engineering-agents-in-2026",
+        "emergentmind-2607-28109-beyond-rephrasing-book-level-organization-improves-synthetic-textbook-2026",
+        "emergentmind-2607-28576-sample-more-reflect-less-self-refine-and-reflexion-2026",
+        "emergentmind-2608-05466-recursive-synthesis-for-long-horizon-terminal-tasks-2026"
+      ],
+      "confidence": 0.9,
+      "world_hint": "agents"
+    },
+    "curriculum-generative-models-objectives-likelihood-and-score": {
+      "id": "curriculum-generative-models-objectives-likelihood-and-score",
+      "label": "Likelihood and Score",
+      "type": "curriculum-concept",
+      "summary": "A generator needs a local direction for moving noisy or incomplete samples toward high-probability data. In diffusion, that direction can be expressed as a score: the gradient of log density. Langevin dynamics, reverse-time stochastic equations, and probability-flow ordinary equations all turn score estimates into generative motion. The changed information flow is important: training learns local denoising or score information, then sampling integrates many small updates to recover structure. Tweedie's identity helps connect noisy observations to conditional clean estimates. The boundary is numerical and statistical: discretization error and score-estimation error compound, so a correct continuous formulation can still fail when the learned score or solver steps are inaccurate.",
+      "aliases": [],
+      "source_ids": [
+        "emergentmind-2607-01693-mathematical-diffusion-intro-2026"
+      ],
+      "confidence": 0.9,
+      "world_hint": "generative-models"
+    },
+    "curriculum-generative-models-objectives-latent-structure": {
+      "id": "curriculum-generative-models-objectives-latent-structure",
+      "label": "Latent Structure",
+      "type": "curriculum-concept",
+      "summary": "High-dimensional data often hides lower-dimensional organization: directions, clusters, neighborhoods, and compressed coordinates that explain variation without storing every raw detail. Tools such as singular value decomposition, principal components, nonlinear dimension reduction, diffusion maps, random projections, graph Laplacians, and concentration results describe when structure can be recovered or preserved. The mechanism is compression with controlled distortion: data moves from raw coordinates into latent variables that keep task-relevant geometry. That changes the information flow from direct pixel or token comparison to comparison through shared factors. The evidence here is foundational rather than a single benchmark. The failure boundary is equally foundational: some projections erase useful variables, and high-dimensional concentration can make naive distance or clustering intuitions unreliable.",
+      "aliases": [],
+      "source_ids": [
+        "emergentmind-2607-11938-mathematics-of-data-science-2026"
+      ],
+      "confidence": 0.9,
+      "world_hint": "generative-models"
+    },
+    "curriculum-generative-models-objectives-conditioning-and-control": {
+      "id": "curriculum-generative-models-objectives-conditioning-and-control",
+      "label": "Conditioning and Control",
+      "type": "curriculum-concept",
+      "summary": "A generator becomes useful when prompts, actions, or structured context reliably alter what it produces. Text-conditioned visual generation shows that structured language can change diffusion training behavior: converged loss decreases with measured prompt structure, using both white-box likelihood-style and black-box attribute measures. The mechanism is not just longer text; it is condition information that aligns with attributes the model can use. In interactive media, runtime generation must be constitutive of the loop to truly change play; replaceable decoration does not create controlled interaction. The changed state is a tighter channel from intent to generated output. The boundary is mismatch: if the condition is vague, weakly grounded, or removable without changing behavior, control becomes cosmetic.",
+      "aliases": [],
+      "source_ids": [
+        "emergentmind-2607-00527-ai-native-games-a-survey-and-roadmap-2026",
+        "emergentmind-2607-29679-scaling-properties-of-text-conditioning-in-visual-generation-2026"
+      ],
+      "confidence": 0.9,
+      "world_hint": "generative-models"
+    },
+    "curriculum-generative-models-dynamics-diffusion-and-flow": {
+      "id": "curriculum-generative-models-dynamics-diffusion-and-flow",
+      "label": "Diffusion and Flow",
+      "type": "curriculum-concept",
+      "summary": "Diffusion and flow models generate by transporting samples through a learned trajectory rather than decoding only from left to right. This enables parallel refinement, but ordinary iterative sampling can be expensive. Video systems expose the trade-off sharply: bidirectional diffusion can preserve global coherence and fidelity yet infer slowly, while autoregressive generation streams efficiently but risks long-range inconsistency and exposure bias. Flow and diffusion policies in robotics face another boundary: likelihoods can be intractable, making direct reinforcement updates weak unless matching is reweighted by action value. The changed state is a trajectory-level view of generation, where quality depends on both the learned vector field and the inference schedule used to traverse it.",
+      "aliases": [],
+      "source_ids": [
+        "emergentmind-2607-03509-flex-forcing-towards-a-unified-autoregressive-and-2026",
+        "emergentmind-2607-28560-x-navdp-generalizing-navigation-diffusion-policy-to-novel-2026"
+      ],
+      "confidence": 0.9,
+      "world_hint": "generative-models"
+    },
+    "curriculum-generative-models-dynamics-iterative-refinement": {
+      "id": "curriculum-generative-models-dynamics-iterative-refinement",
+      "label": "Iterative Refinement",
+      "type": "curriculum-concept",
+      "summary": "Iterative refinement treats generation as repair over time. Discrete diffusion can refine blocks of text in parallel, avoiding the strict sequential bottleneck of autoregressive decoding. Masked multimodal systems can go further: if text and image decisions update together and can be remasked, contradictions between modalities can be detected and corrected within the same step rather than frozen into later states. Video self-distillation uses real long-video context to supervise the same few-step rollout used at inference, reducing long-horizon degradation without changing the path. The mechanism is repeated correction under the actual trajectory. The boundary is that refinement needs a way to notice errors; if a system cannot revise bad intermediate commitments, mistakes can accumulate.",
+      "aliases": [],
+      "source_ids": [
+        "emergentmind-2607-08766-opsd-v-on-policy-self-distillation-for-post-2026",
+        "emergentmind-2607-13188-concurrent-image-understanding-and-generation-self-correcting-coupled-2026",
+        "emergentmind-2608-00146-diffusiongemma-technical-report-2026"
+      ],
+      "confidence": 0.9,
+      "world_hint": "generative-models"
+    },
+    "curriculum-generative-models-dynamics-sampling-dynamics": {
+      "id": "curriculum-generative-models-dynamics-sampling-dynamics",
+      "label": "Sampling Dynamics",
+      "type": "curriculum-concept",
+      "summary": "Sampling dynamics are the rules that decide how a trained generator is used at inference time. Acceleration is tempting because diffusion and flow sampling is costly, but changing the trajectory can damage diversity, motion, or long-horizon consistency. Parallel decoding distillation tries to replace difficult adversarial or variational losses with trajectory-based supervision for fast image and video generation, specifically because unstable losses can cause mode collapse and weak motion. Human-in-the-loop robot adaptation uses action inversion: expert interventions are mapped into a latent action space so a frozen generative policy can be corrected without large hardware-scale data collection. The boundary is distribution shift: fast or adapted samplers must still preserve the behavior the original trajectory was meant to express.",
+      "aliases": [],
+      "source_ids": [
+        "emergentmind-2607-08877-flowdagger-human-in-the-loop-adaptation-of-generative-2026",
+        "emergentmind-2607-26004-parallel-decoding-distillation-for-fast-image-and-video-2026"
+      ],
+      "confidence": 0.9,
+      "world_hint": "generative-models"
+    },
+    "curriculum-generative-models-world-models-predictive-state": {
+      "id": "curriculum-generative-models-world-models-predictive-state",
+      "label": "Predictive State",
+      "type": "curriculum-concept",
+      "summary": "World models become reliable when they preserve state variables that determine what can happen next. Deformable objects make this difficult because their state spaces are high-dimensional and their material behavior is complex; pixel-space and 3D geometric approaches each expose different strengths and limits. Games add another version of the same problem: visual realism is insufficient if hidden health, timers, meters, and termination rules are not modeled. Open-schema literary simulation extends the idea to characters and worlds that co-evolve over long horizons, with persistent updates rather than static persona imitation. The changed state is explicit memory of dynamics-relevant variables. The boundary is hallucinated plausibility: future frames may look believable while violating material, mechanical, or narrative state.",
+      "aliases": [],
+      "source_ids": [
+        "emergentmind-2607-05390-deform360-a-massive-multi-view-visuotactile-dataset-for-2026",
+        "emergentmind-2607-17250-evolvingworld-an-open-schema-framework-for-co-evolving-2026",
+        "emergentmind-2607-26754-stateplay-state-aware-game-world-models-for-mechanics-2026"
+      ],
+      "confidence": 0.9,
+      "world_hint": "generative-models"
+    },
+    "curriculum-generative-models-world-models-counterfactual-rollouts": {
+      "id": "curriculum-generative-models-world-models-counterfactual-rollouts",
+      "label": "Counterfactual Rollouts",
+      "type": "curriculum-concept",
+      "summary": "A world model earns its keep when it can ask what would happen under a different action. Adaptive latent planning executes a chunk of actions, observes the next transition, updates the model from that self-supervised signal, and replans. Visual action interfaces give pretrained video models a way to receive physically grounded control: a partially revealed trajectory in pixels can make the model predict how the scene responds to a robot or arbitrary entity. Robot world models can also render numerical actions into visual form to improve controllability across unseen scenarios. The information flow changes from passive prediction to action-conditioned consequence. The boundary is grounding: counterfactual rollouts fail when the action representation is not aligned with the visual dynamics the model learned.",
+      "aliases": [],
+      "source_ids": [
+        "emergentmind-2606-32026-adajepa-2026",
+        "emergentmind-2607-19343-masked-visual-actions-for-unified-world-modeling-2026",
+        "emergentmind-2608-06332-geniworld-a-generalizable-interactive-world-model-for-robotic-2026"
+      ],
+      "confidence": 0.9,
+      "world_hint": "generative-models"
+    },
+    "curriculum-generative-models-world-models-model-based-evaluation": {
+      "id": "curriculum-generative-models-world-models-model-based-evaluation",
+      "label": "Model-Based Evaluation",
+      "type": "curriculum-concept",
+      "summary": "Evaluation must ask whether a generative system changes the target process, not only whether outputs look fluent. In education, the substitution hypothesis predicts that generative AI would raise grades disproportionately in courses with take-home or essay-style assessments compared with exam-heavy courses, and could also affect reported understanding and interest. In scientific work, productivity and democratization benefits sit beside unresolved governance risks across funding, research tasks, publication, peer review, and uptake. These are model-based evaluation problems because claims require a causal frame over behavior, incentives, and downstream decisions. The changed information flow is from output inspection to counterfactual comparison. The boundary is attribution: without careful comparisons, gains, harm, substitution, and augmentation can be confounded.",
+      "aliases": [],
+      "source_ids": [
+        "emergentmind-2607-21534-generative-ai-availability-grades-and-student-satisfaction-at-2026",
+        "emergentmind-2607-24879-generative-artificial-intelligence-in-scientific-research-individual-benefits-2026"
+      ],
+      "confidence": 0.9,
+      "world_hint": "generative-models"
+    },
+    "curriculum-generative-models-compression-teacher-student-transfer": {
+      "id": "curriculum-generative-models-compression-teacher-student-transfer",
+      "label": "Teacher-Student Transfer",
+      "type": "curriculum-concept",
+      "summary": "Teacher-student transfer turns stronger or specialized policies into training signal for a deployed student. Multi-teacher on-policy distillation uses specialized reinforcement-trained teachers, then trains the student on its own rollouts to reduce exposure bias and provide dense optimization signal. Trust-region policy distillation stabilizes high-variance on-policy distillation by constructing a proximal teacher, with formal claims about variance control, convergence, and monotonic improvement. Evolving-context distillation treats context as preference signal in open-ended domains, but must stabilize targets and downweight conflicts when the context changes with student performance. The mechanism is behavioral compression under the student's encountered states. The boundary is instability: if teacher targets are too distant, conflicting, or off-distribution, transfer can amplify variance instead of capability.",
+      "aliases": [],
+      "source_ids": [
+        "emergentmind-2606-30406-mopd-2026",
+        "emergentmind-2607-04751-trust-region-policy-distillation-2026",
+        "emergentmind-2607-28022-flux-opd-on-policy-distillation-with-evolving-contexts-2026"
+      ],
+      "confidence": 0.9,
+      "world_hint": "generative-models"
+    },
+    "curriculum-generative-models-compression-self-distillation": {
+      "id": "curriculum-generative-models-compression-self-distillation",
+      "label": "Self-Distillation",
+      "type": "curriculum-concept",
+      "summary": "Self-distillation uses the model, or a strengthened version of it, as the teacher. The attraction is that no external teacher is required, and on-policy rollouts can match inference. But asymmetry is delicate. Privileged information can create a stronger signal, yet it may degrade long reasoning traces or produce a privilege illusion: the student learns behavior that depends on information absent at inference. Rubric-based reinforcement learning shows another angle: external guidance can improve exploration of unmet criteria, but if that guidance disappears at inference, autoregressive errors accumulate. Visual contrastive self-distillation asks whether input conditioning alone can create useful asymmetry by removing image content. The boundary is reproducibility: the student must be able to perform from its actual context.",
+      "aliases": [],
+      "source_ids": [
+        "emergentmind-2607-05184-rethinking-on-policy-self-distillation-for-thinking-models-2026",
+        "emergentmind-2607-18082-enhancing-rubric-based-rl-via-self-distillation-2026",
+        "emergentmind-2607-21556-visual-contrastive-self-distillation-2026",
+        "emergentmind-2608-01735-dapd-dual-anchored-policy-distillation-2026"
+      ],
+      "confidence": 0.9,
+      "world_hint": "generative-models"
+    },
+    "curriculum-generative-models-compression-memorization-and-generalization": {
+      "id": "curriculum-generative-models-compression-memorization-and-generalization",
+      "label": "Memorization and Generalization",
+      "type": "curriculum-concept",
+      "summary": "Compression also happens through repeated data exposure. Multi-epoch training can improve performance and sample efficiency when high-quality data are limited, but excessive repetition creates overfitting risk and diminishing returns. Memorization-guided reuse frames the problem as timing: loss-retention signals reveal a memorization window that can guide when examples are still useful and when repetition becomes harmful. The mechanism is selective reuse rather than blind repetition. The changed information flow is from uniform passes over a corpus to data scheduling based on whether the model is retaining, forgetting, or overfitting examples. The evidence is a training-control claim, not a guarantee that all memorized data are bad. The boundary is balance: useful reuse and harmful memorization can look similar without explicit signals.",
+      "aliases": [],
+      "source_ids": [
+        "emergentmind-2607-04969-train-smarter-not-longer-memorization-guided-data-2026"
+      ],
+      "confidence": 0.9,
+      "world_hint": "generative-models"
+    },
+    "item-response-theory-for-ai-safety": {
+      "id": "item-response-theory-for-ai-safety",
+      "label": "Item Response Theory for AI Safety",
+      "type": "method",
+      "summary": "Language models differ in how safely they behave and these differences are measured by safety benchmarks. But aggregated benchmark scores are hard to trust and interpret, because benchmarks duplicate one another, correlate heavily, and models may sandbag when they detect evaluation. To address these issues, we draw on Item Response Theory (IRT), a statistical toolkit for measuring these latents from performance on items with inferred psychometric properties. We fit IRT models to eight safety benchmarks across 192 language models, the largest psychometric analysis of LLM safety evaluations to date, and contribute three results. First, we find that three interpretable factors of refusal strictness, truthfulness, and contextual harm explain most of the variance between models across benchmarks. Second, psychometrically selected items recover full benchmark scores with lower error than random subsets of the same size, and roughly ten adaptively chosen items suffice for several individual benchmarks, cutting evaluation cost by 97-99%. Third, IRT supports audits of individual models, showing that it can be used to detect naive sandbagging and changes of model behind APIs. Overall, we show IRT is a ready-made toolkit for reading, reducing, and auditing safety benchmarks, which we recommend frontier labs and evaluators adopt.",
+      "aliases": [],
+      "source_ids": [
+        "emergentmind-2608-05086-item-response-theory-for-ai-safety-2026"
+      ],
+      "confidence": 0.78,
+      "first_seen": "2026-08-10T23:39:39Z",
+      "last_seen": "2026-08-10T23:39:39Z",
+      "world_hint": "agents"
+    },
+    "item-response-theory-for-ai-safety-learning-problem": {
+      "id": "item-response-theory-for-ai-safety-learning-problem",
+      "label": "Item Response Theory for AI Safety problem setting",
+      "type": "concept",
+      "summary": "Language models differ in how safely they behave and these differences are measured by safety benchmarks. But aggregated benchmark scores are hard to trust and interpret, because benchmarks duplicate one another, correlate heavily, and models may sandbag when they detect evaluation. To address these issues, we draw on Item Response Theory (IRT), a statistical toolkit for measuring these latents from performance on items with inferred psychometric properties. We fit IRT models to eight safety benchmarks across 192 language models, the largest psychometric analysis of LLM safety evaluations to date, and contribute three results. First, we find that three interpretable factors of refusal strictness, truthfulness, and contextual harm explain most of the variance between models across benchmarks. Second, psychometrically selected items recover full benchmark scores with lower error than random subsets of the same size, and roughly ten adaptively chosen items suffice for several individual benchmarks, cutting evaluation cost by 97-99%. Third, IRT supports audits of individual models, showing that it can be used to detect naive sandbagging and changes of model behind APIs. Overall, we show IRT is a ready-made toolkit for reading, reducing, and auditing safety benchmarks, which we recommend frontier labs and evaluators adopt.",
+      "aliases": [],
+      "source_ids": [
+        "emergentmind-2608-05086-item-response-theory-for-ai-safety-2026"
+      ],
+      "confidence": 0.78,
+      "first_seen": "2026-08-10T23:39:39Z",
+      "last_seen": "2026-08-10T23:39:39Z",
+      "world_hint": "agents"
+    },
+    "item-response-theory-for-ai-safety-evaluation-signal": {
+      "id": "item-response-theory-for-ai-safety-evaluation-signal",
+      "label": "Item Response Theory for AI Safety evaluation signal",
+      "type": "concept",
+      "summary": "Language models differ in how safely they behave and these differences are measured by safety benchmarks. But aggregated benchmark scores are hard to trust and interpret, because benchmarks duplicate one another, correlate heavily, and models may sandbag when they detect evaluation. To address these issues, we draw on Item Response Theory (IRT), a statistical toolkit for measuring these latents from performance on items with inferred psychometric properties. We fit IRT models to eight safety benchmarks across 192 language models, the largest psychometric analysis of LLM safety evaluations to date, and contribute three results. First, we find that three interpretable factors of refusal strictness, truthfulness, and contextual harm explain most of the variance between models across benchmarks. Second, psychometrically selected items recover full benchmark scores with lower error than random subsets of the same size, and roughly ten adaptively chosen items suffice for several individual benchmarks, cutting evaluation cost by 97-99%. Third, IRT supports audits of individual models, showing that it can be used to detect naive sandbagging and changes of model behind APIs. Overall, we show IRT is a ready-made toolkit for reading, reducing, and auditing safety benchmarks, which we recommend frontier labs and evaluators adopt.",
+      "aliases": [],
+      "source_ids": [
+        "emergentmind-2608-05086-item-response-theory-for-ai-safety-2026"
+      ],
+      "confidence": 0.78,
+      "first_seen": "2026-08-10T23:39:39Z",
+      "last_seen": "2026-08-10T23:39:39Z",
+      "world_hint": "agents"
+    },
+    "paper-2608-05086": {
+      "id": "paper-2608-05086",
+      "label": "Item Response Theory for AI Safety",
+      "type": "paper",
+      "summary": "Language models differ in how safely they behave and these differences are measured by safety benchmarks. But aggregated benchmark scores are hard to trust and interpret, because benchmarks duplicate one another, correlate heavily, and models may sandbag when they detect evaluation. To address these issues, we draw on Item Response Theory (IRT), a statistical toolkit for measuring these latents from performance on items with inferred psychometric properties. We fit IRT models to eight safety benchmarks across 192 language models, the largest psychometric analysis of LLM safety evaluations to date, and contribute three results. First, we find that three interpretable factors of refusal strictness, truthfulness, and contextual harm explain most of the variance between models across benchmarks. Second, psychometrically selected items recover full benchmark scores with lower error than random subsets of the same size, and roughly ten adaptively chosen items suffice for several individual benchmarks, cutting evaluation cost by 97-99%. Third, IRT supports audits of individual models, showing that it can be used to detect naive sandbagging and changes of model behind APIs. Overall, we show IRT is a ready-made toolkit for reading, reducing, and auditing safety benchmarks, which we recommend frontier labs and evaluators adopt.",
+      "aliases": [],
+      "source_ids": [
+        "emergentmind-2608-05086-item-response-theory-for-ai-safety-2026"
+      ],
+      "confidence": 0.78,
+      "first_seen": "2026-08-10T23:39:39Z",
+      "last_seen": "2026-08-10T23:39:39Z",
+      "world_hint": "agents"
+    },
+    "why-does-action-chunking-improve-behavioral-cloning": {
+      "id": "why-does-action-chunking-improve-behavioral-cloning",
+      "label": "Why Does Action Chunking Improve Behavioral Cloning Performance in Robotic Control?",
+      "type": "method",
+      "summary": "Action chunking---predicting and executing multiple actions instead of a single action---has proven to be a critical component for learning effective robotic control policies. However, our precise understanding of why action chunking improves performance has remained limited. In this work we seek to close this gap. Through rigorous experimental evaluations in both simulated and real-world settings, we show that existing hypotheses for the success of action chunking---temporal consistency, horizon reduction, and representation learning---fail to explain the success of action chunking. Instead, we find that action chunking benefits from greater non-Markovian expressivity and reduced compounding error compared to Markovian policies, but, in many settings of interest, these effects can be fully captured by delayed policies, which at each step predict a single action based on the observation $k$ steps in the past. We then show that there exists an additional benefit of action chunking that we refer to as implicit ensembling. In particular, by learning a diversity of temporal relationships (that is, $a_t | o_t, a_t | o_{t-1}, \\ldots$), action-chunked policies exhibit behavior matching that of a model ensemble, increasing their robustness and generalization ability over policies that only learn a single temporal relationship. Building on these insights, we show that in simulated and real-world robotic control settings, we can match the performance of action chunking without action chunking---by deploying an action chunking policy as an ensemble of policies with randomized delays. Furthermore, we propose a policy class that amplifies the benefits of action chunking by explicitly instantiating an ensemble, and which we show significantly improves over the performance of action chunking in many domains.",
+      "aliases": [],
+      "source_ids": [
+        "emergentmind-2608-02547-why-does-action-chunking-improve-behavioral-cloning-performance-2026"
+      ],
+      "confidence": 0.78,
+      "first_seen": "2026-08-10T23:39:39Z",
+      "last_seen": "2026-08-10T23:39:39Z",
+      "world_hint": "perception-world-models"
+    },
+    "why-does-action-chunking-improve-behavioral-cloning-performance": {
+      "id": "why-does-action-chunking-improve-behavioral-cloning-performance",
+      "label": "Why Does Action Chunking Improve Behavioral Cloning Performance in Robotic Control? problem setting",
+      "type": "concept",
+      "summary": "Action chunking---predicting and executing multiple actions instead of a single action---has proven to be a critical component for learning effective robotic control policies. However, our precise understanding of why action chunking improves performance has remained limited. In this work we seek to close this gap. Through rigorous experimental evaluations in both simulated and real-world settings, we show that existing hypotheses for the success of action chunking---temporal consistency, horizon reduction, and representation learning---fail to explain the success of action chunking. Instead, we find that action chunking benefits from greater non-Markovian expressivity and reduced compounding error compared to Markovian policies, but, in many settings of interest, these effects can be fully captured by delayed policies, which at each step predict a single action based on the observation $k$ steps in the past. We then show that there exists an additional benefit of action chunking that we refer to as implicit ensembling. In particular, by learning a diversity of temporal relationships (that is, $a_t | o_t, a_t | o_{t-1}, \\ldots$), action-chunked policies exhibit behavior matching that of a model ensemble, increasing their robustness and generalization ability over policies that only learn a single temporal relationship. Building on these insights, we show that in simulated and real-world robotic control settings, we can match the performance of action chunking without action chunking---by deploying an action chunking policy as an ensemble of policies with randomized delays. Furthermore, we propose a policy class that amplifies the benefits of action chunking by explicitly instantiating an ensemble, and which we show significantly improves over the performance of action chunking in many domains.",
+      "aliases": [],
+      "source_ids": [
+        "emergentmind-2608-02547-why-does-action-chunking-improve-behavioral-cloning-performance-2026"
+      ],
+      "confidence": 0.78,
+      "first_seen": "2026-08-10T23:39:39Z",
+      "last_seen": "2026-08-10T23:39:39Z",
+      "world_hint": "perception-world-models"
+    },
+    "paper-2608-02547": {
+      "id": "paper-2608-02547",
+      "label": "Why Does Action Chunking Improve Behavioral Cloning Performance in Robotic Control?",
+      "type": "paper",
+      "summary": "Action chunking---predicting and executing multiple actions instead of a single action---has proven to be a critical component for learning effective robotic control policies. However, our precise understanding of why action chunking improves performance has remained limited. In this work we seek to close this gap. Through rigorous experimental evaluations in both simulated and real-world settings, we show that existing hypotheses for the success of action chunking---temporal consistency, horizon reduction, and representation learning---fail to explain the success of action chunking. Instead, we find that action chunking benefits from greater non-Markovian expressivity and reduced compounding error compared to Markovian policies, but, in many settings of interest, these effects can be fully captured by delayed policies, which at each step predict a single action based on the observation $k$ steps in the past. We then show that there exists an additional benefit of action chunking that we refer to as implicit ensembling. In particular, by learning a diversity of temporal relationships (that is, $a_t | o_t, a_t | o_{t-1}, \\ldots$), action-chunked policies exhibit behavior matching that of a model ensemble, increasing their robustness and generalization ability over policies that only learn a single temporal relationship. Building on these insights, we show that in simulated and real-world robotic control settings, we can match the performance of action chunking without action chunking---by deploying an action chunking policy as an ensemble of policies with randomized delays. Furthermore, we propose a policy class that amplifies the benefits of action chunking by explicitly instantiating an ensemble, and which we show significantly improves over the performance of action chunking in many domains.",
+      "aliases": [],
+      "source_ids": [
+        "emergentmind-2608-02547-why-does-action-chunking-improve-behavioral-cloning-performance-2026"
+      ],
+      "confidence": 0.78,
+      "first_seen": "2026-08-10T23:39:39Z",
+      "last_seen": "2026-08-10T23:39:39Z",
+      "world_hint": "perception-world-models"
+    },
+    "skaling-chinchilla-s-exponents-meet-kaplan-s": {
+      "id": "skaling-chinchilla-s-exponents-meet-kaplan-s",
+      "label": "Skaling",
+      "type": "method",
+      "summary": "Neural scaling laws are foundational for language model development, yet standard formulations systematically under- and overestimate loss at data-scarce and overtraining extremes. This failure originates in the underlying assumption that model size and training data impact the loss independently. To address this, we introduce the Skaling law, a generalized functional form that couples model capacity and data through a single interaction exponent. This simple extension reduces the Mean Absolute Percentage Error (MAPE) by 1.5-3x across both interpolation and extrapolation regimes. When paired with a sparse grid strategy restricted to low-compute regimes, the Skaling law achieves accurate full-grid extrapolation using approximately 10x less compute than uniform sweeps. By enabling reliable performance prediction from small-scale experiments, the Skaling law provides a more robust and resource-efficient framework for allocating compute budgets in next-generation model training.",
+      "aliases": [],
+      "source_ids": [
+        "emergentmind-2608-07222-skaling-chinchilla-s-exponents-meet-kaplan-s-coupling-2026"
+      ],
+      "confidence": 0.78,
+      "first_seen": "2026-08-10T23:39:39Z",
+      "last_seen": "2026-08-10T23:39:39Z",
+      "world_hint": "agents"
+    },
+    "skaling-chinchilla-s-exponents-meet-kaplan-s-coupling": {
+      "id": "skaling-chinchilla-s-exponents-meet-kaplan-s-coupling",
+      "label": "Skaling problem setting",
+      "type": "concept",
+      "summary": "Neural scaling laws are foundational for language model development, yet standard formulations systematically under- and overestimate loss at data-scarce and overtraining extremes. This failure originates in the underlying assumption that model size and training data impact the loss independently. To address this, we introduce the Skaling law, a generalized functional form that couples model capacity and data through a single interaction exponent. This simple extension reduces the Mean Absolute Percentage Error (MAPE) by 1.5-3x across both interpolation and extrapolation regimes. When paired with a sparse grid strategy restricted to low-compute regimes, the Skaling law achieves accurate full-grid extrapolation using approximately 10x less compute than uniform sweeps. By enabling reliable performance prediction from small-scale experiments, the Skaling law provides a more robust and resource-efficient framework for allocating compute budgets in next-generation model training.",
+      "aliases": [],
+      "source_ids": [
+        "emergentmind-2608-07222-skaling-chinchilla-s-exponents-meet-kaplan-s-coupling-2026"
+      ],
+      "confidence": 0.78,
+      "first_seen": "2026-08-10T23:39:39Z",
+      "last_seen": "2026-08-10T23:39:39Z",
+      "world_hint": "agents"
+    },
+    "paper-2608-07222": {
+      "id": "paper-2608-07222",
+      "label": "Skaling: Chinchilla's Exponents Meet Kaplan's Coupling",
+      "type": "paper",
+      "summary": "Neural scaling laws are foundational for language model development, yet standard formulations systematically under- and overestimate loss at data-scarce and overtraining extremes. This failure originates in the underlying assumption that model size and training data impact the loss independently. To address this, we introduce the Skaling law, a generalized functional form that couples model capacity and data through a single interaction exponent. This simple extension reduces the Mean Absolute Percentage Error (MAPE) by 1.5-3x across both interpolation and extrapolation regimes. When paired with a sparse grid strategy restricted to low-compute regimes, the Skaling law achieves accurate full-grid extrapolation using approximately 10x less compute than uniform sweeps. By enabling reliable performance prediction from small-scale experiments, the Skaling law provides a more robust and resource-efficient framework for allocating compute budgets in next-generation model training.",
+      "aliases": [],
+      "source_ids": [
+        "emergentmind-2608-07222-skaling-chinchilla-s-exponents-meet-kaplan-s-coupling-2026"
+      ],
+      "confidence": 0.78,
+      "first_seen": "2026-08-10T23:39:39Z",
+      "last_seen": "2026-08-10T23:39:39Z",
+      "world_hint": "agents"
+    },
+    "modular-ttt-rethinking-test-time-training-as": {
+      "id": "modular-ttt-rethinking-test-time-training-as",
+      "label": "Modular TTT",
+      "type": "method",
+      "summary": "Test-time training (TTT) views sequence modeling as an online learning problem in which fast weights are updated by an internal learning rule. Despite the growing number of TTT variants, existing approaches typically hard-code each variant separately, which makes it difficult to design new TTT methods and to isolate the role of each component. To address this, we propose Modular TTT, a framework that represents the inner learner as a directed acyclic graph and exposes the fast-weight network, loss function, learning rate, weight decay, and normalization as explicit design dimensions. Modular TTT automatically composes primitive-level train-view forward, train-view backward, and causal query-view rules into the full graph-level TTT computation, including the fast-weight state transition. Using Modular TTT, we systematically ablate the components of TTT and find that small learning-rate initialization, weight decay, and a single-layer nonlinearity improve performance, while MSE and inner-product losses perform similarly. Deeper fast-weight networks and normalization tend to hurt performance because they induce excessively large activations, while residual connections and gating provide little measurable benefit. Guided by these findings, we train the best resulting variant as 410M- and 1.45B-parameter models on 100B tokens, and observe training loss and benchmark performance comparable to Gated DeltaNet.",
+      "aliases": [],
+      "source_ids": [
+        "emergentmind-2608-07110-modular-ttt-rethinking-test-time-training-as-composable-2026"
+      ],
+      "confidence": 0.78,
+      "first_seen": "2026-08-10T23:39:39Z",
+      "last_seen": "2026-08-10T23:39:39Z",
+      "world_hint": "perception-world-models"
+    },
+    "modular-ttt-rethinking-test-time-training-as-composable": {
+      "id": "modular-ttt-rethinking-test-time-training-as-composable",
+      "label": "Modular TTT problem setting",
+      "type": "concept",
+      "summary": "Test-time training (TTT) views sequence modeling as an online learning problem in which fast weights are updated by an internal learning rule. Despite the growing number of TTT variants, existing approaches typically hard-code each variant separately, which makes it difficult to design new TTT methods and to isolate the role of each component. To address this, we propose Modular TTT, a framework that represents the inner learner as a directed acyclic graph and exposes the fast-weight network, loss function, learning rate, weight decay, and normalization as explicit design dimensions. Modular TTT automatically composes primitive-level train-view forward, train-view backward, and causal query-view rules into the full graph-level TTT computation, including the fast-weight state transition. Using Modular TTT, we systematically ablate the components of TTT and find that small learning-rate initialization, weight decay, and a single-layer nonlinearity improve performance, while MSE and inner-product losses perform similarly. Deeper fast-weight networks and normalization tend to hurt performance because they induce excessively large activations, while residual connections and gating provide little measurable benefit. Guided by these findings, we train the best resulting variant as 410M- and 1.45B-parameter models on 100B tokens, and observe training loss and benchmark performance comparable to Gated DeltaNet.",
+      "aliases": [],
+      "source_ids": [
+        "emergentmind-2608-07110-modular-ttt-rethinking-test-time-training-as-composable-2026"
+      ],
+      "confidence": 0.78,
+      "first_seen": "2026-08-10T23:39:39Z",
+      "last_seen": "2026-08-10T23:39:39Z",
+      "world_hint": "perception-world-models"
+    },
+    "paper-2608-07110": {
+      "id": "paper-2608-07110",
+      "label": "Modular TTT: Rethinking Test-Time Training as Composable Modules",
+      "type": "paper",
+      "summary": "Test-time training (TTT) views sequence modeling as an online learning problem in which fast weights are updated by an internal learning rule. Despite the growing number of TTT variants, existing approaches typically hard-code each variant separately, which makes it difficult to design new TTT methods and to isolate the role of each component. To address this, we propose Modular TTT, a framework that represents the inner learner as a directed acyclic graph and exposes the fast-weight network, loss function, learning rate, weight decay, and normalization as explicit design dimensions. Modular TTT automatically composes primitive-level train-view forward, train-view backward, and causal query-view rules into the full graph-level TTT computation, including the fast-weight state transition. Using Modular TTT, we systematically ablate the components of TTT and find that small learning-rate initialization, weight decay, and a single-layer nonlinearity improve performance, while MSE and inner-product losses perform similarly. Deeper fast-weight networks and normalization tend to hurt performance because they induce excessively large activations, while residual connections and gating provide little measurable benefit. Guided by these findings, we train the best resulting variant as 410M- and 1.45B-parameter models on 100B tokens, and observe training loss and benchmark performance comparable to Gated DeltaNet.",
+      "aliases": [],
+      "source_ids": [
+        "emergentmind-2608-07110-modular-ttt-rethinking-test-time-training-as-composable-2026"
+      ],
+      "confidence": 0.78,
+      "first_seen": "2026-08-10T23:39:39Z",
+      "last_seen": "2026-08-10T23:39:39Z",
+      "world_hint": "perception-world-models"
+    },
+    "trace-ergodic-trajectory-optimization-for-active-scene": {
+      "id": "trace-ergodic-trajectory-optimization-for-active-scene",
+      "label": "TRACE",
+      "type": "method",
+      "summary": "Existing active reconstruction systems with Gaussian-splatting maps select observations greedily, optimizing a single next-best-view (NBV) at each step and connecting the chosen views by short-horizon path planning. This greedy decoupling disregards the global structure of scene information, producing inefficient trajectories that waste sensing capacity in transit between selected views. In this work, we study active reconstruction as an ergodic coverage problem: the time-averaged spatial statistics of the sensor trajectory should match a target information distribution induced by the current map. Our approach derives this target distribution online from uncertainty and visibility, and calculates ergodic trajectories via a kernel-ergodic horizon planner with gradient flow and footprint depletion, closing the loop between mapping and trajectory optimization. We thoroughly evaluate TRACE on the Replica dataset against the Next-Best-View (NBV) baselines, improving PSNR by 1.5 dB. Code: https://github.com/spikelab-jhu/trace-active-reconstruction.",
+      "aliases": [],
+      "source_ids": [
+        "emergentmind-2608-02304-trace-ergodic-trajectory-optimization-for-active-scene-reconstruction-2026"
+      ],
+      "confidence": 0.78,
+      "first_seen": "2026-08-10T23:39:39Z",
+      "last_seen": "2026-08-10T23:39:39Z",
+      "world_hint": "perception-world-models"
+    },
+    "trace-ergodic-trajectory-optimization-for-active-scene-reconstruction": {
+      "id": "trace-ergodic-trajectory-optimization-for-active-scene-reconstruction",
+      "label": "TRACE problem setting",
+      "type": "concept",
+      "summary": "Existing active reconstruction systems with Gaussian-splatting maps select observations greedily, optimizing a single next-best-view (NBV) at each step and connecting the chosen views by short-horizon path planning. This greedy decoupling disregards the global structure of scene information, producing inefficient trajectories that waste sensing capacity in transit between selected views. In this work, we study active reconstruction as an ergodic coverage problem: the time-averaged spatial statistics of the sensor trajectory should match a target information distribution induced by the current map. Our approach derives this target distribution online from uncertainty and visibility, and calculates ergodic trajectories via a kernel-ergodic horizon planner with gradient flow and footprint depletion, closing the loop between mapping and trajectory optimization. We thoroughly evaluate TRACE on the Replica dataset against the Next-Best-View (NBV) baselines, improving PSNR by 1.5 dB. Code: https://github.com/spikelab-jhu/trace-active-reconstruction.",
+      "aliases": [],
+      "source_ids": [
+        "emergentmind-2608-02304-trace-ergodic-trajectory-optimization-for-active-scene-reconstruction-2026"
+      ],
+      "confidence": 0.78,
+      "first_seen": "2026-08-10T23:39:39Z",
+      "last_seen": "2026-08-10T23:39:39Z",
+      "world_hint": "perception-world-models"
+    },
+    "paper-2608-02304": {
+      "id": "paper-2608-02304",
+      "label": "TRACE: Ergodic Trajectory Optimization for Active Scene Reconstruction",
+      "type": "paper",
+      "summary": "Existing active reconstruction systems with Gaussian-splatting maps select observations greedily, optimizing a single next-best-view (NBV) at each step and connecting the chosen views by short-horizon path planning. This greedy decoupling disregards the global structure of scene information, producing inefficient trajectories that waste sensing capacity in transit between selected views. In this work, we study active reconstruction as an ergodic coverage problem: the time-averaged spatial statistics of the sensor trajectory should match a target information distribution induced by the current map. Our approach derives this target distribution online from uncertainty and visibility, and calculates ergodic trajectories via a kernel-ergodic horizon planner with gradient flow and footprint depletion, closing the loop between mapping and trajectory optimization. We thoroughly evaluate TRACE on the Replica dataset against the Next-Best-View (NBV) baselines, improving PSNR by 1.5 dB. Code: https://github.com/spikelab-jhu/trace-active-reconstruction.",
+      "aliases": [],
+      "source_ids": [
+        "emergentmind-2608-02304-trace-ergodic-trajectory-optimization-for-active-scene-reconstruction-2026"
+      ],
+      "confidence": 0.78,
+      "first_seen": "2026-08-10T23:39:39Z",
+      "last_seen": "2026-08-10T23:39:39Z",
+      "world_hint": "perception-world-models"
+    },
+    "cross-model-kv-cache-transfer-in-llm": {
+      "id": "cross-model-kv-cache-transfer-in-llm",
+      "label": "Cross-Model KV Cache Transfer in LLM Families",
+      "type": "method",
+      "summary": "Production deployments often swap between different-sized models in a family for cost-quality cascading, mid-conversation switching, and routing, and each swap forces the receiver to repay the prefill from scratch. We propose cross-model KV cache transfer, where the receiver reuses the source's KV cache, skipping prefill. We find that cross-model KV has substantial linear structure across matched-KV pairs, where source and target share KV head count and per-head dimension. On Qwen3 14B->32B, one source layer explains 56% of variance in the target's keys and 32% in values, rising to 79% and 65% with multiple source layers. Building on this, we design a closed-form ridge mapper that operates per head and proceeds in three steps. First, for each target layer we select the top-k most predictive source layers and concatenate their KV as input. Second, we strip RoPE from the keys before mapping, so the fit is position-free and reusable across context lengths. Third, we fit ridge regression on a small calibration set of 500 FineWeb-Edu sequences of 1,024 tokens each. Surprisingly, across six pairs in three families, this linear mapper retains 73-98% of the receiver's standalone-prefill accuracy on four pairs, while two degrade sharply. A nonlinear MLP recovers up to +37 pp HellaSwag retention on the failures. The mapper runs 2.7-25x faster than re-prefill and remains stable across multi-turn handoff, making cross-model KV cache transfer practical.",
+      "aliases": [],
+      "source_ids": [
+        "emergentmind-2608-03893-cross-model-kv-cache-transfer-in-llm-families-2026"
+      ],
+      "confidence": 0.78,
+      "first_seen": "2026-08-10T23:39:39Z",
+      "last_seen": "2026-08-10T23:39:39Z",
+      "world_hint": "llm-systems-serving"
+    },
+    "cross-model-kv-cache-transfer-in-llm-families": {
+      "id": "cross-model-kv-cache-transfer-in-llm-families",
+      "label": "Cross-Model KV Cache Transfer in LLM Families problem setting",
+      "type": "concept",
+      "summary": "Production deployments often swap between different-sized models in a family for cost-quality cascading, mid-conversation switching, and routing, and each swap forces the receiver to repay the prefill from scratch. We propose cross-model KV cache transfer, where the receiver reuses the source's KV cache, skipping prefill. We find that cross-model KV has substantial linear structure across matched-KV pairs, where source and target share KV head count and per-head dimension. On Qwen3 14B->32B, one source layer explains 56% of variance in the target's keys and 32% in values, rising to 79% and 65% with multiple source layers. Building on this, we design a closed-form ridge mapper that operates per head and proceeds in three steps. First, for each target layer we select the top-k most predictive source layers and concatenate their KV as input. Second, we strip RoPE from the keys before mapping, so the fit is position-free and reusable across context lengths. Third, we fit ridge regression on a small calibration set of 500 FineWeb-Edu sequences of 1,024 tokens each. Surprisingly, across six pairs in three families, this linear mapper retains 73-98% of the receiver's standalone-prefill accuracy on four pairs, while two degrade sharply. A nonlinear MLP recovers up to +37 pp HellaSwag retention on the failures. The mapper runs 2.7-25x faster than re-prefill and remains stable across multi-turn handoff, making cross-model KV cache transfer practical.",
+      "aliases": [],
+      "source_ids": [
+        "emergentmind-2608-03893-cross-model-kv-cache-transfer-in-llm-families-2026"
+      ],
+      "confidence": 0.78,
+      "first_seen": "2026-08-10T23:39:39Z",
+      "last_seen": "2026-08-10T23:39:39Z",
+      "world_hint": "llm-systems-serving"
+    },
+    "paper-2608-03893": {
+      "id": "paper-2608-03893",
+      "label": "Cross-Model KV Cache Transfer in LLM Families: A Closed-Form Linear Mapping for Prefill Reuse",
+      "type": "paper",
+      "summary": "Production deployments often swap between different-sized models in a family for cost-quality cascading, mid-conversation switching, and routing, and each swap forces the receiver to repay the prefill from scratch. We propose cross-model KV cache transfer, where the receiver reuses the source's KV cache, skipping prefill. We find that cross-model KV has substantial linear structure across matched-KV pairs, where source and target share KV head count and per-head dimension. On Qwen3 14B->32B, one source layer explains 56% of variance in the target's keys and 32% in values, rising to 79% and 65% with multiple source layers. Building on this, we design a closed-form ridge mapper that operates per head and proceeds in three steps. First, for each target layer we select the top-k most predictive source layers and concatenate their KV as input. Second, we strip RoPE from the keys before mapping, so the fit is position-free and reusable across context lengths. Third, we fit ridge regression on a small calibration set of 500 FineWeb-Edu sequences of 1,024 tokens each. Surprisingly, across six pairs in three families, this linear mapper retains 73-98% of the receiver's standalone-prefill accuracy on four pairs, while two degrade sharply. A nonlinear MLP recovers up to +37 pp HellaSwag retention on the failures. The mapper runs 2.7-25x faster than re-prefill and remains stable across multi-turn handoff, making cross-model KV cache transfer practical.",
+      "aliases": [],
+      "source_ids": [
+        "emergentmind-2608-03893-cross-model-kv-cache-transfer-in-llm-families-2026"
+      ],
+      "confidence": 0.78,
+      "first_seen": "2026-08-10T23:39:39Z",
+      "last_seen": "2026-08-10T23:39:39Z",
+      "world_hint": "llm-systems-serving"
     }
   },
   "edges": [
@@ -27977,6 +29481,186 @@
         "emergentmind-2608-06375-0-a-latent-predictive-world-action-model-for-2026"
       ],
       "evidence": "Routed into The 0 A Latent Predictive under retrieval-augmented-generation from source title and abstract."
+    },
+    {
+      "source": "paper-2608-05086",
+      "target": "item-response-theory-for-ai-safety",
+      "relation": "paper_introduces",
+      "confidence": 0.82,
+      "source_ids": [
+        "emergentmind-2608-05086-item-response-theory-for-ai-safety-2026"
+      ],
+      "evidence": "Language models differ in how safely they behave and these differences are measured by safety benchmarks. But aggregated benchmark scores are hard to trust and interpret, because benchmarks duplicate one another, correlate heavily, and models may sandbag when they detect evaluation. To address these issues, we draw on Item Response Theory (IRT), a statistical toolkit for measuring these latents from performance on items with inferred psychometric properties. We fit IRT models to eight safety benchmarks across 192 language models, the largest psychometric analysis of LLM safety evaluations to d"
+    },
+    {
+      "source": "item-response-theory-for-ai-safety",
+      "target": "item-response-theory-for-ai-safety-learning-problem",
+      "relation": "addresses",
+      "confidence": 0.76,
+      "source_ids": [
+        "emergentmind-2608-05086-item-response-theory-for-ai-safety-2026"
+      ],
+      "evidence": "Language models differ in how safely they behave and these differences are measured by safety benchmarks. But aggregated benchmark scores are hard to trust and interpret, because benchmarks duplicate one another, correlate heavily, and models may sandbag when they detect evaluation. To address these issues, we draw on Item Response Theory (IRT), a statistical toolkit for measuring these latents from performance on items with inferred psychometric properties. We fit IRT models to eight safety benchmarks across 192 language models, the largest psychometric analysis of LLM safety evaluations to d"
+    },
+    {
+      "source": "item-response-theory-for-ai-safety",
+      "target": "item-response-theory-for-ai-safety-evaluation-signal",
+      "relation": "evaluates_on",
+      "confidence": 0.72,
+      "source_ids": [
+        "emergentmind-2608-05086-item-response-theory-for-ai-safety-2026"
+      ],
+      "evidence": "Language models differ in how safely they behave and these differences are measured by safety benchmarks. But aggregated benchmark scores are hard to trust and interpret, because benchmarks duplicate one another, correlate heavily, and models may sandbag when they detect evaluation. To address these issues, we draw on Item Response Theory (IRT), a statistical toolkit for measuring these latents from performance on items with inferred psychometric properties. We fit IRT models to eight safety benchmarks across 192 language models, the largest psychometric analysis of LLM safety evaluations to d"
+    },
+    {
+      "source": "paper-2608-02547",
+      "target": "why-does-action-chunking-improve-behavioral-cloning",
+      "relation": "paper_introduces",
+      "confidence": 0.82,
+      "source_ids": [
+        "emergentmind-2608-02547-why-does-action-chunking-improve-behavioral-cloning-performance-2026"
+      ],
+      "evidence": "Action chunking---predicting and executing multiple actions instead of a single action---has proven to be a critical component for learning effective robotic control policies. However, our precise understanding of why action chunking improves performance has remained limited. In this work we seek to close this gap. Through rigorous experimental evaluations in both simulated and real-world settings, we show that existing hypotheses for the success of action chunking---temporal consistency, horizon reduction, and representation learning---fail to explain the success of action chunking. Instead, "
+    },
+    {
+      "source": "why-does-action-chunking-improve-behavioral-cloning",
+      "target": "why-does-action-chunking-improve-behavioral-cloning-performance",
+      "relation": "addresses",
+      "confidence": 0.76,
+      "source_ids": [
+        "emergentmind-2608-02547-why-does-action-chunking-improve-behavioral-cloning-performance-2026"
+      ],
+      "evidence": "Action chunking---predicting and executing multiple actions instead of a single action---has proven to be a critical component for learning effective robotic control policies. However, our precise understanding of why action chunking improves performance has remained limited. In this work we seek to close this gap. Through rigorous experimental evaluations in both simulated and real-world settings, we show that existing hypotheses for the success of action chunking---temporal consistency, horizon reduction, and representation learning---fail to explain the success of action chunking. Instead, "
+    },
+    {
+      "source": "why-does-action-chunking-improve-behavioral-cloning",
+      "target": "why-does-action-chunking-improve-behavioral-cloning-performance",
+      "relation": "evaluates_on",
+      "confidence": 0.72,
+      "source_ids": [
+        "emergentmind-2608-02547-why-does-action-chunking-improve-behavioral-cloning-performance-2026"
+      ],
+      "evidence": "Action chunking---predicting and executing multiple actions instead of a single action---has proven to be a critical component for learning effective robotic control policies. However, our precise understanding of why action chunking improves performance has remained limited. In this work we seek to close this gap. Through rigorous experimental evaluations in both simulated and real-world settings, we show that existing hypotheses for the success of action chunking---temporal consistency, horizon reduction, and representation learning---fail to explain the success of action chunking. Instead, "
+    },
+    {
+      "source": "paper-2608-07222",
+      "target": "skaling-chinchilla-s-exponents-meet-kaplan-s",
+      "relation": "paper_introduces",
+      "confidence": 0.82,
+      "source_ids": [
+        "emergentmind-2608-07222-skaling-chinchilla-s-exponents-meet-kaplan-s-coupling-2026"
+      ],
+      "evidence": "Neural scaling laws are foundational for language model development, yet standard formulations systematically under- and overestimate loss at data-scarce and overtraining extremes. This failure originates in the underlying assumption that model size and training data impact the loss independently. To address this, we introduce the Skaling law, a generalized functional form that couples model capacity and data through a single interaction exponent. This simple extension reduces the Mean Absolute Percentage Error (MAPE) by 1.5-3x across both interpolation and extrapolation regimes. When paired w"
+    },
+    {
+      "source": "skaling-chinchilla-s-exponents-meet-kaplan-s",
+      "target": "skaling-chinchilla-s-exponents-meet-kaplan-s-coupling",
+      "relation": "addresses",
+      "confidence": 0.76,
+      "source_ids": [
+        "emergentmind-2608-07222-skaling-chinchilla-s-exponents-meet-kaplan-s-coupling-2026"
+      ],
+      "evidence": "Neural scaling laws are foundational for language model development, yet standard formulations systematically under- and overestimate loss at data-scarce and overtraining extremes. This failure originates in the underlying assumption that model size and training data impact the loss independently. To address this, we introduce the Skaling law, a generalized functional form that couples model capacity and data through a single interaction exponent. This simple extension reduces the Mean Absolute Percentage Error (MAPE) by 1.5-3x across both interpolation and extrapolation regimes. When paired w"
+    },
+    {
+      "source": "skaling-chinchilla-s-exponents-meet-kaplan-s",
+      "target": "skaling-chinchilla-s-exponents-meet-kaplan-s-coupling",
+      "relation": "evaluates_on",
+      "confidence": 0.72,
+      "source_ids": [
+        "emergentmind-2608-07222-skaling-chinchilla-s-exponents-meet-kaplan-s-coupling-2026"
+      ],
+      "evidence": "Neural scaling laws are foundational for language model development, yet standard formulations systematically under- and overestimate loss at data-scarce and overtraining extremes. This failure originates in the underlying assumption that model size and training data impact the loss independently. To address this, we introduce the Skaling law, a generalized functional form that couples model capacity and data through a single interaction exponent. This simple extension reduces the Mean Absolute Percentage Error (MAPE) by 1.5-3x across both interpolation and extrapolation regimes. When paired w"
+    },
+    {
+      "source": "paper-2608-07110",
+      "target": "modular-ttt-rethinking-test-time-training-as",
+      "relation": "paper_introduces",
+      "confidence": 0.82,
+      "source_ids": [
+        "emergentmind-2608-07110-modular-ttt-rethinking-test-time-training-as-composable-2026"
+      ],
+      "evidence": "Test-time training (TTT) views sequence modeling as an online learning problem in which fast weights are updated by an internal learning rule. Despite the growing number of TTT variants, existing approaches typically hard-code each variant separately, which makes it difficult to design new TTT methods and to isolate the role of each component. To address this, we propose Modular TTT, a framework that represents the inner learner as a directed acyclic graph and exposes the fast-weight network, loss function, learning rate, weight decay, and normalization as explicit design dimensions. Modular T"
+    },
+    {
+      "source": "modular-ttt-rethinking-test-time-training-as",
+      "target": "modular-ttt-rethinking-test-time-training-as-composable",
+      "relation": "addresses",
+      "confidence": 0.76,
+      "source_ids": [
+        "emergentmind-2608-07110-modular-ttt-rethinking-test-time-training-as-composable-2026"
+      ],
+      "evidence": "Test-time training (TTT) views sequence modeling as an online learning problem in which fast weights are updated by an internal learning rule. Despite the growing number of TTT variants, existing approaches typically hard-code each variant separately, which makes it difficult to design new TTT methods and to isolate the role of each component. To address this, we propose Modular TTT, a framework that represents the inner learner as a directed acyclic graph and exposes the fast-weight network, loss function, learning rate, weight decay, and normalization as explicit design dimensions. Modular T"
+    },
+    {
+      "source": "modular-ttt-rethinking-test-time-training-as",
+      "target": "modular-ttt-rethinking-test-time-training-as-composable",
+      "relation": "evaluates_on",
+      "confidence": 0.72,
+      "source_ids": [
+        "emergentmind-2608-07110-modular-ttt-rethinking-test-time-training-as-composable-2026"
+      ],
+      "evidence": "Test-time training (TTT) views sequence modeling as an online learning problem in which fast weights are updated by an internal learning rule. Despite the growing number of TTT variants, existing approaches typically hard-code each variant separately, which makes it difficult to design new TTT methods and to isolate the role of each component. To address this, we propose Modular TTT, a framework that represents the inner learner as a directed acyclic graph and exposes the fast-weight network, loss function, learning rate, weight decay, and normalization as explicit design dimensions. Modular T"
+    },
+    {
+      "source": "paper-2608-02304",
+      "target": "trace-ergodic-trajectory-optimization-for-active-scene",
+      "relation": "paper_introduces",
+      "confidence": 0.82,
+      "source_ids": [
+        "emergentmind-2608-02304-trace-ergodic-trajectory-optimization-for-active-scene-reconstruction-2026"
+      ],
+      "evidence": "Existing active reconstruction systems with Gaussian-splatting maps select observations greedily, optimizing a single next-best-view (NBV) at each step and connecting the chosen views by short-horizon path planning. This greedy decoupling disregards the global structure of scene information, producing inefficient trajectories that waste sensing capacity in transit between selected views. In this work, we study active reconstruction as an ergodic coverage problem: the time-averaged spatial statistics of the sensor trajectory should match a target information distribution induced by the current "
+    },
+    {
+      "source": "trace-ergodic-trajectory-optimization-for-active-scene",
+      "target": "trace-ergodic-trajectory-optimization-for-active-scene-reconstruction",
+      "relation": "addresses",
+      "confidence": 0.76,
+      "source_ids": [
+        "emergentmind-2608-02304-trace-ergodic-trajectory-optimization-for-active-scene-reconstruction-2026"
+      ],
+      "evidence": "Existing active reconstruction systems with Gaussian-splatting maps select observations greedily, optimizing a single next-best-view (NBV) at each step and connecting the chosen views by short-horizon path planning. This greedy decoupling disregards the global structure of scene information, producing inefficient trajectories that waste sensing capacity in transit between selected views. In this work, we study active reconstruction as an ergodic coverage problem: the time-averaged spatial statistics of the sensor trajectory should match a target information distribution induced by the current "
+    },
+    {
+      "source": "trace-ergodic-trajectory-optimization-for-active-scene",
+      "target": "trace-ergodic-trajectory-optimization-for-active-scene-reconstruction",
+      "relation": "evaluates_on",
+      "confidence": 0.72,
+      "source_ids": [
+        "emergentmind-2608-02304-trace-ergodic-trajectory-optimization-for-active-scene-reconstruction-2026"
+      ],
+      "evidence": "Existing active reconstruction systems with Gaussian-splatting maps select observations greedily, optimizing a single next-best-view (NBV) at each step and connecting the chosen views by short-horizon path planning. This greedy decoupling disregards the global structure of scene information, producing inefficient trajectories that waste sensing capacity in transit between selected views. In this work, we study active reconstruction as an ergodic coverage problem: the time-averaged spatial statistics of the sensor trajectory should match a target information distribution induced by the current "
+    },
+    {
+      "source": "paper-2608-03893",
+      "target": "cross-model-kv-cache-transfer-in-llm",
+      "relation": "paper_introduces",
+      "confidence": 0.82,
+      "source_ids": [
+        "emergentmind-2608-03893-cross-model-kv-cache-transfer-in-llm-families-2026"
+      ],
+      "evidence": "Production deployments often swap between different-sized models in a family for cost-quality cascading, mid-conversation switching, and routing, and each swap forces the receiver to repay the prefill from scratch. We propose cross-model KV cache transfer, where the receiver reuses the source's KV cache, skipping prefill. We find that cross-model KV has substantial linear structure across matched-KV pairs, where source and target share KV head count and per-head dimension. On Qwen3 14B->32B, one source layer explains 56% of variance in the target's keys and 32% in values, rising to 79% and 65%"
+    },
+    {
+      "source": "cross-model-kv-cache-transfer-in-llm",
+      "target": "cross-model-kv-cache-transfer-in-llm-families",
+      "relation": "addresses",
+      "confidence": 0.76,
+      "source_ids": [
+        "emergentmind-2608-03893-cross-model-kv-cache-transfer-in-llm-families-2026"
+      ],
+      "evidence": "Production deployments often swap between different-sized models in a family for cost-quality cascading, mid-conversation switching, and routing, and each swap forces the receiver to repay the prefill from scratch. We propose cross-model KV cache transfer, where the receiver reuses the source's KV cache, skipping prefill. We find that cross-model KV has substantial linear structure across matched-KV pairs, where source and target share KV head count and per-head dimension. On Qwen3 14B->32B, one source layer explains 56% of variance in the target's keys and 32% in values, rising to 79% and 65%"
+    },
+    {
+      "source": "cross-model-kv-cache-transfer-in-llm",
+      "target": "cross-model-kv-cache-transfer-in-llm-families",
+      "relation": "evaluates_on",
+      "confidence": 0.72,
+      "source_ids": [
+        "emergentmind-2608-03893-cross-model-kv-cache-transfer-in-llm-families-2026"
+      ],
+      "evidence": "Production deployments often swap between different-sized models in a family for cost-quality cascading, mid-conversation switching, and routing, and each swap forces the receiver to repay the prefill from scratch. We propose cross-model KV cache transfer, where the receiver reuses the source's KV cache, skipping prefill. We find that cross-model KV has substantial linear structure across matched-KV pairs, where source and target share KV head count and per-head dimension. On Qwen3 14B->32B, one source layer explains 56% of variance in the target's keys and 32% in values, rising to 79% and 65%"
     }
   ],
   "open_questions": [
@@ -30184,6 +31868,52 @@
       "edges_added": 0,
       "regions_added": 0,
       "quality_findings": [],
+      "verification": {
+        "json_parse": "passed",
+        "dkg_test": "passed",
+        "build": "passed",
+        "supabase_sync": "passed",
+        "roundtrip": "passed"
+      }
+    },
+    {
+      "run_id": "daily-emergentmind-all-topics-20260810T233939Z",
+      "completed_at": "2026-08-10T23:39:39Z",
+      "type": "daily-emergentmind-all-topics",
+      "homepage_url": "https://www.emergentmind.com/",
+      "homepage_status": 200,
+      "homepage_papers": 45,
+      "source_ids": [
+        "emergentmind-2608-05086-item-response-theory-for-ai-safety-2026",
+        "emergentmind-2608-02547-why-does-action-chunking-improve-behavioral-cloning-performance-2026",
+        "emergentmind-2608-07222-skaling-chinchilla-s-exponents-meet-kaplan-s-coupling-2026",
+        "emergentmind-2608-07110-modular-ttt-rethinking-test-time-training-as-composable-2026",
+        "emergentmind-2608-02304-trace-ergodic-trajectory-optimization-for-active-scene-reconstruction-2026",
+        "emergentmind-2608-03893-cross-model-kv-cache-transfer-in-llm-families-2026"
+      ],
+      "page_status": {
+        "2608.05086": 200,
+        "2608.02547": 200,
+        "2608.07222": 200,
+        "2608.07110": 200,
+        "2608.02304": 200,
+        "2608.03893": 200
+      },
+      "sources_added": 6,
+      "sources_updated": 0,
+      "nodes_added": 19,
+      "nodes_updated": 0,
+      "edges_added": 18,
+      "worlds_touched": [
+        "agents",
+        "perception-world-models",
+        "llm-systems-serving"
+      ],
+      "regions_added": 0,
+      "manual_review": [
+        "Skipped pure-math, astronomy/cosmology, and clinical/medical surfaced items in this bounded pass; clinical claims need deeper safety review before routing.",
+        "New visual-SLAM/event-camera/egocentric-video items are routed under Perception & World Models; DeepSearch is routed under Retrieval-Augmented Generation; beyond-human intelligence evaluation is routed under Agents."
+      ],
       "verification": {
         "json_parse": "passed",
         "dkg_test": "passed",
