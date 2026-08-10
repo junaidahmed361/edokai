@@ -632,3 +632,14 @@ Append-only operational log for automatic EmergentMind ingestion, Telegram manua
 - Counts before sync: 275 sources / 881 nodes / 1097 edges / 6 macro worlds / 277 regions / 279 quizzes / 281 duels.
 - Verification: JSON parse passed; `npm run dkg:test` passed; `npm run build` passed; `npm run dkg:sync` passed; `node scripts/test-dkg-roundtrip.mjs` passed.
 - Escalations/manual review: none.
+
+## daily-emergentmind-all-topics-20260810T233939Z
+
+- Trigger: scheduled daily EmergentMind all-topics graph growth loop.
+- Homepage discovery: fetched `https://www.emergentmind.com/` (HTTP 200) and decoded `window.bootstrapped_trending_papers_json`; homepage exposed 45 trending papers. Selected 6 new high-signal ML/AI papers under the daily budget.
+- Sources ingested: emergentmind-2608-05086-item-response-theory-for-ai-safety-2026, emergentmind-2608-02547-why-does-action-chunking-improve-behavioral-cloning-performance-2026, emergentmind-2608-07222-skaling-chinchilla-s-exponents-meet-kaplan-s-coupling-2026, emergentmind-2608-07110-modular-ttt-rethinking-test-time-training-as-composable-2026, emergentmind-2608-02304-trace-ergodic-trajectory-optimization-for-active-scene-reconstruction-2026, emergentmind-2608-03893-cross-model-kv-cache-transfer-in-llm-families-2026.
+- Source-page fetch statuses: {"2608.05086": 200, "2608.02547": 200, "2608.07222": 200, "2608.07110": 200, "2608.02304": 200, "2608.03893": 200}.
+- Graph actions: added 6 source records, updated 0; added 19 nodes, updated 0; added 18 source-backed edges. Totals now 281 sources / 975 nodes / 1115 edges.
+- Concept-world builder: added 0 preliminary source-backed regions across agents, perception-world-models, llm-systems-serving; no new macro world created.
+- Verification: maker/checker provenance pass succeeded before write; JSON parse, `npm run dkg:test`, `npm run build`, `npm run dkg:sync`, and Supabase round-trip readback passed.
+- Escalations/manual review: Skipped pure-math, astronomy/cosmology, and clinical/medical surfaced items in this bounded pass; clinical claims need deeper safety review before routing. New visual-SLAM/event-camera/egocentric-video items are routed under Perception & World Models; DeepSearch is routed under Retrieval-Augmented Generation; beyond-human intelligence evaluation is routed under Agents. No publishing, secrets, infra, or broad UI refactor performed.

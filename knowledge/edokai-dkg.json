@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "updated_at": "2026-08-09T14:03:15Z",
+  "updated_at": "2026-08-10T23:39:39Z",
   "sources": {
     "hf-space-trl-distillation-trainer-2026": {
       "id": "hf-space-trl-distillation-trainer-2026",
@@ -4428,6 +4428,102 @@
       "provenance": [
         "Discovered from https://www.emergentmind.com/ bootstrapped trending papers on 2026-08-09.",
         "EmergentMind homepage abstract metadata: Humanoid household tasks often require concurrent loco-manipulation, where the robot must move, adjust posture, maintain balance, and manipulate objects as a single coordinated behavior. Yet existing humanoid policies typically decompose locomotion and manipulation, while recent world-action models remain either arm-centric or video-centered. We present $ω$-0, a latent predictive whole-body world-action model for real-world humanoid concurrent loco-manipulation. Given a language instruction, current visual observation, and robot proprioceptive state, $ω$-0 directly predicts controller-compatible whole-body action latents for real-ro"
+      ],
+      "confidence": 0.86
+    },
+    "emergentmind-2608-05086-item-response-theory-for-ai-safety-2026": {
+      "id": "emergentmind-2608-05086-item-response-theory-for-ai-safety-2026",
+      "url": "https://www.emergentmind.com/papers/2608.05086",
+      "arxiv_url": "https://arxiv.org/abs/2608.05086",
+      "title": "Item Response Theory for AI Safety",
+      "source_type": "emergentmind-trending-paper",
+      "authors": [],
+      "published": "2026-08-05",
+      "discovered_at": "2026-08-10T23:39:39Z",
+      "last_read_at": "2026-08-10T23:39:39Z",
+      "provenance": [
+        "Discovered from https://www.emergentmind.com/ bootstrapped trending papers on 2026-08-10.",
+        "EmergentMind homepage abstract metadata: Language models differ in how safely they behave and these differences are measured by safety benchmarks. But aggregated benchmark scores are hard to trust and interpret, because benchmarks duplicate one another, correlate heavily, and models may sandbag when they detect evaluation. To address these issues, we draw on Item Response Theory (IRT), a statistical toolkit for measuring these latents from performance on items with inferred psychometric properties. We fit IRT models to eight safety benchmarks across 192 language models, the largest psychometric analysis of LLM safety evaluations to date, and contribute three results. First"
+      ],
+      "confidence": 0.86
+    },
+    "emergentmind-2608-02547-why-does-action-chunking-improve-behavioral-cloning-performance-2026": {
+      "id": "emergentmind-2608-02547-why-does-action-chunking-improve-behavioral-cloning-performance-2026",
+      "url": "https://www.emergentmind.com/papers/2608.02547",
+      "arxiv_url": "https://arxiv.org/abs/2608.02547",
+      "title": "Why Does Action Chunking Improve Behavioral Cloning Performance in Robotic Control?",
+      "source_type": "emergentmind-trending-paper",
+      "authors": [],
+      "published": "2026-08-03",
+      "discovered_at": "2026-08-10T23:39:39Z",
+      "last_read_at": "2026-08-10T23:39:39Z",
+      "provenance": [
+        "Discovered from https://www.emergentmind.com/ bootstrapped trending papers on 2026-08-10.",
+        "EmergentMind homepage abstract metadata: Action chunking---predicting and executing multiple actions instead of a single action---has proven to be a critical component for learning effective robotic control policies. However, our precise understanding of why action chunking improves performance has remained limited. In this work we seek to close this gap. Through rigorous experimental evaluations in both simulated and real-world settings, we show that existing hypotheses for the success of action chunking---temporal consistency, horizon reduction, and representation learning---fail to explain the success of action chunking. Instead, we find that action chunking benefits fr"
+      ],
+      "confidence": 0.86
+    },
+    "emergentmind-2608-07222-skaling-chinchilla-s-exponents-meet-kaplan-s-coupling-2026": {
+      "id": "emergentmind-2608-07222-skaling-chinchilla-s-exponents-meet-kaplan-s-coupling-2026",
+      "url": "https://www.emergentmind.com/papers/2608.07222",
+      "arxiv_url": "https://arxiv.org/abs/2608.07222",
+      "title": "Skaling: Chinchilla's Exponents Meet Kaplan's Coupling",
+      "source_type": "emergentmind-trending-paper",
+      "authors": [],
+      "published": "2026-08-07",
+      "discovered_at": "2026-08-10T23:39:39Z",
+      "last_read_at": "2026-08-10T23:39:39Z",
+      "provenance": [
+        "Discovered from https://www.emergentmind.com/ bootstrapped trending papers on 2026-08-10.",
+        "EmergentMind homepage abstract metadata: Neural scaling laws are foundational for language model development, yet standard formulations systematically under- and overestimate loss at data-scarce and overtraining extremes. This failure originates in the underlying assumption that model size and training data impact the loss independently. To address this, we introduce the Skaling law, a generalized functional form that couples model capacity and data through a single interaction exponent. This simple extension reduces the Mean Absolute Percentage Error (MAPE) by 1.5-3x across both interpolation and extrapolation regimes. When paired with a sparse grid strategy restricted to"
+      ],
+      "confidence": 0.86
+    },
+    "emergentmind-2608-07110-modular-ttt-rethinking-test-time-training-as-composable-2026": {
+      "id": "emergentmind-2608-07110-modular-ttt-rethinking-test-time-training-as-composable-2026",
+      "url": "https://www.emergentmind.com/papers/2608.07110",
+      "arxiv_url": "https://arxiv.org/abs/2608.07110",
+      "title": "Modular TTT: Rethinking Test-Time Training as Composable Modules",
+      "source_type": "emergentmind-trending-paper",
+      "authors": [],
+      "published": "2026-08-07",
+      "discovered_at": "2026-08-10T23:39:39Z",
+      "last_read_at": "2026-08-10T23:39:39Z",
+      "provenance": [
+        "Discovered from https://www.emergentmind.com/ bootstrapped trending papers on 2026-08-10.",
+        "EmergentMind homepage abstract metadata: Test-time training (TTT) views sequence modeling as an online learning problem in which fast weights are updated by an internal learning rule. Despite the growing number of TTT variants, existing approaches typically hard-code each variant separately, which makes it difficult to design new TTT methods and to isolate the role of each component. To address this, we propose Modular TTT, a framework that represents the inner learner as a directed acyclic graph and exposes the fast-weight network, loss function, learning rate, weight decay, and normalization as explicit design dimensions. Modular TTT automatically composes primitive-leve"
+      ],
+      "confidence": 0.86
+    },
+    "emergentmind-2608-02304-trace-ergodic-trajectory-optimization-for-active-scene-reconstruction-2026": {
+      "id": "emergentmind-2608-02304-trace-ergodic-trajectory-optimization-for-active-scene-reconstruction-2026",
+      "url": "https://www.emergentmind.com/papers/2608.02304",
+      "arxiv_url": "https://arxiv.org/abs/2608.02304",
+      "title": "TRACE: Ergodic Trajectory Optimization for Active Scene Reconstruction",
+      "source_type": "emergentmind-trending-paper",
+      "authors": [],
+      "published": "2026-08-03",
+      "discovered_at": "2026-08-10T23:39:39Z",
+      "last_read_at": "2026-08-10T23:39:39Z",
+      "provenance": [
+        "Discovered from https://www.emergentmind.com/ bootstrapped trending papers on 2026-08-10.",
+        "EmergentMind homepage abstract metadata: Existing active reconstruction systems with Gaussian-splatting maps select observations greedily, optimizing a single next-best-view (NBV) at each step and connecting the chosen views by short-horizon path planning. This greedy decoupling disregards the global structure of scene information, producing inefficient trajectories that waste sensing capacity in transit between selected views. In this work, we study active reconstruction as an ergodic coverage problem: the time-averaged spatial statistics of the sensor trajectory should match a target information distribution induced by the current map. Our approach derives this target di"
+      ],
+      "confidence": 0.86
+    },
+    "emergentmind-2608-03893-cross-model-kv-cache-transfer-in-llm-families-2026": {
+      "id": "emergentmind-2608-03893-cross-model-kv-cache-transfer-in-llm-families-2026",
+      "url": "https://www.emergentmind.com/papers/2608.03893",
+      "arxiv_url": "https://arxiv.org/abs/2608.03893",
+      "title": "Cross-Model KV Cache Transfer in LLM Families: A Closed-Form Linear Mapping for Prefill Reuse",
+      "source_type": "emergentmind-trending-paper",
+      "authors": [],
+      "published": "2026-08-04",
+      "discovered_at": "2026-08-10T23:39:39Z",
+      "last_read_at": "2026-08-10T23:39:39Z",
+      "provenance": [
+        "Discovered from https://www.emergentmind.com/ bootstrapped trending papers on 2026-08-10.",
+        "EmergentMind homepage abstract metadata: Production deployments often swap between different-sized models in a family for cost-quality cascading, mid-conversation switching, and routing, and each swap forces the receiver to repay the prefill from scratch. We propose cross-model KV cache transfer, where the receiver reuses the source's KV cache, skipping prefill. We find that cross-model KV has substantial linear structure across matched-KV pairs, where source and target share KV head count and per-head dimension. On Qwen3 14B->32B, one source layer explains 56% of variance in the target's keys and 32% in values, rising to 79% and 65% with multiple source layers. Building o"
       ],
       "confidence": 0.86
     }
@@ -18136,6 +18232,272 @@
       ],
       "confidence": 0.9,
       "world_hint": "generative-models"
+    },
+    "item-response-theory-for-ai-safety": {
+      "id": "item-response-theory-for-ai-safety",
+      "label": "Item Response Theory for AI Safety",
+      "type": "method",
+      "summary": "Language models differ in how safely they behave and these differences are measured by safety benchmarks. But aggregated benchmark scores are hard to trust and interpret, because benchmarks duplicate one another, correlate heavily, and models may sandbag when they detect evaluation. To address these issues, we draw on Item Response Theory (IRT), a statistical toolkit for measuring these latents from performance on items with inferred psychometric properties. We fit IRT models to eight safety benchmarks across 192 language models, the largest psychometric analysis of LLM safety evaluations to date, and contribute three results. First, we find that three interpretable factors of refusal strictness, truthfulness, and contextual harm explain most of the variance between models across benchmarks. Second, psychometrically selected items recover full benchmark scores with lower error than random subsets of the same size, and roughly ten adaptively chosen items suffice for several individual benchmarks, cutting evaluation cost by 97-99%. Third, IRT supports audits of individual models, showing that it can be used to detect naive sandbagging and changes of model behind APIs. Overall, we show IRT is a ready-made toolkit for reading, reducing, and auditing safety benchmarks, which we recommend frontier labs and evaluators adopt.",
+      "aliases": [],
+      "source_ids": [
+        "emergentmind-2608-05086-item-response-theory-for-ai-safety-2026"
+      ],
+      "confidence": 0.78,
+      "first_seen": "2026-08-10T23:39:39Z",
+      "last_seen": "2026-08-10T23:39:39Z",
+      "world_hint": "agents"
+    },
+    "item-response-theory-for-ai-safety-learning-problem": {
+      "id": "item-response-theory-for-ai-safety-learning-problem",
+      "label": "Item Response Theory for AI Safety problem setting",
+      "type": "concept",
+      "summary": "Language models differ in how safely they behave and these differences are measured by safety benchmarks. But aggregated benchmark scores are hard to trust and interpret, because benchmarks duplicate one another, correlate heavily, and models may sandbag when they detect evaluation. To address these issues, we draw on Item Response Theory (IRT), a statistical toolkit for measuring these latents from performance on items with inferred psychometric properties. We fit IRT models to eight safety benchmarks across 192 language models, the largest psychometric analysis of LLM safety evaluations to date, and contribute three results. First, we find that three interpretable factors of refusal strictness, truthfulness, and contextual harm explain most of the variance between models across benchmarks. Second, psychometrically selected items recover full benchmark scores with lower error than random subsets of the same size, and roughly ten adaptively chosen items suffice for several individual benchmarks, cutting evaluation cost by 97-99%. Third, IRT supports audits of individual models, showing that it can be used to detect naive sandbagging and changes of model behind APIs. Overall, we show IRT is a ready-made toolkit for reading, reducing, and auditing safety benchmarks, which we recommend frontier labs and evaluators adopt.",
+      "aliases": [],
+      "source_ids": [
+        "emergentmind-2608-05086-item-response-theory-for-ai-safety-2026"
+      ],
+      "confidence": 0.78,
+      "first_seen": "2026-08-10T23:39:39Z",
+      "last_seen": "2026-08-10T23:39:39Z",
+      "world_hint": "agents"
+    },
+    "item-response-theory-for-ai-safety-evaluation-signal": {
+      "id": "item-response-theory-for-ai-safety-evaluation-signal",
+      "label": "Item Response Theory for AI Safety evaluation signal",
+      "type": "concept",
+      "summary": "Language models differ in how safely they behave and these differences are measured by safety benchmarks. But aggregated benchmark scores are hard to trust and interpret, because benchmarks duplicate one another, correlate heavily, and models may sandbag when they detect evaluation. To address these issues, we draw on Item Response Theory (IRT), a statistical toolkit for measuring these latents from performance on items with inferred psychometric properties. We fit IRT models to eight safety benchmarks across 192 language models, the largest psychometric analysis of LLM safety evaluations to date, and contribute three results. First, we find that three interpretable factors of refusal strictness, truthfulness, and contextual harm explain most of the variance between models across benchmarks. Second, psychometrically selected items recover full benchmark scores with lower error than random subsets of the same size, and roughly ten adaptively chosen items suffice for several individual benchmarks, cutting evaluation cost by 97-99%. Third, IRT supports audits of individual models, showing that it can be used to detect naive sandbagging and changes of model behind APIs. Overall, we show IRT is a ready-made toolkit for reading, reducing, and auditing safety benchmarks, which we recommend frontier labs and evaluators adopt.",
+      "aliases": [],
+      "source_ids": [
+        "emergentmind-2608-05086-item-response-theory-for-ai-safety-2026"
+      ],
+      "confidence": 0.78,
+      "first_seen": "2026-08-10T23:39:39Z",
+      "last_seen": "2026-08-10T23:39:39Z",
+      "world_hint": "agents"
+    },
+    "paper-2608-05086": {
+      "id": "paper-2608-05086",
+      "label": "Item Response Theory for AI Safety",
+      "type": "paper",
+      "summary": "Language models differ in how safely they behave and these differences are measured by safety benchmarks. But aggregated benchmark scores are hard to trust and interpret, because benchmarks duplicate one another, correlate heavily, and models may sandbag when they detect evaluation. To address these issues, we draw on Item Response Theory (IRT), a statistical toolkit for measuring these latents from performance on items with inferred psychometric properties. We fit IRT models to eight safety benchmarks across 192 language models, the largest psychometric analysis of LLM safety evaluations to date, and contribute three results. First, we find that three interpretable factors of refusal strictness, truthfulness, and contextual harm explain most of the variance between models across benchmarks. Second, psychometrically selected items recover full benchmark scores with lower error than random subsets of the same size, and roughly ten adaptively chosen items suffice for several individual benchmarks, cutting evaluation cost by 97-99%. Third, IRT supports audits of individual models, showing that it can be used to detect naive sandbagging and changes of model behind APIs. Overall, we show IRT is a ready-made toolkit for reading, reducing, and auditing safety benchmarks, which we recommend frontier labs and evaluators adopt.",
+      "aliases": [],
+      "source_ids": [
+        "emergentmind-2608-05086-item-response-theory-for-ai-safety-2026"
+      ],
+      "confidence": 0.78,
+      "first_seen": "2026-08-10T23:39:39Z",
+      "last_seen": "2026-08-10T23:39:39Z",
+      "world_hint": "agents"
+    },
+    "why-does-action-chunking-improve-behavioral-cloning": {
+      "id": "why-does-action-chunking-improve-behavioral-cloning",
+      "label": "Why Does Action Chunking Improve Behavioral Cloning Performance in Robotic Control?",
+      "type": "method",
+      "summary": "Action chunking---predicting and executing multiple actions instead of a single action---has proven to be a critical component for learning effective robotic control policies. However, our precise understanding of why action chunking improves performance has remained limited. In this work we seek to close this gap. Through rigorous experimental evaluations in both simulated and real-world settings, we show that existing hypotheses for the success of action chunking---temporal consistency, horizon reduction, and representation learning---fail to explain the success of action chunking. Instead, we find that action chunking benefits from greater non-Markovian expressivity and reduced compounding error compared to Markovian policies, but, in many settings of interest, these effects can be fully captured by delayed policies, which at each step predict a single action based on the observation $k$ steps in the past. We then show that there exists an additional benefit of action chunking that we refer to as implicit ensembling. In particular, by learning a diversity of temporal relationships (that is, $a_t | o_t, a_t | o_{t-1}, \\ldots$), action-chunked policies exhibit behavior matching that of a model ensemble, increasing their robustness and generalization ability over policies that only learn a single temporal relationship. Building on these insights, we show that in simulated and real-world robotic control settings, we can match the performance of action chunking without action chunking---by deploying an action chunking policy as an ensemble of policies with randomized delays. Furthermore, we propose a policy class that amplifies the benefits of action chunking by explicitly instantiating an ensemble, and which we show significantly improves over the performance of action chunking in many domains.",
+      "aliases": [],
+      "source_ids": [
+        "emergentmind-2608-02547-why-does-action-chunking-improve-behavioral-cloning-performance-2026"
+      ],
+      "confidence": 0.78,
+      "first_seen": "2026-08-10T23:39:39Z",
+      "last_seen": "2026-08-10T23:39:39Z",
+      "world_hint": "perception-world-models"
+    },
+    "why-does-action-chunking-improve-behavioral-cloning-performance": {
+      "id": "why-does-action-chunking-improve-behavioral-cloning-performance",
+      "label": "Why Does Action Chunking Improve Behavioral Cloning Performance in Robotic Control? problem setting",
+      "type": "concept",
+      "summary": "Action chunking---predicting and executing multiple actions instead of a single action---has proven to be a critical component for learning effective robotic control policies. However, our precise understanding of why action chunking improves performance has remained limited. In this work we seek to close this gap. Through rigorous experimental evaluations in both simulated and real-world settings, we show that existing hypotheses for the success of action chunking---temporal consistency, horizon reduction, and representation learning---fail to explain the success of action chunking. Instead, we find that action chunking benefits from greater non-Markovian expressivity and reduced compounding error compared to Markovian policies, but, in many settings of interest, these effects can be fully captured by delayed policies, which at each step predict a single action based on the observation $k$ steps in the past. We then show that there exists an additional benefit of action chunking that we refer to as implicit ensembling. In particular, by learning a diversity of temporal relationships (that is, $a_t | o_t, a_t | o_{t-1}, \\ldots$), action-chunked policies exhibit behavior matching that of a model ensemble, increasing their robustness and generalization ability over policies that only learn a single temporal relationship. Building on these insights, we show that in simulated and real-world robotic control settings, we can match the performance of action chunking without action chunking---by deploying an action chunking policy as an ensemble of policies with randomized delays. Furthermore, we propose a policy class that amplifies the benefits of action chunking by explicitly instantiating an ensemble, and which we show significantly improves over the performance of action chunking in many domains.",
+      "aliases": [],
+      "source_ids": [
+        "emergentmind-2608-02547-why-does-action-chunking-improve-behavioral-cloning-performance-2026"
+      ],
+      "confidence": 0.78,
+      "first_seen": "2026-08-10T23:39:39Z",
+      "last_seen": "2026-08-10T23:39:39Z",
+      "world_hint": "perception-world-models"
+    },
+    "paper-2608-02547": {
+      "id": "paper-2608-02547",
+      "label": "Why Does Action Chunking Improve Behavioral Cloning Performance in Robotic Control?",
+      "type": "paper",
+      "summary": "Action chunking---predicting and executing multiple actions instead of a single action---has proven to be a critical component for learning effective robotic control policies. However, our precise understanding of why action chunking improves performance has remained limited. In this work we seek to close this gap. Through rigorous experimental evaluations in both simulated and real-world settings, we show that existing hypotheses for the success of action chunking---temporal consistency, horizon reduction, and representation learning---fail to explain the success of action chunking. Instead, we find that action chunking benefits from greater non-Markovian expressivity and reduced compounding error compared to Markovian policies, but, in many settings of interest, these effects can be fully captured by delayed policies, which at each step predict a single action based on the observation $k$ steps in the past. We then show that there exists an additional benefit of action chunking that we refer to as implicit ensembling. In particular, by learning a diversity of temporal relationships (that is, $a_t | o_t, a_t | o_{t-1}, \\ldots$), action-chunked policies exhibit behavior matching that of a model ensemble, increasing their robustness and generalization ability over policies that only learn a single temporal relationship. Building on these insights, we show that in simulated and real-world robotic control settings, we can match the performance of action chunking without action chunking---by deploying an action chunking policy as an ensemble of policies with randomized delays. Furthermore, we propose a policy class that amplifies the benefits of action chunking by explicitly instantiating an ensemble, and which we show significantly improves over the performance of action chunking in many domains.",
+      "aliases": [],
+      "source_ids": [
+        "emergentmind-2608-02547-why-does-action-chunking-improve-behavioral-cloning-performance-2026"
+      ],
+      "confidence": 0.78,
+      "first_seen": "2026-08-10T23:39:39Z",
+      "last_seen": "2026-08-10T23:39:39Z",
+      "world_hint": "perception-world-models"
+    },
+    "skaling-chinchilla-s-exponents-meet-kaplan-s": {
+      "id": "skaling-chinchilla-s-exponents-meet-kaplan-s",
+      "label": "Skaling",
+      "type": "method",
+      "summary": "Neural scaling laws are foundational for language model development, yet standard formulations systematically under- and overestimate loss at data-scarce and overtraining extremes. This failure originates in the underlying assumption that model size and training data impact the loss independently. To address this, we introduce the Skaling law, a generalized functional form that couples model capacity and data through a single interaction exponent. This simple extension reduces the Mean Absolute Percentage Error (MAPE) by 1.5-3x across both interpolation and extrapolation regimes. When paired with a sparse grid strategy restricted to low-compute regimes, the Skaling law achieves accurate full-grid extrapolation using approximately 10x less compute than uniform sweeps. By enabling reliable performance prediction from small-scale experiments, the Skaling law provides a more robust and resource-efficient framework for allocating compute budgets in next-generation model training.",
+      "aliases": [],
+      "source_ids": [
+        "emergentmind-2608-07222-skaling-chinchilla-s-exponents-meet-kaplan-s-coupling-2026"
+      ],
+      "confidence": 0.78,
+      "first_seen": "2026-08-10T23:39:39Z",
+      "last_seen": "2026-08-10T23:39:39Z",
+      "world_hint": "agents"
+    },
+    "skaling-chinchilla-s-exponents-meet-kaplan-s-coupling": {
+      "id": "skaling-chinchilla-s-exponents-meet-kaplan-s-coupling",
+      "label": "Skaling problem setting",
+      "type": "concept",
+      "summary": "Neural scaling laws are foundational for language model development, yet standard formulations systematically under- and overestimate loss at data-scarce and overtraining extremes. This failure originates in the underlying assumption that model size and training data impact the loss independently. To address this, we introduce the Skaling law, a generalized functional form that couples model capacity and data through a single interaction exponent. This simple extension reduces the Mean Absolute Percentage Error (MAPE) by 1.5-3x across both interpolation and extrapolation regimes. When paired with a sparse grid strategy restricted to low-compute regimes, the Skaling law achieves accurate full-grid extrapolation using approximately 10x less compute than uniform sweeps. By enabling reliable performance prediction from small-scale experiments, the Skaling law provides a more robust and resource-efficient framework for allocating compute budgets in next-generation model training.",
+      "aliases": [],
+      "source_ids": [
+        "emergentmind-2608-07222-skaling-chinchilla-s-exponents-meet-kaplan-s-coupling-2026"
+      ],
+      "confidence": 0.78,
+      "first_seen": "2026-08-10T23:39:39Z",
+      "last_seen": "2026-08-10T23:39:39Z",
+      "world_hint": "agents"
+    },
+    "paper-2608-07222": {
+      "id": "paper-2608-07222",
+      "label": "Skaling: Chinchilla's Exponents Meet Kaplan's Coupling",
+      "type": "paper",
+      "summary": "Neural scaling laws are foundational for language model development, yet standard formulations systematically under- and overestimate loss at data-scarce and overtraining extremes. This failure originates in the underlying assumption that model size and training data impact the loss independently. To address this, we introduce the Skaling law, a generalized functional form that couples model capacity and data through a single interaction exponent. This simple extension reduces the Mean Absolute Percentage Error (MAPE) by 1.5-3x across both interpolation and extrapolation regimes. When paired with a sparse grid strategy restricted to low-compute regimes, the Skaling law achieves accurate full-grid extrapolation using approximately 10x less compute than uniform sweeps. By enabling reliable performance prediction from small-scale experiments, the Skaling law provides a more robust and resource-efficient framework for allocating compute budgets in next-generation model training.",
+      "aliases": [],
+      "source_ids": [
+        "emergentmind-2608-07222-skaling-chinchilla-s-exponents-meet-kaplan-s-coupling-2026"
+      ],
+      "confidence": 0.78,
+      "first_seen": "2026-08-10T23:39:39Z",
+      "last_seen": "2026-08-10T23:39:39Z",
+      "world_hint": "agents"
+    },
+    "modular-ttt-rethinking-test-time-training-as": {
+      "id": "modular-ttt-rethinking-test-time-training-as",
+      "label": "Modular TTT",
+      "type": "method",
+      "summary": "Test-time training (TTT) views sequence modeling as an online learning problem in which fast weights are updated by an internal learning rule. Despite the growing number of TTT variants, existing approaches typically hard-code each variant separately, which makes it difficult to design new TTT methods and to isolate the role of each component. To address this, we propose Modular TTT, a framework that represents the inner learner as a directed acyclic graph and exposes the fast-weight network, loss function, learning rate, weight decay, and normalization as explicit design dimensions. Modular TTT automatically composes primitive-level train-view forward, train-view backward, and causal query-view rules into the full graph-level TTT computation, including the fast-weight state transition. Using Modular TTT, we systematically ablate the components of TTT and find that small learning-rate initialization, weight decay, and a single-layer nonlinearity improve performance, while MSE and inner-product losses perform similarly. Deeper fast-weight networks and normalization tend to hurt performance because they induce excessively large activations, while residual connections and gating provide little measurable benefit. Guided by these findings, we train the best resulting variant as 410M- and 1.45B-parameter models on 100B tokens, and observe training loss and benchmark performance comparable to Gated DeltaNet.",
+      "aliases": [],
+      "source_ids": [
+        "emergentmind-2608-07110-modular-ttt-rethinking-test-time-training-as-composable-2026"
+      ],
+      "confidence": 0.78,
+      "first_seen": "2026-08-10T23:39:39Z",
+      "last_seen": "2026-08-10T23:39:39Z",
+      "world_hint": "perception-world-models"
+    },
+    "modular-ttt-rethinking-test-time-training-as-composable": {
+      "id": "modular-ttt-rethinking-test-time-training-as-composable",
+      "label": "Modular TTT problem setting",
+      "type": "concept",
+      "summary": "Test-time training (TTT) views sequence modeling as an online learning problem in which fast weights are updated by an internal learning rule. Despite the growing number of TTT variants, existing approaches typically hard-code each variant separately, which makes it difficult to design new TTT methods and to isolate the role of each component. To address this, we propose Modular TTT, a framework that represents the inner learner as a directed acyclic graph and exposes the fast-weight network, loss function, learning rate, weight decay, and normalization as explicit design dimensions. Modular TTT automatically composes primitive-level train-view forward, train-view backward, and causal query-view rules into the full graph-level TTT computation, including the fast-weight state transition. Using Modular TTT, we systematically ablate the components of TTT and find that small learning-rate initialization, weight decay, and a single-layer nonlinearity improve performance, while MSE and inner-product losses perform similarly. Deeper fast-weight networks and normalization tend to hurt performance because they induce excessively large activations, while residual connections and gating provide little measurable benefit. Guided by these findings, we train the best resulting variant as 410M- and 1.45B-parameter models on 100B tokens, and observe training loss and benchmark performance comparable to Gated DeltaNet.",
+      "aliases": [],
+      "source_ids": [
+        "emergentmind-2608-07110-modular-ttt-rethinking-test-time-training-as-composable-2026"
+      ],
+      "confidence": 0.78,
+      "first_seen": "2026-08-10T23:39:39Z",
+      "last_seen": "2026-08-10T23:39:39Z",
+      "world_hint": "perception-world-models"
+    },
+    "paper-2608-07110": {
+      "id": "paper-2608-07110",
+      "label": "Modular TTT: Rethinking Test-Time Training as Composable Modules",
+      "type": "paper",
+      "summary": "Test-time training (TTT) views sequence modeling as an online learning problem in which fast weights are updated by an internal learning rule. Despite the growing number of TTT variants, existing approaches typically hard-code each variant separately, which makes it difficult to design new TTT methods and to isolate the role of each component. To address this, we propose Modular TTT, a framework that represents the inner learner as a directed acyclic graph and exposes the fast-weight network, loss function, learning rate, weight decay, and normalization as explicit design dimensions. Modular TTT automatically composes primitive-level train-view forward, train-view backward, and causal query-view rules into the full graph-level TTT computation, including the fast-weight state transition. Using Modular TTT, we systematically ablate the components of TTT and find that small learning-rate initialization, weight decay, and a single-layer nonlinearity improve performance, while MSE and inner-product losses perform similarly. Deeper fast-weight networks and normalization tend to hurt performance because they induce excessively large activations, while residual connections and gating provide little measurable benefit. Guided by these findings, we train the best resulting variant as 410M- and 1.45B-parameter models on 100B tokens, and observe training loss and benchmark performance comparable to Gated DeltaNet.",
+      "aliases": [],
+      "source_ids": [
+        "emergentmind-2608-07110-modular-ttt-rethinking-test-time-training-as-composable-2026"
+      ],
+      "confidence": 0.78,
+      "first_seen": "2026-08-10T23:39:39Z",
+      "last_seen": "2026-08-10T23:39:39Z",
+      "world_hint": "perception-world-models"
+    },
+    "trace-ergodic-trajectory-optimization-for-active-scene": {
+      "id": "trace-ergodic-trajectory-optimization-for-active-scene",
+      "label": "TRACE",
+      "type": "method",
+      "summary": "Existing active reconstruction systems with Gaussian-splatting maps select observations greedily, optimizing a single next-best-view (NBV) at each step and connecting the chosen views by short-horizon path planning. This greedy decoupling disregards the global structure of scene information, producing inefficient trajectories that waste sensing capacity in transit between selected views. In this work, we study active reconstruction as an ergodic coverage problem: the time-averaged spatial statistics of the sensor trajectory should match a target information distribution induced by the current map. Our approach derives this target distribution online from uncertainty and visibility, and calculates ergodic trajectories via a kernel-ergodic horizon planner with gradient flow and footprint depletion, closing the loop between mapping and trajectory optimization. We thoroughly evaluate TRACE on the Replica dataset against the Next-Best-View (NBV) baselines, improving PSNR by 1.5 dB. Code: https://github.com/spikelab-jhu/trace-active-reconstruction.",
+      "aliases": [],
+      "source_ids": [
+        "emergentmind-2608-02304-trace-ergodic-trajectory-optimization-for-active-scene-reconstruction-2026"
+      ],
+      "confidence": 0.78,
+      "first_seen": "2026-08-10T23:39:39Z",
+      "last_seen": "2026-08-10T23:39:39Z",
+      "world_hint": "perception-world-models"
+    },
+    "trace-ergodic-trajectory-optimization-for-active-scene-reconstruction": {
+      "id": "trace-ergodic-trajectory-optimization-for-active-scene-reconstruction",
+      "label": "TRACE problem setting",
+      "type": "concept",
+      "summary": "Existing active reconstruction systems with Gaussian-splatting maps select observations greedily, optimizing a single next-best-view (NBV) at each step and connecting the chosen views by short-horizon path planning. This greedy decoupling disregards the global structure of scene information, producing inefficient trajectories that waste sensing capacity in transit between selected views. In this work, we study active reconstruction as an ergodic coverage problem: the time-averaged spatial statistics of the sensor trajectory should match a target information distribution induced by the current map. Our approach derives this target distribution online from uncertainty and visibility, and calculates ergodic trajectories via a kernel-ergodic horizon planner with gradient flow and footprint depletion, closing the loop between mapping and trajectory optimization. We thoroughly evaluate TRACE on the Replica dataset against the Next-Best-View (NBV) baselines, improving PSNR by 1.5 dB. Code: https://github.com/spikelab-jhu/trace-active-reconstruction.",
+      "aliases": [],
+      "source_ids": [
+        "emergentmind-2608-02304-trace-ergodic-trajectory-optimization-for-active-scene-reconstruction-2026"
+      ],
+      "confidence": 0.78,
+      "first_seen": "2026-08-10T23:39:39Z",
+      "last_seen": "2026-08-10T23:39:39Z",
+      "world_hint": "perception-world-models"
+    },
+    "paper-2608-02304": {
+      "id": "paper-2608-02304",
+      "label": "TRACE: Ergodic Trajectory Optimization for Active Scene Reconstruction",
+      "type": "paper",
+      "summary": "Existing active reconstruction systems with Gaussian-splatting maps select observations greedily, optimizing a single next-best-view (NBV) at each step and connecting the chosen views by short-horizon path planning. This greedy decoupling disregards the global structure of scene information, producing inefficient trajectories that waste sensing capacity in transit between selected views. In this work, we study active reconstruction as an ergodic coverage problem: the time-averaged spatial statistics of the sensor trajectory should match a target information distribution induced by the current map. Our approach derives this target distribution online from uncertainty and visibility, and calculates ergodic trajectories via a kernel-ergodic horizon planner with gradient flow and footprint depletion, closing the loop between mapping and trajectory optimization. We thoroughly evaluate TRACE on the Replica dataset against the Next-Best-View (NBV) baselines, improving PSNR by 1.5 dB. Code: https://github.com/spikelab-jhu/trace-active-reconstruction.",
+      "aliases": [],
+      "source_ids": [
+        "emergentmind-2608-02304-trace-ergodic-trajectory-optimization-for-active-scene-reconstruction-2026"
+      ],
+      "confidence": 0.78,
+      "first_seen": "2026-08-10T23:39:39Z",
+      "last_seen": "2026-08-10T23:39:39Z",
+      "world_hint": "perception-world-models"
+    },
+    "cross-model-kv-cache-transfer-in-llm": {
+      "id": "cross-model-kv-cache-transfer-in-llm",
+      "label": "Cross-Model KV Cache Transfer in LLM Families",
+      "type": "method",
+      "summary": "Production deployments often swap between different-sized models in a family for cost-quality cascading, mid-conversation switching, and routing, and each swap forces the receiver to repay the prefill from scratch. We propose cross-model KV cache transfer, where the receiver reuses the source's KV cache, skipping prefill. We find that cross-model KV has substantial linear structure across matched-KV pairs, where source and target share KV head count and per-head dimension. On Qwen3 14B->32B, one source layer explains 56% of variance in the target's keys and 32% in values, rising to 79% and 65% with multiple source layers. Building on this, we design a closed-form ridge mapper that operates per head and proceeds in three steps. First, for each target layer we select the top-k most predictive source layers and concatenate their KV as input. Second, we strip RoPE from the keys before mapping, so the fit is position-free and reusable across context lengths. Third, we fit ridge regression on a small calibration set of 500 FineWeb-Edu sequences of 1,024 tokens each. Surprisingly, across six pairs in three families, this linear mapper retains 73-98% of the receiver's standalone-prefill accuracy on four pairs, while two degrade sharply. A nonlinear MLP recovers up to +37 pp HellaSwag retention on the failures. The mapper runs 2.7-25x faster than re-prefill and remains stable across multi-turn handoff, making cross-model KV cache transfer practical.",
+      "aliases": [],
+      "source_ids": [
+        "emergentmind-2608-03893-cross-model-kv-cache-transfer-in-llm-families-2026"
+      ],
+      "confidence": 0.78,
+      "first_seen": "2026-08-10T23:39:39Z",
+      "last_seen": "2026-08-10T23:39:39Z",
+      "world_hint": "llm-systems-serving"
+    },
+    "cross-model-kv-cache-transfer-in-llm-families": {
+      "id": "cross-model-kv-cache-transfer-in-llm-families",
+      "label": "Cross-Model KV Cache Transfer in LLM Families problem setting",
+      "type": "concept",
+      "summary": "Production deployments often swap between different-sized models in a family for cost-quality cascading, mid-conversation switching, and routing, and each swap forces the receiver to repay the prefill from scratch. We propose cross-model KV cache transfer, where the receiver reuses the source's KV cache, skipping prefill. We find that cross-model KV has substantial linear structure across matched-KV pairs, where source and target share KV head count and per-head dimension. On Qwen3 14B->32B, one source layer explains 56% of variance in the target's keys and 32% in values, rising to 79% and 65% with multiple source layers. Building on this, we design a closed-form ridge mapper that operates per head and proceeds in three steps. First, for each target layer we select the top-k most predictive source layers and concatenate their KV as input. Second, we strip RoPE from the keys before mapping, so the fit is position-free and reusable across context lengths. Third, we fit ridge regression on a small calibration set of 500 FineWeb-Edu sequences of 1,024 tokens each. Surprisingly, across six pairs in three families, this linear mapper retains 73-98% of the receiver's standalone-prefill accuracy on four pairs, while two degrade sharply. A nonlinear MLP recovers up to +37 pp HellaSwag retention on the failures. The mapper runs 2.7-25x faster than re-prefill and remains stable across multi-turn handoff, making cross-model KV cache transfer practical.",
+      "aliases": [],
+      "source_ids": [
+        "emergentmind-2608-03893-cross-model-kv-cache-transfer-in-llm-families-2026"
+      ],
+      "confidence": 0.78,
+      "first_seen": "2026-08-10T23:39:39Z",
+      "last_seen": "2026-08-10T23:39:39Z",
+      "world_hint": "llm-systems-serving"
+    },
+    "paper-2608-03893": {
+      "id": "paper-2608-03893",
+      "label": "Cross-Model KV Cache Transfer in LLM Families: A Closed-Form Linear Mapping for Prefill Reuse",
+      "type": "paper",
+      "summary": "Production deployments often swap between different-sized models in a family for cost-quality cascading, mid-conversation switching, and routing, and each swap forces the receiver to repay the prefill from scratch. We propose cross-model KV cache transfer, where the receiver reuses the source's KV cache, skipping prefill. We find that cross-model KV has substantial linear structure across matched-KV pairs, where source and target share KV head count and per-head dimension. On Qwen3 14B->32B, one source layer explains 56% of variance in the target's keys and 32% in values, rising to 79% and 65% with multiple source layers. Building on this, we design a closed-form ridge mapper that operates per head and proceeds in three steps. First, for each target layer we select the top-k most predictive source layers and concatenate their KV as input. Second, we strip RoPE from the keys before mapping, so the fit is position-free and reusable across context lengths. Third, we fit ridge regression on a small calibration set of 500 FineWeb-Edu sequences of 1,024 tokens each. Surprisingly, across six pairs in three families, this linear mapper retains 73-98% of the receiver's standalone-prefill accuracy on four pairs, while two degrade sharply. A nonlinear MLP recovers up to +37 pp HellaSwag retention on the failures. The mapper runs 2.7-25x faster than re-prefill and remains stable across multi-turn handoff, making cross-model KV cache transfer practical.",
+      "aliases": [],
+      "source_ids": [
+        "emergentmind-2608-03893-cross-model-kv-cache-transfer-in-llm-families-2026"
+      ],
+      "confidence": 0.78,
+      "first_seen": "2026-08-10T23:39:39Z",
+      "last_seen": "2026-08-10T23:39:39Z",
+      "world_hint": "llm-systems-serving"
     }
   },
   "edges": [
@@ -29119,6 +29481,186 @@
         "emergentmind-2608-06375-0-a-latent-predictive-world-action-model-for-2026"
       ],
       "evidence": "Routed into The 0 A Latent Predictive under retrieval-augmented-generation from source title and abstract."
+    },
+    {
+      "source": "paper-2608-05086",
+      "target": "item-response-theory-for-ai-safety",
+      "relation": "paper_introduces",
+      "confidence": 0.82,
+      "source_ids": [
+        "emergentmind-2608-05086-item-response-theory-for-ai-safety-2026"
+      ],
+      "evidence": "Language models differ in how safely they behave and these differences are measured by safety benchmarks. But aggregated benchmark scores are hard to trust and interpret, because benchmarks duplicate one another, correlate heavily, and models may sandbag when they detect evaluation. To address these issues, we draw on Item Response Theory (IRT), a statistical toolkit for measuring these latents from performance on items with inferred psychometric properties. We fit IRT models to eight safety benchmarks across 192 language models, the largest psychometric analysis of LLM safety evaluations to d"
+    },
+    {
+      "source": "item-response-theory-for-ai-safety",
+      "target": "item-response-theory-for-ai-safety-learning-problem",
+      "relation": "addresses",
+      "confidence": 0.76,
+      "source_ids": [
+        "emergentmind-2608-05086-item-response-theory-for-ai-safety-2026"
+      ],
+      "evidence": "Language models differ in how safely they behave and these differences are measured by safety benchmarks. But aggregated benchmark scores are hard to trust and interpret, because benchmarks duplicate one another, correlate heavily, and models may sandbag when they detect evaluation. To address these issues, we draw on Item Response Theory (IRT), a statistical toolkit for measuring these latents from performance on items with inferred psychometric properties. We fit IRT models to eight safety benchmarks across 192 language models, the largest psychometric analysis of LLM safety evaluations to d"
+    },
+    {
+      "source": "item-response-theory-for-ai-safety",
+      "target": "item-response-theory-for-ai-safety-evaluation-signal",
+      "relation": "evaluates_on",
+      "confidence": 0.72,
+      "source_ids": [
+        "emergentmind-2608-05086-item-response-theory-for-ai-safety-2026"
+      ],
+      "evidence": "Language models differ in how safely they behave and these differences are measured by safety benchmarks. But aggregated benchmark scores are hard to trust and interpret, because benchmarks duplicate one another, correlate heavily, and models may sandbag when they detect evaluation. To address these issues, we draw on Item Response Theory (IRT), a statistical toolkit for measuring these latents from performance on items with inferred psychometric properties. We fit IRT models to eight safety benchmarks across 192 language models, the largest psychometric analysis of LLM safety evaluations to d"
+    },
+    {
+      "source": "paper-2608-02547",
+      "target": "why-does-action-chunking-improve-behavioral-cloning",
+      "relation": "paper_introduces",
+      "confidence": 0.82,
+      "source_ids": [
+        "emergentmind-2608-02547-why-does-action-chunking-improve-behavioral-cloning-performance-2026"
+      ],
+      "evidence": "Action chunking---predicting and executing multiple actions instead of a single action---has proven to be a critical component for learning effective robotic control policies. However, our precise understanding of why action chunking improves performance has remained limited. In this work we seek to close this gap. Through rigorous experimental evaluations in both simulated and real-world settings, we show that existing hypotheses for the success of action chunking---temporal consistency, horizon reduction, and representation learning---fail to explain the success of action chunking. Instead, "
+    },
+    {
+      "source": "why-does-action-chunking-improve-behavioral-cloning",
+      "target": "why-does-action-chunking-improve-behavioral-cloning-performance",
+      "relation": "addresses",
+      "confidence": 0.76,
+      "source_ids": [
+        "emergentmind-2608-02547-why-does-action-chunking-improve-behavioral-cloning-performance-2026"
+      ],
+      "evidence": "Action chunking---predicting and executing multiple actions instead of a single action---has proven to be a critical component for learning effective robotic control policies. However, our precise understanding of why action chunking improves performance has remained limited. In this work we seek to close this gap. Through rigorous experimental evaluations in both simulated and real-world settings, we show that existing hypotheses for the success of action chunking---temporal consistency, horizon reduction, and representation learning---fail to explain the success of action chunking. Instead, "
+    },
+    {
+      "source": "why-does-action-chunking-improve-behavioral-cloning",
+      "target": "why-does-action-chunking-improve-behavioral-cloning-performance",
+      "relation": "evaluates_on",
+      "confidence": 0.72,
+      "source_ids": [
+        "emergentmind-2608-02547-why-does-action-chunking-improve-behavioral-cloning-performance-2026"
+      ],
+      "evidence": "Action chunking---predicting and executing multiple actions instead of a single action---has proven to be a critical component for learning effective robotic control policies. However, our precise understanding of why action chunking improves performance has remained limited. In this work we seek to close this gap. Through rigorous experimental evaluations in both simulated and real-world settings, we show that existing hypotheses for the success of action chunking---temporal consistency, horizon reduction, and representation learning---fail to explain the success of action chunking. Instead, "
+    },
+    {
+      "source": "paper-2608-07222",
+      "target": "skaling-chinchilla-s-exponents-meet-kaplan-s",
+      "relation": "paper_introduces",
+      "confidence": 0.82,
+      "source_ids": [
+        "emergentmind-2608-07222-skaling-chinchilla-s-exponents-meet-kaplan-s-coupling-2026"
+      ],
+      "evidence": "Neural scaling laws are foundational for language model development, yet standard formulations systematically under- and overestimate loss at data-scarce and overtraining extremes. This failure originates in the underlying assumption that model size and training data impact the loss independently. To address this, we introduce the Skaling law, a generalized functional form that couples model capacity and data through a single interaction exponent. This simple extension reduces the Mean Absolute Percentage Error (MAPE) by 1.5-3x across both interpolation and extrapolation regimes. When paired w"
+    },
+    {
+      "source": "skaling-chinchilla-s-exponents-meet-kaplan-s",
+      "target": "skaling-chinchilla-s-exponents-meet-kaplan-s-coupling",
+      "relation": "addresses",
+      "confidence": 0.76,
+      "source_ids": [
+        "emergentmind-2608-07222-skaling-chinchilla-s-exponents-meet-kaplan-s-coupling-2026"
+      ],
+      "evidence": "Neural scaling laws are foundational for language model development, yet standard formulations systematically under- and overestimate loss at data-scarce and overtraining extremes. This failure originates in the underlying assumption that model size and training data impact the loss independently. To address this, we introduce the Skaling law, a generalized functional form that couples model capacity and data through a single interaction exponent. This simple extension reduces the Mean Absolute Percentage Error (MAPE) by 1.5-3x across both interpolation and extrapolation regimes. When paired w"
+    },
+    {
+      "source": "skaling-chinchilla-s-exponents-meet-kaplan-s",
+      "target": "skaling-chinchilla-s-exponents-meet-kaplan-s-coupling",
+      "relation": "evaluates_on",
+      "confidence": 0.72,
+      "source_ids": [
+        "emergentmind-2608-07222-skaling-chinchilla-s-exponents-meet-kaplan-s-coupling-2026"
+      ],
+      "evidence": "Neural scaling laws are foundational for language model development, yet standard formulations systematically under- and overestimate loss at data-scarce and overtraining extremes. This failure originates in the underlying assumption that model size and training data impact the loss independently. To address this, we introduce the Skaling law, a generalized functional form that couples model capacity and data through a single interaction exponent. This simple extension reduces the Mean Absolute Percentage Error (MAPE) by 1.5-3x across both interpolation and extrapolation regimes. When paired w"
+    },
+    {
+      "source": "paper-2608-07110",
+      "target": "modular-ttt-rethinking-test-time-training-as",
+      "relation": "paper_introduces",
+      "confidence": 0.82,
+      "source_ids": [
+        "emergentmind-2608-07110-modular-ttt-rethinking-test-time-training-as-composable-2026"
+      ],
+      "evidence": "Test-time training (TTT) views sequence modeling as an online learning problem in which fast weights are updated by an internal learning rule. Despite the growing number of TTT variants, existing approaches typically hard-code each variant separately, which makes it difficult to design new TTT methods and to isolate the role of each component. To address this, we propose Modular TTT, a framework that represents the inner learner as a directed acyclic graph and exposes the fast-weight network, loss function, learning rate, weight decay, and normalization as explicit design dimensions. Modular T"
+    },
+    {
+      "source": "modular-ttt-rethinking-test-time-training-as",
+      "target": "modular-ttt-rethinking-test-time-training-as-composable",
+      "relation": "addresses",
+      "confidence": 0.76,
+      "source_ids": [
+        "emergentmind-2608-07110-modular-ttt-rethinking-test-time-training-as-composable-2026"
+      ],
+      "evidence": "Test-time training (TTT) views sequence modeling as an online learning problem in which fast weights are updated by an internal learning rule. Despite the growing number of TTT variants, existing approaches typically hard-code each variant separately, which makes it difficult to design new TTT methods and to isolate the role of each component. To address this, we propose Modular TTT, a framework that represents the inner learner as a directed acyclic graph and exposes the fast-weight network, loss function, learning rate, weight decay, and normalization as explicit design dimensions. Modular T"
+    },
+    {
+      "source": "modular-ttt-rethinking-test-time-training-as",
+      "target": "modular-ttt-rethinking-test-time-training-as-composable",
+      "relation": "evaluates_on",
+      "confidence": 0.72,
+      "source_ids": [
+        "emergentmind-2608-07110-modular-ttt-rethinking-test-time-training-as-composable-2026"
+      ],
+      "evidence": "Test-time training (TTT) views sequence modeling as an online learning problem in which fast weights are updated by an internal learning rule. Despite the growing number of TTT variants, existing approaches typically hard-code each variant separately, which makes it difficult to design new TTT methods and to isolate the role of each component. To address this, we propose Modular TTT, a framework that represents the inner learner as a directed acyclic graph and exposes the fast-weight network, loss function, learning rate, weight decay, and normalization as explicit design dimensions. Modular T"
+    },
+    {
+      "source": "paper-2608-02304",
+      "target": "trace-ergodic-trajectory-optimization-for-active-scene",
+      "relation": "paper_introduces",
+      "confidence": 0.82,
+      "source_ids": [
+        "emergentmind-2608-02304-trace-ergodic-trajectory-optimization-for-active-scene-reconstruction-2026"
+      ],
+      "evidence": "Existing active reconstruction systems with Gaussian-splatting maps select observations greedily, optimizing a single next-best-view (NBV) at each step and connecting the chosen views by short-horizon path planning. This greedy decoupling disregards the global structure of scene information, producing inefficient trajectories that waste sensing capacity in transit between selected views. In this work, we study active reconstruction as an ergodic coverage problem: the time-averaged spatial statistics of the sensor trajectory should match a target information distribution induced by the current "
+    },
+    {
+      "source": "trace-ergodic-trajectory-optimization-for-active-scene",
+      "target": "trace-ergodic-trajectory-optimization-for-active-scene-reconstruction",
+      "relation": "addresses",
+      "confidence": 0.76,
+      "source_ids": [
+        "emergentmind-2608-02304-trace-ergodic-trajectory-optimization-for-active-scene-reconstruction-2026"
+      ],
+      "evidence": "Existing active reconstruction systems with Gaussian-splatting maps select observations greedily, optimizing a single next-best-view (NBV) at each step and connecting the chosen views by short-horizon path planning. This greedy decoupling disregards the global structure of scene information, producing inefficient trajectories that waste sensing capacity in transit between selected views. In this work, we study active reconstruction as an ergodic coverage problem: the time-averaged spatial statistics of the sensor trajectory should match a target information distribution induced by the current "
+    },
+    {
+      "source": "trace-ergodic-trajectory-optimization-for-active-scene",
+      "target": "trace-ergodic-trajectory-optimization-for-active-scene-reconstruction",
+      "relation": "evaluates_on",
+      "confidence": 0.72,
+      "source_ids": [
+        "emergentmind-2608-02304-trace-ergodic-trajectory-optimization-for-active-scene-reconstruction-2026"
+      ],
+      "evidence": "Existing active reconstruction systems with Gaussian-splatting maps select observations greedily, optimizing a single next-best-view (NBV) at each step and connecting the chosen views by short-horizon path planning. This greedy decoupling disregards the global structure of scene information, producing inefficient trajectories that waste sensing capacity in transit between selected views. In this work, we study active reconstruction as an ergodic coverage problem: the time-averaged spatial statistics of the sensor trajectory should match a target information distribution induced by the current "
+    },
+    {
+      "source": "paper-2608-03893",
+      "target": "cross-model-kv-cache-transfer-in-llm",
+      "relation": "paper_introduces",
+      "confidence": 0.82,
+      "source_ids": [
+        "emergentmind-2608-03893-cross-model-kv-cache-transfer-in-llm-families-2026"
+      ],
+      "evidence": "Production deployments often swap between different-sized models in a family for cost-quality cascading, mid-conversation switching, and routing, and each swap forces the receiver to repay the prefill from scratch. We propose cross-model KV cache transfer, where the receiver reuses the source's KV cache, skipping prefill. We find that cross-model KV has substantial linear structure across matched-KV pairs, where source and target share KV head count and per-head dimension. On Qwen3 14B->32B, one source layer explains 56% of variance in the target's keys and 32% in values, rising to 79% and 65%"
+    },
+    {
+      "source": "cross-model-kv-cache-transfer-in-llm",
+      "target": "cross-model-kv-cache-transfer-in-llm-families",
+      "relation": "addresses",
+      "confidence": 0.76,
+      "source_ids": [
+        "emergentmind-2608-03893-cross-model-kv-cache-transfer-in-llm-families-2026"
+      ],
+      "evidence": "Production deployments often swap between different-sized models in a family for cost-quality cascading, mid-conversation switching, and routing, and each swap forces the receiver to repay the prefill from scratch. We propose cross-model KV cache transfer, where the receiver reuses the source's KV cache, skipping prefill. We find that cross-model KV has substantial linear structure across matched-KV pairs, where source and target share KV head count and per-head dimension. On Qwen3 14B->32B, one source layer explains 56% of variance in the target's keys and 32% in values, rising to 79% and 65%"
+    },
+    {
+      "source": "cross-model-kv-cache-transfer-in-llm",
+      "target": "cross-model-kv-cache-transfer-in-llm-families",
+      "relation": "evaluates_on",
+      "confidence": 0.72,
+      "source_ids": [
+        "emergentmind-2608-03893-cross-model-kv-cache-transfer-in-llm-families-2026"
+      ],
+      "evidence": "Production deployments often swap between different-sized models in a family for cost-quality cascading, mid-conversation switching, and routing, and each swap forces the receiver to repay the prefill from scratch. We propose cross-model KV cache transfer, where the receiver reuses the source's KV cache, skipping prefill. We find that cross-model KV has substantial linear structure across matched-KV pairs, where source and target share KV head count and per-head dimension. On Qwen3 14B->32B, one source layer explains 56% of variance in the target's keys and 32% in values, rising to 79% and 65%"
     }
   ],
   "open_questions": [
@@ -31326,6 +31868,52 @@
       "edges_added": 0,
       "regions_added": 0,
       "quality_findings": [],
+      "verification": {
+        "json_parse": "passed",
+        "dkg_test": "passed",
+        "build": "passed",
+        "supabase_sync": "passed",
+        "roundtrip": "passed"
+      }
+    },
+    {
+      "run_id": "daily-emergentmind-all-topics-20260810T233939Z",
+      "completed_at": "2026-08-10T23:39:39Z",
+      "type": "daily-emergentmind-all-topics",
+      "homepage_url": "https://www.emergentmind.com/",
+      "homepage_status": 200,
+      "homepage_papers": 45,
+      "source_ids": [
+        "emergentmind-2608-05086-item-response-theory-for-ai-safety-2026",
+        "emergentmind-2608-02547-why-does-action-chunking-improve-behavioral-cloning-performance-2026",
+        "emergentmind-2608-07222-skaling-chinchilla-s-exponents-meet-kaplan-s-coupling-2026",
+        "emergentmind-2608-07110-modular-ttt-rethinking-test-time-training-as-composable-2026",
+        "emergentmind-2608-02304-trace-ergodic-trajectory-optimization-for-active-scene-reconstruction-2026",
+        "emergentmind-2608-03893-cross-model-kv-cache-transfer-in-llm-families-2026"
+      ],
+      "page_status": {
+        "2608.05086": 200,
+        "2608.02547": 200,
+        "2608.07222": 200,
+        "2608.07110": 200,
+        "2608.02304": 200,
+        "2608.03893": 200
+      },
+      "sources_added": 6,
+      "sources_updated": 0,
+      "nodes_added": 19,
+      "nodes_updated": 0,
+      "edges_added": 18,
+      "worlds_touched": [
+        "agents",
+        "perception-world-models",
+        "llm-systems-serving"
+      ],
+      "regions_added": 0,
+      "manual_review": [
+        "Skipped pure-math, astronomy/cosmology, and clinical/medical surfaced items in this bounded pass; clinical claims need deeper safety review before routing.",
+        "New visual-SLAM/event-camera/egocentric-video items are routed under Perception & World Models; DeepSearch is routed under Retrieval-Augmented Generation; beyond-human intelligence evaluation is routed under Agents."
+      ],
       "verification": {
         "json_parse": "passed",
         "dkg_test": "passed",

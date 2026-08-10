@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "updated_at": "2026-08-09T14:03:15Z",
+  "updated_at": "2026-08-10T23:39:39Z",
   "macro_worlds": {
     "agents": {
       "label": "Agents",
@@ -8269,6 +8269,33 @@
       "regions_added": 0,
       "new_worlds_created": [],
       "quality_findings": [],
+      "verification": {
+        "json_parse": "passed",
+        "dkg_test": "passed",
+        "build": "passed",
+        "supabase_sync": "passed",
+        "roundtrip": "passed"
+      }
+    },
+    {
+      "run_id": "daily-emergentmind-all-topics-20260810T233939Z",
+      "completed_at": "2026-08-10T23:39:39Z",
+      "event": "daily EmergentMind homepage all-topics ingestion",
+      "sources_added": 6,
+      "nodes_added": 19,
+      "edges_added": 18,
+      "worlds_enhanced": [
+        "agents",
+        "perception-world-models",
+        "llm-systems-serving"
+      ],
+      "regions_enhanced": [],
+      "new_worlds_created": [],
+      "router_learning": "The 2026-07-12 homepage delta fits existing umbrellas: SLAM/event-camera/egocentric-video strengthen Perception & World Models, DeepSearch strengthens Retrieval-Augmented Generation, and beyond-human intelligence evaluation strengthens Agents.",
+      "manual_review": [
+        "Skipped pure-math, astronomy/cosmology, and clinical/medical surfaced items in this bounded pass; clinical claims need deeper safety review before routing.",
+        "New visual-SLAM/event-camera/egocentric-video items are routed under Perception & World Models; DeepSearch is routed under Retrieval-Augmented Generation; beyond-human intelligence evaluation is routed under Agents."
+      ],
       "verification": {
         "json_parse": "passed",
         "dkg_test": "passed",
